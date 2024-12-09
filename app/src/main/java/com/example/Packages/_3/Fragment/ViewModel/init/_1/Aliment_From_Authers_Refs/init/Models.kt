@@ -109,3 +109,18 @@ data class ColorArticle(
     // Firebase necessite un constructeur vide
     constructor() : this(0, "", "", 0)
 }
+data class Grossist_Choisi_Pour_Acheter_CeProduit internal constructor(
+    var idSupplierSu: Long = 0,
+    var nomSupplierSu: String = "",
+    var nomVocaleArabeDuSupplier: String = "",
+    var nameInFrenche: String = "",
+    var bonDuSupplierSu: String = "",
+    val couleurSu: String = "#FFFFFF",
+    var currentCreditBalance: Double = 0.0,
+    var longTermCredit: Boolean = false,
+    var ignoreItProdects: Boolean = false,
+    var classmentSupplier: Double = 0.0,
+) {
+    constructor() : this(0)
+
+}

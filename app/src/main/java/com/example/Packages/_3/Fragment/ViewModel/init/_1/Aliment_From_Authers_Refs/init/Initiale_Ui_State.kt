@@ -67,7 +67,32 @@ private suspend fun getColorData(colorId: Long): ColorArticle? {
         null
     }
 }
+suspend fun getSupplierData(idSupplierSu: Long): Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit? {
+    return try {
+        val supplierSnapshot = Firebase.database.getReference("F_Suppliers")
+            .orderByChild("idSupplierSu")
+            .equalTo(idSupplierSu.toDouble())
+            .get()
+            .await()
+            .children
+            .firstOrNull()
 
+        supplierSnapshot?.let { snapshot ->
+            Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit(
+                id = idSupplierSu,
+                position_Grossist_Don_Parent_Grossists_List = snapshot.child("position")
+                    .getValue(Int::class.java) ?: 0,
+                nom = snapshot.child("nomSupplierSu").getValue(String::class.java) ?: "",
+                couleur = snapshot.child("couleurSu").getValue(String::class.java) ?: "#FFFFFF",
+                currentCreditBalance = snapshot.child("currentCreditBalance")
+                    .getValue(Double::class.java) ?: 0.0,
+            )
+        }
+    } catch (e: Exception) {
+        Log.e(TAG, "Error fetching supplier data for ID $idSupplierSu", e)
+        null
+    }
+}
 internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
     try {
         // Fetching products from Firebase
@@ -79,8 +104,9 @@ internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produit
             async {
                 // Extract article ID
                 val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
-
-                // Fetch supplier data
+                val idSupplierSu =
+                    productSnapshot.child("idSupplierSu").getValue(Long::class.java) ?: 0L
+                val supplierInfosData = getSupplierData(idSupplierSu)
                 val supplierData = getSupplierArticlesData(idArticle)
 
                 // Build colors list with null safety and comprehensive data extraction
@@ -114,7 +140,8 @@ internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produit
                 Ui_Mutable_State.Produits_Commend_DataBase(
                     id = idArticle.toInt(),
                     nom = productSnapshot.child("nomArticleFinale").getValue(String::class.java) ?: "",
-                    colours_Et_Gouts_Commende = colorsList
+                    colours_Et_Gouts_Commende = colorsList,
+                    grossist_Choisi_Pour_Acheter_CeProduit = supplierInfosData
                 )
             }
         }.awaitAll()

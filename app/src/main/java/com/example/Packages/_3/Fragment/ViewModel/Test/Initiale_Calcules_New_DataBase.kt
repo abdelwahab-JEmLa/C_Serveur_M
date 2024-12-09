@@ -2,6 +2,8 @@ package com.example.Packages._3.Fragment.ViewModel.Test
 
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
+import com.example.Packages._3.Fragment.Models.addAll_TO_Ui_Mutable_State_C_produits_Commend_DataBase
+import com.example.Packages._3.Fragment.Models.clear_Ui_Mutable_State_C_produits_Commend_DataBase
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +27,6 @@ internal fun P3_ViewModel.Test_Initiale_Calcules_Autre_Valeurs(
         _ui_Mutable_State.addAll_TO_Ui_Mutable_State_C_produits_Commend_DataBase(initialProduits_Commend_DataBase)
         _ui_Mutable_State.namePhone = ""
         refFirebase.setValue(_ui_Mutable_State)
-        _ui_Mutable_State.logGroupingDetails("P3_ViewModel")
     }
 }
 

@@ -124,3 +124,35 @@ data class Grossist_Choisi_Pour_Acheter_CeProduit internal constructor(
     constructor() : this(0)
 
 }
+data class SoldArticlesTabelle internal constructor(
+    val vid: Long = 0,
+    val idArticle: Long = 0,
+    val nameArticle: String = "",
+    val clientSoldToItId: Long = 0,
+    val date: String = "",
+    val color1IdPicked: Long = 0,
+    val color1SoldQuantity: Int = 0,
+    val color2IdPicked: Long = 0,
+    val color2SoldQuantity: Int = 0,
+    val color3IdPicked: Long = 0,
+    val color3SoldQuantity: Int = 0,
+    val color4IdPicked: Long = 0,
+    val color4SoldQuantity: Int = 0,
+    val confimed: Boolean = false,
+) {
+    constructor() : this(0)
+}
+
+data class ClientsDataBase(
+    val vidSu: Long = 0,
+    var idClientsSu: Long = 0,
+    var position: Int = 0,
+    var nomClientsSu: String = "",
+    var nameAggregation: String = "",
+    var bonDuClientsSu: String = "",
+    val couleurSu: String = "#FFFFFF", // Default color
+    var currentCreditBalance: Double = 0.0,
+    var itsReadyForEdite: Boolean = false,
+) {
+    constructor() : this(0)
+}

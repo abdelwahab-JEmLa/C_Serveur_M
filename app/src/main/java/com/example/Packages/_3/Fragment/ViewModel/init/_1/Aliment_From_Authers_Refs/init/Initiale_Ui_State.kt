@@ -4,6 +4,9 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
+import com.example.Packages._3.Fragment.Models.addAll_TO_Ui_Mutable_State_C_produits_Commend_DataBase
+import com.example.Packages._3.Fragment.Models.clear_Ui_Mutable_State_C_produits_Commend_DataBase
+import com.example.Packages._3.Fragment.Models.toMap
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -14,6 +17,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 private const val TAG = "InitialeUiState"
 private const val TAG_COLOR = "ColorLoading"
@@ -35,7 +40,6 @@ internal suspend fun getSupplierArticlesData(idArticle: Long): DataSnapshot? {
 
 private suspend fun getColorData(colorId: Long): ColorArticle? {
     return try {
-        // Improved error handling and logging
         val colorSnapshot = Firebase.database.getReference("H_ColorsArticles")
             .orderByChild("idColore")
             .equalTo(colorId.toDouble())
@@ -46,14 +50,12 @@ private suspend fun getColorData(colorId: Long): ColorArticle? {
 
         val colorData = colorSnapshot?.getValue(ColorArticle::class.java)
 
-        // Detailed logging for debugging
         when {
             colorData == null -> Log.w(TAG_COLOR, "No color data found for ID $colorId")
             colorData.iconColore.isNullOrEmpty() -> Log.w(TAG_COLOR, "Empty emoji for colorId: $colorId")
             else -> Log.d(TAG_COLOR, "Successfully loaded emoji for colorId: $colorId, emoji: ${colorData.iconColore}")
         }
 
-        // Fallback mechanism for retrieving color data
         colorData ?: colorSnapshot?.let {
             ColorArticle(
                 idColore = it.child("idColore").getValue(Long::class.java) ?: colorId,
@@ -67,6 +69,7 @@ private suspend fun getColorData(colorId: Long): ColorArticle? {
         null
     }
 }
+
 suspend fun getSupplierInfosData(idSupplierSu: Long): Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit? {
     return try {
         val supplierSnapshot = Firebase.database.getReference("F_Suppliers")
@@ -93,23 +96,145 @@ suspend fun getSupplierInfosData(idSupplierSu: Long): Ui_Mutable_State.Produits_
         null
     }
 }
+
+private fun createColorsEtGoutsAcheter(
+    colorId: Long,
+    colorName: String,
+    quantity: Int,
+    position: Long,
+    colorData: ColorArticle?
+): Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter {
+    return Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter(
+        vidPosition = position,
+        id_Don_Tout_Couleurs = colorId,
+        nom = colorName,
+        quantity_Achete = quantity,
+        imogi = colorData?.iconColore ?: ""
+    )
+}
+
+private suspend fun getClientData(clientId: Long): String {
+    return try {
+        val clientSnapshot = Firebase.database.getReference("G_Clients")
+            .orderByChild("idClientsSu")
+            .equalTo(clientId.toDouble())
+            .get()
+            .await()
+            .children
+            .firstOrNull()
+
+        clientSnapshot?.child("nomClientsSu")?.getValue(String::class.java) ?: ""
+    } catch (e: Exception) {
+        Log.e(TAG, "Error fetching client data for ID $clientId", e)
+        ""
+    }
+}
+
+// Update processVentesData function to include client name
+private suspend fun processVentesData(
+    soldArticlesSnapshot: DataSnapshot,
+    productId: Long
+): List<Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit> {
+    return soldArticlesSnapshot.children.mapNotNull { soldArticle ->
+        val soldData =
+            soldArticle.getValue(SoldArticlesTabelle::class.java) ?: return@mapNotNull null
+        if (soldData.idArticle != productId) return@mapNotNull null
+
+        // Fetch client name
+        val clientName = getClientData(soldData.clientSoldToItId)
+
+        val colorsList = buildList {
+            // Process color1
+            if (soldData.color1IdPicked != 0L && soldData.color1SoldQuantity > 0) {
+                val colorData = getColorData(soldData.color1IdPicked)
+                add(
+                    createColorsEtGoutsAcheter(
+                        soldData.color1IdPicked,
+                        colorData?.nameColore ?: "",
+                        soldData.color1SoldQuantity,
+                        1L,
+                        colorData
+                    )
+                )
+            }
+            // Process color2
+            if (soldData.color2IdPicked != 0L && soldData.color2SoldQuantity > 0) {
+                val colorData = getColorData(soldData.color2IdPicked)
+                add(
+                    createColorsEtGoutsAcheter(
+                        soldData.color2IdPicked,
+                        colorData?.nameColore ?: "",
+                        soldData.color2SoldQuantity,
+                        2L,
+                        colorData
+                    )
+                )
+            }
+            // Process color3
+            if (soldData.color3IdPicked != 0L && soldData.color3SoldQuantity > 0) {
+                val colorData = getColorData(soldData.color3IdPicked)
+                add(
+                    createColorsEtGoutsAcheter(
+                        soldData.color3IdPicked,
+                        colorData?.nameColore ?: "",
+                        soldData.color3SoldQuantity,
+                        3L,
+                        colorData
+                    )
+                )
+            }
+            // Process color4
+            if (soldData.color4IdPicked != 0L && soldData.color4SoldQuantity > 0) {
+                val colorData = getColorData(soldData.color4IdPicked)
+                add(
+                    createColorsEtGoutsAcheter(
+                        soldData.color4IdPicked,
+                        colorData?.nameColore ?: "",
+                        soldData.color4SoldQuantity,
+                        4L,
+                        colorData
+                    )
+                )
+            }
+        }
+
+        // Get current timestamp
+        val now = LocalDateTime.now()
+        val currentTimeMillis = now.toInstant(ZoneOffset.UTC).toEpochMilli()
+        val currentDateMillis =
+            now.toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+
+        Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit(
+            vid = soldData.vid,
+            id_Acheteur = soldData.clientSoldToItId,
+            nom_Acheteur = clientName,
+            inseartion_Temp = currentTimeMillis,
+            inceartion_Date = currentDateMillis,
+            colours_Et_Gouts_Acheter = colorsList
+        )
+    }
+}
+
 internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
     try {
-        // Fetching products from Firebase
+        // Fetch products from Firebase
         val productsSnapshot = Firebase.database.getReference("e_DBJetPackExport")
+            .get()
+            .await()
+
+        // Fetch sold articles data once
+        val soldArticlesSnapshot = Firebase.database.getReference("ArticlesAcheteModele")
             .get()
             .await()
 
         productsSnapshot.children.map { productSnapshot ->
             async {
-                // Extract article ID
                 val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
                 val idSupplierSu =
                     productSnapshot.child("idSupplierSu").getValue(Long::class.java) ?: 0L
                 val supplierInfosData = getSupplierInfosData(idSupplierSu)
                 val supplierData = getSupplierArticlesData(idArticle)
 
-                // Build colors list with null safety and comprehensive data extraction
                 val colorsList = buildList {
                     for (i in 1..4) {
                         val colorField = "couleur$i"
@@ -120,7 +245,6 @@ internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produit
                             val colorId = productSnapshot.child(idColorField).getValue(Long::class.java) ?: 0L
                             val quantity = supplierData?.child("color${i}SoldQuantity")?.getValue(Int::class.java) ?: 0
 
-                            // Fetch color data with comprehensive logging
                             val colorData = getColorData(colorId)
 
                             add(
@@ -136,11 +260,14 @@ internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produit
                     }
                 }
 
-                // Create product data object
+                // Process ventes data for this product
+                val ventesData = processVentesData(soldArticlesSnapshot, idArticle)
+
                 Ui_Mutable_State.Produits_Commend_DataBase(
                     id = idArticle.toInt(),
                     nom = productSnapshot.child("nomArticleFinale").getValue(String::class.java) ?: "",
                     colours_Et_Gouts_Commende = colorsList,
+                    vent_List_DataBase = ventesData,
                     grossist_Choisi_Pour_Acheter_CeProduit = supplierInfosData
                 )
             }
@@ -176,9 +303,6 @@ internal suspend fun P3_ViewModel.Init_ImportCalcules_Ui_Stat() {
 
             // Sync with Firebase
             refFirebase.setValue(_ui_Mutable_State.toMap())
-
-            // Log grouping details for debugging
-            _ui_Mutable_State.logGroupingDetails("P3_ViewModel")
 
         } catch (e: Exception) {
             Log.e(TAG, "Initialization error", e)

@@ -17,14 +17,35 @@ internal class P3_ViewModel : ViewModel() {
 
     init {
 
-        _ui_Mutable_State.logGroupingDetails("P3_ViewModel")
-
-        // Launch a coroutine using viewModelScope
         viewModelScope.launch {
                 Init_ImportCalcules_Ui_Stat()
                 //Test_Initiale_Calcules_Autre_Valeurs()
         }
 
-        _ui_Mutable_State.logGroupingDetails("P3_ViewModel")
     }
+
+//    fun logGroupingDetails(tag: String = "No Tag", repeteList: Int = 0) {
+//        logger.info("=== Grouping Details for $tag ===")
+//        logger.info("Repeated List Count: $repeteList")
+//        logger.info("Total Products: ${produits_Commend_DataBase.size}")
+//
+//        produits_Commend_DataBase.forEachIndexed { index, product ->
+//            logger.info("""
+//                Product $index:
+//                  ID: ${product.id}
+//                  Label: ${product.nom}
+//                  Not Found: ${product.non_Trouve}
+//                  ${product.grossist_Choisi_Pour_Acheter_CeProduit?.let { supplier ->
+//                """
+//                    Supplier:
+//                      Name: ${supplier.nom}
+//                      Credit Balance: ${supplier.currentCreditBalance}
+//                    """.trimIndent()
+//            } ?: "No Supplier"}
+//            """.trimIndent())
+//        }
+//
+//        logger.info("Status: $namePhone")
+//        logger.info("=== End Details ===")
+//    }
 }

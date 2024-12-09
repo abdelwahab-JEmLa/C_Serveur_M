@@ -41,10 +41,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.Model.Commende_Produits_Au_Grossissts_DataBase
 import com.example.Models.Grossissts_DataBAse
-import com.example.Packages.P3.Ui_Statue_DataBase
 import com.example.Packages.P3.E.ViewModel.ViewModelFragment
+import com.example.Packages.P3.Ui_Statue_DataBase
+import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init.Commende_Produits_Au_Grossissts_DataBase
 import kotlin.math.roundToInt
 
 @Composable
@@ -108,7 +108,7 @@ internal fun Suppliers_Floating_Buttons(
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
-                    dragOffset += androidx.compose.ui.geometry.Offset(dragAmount.x, dragAmount.y)
+                    dragOffset += Offset(dragAmount.x, dragAmount.y)
                 }
             }
     ) {

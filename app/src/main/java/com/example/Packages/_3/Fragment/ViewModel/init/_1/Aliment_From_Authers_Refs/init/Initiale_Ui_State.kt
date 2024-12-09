@@ -1,11 +1,10 @@
-package com.example.Packages._3.Fragment.ViewModel.init
+package com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init
 
 import android.os.Build
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
-import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.Model.ColorArticle
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.database
@@ -52,7 +51,7 @@ private suspend fun getColorData(colorId: Long): ColorArticle? {
             colorData == null -> Log.w(TAG_COLOR, "No color data found for ID $colorId")
             colorData.iconColore.isNullOrEmpty() -> Log.w(TAG_COLOR, "Empty emoji for colorId: $colorId")
             else -> Log.d(TAG_COLOR, "Successfully loaded emoji for colorId: $colorId, emoji: ${colorData.iconColore}")
-        }                                        //
+        }
 
         // Fallback mechanism for retrieving color data
         colorData ?: colorSnapshot?.let {

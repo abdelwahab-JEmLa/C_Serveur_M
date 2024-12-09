@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.Model.Commende_Produits_Au_Grossissts_DataBase
 import com.example.Models.Grossissts_DataBAse
 import com.example.Models.Grossissts_DataBAse.Companion.init_Collect_Grossissts_DataBAse
 import com.example.Models.Res.ArticlesAcheteModele
@@ -17,6 +16,7 @@ import com.example.Models.Res.PlacesOfArticelsInEacheSupplierSrore
 import com.example.Models.Res.SoldArticlesTabelle
 import com.example.Packages.P3.Historique_D_Achate_Grossisst_DataBase.Companion.initializeData
 import com.example.Packages.P3.Ui_Statue_DataBase
+import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init.Commende_Produits_Au_Grossissts_DataBase
 import com.example.clientjetpack.Modules.AppDatabase
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -210,7 +210,7 @@ class ViewModelFragment internal constructor(
             return 10 // Default value if correspondingArticle is null
         }
 
-        val lastSupplierIdBuyedFrom = correspondingArticle.lastSupplierIdBuyedFrom ?: 0
+        val lastSupplierIdBuyedFrom = correspondingArticle.lastSupplierIdBuyedFrom
         val lastIdSupplierChoseToBuy = correspondingArticle.lastIdSupplierChoseToBuy
 
         // Parse dates, defaulting to epoch time if parsing fails

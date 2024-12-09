@@ -3,8 +3,7 @@ package com.example.Packages._3.Fragment.ViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
-import com.example.Packages._3.Fragment.ViewModel.Test.Test_Initiale_Calcules_Autre_Valeurs
-import com.example.Packages._3.Fragment.ViewModel.init.Init_ImportCalcules_Ui_Stat
+import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init.Init_ImportCalcules_Ui_Stat
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch

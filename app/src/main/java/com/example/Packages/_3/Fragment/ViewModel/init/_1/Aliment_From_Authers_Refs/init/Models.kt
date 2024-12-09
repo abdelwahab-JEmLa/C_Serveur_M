@@ -65,8 +65,6 @@ data class Produits_DataBase(
     constructor() : this(0)
 }
 
-
-
 @Entity
 data class Commende_Produits_Au_Grossissts_DataBase(
     @PrimaryKey(autoGenerate = true)

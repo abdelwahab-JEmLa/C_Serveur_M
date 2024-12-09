@@ -52,7 +52,7 @@ private suspend fun getColorData(colorId: Long): ColorArticle? {
             colorData == null -> Log.w(TAG_COLOR, "No color data found for ID $colorId")
             colorData.iconColore.isNullOrEmpty() -> Log.w(TAG_COLOR, "Empty emoji for colorId: $colorId")
             else -> Log.d(TAG_COLOR, "Successfully loaded emoji for colorId: $colorId, emoji: ${colorData.iconColore}")
-        }
+        }                                        //
 
         // Fallback mechanism for retrieving color data
         colorData ?: colorSnapshot?.let {

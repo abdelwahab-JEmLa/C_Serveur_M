@@ -67,7 +67,7 @@ private suspend fun getColorData(colorId: Long): ColorArticle? {
         null
     }
 }
-suspend fun getSupplierData(idSupplierSu: Long): Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit? {
+suspend fun getSupplierInfosData(idSupplierSu: Long): Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit? {
     return try {
         val supplierSnapshot = Firebase.database.getReference("F_Suppliers")
             .orderByChild("idSupplierSu")
@@ -106,7 +106,7 @@ internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produit
                 val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
                 val idSupplierSu =
                     productSnapshot.child("idSupplierSu").getValue(Long::class.java) ?: 0L
-                val supplierInfosData = getSupplierData(idSupplierSu)
+                val supplierInfosData = getSupplierInfosData(idSupplierSu)
                 val supplierData = getSupplierArticlesData(idArticle)
 
                 // Build colors list with null safety and comprehensive data extraction

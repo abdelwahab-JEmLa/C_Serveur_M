@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init.Grossist_Choisi_Pour_Acheter_CeProduit
 import com.google.firebase.Firebase
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
@@ -83,35 +82,32 @@ class Ui_Mutable_State {
     }
 
     @IgnoreExtraProperties
-    data class References_FireBase_DataBase(
+    data class Groupeur_References_FireBase_DataBase(
         val id: Long = 0,
         val position: Int = 0,
         val nom: String = "",
         val nom_2: String = "",
         val description: String = "",
         var ref: String = "",
-        var last_Update_Time: Long = 0, //yyyy/mm/dd-HH:mm:ss  ,
+        val last_Update_Time_Formatted: String? = null, //yyyy/mm/dd-HH:mm:ss
         var produits_A_Update: List<Produits_A_Update>? = emptyList(),
     ) {
         constructor() : this(0)
-
         @IgnoreExtraProperties
         data class Produits_A_Update(
             val id: Long = 0,
             val position: Int = 0,
-            val nom: String = "",
             var ref: String = "",
+            val nom: String = "",
             var tiggr_Time: Long = 0, //yyyy/mm/dd-HH:mm:ss  ,
         ) {
             constructor() : this(0)
         }
-
         fun updateSelf() {
         }
     }
 
     constructor()
-
     constructor(
         produits_Commend_DataBase: List<Produits_Commend_DataBase> = emptyList(),
         namePhone: String = ""

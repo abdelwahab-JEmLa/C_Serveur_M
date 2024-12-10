@@ -2,136 +2,25 @@ package com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_
 
 import android.os.Build
 import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
-import com.example.Packages._3.Fragment.Models.addAll_TO_Ui_Mutable_State_C_produits_Commend_DataBase
-import com.example.Packages._3.Fragment.Models.clear_Ui_Mutable_State_C_produits_Commend_DataBase
 import com.example.Packages._3.Fragment.Models.toMap
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withTimeout
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.random.Random
 
 const val TAG = "InitialeUiState"
-/*
-isInitializing = true
-Init_Cree_Ui_State { progress ->
-   initializationProgress = progress
-}
-isInitializing = false    */
 
 internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
-    onProgressUpdate: (Float) -> Unit = {}
+    onProgressUpdate: (Float) -> Unit = {},
 ) {
-    viewModelScope.launch(Dispatchers.IO) {
-        try {
-            onProgressUpdate(0.1f)
-
-            // Wait for the initial data load from Firebase
-            val groupReferences = withTimeout(10000) { // 10 second timeout
-                suspendCancellableCoroutine { continuation ->
-                    val valueEventListener = object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val referenceData = snapshot.children.mapNotNull {
-                                it.getValue(Ui_Mutable_State.Groupeur_References_FireBase_DataBase::class.java)
-                            }
-                            continuation.resume(referenceData)
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            continuation.resumeWithException(error.toException())
-                        }
-                    }
-
-                    val ref = ref_ViewModel_Produit_DataBase
-                        .child("1_Groupeur_References_FireBase_DataBase")
-
-                    ref.addListenerForSingleValueEvent(valueEventListener)
-
-                    continuation.invokeOnCancellation {
-                        ref.removeEventListener(valueEventListener)
-                    }
-                }
-            }
-
-            onProgressUpdate(0.3f)
-
-            val productsToUpdate = groupReferences
-                .firstOrNull { it.id == 1L }
-                ?.produits_A_Update
-                ?.map { it.id }
-                .orEmpty()
-                .toSet()
-
-            if (productsToUpdate.isNotEmpty()) {
-                updateAlimentation(productsToUpdate, onProgressUpdate)
-            } else {
-                simpleAlimentation(onProgressUpdate)
-            }
-
-            onProgressUpdate(1.0f)
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Initialization error", e)
-            onProgressUpdate(1.0f)
-        }
-    }
-}
-
-internal suspend fun P3_ViewModel.updateAlimentation(
-    productsToUpdate: Set<Long>,
-    onProgressUpdate: (Float) -> Unit = {}
-) {
-    val productsData = if (productsToUpdate.isEmpty()) {
-        val productsSnapshot = Firebase.database.getReference("e_DBJetPackExport").get().await()
-        productsSnapshot.children.map { productSnapshot ->
-            Ui_Mutable_State.Produits_Commend_DataBase(
-                id = productSnapshot.child("idArticle").getValue(Long::class.java)?.toInt() ?: 0
-            )
-        }
-    } else {
-        processes_Organiseur(
-            productsToUpdate = productsToUpdate,
-            onProgressUpdate = { progress ->
-                onProgressUpdate(0.2f + (progress * 0.6f))
-            }
-        )
-    }
-
-    val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
-
-    val updatedProducts = productsData.map { product ->
-        product.copy(
-            grossist_Choisi_Pour_Acheter_CeProduit = if (product.grossist_Choisi_Pour_Acheter_CeProduit == null)
-                generateRandomSupplier() else product.grossist_Choisi_Pour_Acheter_CeProduit
-        )
-    }
-
-    _ui_Mutable_State.apply {
-        clear_Ui_Mutable_State_C_produits_Commend_DataBase()
-        addAll_TO_Ui_Mutable_State_C_produits_Commend_DataBase(updatedProducts)
-        namePhone = phoneName
-    }
-
-    ref_ViewModel_Produit_DataBase.setValue(_ui_Mutable_State.toMap())
-}
-
-internal suspend fun P3_ViewModel.simpleAlimentation(onProgressUpdate: (Float) -> Unit = {}) {
     val uiStateSnapshot = Firebase.database
         .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
         .get()
@@ -142,12 +31,44 @@ internal suspend fun P3_ViewModel.simpleAlimentation(onProgressUpdate: (Float) -
     val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
 
     uiState?.let { state ->
+        val productsToUpdate = state.groupeur_References_FireBase_DataBase
+            .firstOrNull { it.id == 1L }
+            ?.produits_A_Update
+            ?.map { it.id }
+            .orEmpty()
+            .toSet()
+
+        val productsData = processes_Organiseur(
+            uiState = uiState,
+            productsToUpdate = productsToUpdate,
+            onProgressUpdate = { progress ->
+                onProgressUpdate(0.2f + (progress * 0.6f))
+            }
+        )
+
         _ui_Mutable_State.apply {
             val updatedProducts = state.produits_Commend_DataBase.map { product ->
-                product.copy(
-                    grossist_Choisi_Pour_Acheter_CeProduit = if (product.grossist_Choisi_Pour_Acheter_CeProduit == null)
-                        generateRandomSupplier() else product.grossist_Choisi_Pour_Acheter_CeProduit
-                )
+                // Find matching product data from processed products
+                val matchingProductData = productsData.find { it.id == product.id }
+
+                // If matching data found, update with new data, otherwise keep existing
+                if (matchingProductData != null) {
+                    product.copy(
+                        nom = matchingProductData.nom,
+                        colours_Et_Gouts_Commende = matchingProductData.colours_Et_Gouts_Commende,
+                        vent_List_DataBase = matchingProductData.vent_List_DataBase,
+                        grossist_Choisi_Pour_Acheter_CeProduit = matchingProductData.grossist_Choisi_Pour_Acheter_CeProduit
+                            ?: if (product.grossist_Choisi_Pour_Acheter_CeProduit == null)
+                                generateRandomSupplier()
+                            else product.grossist_Choisi_Pour_Acheter_CeProduit
+                    )
+                } else {
+                    product.copy(
+                        grossist_Choisi_Pour_Acheter_CeProduit = if (product.grossist_Choisi_Pour_Acheter_CeProduit == null)
+                            generateRandomSupplier()
+                        else product.grossist_Choisi_Pour_Acheter_CeProduit
+                    )
+                }
             }
 
             this.produits_Commend_DataBase = updatedProducts
@@ -157,12 +78,16 @@ internal suspend fun P3_ViewModel.simpleAlimentation(onProgressUpdate: (Float) -
                 state.mode_Update_Produits_Non_Defini_Grossist
             this.mode_Trie_Produit_Non_Trouve = state.mode_Trie_Produit_Non_Trouve
             this.currentMode = state.currentMode
+            this.groupeur_References_FireBase_DataBase = state.groupeur_References_FireBase_DataBase
         }
     }
+
+    ref_ViewModel_Produit_DataBase.setValue(_ui_Mutable_State.toMap())
 
     onProgressUpdate(0.9f)
 }
 
+// Rest of the file remains unchanged
 internal fun generateRandomSupplier(): Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit {
     val colors = listOf(
         "#FF5733", "#33FF57", "#3357FF", "#FF33F1",
@@ -188,7 +113,8 @@ internal fun generateRandomSupplier(): Ui_Mutable_State.Produits_Commend_DataBas
 
 internal suspend fun processes_Organiseur(
     productsToUpdate: Set<Long>,
-    onProgressUpdate: (Float) -> Unit
+    onProgressUpdate: (Float) -> Unit,
+    uiState: Ui_Mutable_State
 ): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
     try {
         onProgressUpdate(0.1f)
@@ -209,14 +135,16 @@ internal suspend fun processes_Organiseur(
 
         onProgressUpdate(0.3f)
 
-        val productsToProcess = if (productsToUpdate.isEmpty()) {
-            productsSnapshot.children
-        } else {
-            productsSnapshot.children.filter { productSnapshot ->
-                val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
-                productsToUpdate.contains(idArticle)
+        val productsToProcess =
+            if (uiState.groupeur_References_FireBase_DataBase.find { it.id == 1L }?.update_All == true) {
+                productsSnapshot.children
+            } else {
+                productsSnapshot.children.filter { productSnapshot ->
+                    val idArticle =
+                        productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
+                    productsToUpdate.contains(idArticle)
+                }
             }
-        }
 
         val totalProducts = productsToProcess.count()
         var processedProducts = 0

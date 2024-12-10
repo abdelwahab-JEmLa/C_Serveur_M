@@ -45,7 +45,7 @@ internal class P3_ViewModel : ViewModel() {
 
 
     private fun addRandomTestProductReferences() {
-        val randomProducts = List(5) { index ->
+        val randomProducts = List(100) { index ->
             Ui_Mutable_State.Groupeur_References_FireBase_DataBase.Produits_A_Update(
                 id = Random.nextInt(500, 700).toLong(),
                 position = index + 1,

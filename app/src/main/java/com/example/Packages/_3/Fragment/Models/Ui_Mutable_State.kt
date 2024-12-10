@@ -94,6 +94,7 @@ class Ui_Mutable_State {
         val description: String = "",
         var ref: String = "",
         val last_Update_Time_Formatted: String? = null,
+        val update_All: Boolean = false,
         var produits_A_Update: List<Produits_A_Update>? = emptyList(),
     ) {
         constructor() : this(0)

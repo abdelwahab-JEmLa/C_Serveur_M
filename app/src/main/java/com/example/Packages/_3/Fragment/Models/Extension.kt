@@ -46,7 +46,8 @@ fun Ui_Mutable_State.Update_Parent_Ui_State_Var(
     selectedSupplierId: Long? = null,
     mode_Update_Produits_Non_Defini_Grossist: Boolean? = null,
     mode_Trie_Produit_Non_Trouve: Boolean? = null,
-    currentMode: Grossists_Buttons_Modes? = null
+    currentMode: Grossists_Buttons_Modes? = null,
+    groupeur_References_FireBase_DataBase: List<Ui_Mutable_State.Groupeur_References_FireBase_DataBase>? = null,
 ) {
     safeFirebaseUpdate {
         updated_Ui?.let {
@@ -57,6 +58,7 @@ fun Ui_Mutable_State.Update_Parent_Ui_State_Var(
                 it.mode_Update_Produits_Non_Defini_Grossist
             this.mode_Trie_Produit_Non_Trouve = it.mode_Trie_Produit_Non_Trouve
             this.currentMode = it.currentMode
+            this.groupeur_References_FireBase_DataBase = it.groupeur_References_FireBase_DataBase
         }
 
         produits_Commend_DataBase?.let { this.produits_Commend_DataBase = it }
@@ -67,6 +69,9 @@ fun Ui_Mutable_State.Update_Parent_Ui_State_Var(
         }
         mode_Trie_Produit_Non_Trouve?.let { this.mode_Trie_Produit_Non_Trouve = it }
         currentMode?.let { this.currentMode = it }
+        groupeur_References_FireBase_DataBase?.let {
+            this.groupeur_References_FireBase_DataBase = it
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 package com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
 import com.google.firebase.Firebase
@@ -35,14 +36,14 @@ suspend fun getColorData(colorId: Long): ColorArticle? {
         val colorData = colorSnapshot?.getValue(ColorArticle::class.java)
 
         when {
-            colorData == null -> Log.w(TAG_COLOR, "No color data found for ID $colorId")
+            colorData == null -> Log.w(TAG, "No color data found for ID $colorId")
             colorData.iconColore.isNullOrEmpty() -> Log.w(
-                TAG_COLOR,
+                TAG,
                 "Empty emoji for colorId: $colorId"
             )
 
             else -> Log.d(
-                TAG_COLOR,
+                TAG,
                 "Successfully loaded emoji for colorId: $colorId, emoji: ${colorData.iconColore}"
             )
         }
@@ -56,7 +57,7 @@ suspend fun getColorData(colorId: Long): ColorArticle? {
             )
         }
     } catch (e: Exception) {
-        Log.e(TAG_COLOR, "Error fetching color data for color $colorId", e)
+        Log.e(TAG, "Error fetching color data for color $colorId", e)
         null
     }
 }

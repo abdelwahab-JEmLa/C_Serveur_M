@@ -19,96 +19,139 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
+import kotlin.random.Random
 
 const val TAG = "InitialeUiState"
-const val TAG_COLOR = "ColorLoading"
 
-private suspend fun createNewReference(
-): Ui_Mutable_State.Groupeur_References_FireBase_DataBase {
-    val now = LocalDateTime.now()
+internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
+    onProgressUpdate: (Float) -> Unit = {}
+) {
+    viewModelScope.launch(Dispatchers.IO) {
+        try {
+            onProgressUpdate(0.1f)
 
-    // Format the timestamp in yyyy/MM/dd-HH:mm:ss
-    val formattedTimestamp = now.format(DateTimeFormatter.ofPattern("yyyy/MM/dd-HH:mm:ss"))
+            val productsToUpdate = _ui_Mutable_State.groupeur_References_FireBase_DataBase
+                .firstOrNull { it.id == 1L }
+                ?.produits_A_Update
+                ?.map { it.id }
+                .orEmpty()
+                .toSet()
 
-    // Get the next available ID and position
-    val referencesSnapshot = Firebase.database
+            if (productsToUpdate.isNotEmpty()) {
+                updateAlimentation(productsToUpdate, onProgressUpdate)
+            } else {
+                simpleAlimentation(onProgressUpdate)
+            }
+
+            onProgressUpdate(1.0f)
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Initialization error", e)
+            onProgressUpdate(1.0f)
+        }
+    }
+}
+
+internal suspend fun P3_ViewModel.updateAlimentation(
+    productsToUpdate: Set<Long>,
+    onProgressUpdate: (Float) -> Unit = {}
+) {
+    val productsData = if (productsToUpdate.isEmpty()) {
+        val productsSnapshot = Firebase.database.getReference("e_DBJetPackExport").get().await()
+        productsSnapshot.children.map { productSnapshot ->
+            Ui_Mutable_State.Produits_Commend_DataBase(
+                id = productSnapshot.child("idArticle").getValue(Long::class.java)?.toInt() ?: 0
+            )
+        }
+    } else {
+        processes_Organiseur(
+            productsToUpdate = productsToUpdate,
+            onProgressUpdate = { progress ->
+                onProgressUpdate(0.2f + (progress * 0.6f))
+            }
+        )
+    }
+
+    val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
+
+    val updatedProducts = productsData.map { product ->
+        product.copy(
+            grossist_Choisi_Pour_Acheter_CeProduit = if (product.grossist_Choisi_Pour_Acheter_CeProduit == null)
+                generateRandomSupplier() else product.grossist_Choisi_Pour_Acheter_CeProduit
+        )
+    }
+
+    _ui_Mutable_State.apply {
+        clear_Ui_Mutable_State_C_produits_Commend_DataBase()
+        addAll_TO_Ui_Mutable_State_C_produits_Commend_DataBase(updatedProducts)
+        namePhone = phoneName
+    }
+
+    refFirebase.setValue(_ui_Mutable_State.toMap())
+}
+
+internal suspend fun P3_ViewModel.simpleAlimentation(onProgressUpdate: (Float) -> Unit = {}) {
+    val uiStateSnapshot = Firebase.database
         .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
-        .child("1_Groupeur_References_FireBase_DataBase")
         .get()
         .await()
 
-    val maxId = referencesSnapshot.children
-        .mapNotNull { it.getValue(Ui_Mutable_State.Groupeur_References_FireBase_DataBase::class.java)?.id }
-        .maxOrNull() ?: 0L
+    val uiState = uiStateSnapshot.getValue(Ui_Mutable_State::class.java)
 
-    val maxPosition = referencesSnapshot.children
-        .mapNotNull { it.getValue(Ui_Mutable_State.Groupeur_References_FireBase_DataBase::class.java)?.position }
-        .maxOrNull() ?: 0
+    val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
 
-    return Ui_Mutable_State.Groupeur_References_FireBase_DataBase(
-        id = maxId + 1,
-        position = maxPosition + 1,
-        nom = "Produits_Commend_DataBase",
-        description = "Produits_Commend_DataBase",
-        ref = "Produits_Commend_DataBase",
-        last_Update_Time_Formatted = formattedTimestamp
+    uiState?.let { state ->
+        _ui_Mutable_State.apply {
+            val updatedProducts = state.produits_Commend_DataBase.map { product ->
+                product.copy(
+                    grossist_Choisi_Pour_Acheter_CeProduit = if (product.grossist_Choisi_Pour_Acheter_CeProduit == null)
+                        generateRandomSupplier() else product.grossist_Choisi_Pour_Acheter_CeProduit
+                )
+            }
+
+            this.produits_Commend_DataBase = updatedProducts
+            this.namePhone = phoneName
+            this.selectedSupplierId = state.selectedSupplierId
+            this.mode_Update_Produits_Non_Defini_Grossist =
+                state.mode_Update_Produits_Non_Defini_Grossist
+            this.mode_Trie_Produit_Non_Trouve = state.mode_Trie_Produit_Non_Trouve
+            this.currentMode = state.currentMode
+        }
+    }
+
+    onProgressUpdate(0.9f)
+}
+
+internal fun generateRandomSupplier(): Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit {
+    val colors = listOf(
+        "#FF5733", "#33FF57", "#3357FF", "#FF33F1",
+        "#33FFF1", "#F1FF33", "#8E44AD", "#3498DB"
+    )
+
+    val randomNum = Random.nextInt(0, 6)
+    val position = when {
+        randomNum == 0 -> 0
+        Random.nextBoolean() -> -Random.nextInt(1, 5)
+        else -> Random.nextInt(1, 5)
+    }
+
+    return Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit(
+        id = randomNum.toLong(),
+        nom = if (randomNum == 0) "Undefined Supplier" else "Grossiste $randomNum",
+        position_Grossist_Don_Parent_Grossists_List = position,
+        couleur = colors.random(),
+        currentCreditBalance = Random.nextDouble(0.0, 10000.0),
+        position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = position
     )
 }
 
-// Updated fetchFirebaseReferences function
-private suspend fun fetchFirebaseReferences(products: List<Ui_Mutable_State.Produits_Commend_DataBase>): List<Ui_Mutable_State.Groupeur_References_FireBase_DataBase> {
-    val referencesRef = Firebase.database
-        .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
-        .child("1_References_FireBase_DataBase")
-
-    val existingReferences = try {
-        referencesRef.get()
-            .await()
-            .children
-            .mapNotNull { snapshot ->
-                snapshot.getValue(Ui_Mutable_State.Groupeur_References_FireBase_DataBase::class.java)
-            }
-    } catch (e: Exception) {
-        Log.e(TAG, "Error fetching Firebase references", e)
-        emptyList()
-    }
-
-    val updatedReferences = mutableListOf<Ui_Mutable_State.Groupeur_References_FireBase_DataBase>()
-    updatedReferences.addAll(existingReferences)
-
-    // Create references for products that don't have them
-    products.forEach { product ->
-        val hasReference = existingReferences.any { ref ->
-            ref.produits_A_Update?.any { it.id == product.id.toLong() } == true
-        }
-
-        if (!hasReference) {
-            try {
-                val newReference = createNewReference()
-
-                // Save the new reference to Firebase
-                referencesRef.child(newReference.id.toString()).setValue(newReference).await()
-                updatedReferences.add(newReference)
-
-                Log.d(TAG, "Created new reference for product ${product.nom}")
-            } catch (e: Exception) {
-                Log.e(TAG, "Error creating reference for product ${product.nom}", e)
-            }
-        }
-    }
-
-    return updatedReferences
-}
-
-// Updated Aliment_Fragment3_Ui_State function
-internal suspend fun Aliment_Fragment3_Ui_State(
+internal suspend fun processes_Organiseur(
+    productsToUpdate: Set<Long>,
     onProgressUpdate: (Float) -> Unit
 ): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
     try {
         onProgressUpdate(0.1f)
 
-        // First fetch products
         val (productsSnapshot, soldArticlesSnapshot) = coroutineScope {
             val productsDeferred = async {
                 Firebase.database.getReference("e_DBJetPackExport")
@@ -125,13 +168,21 @@ internal suspend fun Aliment_Fragment3_Ui_State(
 
         onProgressUpdate(0.3f)
 
-        val totalProducts = productsSnapshot.children.count()
+        val productsToProcess = if (productsToUpdate.isEmpty()) {
+            productsSnapshot.children
+        } else {
+            productsSnapshot.children.filter { productSnapshot ->
+                val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
+                productsToUpdate.contains(idArticle)
+            }
+        }
+
+        val totalProducts = productsToProcess.count()
         var processedProducts = 0
 
-        // Process products first
-        val processedProductsList = productsSnapshot.children.map { productSnapshot ->
+        val processedProductsList = productsToProcess.map { productSnapshot ->
             async {
-                val result = processProduct(productSnapshot, soldArticlesSnapshot)
+                val result = process_Cree_Product(productSnapshot, soldArticlesSnapshot)
                 processedProducts++
                 onProgressUpdate(0.3f + (processedProducts.toFloat() / totalProducts * 0.4f))
                 result
@@ -139,17 +190,7 @@ internal suspend fun Aliment_Fragment3_Ui_State(
         }.awaitAll()
 
         onProgressUpdate(0.7f)
-
-        // Then fetch/create references based on processed products
-        val references = fetchFirebaseReferences(processedProductsList)
-
-        onProgressUpdate(0.8f)
-
-        // Update products with reference data
-        val updatedProducts = updateProductReferences(processedProductsList, references)
-
-        onProgressUpdate(1.0f)
-        updatedProducts
+        processedProductsList
 
     } catch (e: Exception) {
         Log.e(TAG, "Error processing products", e)
@@ -157,190 +198,19 @@ internal suspend fun Aliment_Fragment3_Ui_State(
     }
 }
 
-
-// Function to update product references
-private suspend fun updateProductReferences(
-    products: List<Ui_Mutable_State.Produits_Commend_DataBase>,
-    references: List<Ui_Mutable_State.Groupeur_References_FireBase_DataBase>
-): List<Ui_Mutable_State.Produits_Commend_DataBase> {
-    val now = LocalDateTime.now()
-    val currentTimeMillis = now.toInstant(ZoneOffset.UTC).toEpochMilli()
-
-
-    return products.map { product ->
-        val matchingRef = references.find { ref ->
-            ref.produits_A_Update?.any { it.id == product.id.toLong() } == true
-        }
-
-        if (matchingRef != null) {
-            val productUpdate = matchingRef.produits_A_Update?.find { it.id == product.id.toLong() }
-            product.copy(
-                nom = productUpdate?.nom ?: product.nom
-                // Add additional fields that need updating based on references
-            )
-        } else {
-            product
-        }
-    }
-}
-
-
-// Updated Init_ImportCalcules_Ui_Stat function remains the same as in your original code
-internal suspend fun P3_ViewModel.Init_ImportCalcules_Ui_Stat(
-    onProgressUpdate: (Float) -> Unit
-) {
-    viewModelScope.launch(Dispatchers.IO) {
-        try {
-            onProgressUpdate(0.1f)
-
-            val productsData = Aliment_Fragment3_Ui_State { progress ->
-                onProgressUpdate(0.2f + (progress * 0.6f))
-            }
-
-            onProgressUpdate(0.8f)
-
-            val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
-
-            onProgressUpdate(0.9f)
-            val updatedProducts = productsData.map { product ->
-                product.copy(
-                    grossist_Choisi_Pour_Acheter_CeProduit = product.grossist_Choisi_Pour_Acheter_CeProduit?.copy()
-                )
-            }
-
-            _ui_Mutable_State.apply {
-                clear_Ui_Mutable_State_C_produits_Commend_DataBase()
-                addAll_TO_Ui_Mutable_State_C_produits_Commend_DataBase(updatedProducts)
-                namePhone = phoneName
-            }
-
-            refFirebase.setValue(_ui_Mutable_State.toMap())
-
-            onProgressUpdate(1.0f)
-
-        } catch (e: Exception) {
-            Log.e(TAG, "Initialization error", e)
-            onProgressUpdate(1.0f)
-        }
-    }
-}
-private fun createColorsEtGoutsAcheter(
-    colorId: Long,
-    colorName: String,
-    quantity: Int,
-    position: Long,
-    colorData: ColorArticle?
-): Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter {
-    return Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter(
-        vidPosition = position,
-        id_Don_Tout_Couleurs = colorId,
-        nom = colorName,
-        quantity_Achete = quantity,
-        imogi = colorData?.iconColore ?: ""
-    )
-}
-
-
-
-// Update processVentesData function to include client name
-private suspend fun processVentesData(
-    soldArticlesSnapshot: DataSnapshot,
-    productId: Long
-): List<Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit> {
-    return soldArticlesSnapshot.children.mapNotNull { soldArticle ->
-        val soldData =
-            soldArticle.getValue(SoldArticlesTabelle::class.java) ?: return@mapNotNull null
-        if (soldData.idArticle != productId) return@mapNotNull null
-
-        // Fetch client name
-        val clientName = getClientData(soldData.clientSoldToItId)
-
-        val colorsList = buildList {
-            // Process color1
-            if (soldData.color1IdPicked != 0L && soldData.color1SoldQuantity > 0) {
-                val colorData = getColorData(soldData.color1IdPicked)
-                add(
-                    createColorsEtGoutsAcheter(
-                        soldData.color1IdPicked,
-                        colorData?.nameColore ?: "",
-                        soldData.color1SoldQuantity,
-                        1L,
-                        colorData
-                    )
-                )
-            }
-            // Process color2
-            if (soldData.color2IdPicked != 0L && soldData.color2SoldQuantity > 0) {
-                val colorData = getColorData(soldData.color2IdPicked)
-                add(
-                    createColorsEtGoutsAcheter(
-                        soldData.color2IdPicked,
-                        colorData?.nameColore ?: "",
-                        soldData.color2SoldQuantity,
-                        2L,
-                        colorData
-                    )
-                )
-            }
-            // Process color3
-            if (soldData.color3IdPicked != 0L && soldData.color3SoldQuantity > 0) {
-                val colorData = getColorData(soldData.color3IdPicked)
-                add(
-                    createColorsEtGoutsAcheter(
-                        soldData.color3IdPicked,
-                        colorData?.nameColore ?: "",
-                        soldData.color3SoldQuantity,
-                        3L,
-                        colorData
-                    )
-                )
-            }
-            // Process color4
-            if (soldData.color4IdPicked != 0L && soldData.color4SoldQuantity > 0) {
-                val colorData = getColorData(soldData.color4IdPicked)
-                add(
-                    createColorsEtGoutsAcheter(
-                        soldData.color4IdPicked,
-                        colorData?.nameColore ?: "",
-                        soldData.color4SoldQuantity,
-                        4L,
-                        colorData
-                    )
-                )
-            }
-        }
-
-        // Get current timestamp
-        val now = LocalDateTime.now()
-        val currentTimeMillis = now.toInstant(ZoneOffset.UTC).toEpochMilli()
-        val currentDateMillis =
-            now.toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
-
-        Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit(
-            vid = soldData.vid,
-            id_Acheteur = soldData.clientSoldToItId,
-            nom_Acheteur = clientName,
-            inseartion_Temp = currentTimeMillis,
-            inceartion_Date = currentDateMillis,
-            colours_Et_Gouts_Acheter = colorsList
-        )
-    }
-}
-private suspend fun processProduct(
+private suspend fun process_Cree_Product(
     productSnapshot: DataSnapshot,
     soldArticlesSnapshot: DataSnapshot
 ): Ui_Mutable_State.Produits_Commend_DataBase {
     val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
     val idSupplierSu = productSnapshot.child("idSupplierSu").getValue(Long::class.java) ?: 0L
 
-    // Fetch supplier and article data concurrently
     val (supplierInfosData, supplierData) = coroutineScope {
         val supplierInfosDeferred = async { getSupplierInfosData(idSupplierSu) }
         val supplierDataDeferred = async { getSupplierArticlesData(idArticle) }
         Pair(supplierInfosDeferred.await(), supplierDataDeferred.await())
     }
 
-    // Process colors
     val colorsList = buildList {
         for (i in 1..4) {
             val colorField = "couleur$i"
@@ -367,8 +237,7 @@ private suspend fun processProduct(
         }
     }
 
-    // Process sales data
-    val ventesData = processVentesData(soldArticlesSnapshot, idArticle)
+    val ventesData = process_Ventes_Data_Createur(soldArticlesSnapshot, idArticle)
 
     return Ui_Mutable_State.Produits_Commend_DataBase(
         id = idArticle.toInt(),
@@ -379,3 +248,81 @@ private suspend fun processProduct(
     )
 }
 
+private suspend fun process_Ventes_Data_Createur(
+    soldArticlesSnapshot: DataSnapshot,
+    productId: Long
+): List<Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit> {
+    return soldArticlesSnapshot.children.mapNotNull { soldArticle ->
+        val soldData =
+            soldArticle.getValue(SoldArticlesTabelle::class.java) ?: return@mapNotNull null
+        if (soldData.idArticle != productId) return@mapNotNull null
+
+        val clientName = getClientData(soldData.clientSoldToItId)
+
+        val colorsList = buildList {
+            if (soldData.color1IdPicked != 0L && soldData.color1SoldQuantity > 0) {
+                val colorData = getColorData(soldData.color1IdPicked)
+                add(
+                    procces_Create_Colors_Acheter(
+                        soldData.color1IdPicked, colorData?.nameColore ?: "",
+                        soldData.color1SoldQuantity, 1L, colorData
+                    )
+                )
+            }
+            if (soldData.color2IdPicked != 0L && soldData.color2SoldQuantity > 0) {
+                val colorData = getColorData(soldData.color2IdPicked)
+                add(
+                    procces_Create_Colors_Acheter(
+                        soldData.color2IdPicked, colorData?.nameColore ?: "",
+                        soldData.color2SoldQuantity, 2L, colorData
+                    )
+                )
+            }
+            if (soldData.color3IdPicked != 0L && soldData.color3SoldQuantity > 0) {
+                val colorData = getColorData(soldData.color3IdPicked)
+                add(
+                    procces_Create_Colors_Acheter(
+                        soldData.color3IdPicked, colorData?.nameColore ?: "",
+                        soldData.color3SoldQuantity, 3L, colorData
+                    )
+                )
+            }
+            if (soldData.color4IdPicked != 0L && soldData.color4SoldQuantity > 0) {
+                val colorData = getColorData(soldData.color4IdPicked)
+                add(
+                    procces_Create_Colors_Acheter(
+                        soldData.color4IdPicked, colorData?.nameColore ?: "",
+                        soldData.color4SoldQuantity, 4L, colorData
+                    )
+                )
+            }
+        }
+
+        val now = LocalDateTime.now()
+        Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit(
+            vid = soldData.vid,
+            id_Acheteur = soldData.clientSoldToItId,
+            nom_Acheteur = clientName,
+            inseartion_Temp = now.toInstant(ZoneOffset.UTC).toEpochMilli(),
+            inceartion_Date = now.toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+                .toEpochMilli(),
+            colours_Et_Gouts_Acheter = colorsList
+        )
+    }
+}
+
+private fun procces_Create_Colors_Acheter(
+    colorId: Long,
+    colorName: String,
+    quantity: Int,
+    position: Long,
+    colorData: ColorArticle?
+): Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter {
+    return Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter(
+        vidPosition = position,
+        id_Don_Tout_Couleurs = colorId,
+        nom = colorName,
+        quantity_Achete = quantity,
+        imogi = colorData?.iconColore ?: ""
+    )
+}

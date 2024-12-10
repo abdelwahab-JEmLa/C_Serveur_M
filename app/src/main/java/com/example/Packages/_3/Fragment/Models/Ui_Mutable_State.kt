@@ -14,6 +14,10 @@ class Ui_Mutable_State {
     private val database = Firebase.database
     val databaseReference = database.getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
     var produits_Commend_DataBase: List<Produits_Commend_DataBase> by mutableStateOf(emptyList())
+    var groupeur_References_FireBase_DataBase: List<Groupeur_References_FireBase_DataBase> by mutableStateOf(
+        emptyList()
+    )
+
     var namePhone: String by mutableStateOf("")
     var selectedSupplierId: Long by mutableLongStateOf(0L)
     var mode_Update_Produits_Non_Defini_Grossist: Boolean by mutableStateOf(false)
@@ -89,22 +93,31 @@ class Ui_Mutable_State {
         val nom_2: String = "",
         val description: String = "",
         var ref: String = "",
-        val last_Update_Time_Formatted: String? = null, //yyyy/mm/dd-HH:mm:ss
+        val last_Update_Time_Formatted: String? = null,
         var produits_A_Update: List<Produits_A_Update>? = emptyList(),
     ) {
         constructor() : this(0)
+
         @IgnoreExtraProperties
         data class Produits_A_Update(
             val id: Long = 0,
             val position: Int = 0,
             var ref: String = "",
             val nom: String = "",
-            var tiggr_Time: Long = 0, //yyyy/mm/dd-HH:mm:ss  ,
+            var tiggr_Time: Long = 0,
         ) {
             constructor() : this(0)
         }
+
         fun updateSelf() {
+            val referencesRef = Firebase.database
+                .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
+                .child("1_Groupeur_References_FireBase_DataBase")
+                .child(id.toString())
+
+            referencesRef.setValue(this)
         }
+
     }
 
     constructor()
@@ -115,5 +128,4 @@ class Ui_Mutable_State {
         this.produits_Commend_DataBase = produits_Commend_DataBase
         this.namePhone = namePhone
     }
-
 }

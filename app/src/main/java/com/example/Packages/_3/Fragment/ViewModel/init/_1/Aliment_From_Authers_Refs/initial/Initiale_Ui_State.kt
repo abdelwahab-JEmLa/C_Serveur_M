@@ -9,7 +9,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.database
 import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
@@ -22,10 +21,9 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
     onProgressUpdate: (Float) -> Unit = {},
 ) {
     try {
+        Log.d(TAG, "Starting Init_Cree_Ui_State")
         onProgressUpdate(0.1f)
         onProgressUpdate(0.2f)
-
-        addRandomTestProductReferences()
 
         val uiStateSnapshot = Firebase.database
             .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
@@ -33,11 +31,11 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
             .await()
 
         val uiState = uiStateSnapshot.getValue(Ui_Mutable_State::class.java)
+        Log.d(TAG, "Retrieved UI state from Firebase")
 
         val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
 
         uiState?.let { state ->
-            // Extract products to update and update flag
             val productsToUpdate = state.groupeur_References_FireBase_DataBase
                 .firstOrNull { it.id == 1L }
                 ?.produits_A_Update
@@ -45,9 +43,9 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
                 .orEmpty()
                 .toSet()
 
-            val updateAll =  true
+            val updateAll = state.groupeur_References_FireBase_DataBase
+                .find { it.id == 1L }?.update_All == true
 
-            // Process products
             val productsData = processes_Organiseur(
                 updateAll = updateAll,
                 productsToUpdate = productsToUpdate,
@@ -56,26 +54,17 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
                 }
             )
 
-            // Update UI state using mutable properties
+            Log.d(TAG, "Processed ${productsData.size} products")
+
             _ui_Mutable_State.apply {
                 namePhone = phoneName
                 produits_Commend_DataBase = productsData
             }
 
-            // Update products in Firebase
             productsData.forEach { product ->
                 state.update_Ui_Mutable_State_C_produits_Commend_DataBase(product)
             }
 
-            // Reset update flags in reference group
-            val updatedReferences = state.groupeur_References_FireBase_DataBase.map { ref ->
-                if (ref.id == 1L) {
-                    ref.copy(
-                        update_All = false,
-                        produits_A_Update = null
-                    )
-                } else ref
-            }
             val defaultGroupRef = Ui_Mutable_State.Groupeur_References_FireBase_DataBase(
                 id = 1L,
                 position = 1,
@@ -84,18 +73,24 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
                 description = "Default group for Ref products",
                 last_Update_Time_Formatted = LocalDateTime.now()
                     .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                produits_A_Update = null  ,
+                produits_A_Update = null,
                 update_All = false,
             )
-            // Update references in Firebase
-            defaultGroupRef.updateFirebaseSelfF(defaultGroupRef)
 
-            // Update local state with new references using mutable property
-            _ui_Mutable_State.groupeur_References_FireBase_DataBase = updatedReferences
+            defaultGroupRef.updateFirebaseSelfF(defaultGroupRef)
+            Log.d(TAG, "Updated Firebase references")
+
+            _ui_Mutable_State.groupeur_References_FireBase_DataBase =
+                state.groupeur_References_FireBase_DataBase.map { ref ->
+                    if (ref.id == 1L) {
+                        ref.copy(update_All = false, produits_A_Update = null)
+                    } else ref
+                }
         }
 
         onProgressUpdate(0.9f)
         onProgressUpdate(0.0f)
+        Log.d(TAG, "Completed Init_Cree_Ui_State")
     } catch (e: Exception) {
         Log.e(TAG, "Error initializing UI state", e)
         throw e
@@ -112,7 +107,6 @@ internal suspend fun processes_Organiseur(
         onProgressUpdate(0.1f)
 
         val (productsSnapshot, soldArticlesSnapshot) = coroutineScope {
-            Log.d(TAG, "Fetching products and sold articles data from Firebase")
             val productsDeferred = async {
                 Firebase.database.getReference("e_DBJetPackExport")
                     .get()
@@ -129,47 +123,39 @@ internal suspend fun processes_Organiseur(
         Log.d(TAG, "Retrieved data - Products: ${productsSnapshot.childrenCount}, Sold Articles: ${soldArticlesSnapshot.childrenCount}")
         onProgressUpdate(0.3f)
 
-        val productsToProcess =
-            if (updateAll) {
-                productsSnapshot.children
-            } else {
-                productsSnapshot.children.filter { productSnapshot ->
-                    val idArticle =
-                        productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
-                    productsToUpdate.contains(idArticle)
-                }
-            }
-
-        val totalProducts = productsToProcess.count()
+        val productsToProcess = productsSnapshot.children.toList()
+        val totalProducts = productsToProcess.size
         Log.d(TAG, "Processing $totalProducts products")
         var processedProducts = 0
 
-        val processedProductsList = productsToProcess.map { productSnapshot ->
-            async {
-                try {
-                    Log.d(TAG, "Starting processing product ${productSnapshot.child("idArticle").getValue(Long::class.java)}")
-                    val result = process_Cree_Product(productSnapshot, soldArticlesSnapshot)
+        val processedProductsList = productsToProcess.mapNotNull { productSnapshot ->
+            try {
+                val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java)
+                Log.d(TAG, "Processing product ID: $idArticle")
+
+                process_Cree_Product(productSnapshot, soldArticlesSnapshot).also {
                     processedProducts++
-                    Log.d(TAG, "Completed processing product ${result.id} ($processedProducts/$totalProducts)")
+                    Log.d(
+                        TAG,
+                        "Completed processing product $idArticle ($processedProducts/$totalProducts)"
+                    )
                     onProgressUpdate(0.3f + (processedProducts.toFloat() / totalProducts * 0.4f))
-                    result
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error processing product ${productSnapshot.child("idArticle").getValue(Long::class.java)}", e)
-                    throw e
                 }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error processing product", e)
+                null
             }
-        }.awaitAll()
+        }
 
         Log.d(TAG, "Completed processing all products. Total processed: ${processedProductsList.size}")
         onProgressUpdate(0.7f)
         processedProductsList
 
     } catch (e: Exception) {
-        Log.e(TAG, "Error processing products", e)
+        Log.e(TAG, "Error in processes_Organiseur", e)
         emptyList()
     }
 }
-
 
 private suspend fun process_Cree_Product(
     productSnapshot: DataSnapshot,
@@ -177,6 +163,8 @@ private suspend fun process_Cree_Product(
 ): Ui_Mutable_State.Produits_Commend_DataBase {
     val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
     val idSupplierSu = productSnapshot.child("idSupplierSu").getValue(Long::class.java) ?: 0L
+
+    Log.d(TAG, "Processing product $idArticle with supplier $idSupplierSu")
 
     val (supplierInfosData, supplierData) = coroutineScope {
         val supplierInfosDeferred = async { getSupplierInfosData(idSupplierSu) }
@@ -196,6 +184,7 @@ private suspend fun process_Cree_Product(
                     supplierData?.child("color${i}SoldQuantity")?.getValue(Int::class.java) ?: 0
 
                 val colorData = getColorData(colorId)
+                Log.d(TAG, "Processing color $i: ID=$colorId, name=$color")
 
                 add(
                     Ui_Mutable_State.Produits_Commend_DataBase.Colours_Et_Gouts_Commende(
@@ -211,6 +200,7 @@ private suspend fun process_Cree_Product(
     }
 
     val ventesData = process_Ventes_Data_Createur(soldArticlesSnapshot, idArticle)
+    Log.d(TAG, "Processed ${ventesData.size} sales records for product $idArticle")
 
     return Ui_Mutable_State.Produits_Commend_DataBase(
         id = idArticle.toInt(),
@@ -226,11 +216,13 @@ private suspend fun process_Ventes_Data_Createur(
     productId: Long
 ): List<Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit> {
     return soldArticlesSnapshot.children.mapNotNull { soldArticle ->
-        val soldData =
-            soldArticle.getValue(SoldArticlesTabelle::class.java) ?: return@mapNotNull null
-        if (soldData.idArticle != productId) return@mapNotNull null
+        try {
+            val soldData = soldArticle.getValue(SoldArticlesTabelle::class.java)
+                ?: return@mapNotNull null
+            if (soldData.idArticle != productId) return@mapNotNull null
 
-        val clientName = getClientData(soldData.clientSoldToItId)
+            val clientName = getClientData(soldData.clientSoldToItId)
+            Log.d(TAG, "Processing sale for product $productId to client $clientName")
 
         val colorsList = buildList {
             if (soldData.color1IdPicked != 0L && soldData.color1SoldQuantity > 0) {
@@ -271,16 +263,20 @@ private suspend fun process_Ventes_Data_Createur(
             }
         }
 
-        val now = LocalDateTime.now()
-        Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit(
-            vid = soldData.vid,
-            id_Acheteur = soldData.clientSoldToItId,
-            nom_Acheteur = clientName,
-            inseartion_Temp = now.toInstant(ZoneOffset.UTC).toEpochMilli(),
-            inceartion_Date = now.toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant()
-                .toEpochMilli(),
-            colours_Et_Gouts_Acheter = colorsList
-        )
+            val now = LocalDateTime.now()
+            Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit(
+                vid = soldData.vid,
+                id_Acheteur = soldData.clientSoldToItId,
+                nom_Acheteur = clientName,
+                inseartion_Temp = now.toInstant(ZoneOffset.UTC).toEpochMilli(),
+                inceartion_Date = now.toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+                    .toEpochMilli(),
+                colours_Et_Gouts_Acheter = colorsList
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Error processing sale data for product $productId", e)
+            null
+        }
     }
 }
 
@@ -298,4 +294,44 @@ private fun procces_Create_Colors_Acheter(
         quantity_Achete = quantity,
         imogi = colorData?.iconColore ?: ""
     )
+}
+
+// Helper functions from your existing code
+internal suspend fun getSupplierArticlesData(idArticle: Long): DataSnapshot? {
+    return try {
+        Firebase.database.getReference("K_SupplierArticlesRecived")
+            .orderByChild("a_c_idarticle_c")
+            .equalTo(idArticle.toDouble())
+            .get()
+            .await()
+            .children
+            .firstOrNull()
+    } catch (e: Exception) {
+        Log.e(TAG, "Error fetching supplier data for article $idArticle", e)
+        null
+    }
+}
+
+suspend fun getColorData(colorId: Long): ColorArticle? {
+    return try {
+        val colorSnapshot = Firebase.database.getReference("H_ColorsArticles")
+            .orderByChild("idColore")
+            .equalTo(colorId.toDouble())
+            .get()
+            .await()
+            .children
+            .firstOrNull()
+
+        colorSnapshot?.getValue(ColorArticle::class.java) ?: colorSnapshot?.let {
+            ColorArticle(
+                idColore = it.child("idColore").getValue(Long::class.java) ?: colorId,
+                nameColore = it.child("nameColore").getValue(String::class.java) ?: "",
+                iconColore = it.child("iconColore").getValue(String::class.java) ?: "",
+                classementColore = it.child("classementColore").getValue(Int::class.java) ?: 0
+            )
+        }
+    } catch (e: Exception) {
+        Log.e(TAG, "Error fetching color data for color $colorId", e)
+        null
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init
+package com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

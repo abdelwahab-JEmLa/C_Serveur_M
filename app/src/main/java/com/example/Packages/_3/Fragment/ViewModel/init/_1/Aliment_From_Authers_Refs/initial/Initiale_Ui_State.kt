@@ -1,9 +1,9 @@
-package com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init
+package com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial
 
 import android.os.Build
 import android.util.Log
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
-import com.example.Packages._3.Fragment.Models.toMap
+import com.example.Packages._3.Fragment.Models.update_Ui_Mutable_State_C_produits_Commend_DataBase
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -14,112 +14,105 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import kotlin.random.Random
+import java.time.format.DateTimeFormatter
 
 const val TAG = "InitialeUiState"
 
 internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
     onProgressUpdate: (Float) -> Unit = {},
 ) {
-    val uiStateSnapshot = Firebase.database
-        .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
-        .get()
-        .await()
+    try {
+        onProgressUpdate(0.1f)
+        onProgressUpdate(0.2f)
 
-    val uiState = uiStateSnapshot.getValue(Ui_Mutable_State::class.java)
+        addRandomTestProductReferences()
 
-    val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
+        val uiStateSnapshot = Firebase.database
+            .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
+            .get()
+            .await()
 
-    uiState?.let { state ->
-        val productsToUpdate = state.groupeur_References_FireBase_DataBase
-            .firstOrNull { it.id == 1L }
-            ?.produits_A_Update
-            ?.map { it.id }
-            .orEmpty()
-            .toSet()
+        val uiState = uiStateSnapshot.getValue(Ui_Mutable_State::class.java)
 
-        val productsData = processes_Organiseur(
-            uiState = uiState,
-            productsToUpdate = productsToUpdate,
-            onProgressUpdate = { progress ->
-                onProgressUpdate(0.2f + (progress * 0.6f))
-            }
-        )
+        val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
 
-        _ui_Mutable_State.apply {
-            val updatedProducts = state.produits_Commend_DataBase.map { product ->
-                // Find matching product data from processed products
-                val matchingProductData = productsData.find { it.id == product.id }
+        uiState?.let { state ->
+            // Extract products to update and update flag
+            val productsToUpdate = state.groupeur_References_FireBase_DataBase
+                .firstOrNull { it.id == 1L }
+                ?.produits_A_Update
+                ?.map { it.id }
+                .orEmpty()
+                .toSet()
 
-                // If matching data found, update with new data, otherwise keep existing
-                if (matchingProductData != null) {
-                    product.copy(
-                        nom = matchingProductData.nom,
-                        colours_Et_Gouts_Commende = matchingProductData.colours_Et_Gouts_Commende,
-                        vent_List_DataBase = matchingProductData.vent_List_DataBase,
-                        grossist_Choisi_Pour_Acheter_CeProduit = matchingProductData.grossist_Choisi_Pour_Acheter_CeProduit
-                            ?: if (product.grossist_Choisi_Pour_Acheter_CeProduit == null)
-                                generateRandomSupplier()
-                            else product.grossist_Choisi_Pour_Acheter_CeProduit
-                    )
-                } else {
-                    product.copy(
-                        grossist_Choisi_Pour_Acheter_CeProduit = if (product.grossist_Choisi_Pour_Acheter_CeProduit == null)
-                            generateRandomSupplier()
-                        else product.grossist_Choisi_Pour_Acheter_CeProduit
-                    )
+            val updateAll =  true
+
+            // Process products
+            val productsData = processes_Organiseur(
+                updateAll = updateAll,
+                productsToUpdate = productsToUpdate,
+                onProgressUpdate = { progress ->
+                    onProgressUpdate(0.2f + (progress * 0.6f))
                 }
+            )
+
+            // Update UI state using mutable properties
+            _ui_Mutable_State.apply {
+                namePhone = phoneName
+                produits_Commend_DataBase = productsData
             }
 
-            this.produits_Commend_DataBase = updatedProducts
-            this.namePhone = phoneName
-            this.selectedSupplierId = state.selectedSupplierId
-            this.mode_Update_Produits_Non_Defini_Grossist =
-                state.mode_Update_Produits_Non_Defini_Grossist
-            this.mode_Trie_Produit_Non_Trouve = state.mode_Trie_Produit_Non_Trouve
-            this.currentMode = state.currentMode
-            this.groupeur_References_FireBase_DataBase = state.groupeur_References_FireBase_DataBase
+            // Update products in Firebase
+            productsData.forEach { product ->
+                state.update_Ui_Mutable_State_C_produits_Commend_DataBase(product)
+            }
+
+            // Reset update flags in reference group
+            val updatedReferences = state.groupeur_References_FireBase_DataBase.map { ref ->
+                if (ref.id == 1L) {
+                    ref.copy(
+                        update_All = false,
+                        produits_A_Update = null
+                    )
+                } else ref
+            }
+            val defaultGroupRef = Ui_Mutable_State.Groupeur_References_FireBase_DataBase(
+                id = 1L,
+                position = 1,
+                ref = "Produits_Commend_DataBase",
+                nom = "Produits_Commend_DataBase",
+                description = "Default group for Ref products",
+                last_Update_Time_Formatted = LocalDateTime.now()
+                    .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+                produits_A_Update = null  ,
+                update_All = false,
+            )
+            // Update references in Firebase
+            defaultGroupRef.updateFirebaseSelfF(defaultGroupRef)
+
+            // Update local state with new references using mutable property
+            _ui_Mutable_State.groupeur_References_FireBase_DataBase = updatedReferences
         }
+
+        onProgressUpdate(0.9f)
+        onProgressUpdate(0.0f)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error initializing UI state", e)
+        throw e
     }
-
-    ref_ViewModel_Produit_DataBase.setValue(_ui_Mutable_State.toMap())
-
-    onProgressUpdate(0.9f)
-}
-
-// Rest of the file remains unchanged
-internal fun generateRandomSupplier(): Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit {
-    val colors = listOf(
-        "#FF5733", "#33FF57", "#3357FF", "#FF33F1",
-        "#33FFF1", "#F1FF33", "#8E44AD", "#3498DB"
-    )
-
-    val randomNum = Random.nextInt(0, 6)
-    val position = when {
-        randomNum == 0 -> 0
-        Random.nextBoolean() -> -Random.nextInt(1, 5)
-        else -> Random.nextInt(1, 5)
-    }
-
-    return Ui_Mutable_State.Produits_Commend_DataBase.Grossist_Choisi_Pour_Acheter_CeProduit(
-        id = randomNum.toLong(),
-        nom = if (randomNum == 0) "Undefined Supplier" else "Grossiste $randomNum",
-        position_Grossist_Don_Parent_Grossists_List = position,
-        couleur = colors.random(),
-        currentCreditBalance = Random.nextDouble(0.0, 10000.0),
-        position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = position
-    )
 }
 
 internal suspend fun processes_Organiseur(
     productsToUpdate: Set<Long>,
     onProgressUpdate: (Float) -> Unit,
-    uiState: Ui_Mutable_State
+    updateAll: Boolean
 ): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
     try {
+        Log.d(TAG, "Starting processes_Organiseur with updateAll=$updateAll, productsToUpdate=${productsToUpdate.size} items")
         onProgressUpdate(0.1f)
 
         val (productsSnapshot, soldArticlesSnapshot) = coroutineScope {
+            Log.d(TAG, "Fetching products and sold articles data from Firebase")
             val productsDeferred = async {
                 Firebase.database.getReference("e_DBJetPackExport")
                     .get()
@@ -133,10 +126,11 @@ internal suspend fun processes_Organiseur(
             Pair(productsDeferred.await(), soldArticlesDeferred.await())
         }
 
+        Log.d(TAG, "Retrieved data - Products: ${productsSnapshot.childrenCount}, Sold Articles: ${soldArticlesSnapshot.childrenCount}")
         onProgressUpdate(0.3f)
 
         val productsToProcess =
-            if (uiState.groupeur_References_FireBase_DataBase.find { it.id == 1L }?.update_All == true) {
+            if (updateAll) {
                 productsSnapshot.children
             } else {
                 productsSnapshot.children.filter { productSnapshot ->
@@ -147,17 +141,26 @@ internal suspend fun processes_Organiseur(
             }
 
         val totalProducts = productsToProcess.count()
+        Log.d(TAG, "Processing $totalProducts products")
         var processedProducts = 0
 
         val processedProductsList = productsToProcess.map { productSnapshot ->
             async {
-                val result = process_Cree_Product(productSnapshot, soldArticlesSnapshot)
-                processedProducts++
-                onProgressUpdate(0.3f + (processedProducts.toFloat() / totalProducts * 0.4f))
-                result
+                try {
+                    Log.d(TAG, "Starting processing product ${productSnapshot.child("idArticle").getValue(Long::class.java)}")
+                    val result = process_Cree_Product(productSnapshot, soldArticlesSnapshot)
+                    processedProducts++
+                    Log.d(TAG, "Completed processing product ${result.id} ($processedProducts/$totalProducts)")
+                    onProgressUpdate(0.3f + (processedProducts.toFloat() / totalProducts * 0.4f))
+                    result
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error processing product ${productSnapshot.child("idArticle").getValue(Long::class.java)}", e)
+                    throw e
+                }
             }
         }.awaitAll()
 
+        Log.d(TAG, "Completed processing all products. Total processed: ${processedProductsList.size}")
         onProgressUpdate(0.7f)
         processedProductsList
 
@@ -166,6 +169,7 @@ internal suspend fun processes_Organiseur(
         emptyList()
     }
 }
+
 
 private suspend fun process_Cree_Product(
     productSnapshot: DataSnapshot,

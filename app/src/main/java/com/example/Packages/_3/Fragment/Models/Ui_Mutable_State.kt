@@ -4,6 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
+import com.example.Z_Learn.AndriodStatsApp.WellnessTask
 import com.google.firebase.Firebase
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
@@ -17,6 +19,9 @@ class Ui_Mutable_State {
     var groupeur_References_FireBase_DataBase: List<Groupeur_References_FireBase_DataBase> by mutableStateOf(
         emptyList()
     )
+
+    private val _tasks = mutableListOf<WellnessTask>().toMutableStateList()
+    val tasks: List<WellnessTask> get() = _tasks
 
     var namePhone: String by mutableStateOf("")
     var selectedSupplierId: Long by mutableLongStateOf(0L)
@@ -110,13 +115,13 @@ class Ui_Mutable_State {
             constructor() : this(0)
         }
 
-        fun updateSelf() {
+        fun updateFirebaseSelfF(groupRef: Groupeur_References_FireBase_DataBase) {
             val referencesRef = Firebase.database
                 .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
                 .child("1_Groupeur_References_FireBase_DataBase")
-                .child(id.toString())
-
-            referencesRef.setValue(this)
+                .child(groupRef.id.toString())
+            referencesRef.removeValue()
+            referencesRef.setValue(groupRef)
         }
 
     }

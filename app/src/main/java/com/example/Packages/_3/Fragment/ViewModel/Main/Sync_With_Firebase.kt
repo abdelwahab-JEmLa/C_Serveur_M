@@ -5,8 +5,8 @@ import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 
 internal fun P3_ViewModel.Sync_With_Firebase(data: Ui_Mutable_State, remove: Boolean = false) {
         if (remove) {
-            refFirebase.removeValue()
+            ref_ViewModel_Produit_DataBase.removeValue()
         } else {
-            refFirebase.setValue(data)
+            ref_ViewModel_Produit_DataBase.setValue(data)
         }
     }

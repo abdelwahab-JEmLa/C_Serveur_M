@@ -26,7 +26,7 @@ internal fun P3_ViewModel.Test_Initiale_Calcules_Autre_Valeurs(
         _ui_Mutable_State.clear_Ui_Mutable_State_C_produits_Commend_DataBase()
         _ui_Mutable_State.addAll_TO_Ui_Mutable_State_C_produits_Commend_DataBase(initialProduits_Commend_DataBase)
         _ui_Mutable_State.namePhone = ""
-        refFirebase.setValue(_ui_Mutable_State)
+        ref_ViewModel_Produit_DataBase.setValue(_ui_Mutable_State)
     }
 }
 

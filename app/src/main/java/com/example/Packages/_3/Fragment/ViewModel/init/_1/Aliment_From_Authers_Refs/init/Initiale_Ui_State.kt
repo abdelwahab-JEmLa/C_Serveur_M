@@ -22,6 +22,12 @@ import java.time.ZoneOffset
 import kotlin.random.Random
 
 const val TAG = "InitialeUiState"
+/*
+       isInitializing = true
+       Init_Cree_Ui_State { progress ->
+           initializationProgress = progress
+       }
+       isInitializing = false    */
 
 internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
     onProgressUpdate: (Float) -> Unit = {}
@@ -87,7 +93,7 @@ internal suspend fun P3_ViewModel.updateAlimentation(
         namePhone = phoneName
     }
 
-    refFirebase.setValue(_ui_Mutable_State.toMap())
+    ref_ViewModel_Produit_DataBase.setValue(_ui_Mutable_State.toMap())
 }
 
 internal suspend fun P3_ViewModel.simpleAlimentation(onProgressUpdate: (Float) -> Unit = {}) {

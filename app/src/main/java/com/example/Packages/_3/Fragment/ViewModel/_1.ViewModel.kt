@@ -1,5 +1,10 @@
+// P3_ViewModel.kt
 package com.example.Packages._3.Fragment.ViewModel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
@@ -15,37 +20,17 @@ internal class P3_ViewModel : ViewModel() {
     var _ui_Mutable_State = Ui_Mutable_State()
     val ui_Mutable_State: Ui_Mutable_State get() = _ui_Mutable_State
 
+    // Progress tracking
+    var initializationProgress by mutableFloatStateOf(0f)
+    var isInitializing by mutableStateOf(false)
+
     init {
-
         viewModelScope.launch {
-                Init_ImportCalcules_Ui_Stat()
-                //Test_Initiale_Calcules_Autre_Valeurs()
+            isInitializing = true
+            Init_ImportCalcules_Ui_Stat { progress ->
+                initializationProgress = progress
+            }
+            isInitializing = false
         }
-
     }
-
-//    fun logGroupingDetails(tag: String = "No Tag", repeteList: Int = 0) {
-//        logger.info("=== Grouping Details for $tag ===")
-//        logger.info("Repeated List Count: $repeteList")
-//        logger.info("Total Products: ${produits_Commend_DataBase.size}")
-//
-//        produits_Commend_DataBase.forEachIndexed { index, product ->
-//            logger.info("""
-//                Product $index:
-//                  ID: ${product.id}
-//                  Label: ${product.nom}
-//                  Not Found: ${product.non_Trouve}
-//                  ${product.grossist_Choisi_Pour_Acheter_CeProduit?.let { supplier ->
-//                """
-//                    Supplier:
-//                      Name: ${supplier.nom}
-//                      Credit Balance: ${supplier.currentCreditBalance}
-//                    """.trimIndent()
-//            } ?: "No Supplier"}
-//            """.trimIndent())
-//        }
-//
-//        logger.info("Status: $namePhone")
-//        logger.info("=== End Details ===")
-//    }
 }

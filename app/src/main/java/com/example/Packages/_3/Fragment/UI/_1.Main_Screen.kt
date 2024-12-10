@@ -1,56 +1,76 @@
 package com.example.Packages._3.Fragment.UI
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
 import com.example.Packages._3.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._3.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 
+// Fragment3_Main_Screen.kt updates
 @Composable
 internal fun Fragment3_Main_Screen(
     modifier: Modifier = Modifier,
     p3_ViewModel: P3_ViewModel = viewModel()
 ) {
-    // Improved: Extract product grouping logic into a more readable function
     val allGroupedProducts = groupProductsBySupplier(p3_ViewModel)
-
-    // Improved: Extract filtering logic into a separate function for better readability
     val grouped_Produits_Par_Id_Grossist = filterProductGroups(allGroupedProducts, p3_ViewModel)
-
-    // Filter out products with zero total quantity
     val filteredByQuantityProducts = filterProductsByTotalQuantity(grouped_Produits_Par_Id_Grossist)
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
-        // Improved: Extract product filtering into a separate function
-        val filteredProducts = filterProductsBySupplier(filteredByQuantityProducts, p3_ViewModel)
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Main content
+            Column {
+                // Show progress bar during initialization
+                if (p3_ViewModel.isInitializing) {
+                    LinearProgressIndicator(
+                        progress = { p3_ViewModel.initializationProgress },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .height(4.dp),
+                    )
+                }
 
-        Produits_Main_List(
-            ui_Mutable_State = p3_ViewModel.ui_Mutable_State,
-            grouped_Produits_Par_Id_Grossist = filteredProducts,
-            viewModel = p3_ViewModel,
-            contentPadding = paddingValues
-        )
+                val filteredProducts =
+                    filterProductsBySupplier(filteredByQuantityProducts, p3_ViewModel)
 
-        // Show supplier buttons based on all products when in non_Trouve mode
-        Grossissts_FloatingActionButtons_Grouped(
-            modifier = Modifier,
-            ui_Mutable_State = p3_ViewModel.ui_Mutable_State,
-            grouped_Produits_Par_Id_Grossist = allGroupedProducts
-        )
+                Produits_Main_List(
+                    ui_Mutable_State = p3_ViewModel.ui_Mutable_State,
+                    grouped_Produits_Par_Id_Grossist = filteredProducts,
+                    viewModel = p3_ViewModel,
+                    contentPadding = paddingValues
+                )
+            }
 
-        GlobalActions_FloatingActionButtons_Grouped(
-            modifier = Modifier,
-            ui_Mutable_State = p3_ViewModel.ui_Mutable_State,
-        )
+            // FABs
+            Grossissts_FloatingActionButtons_Grouped(
+                modifier = Modifier,
+                ui_Mutable_State = p3_ViewModel.ui_Mutable_State,
+                grouped_Produits_Par_Id_Grossist = allGroupedProducts
+            )
+
+            GlobalActions_FloatingActionButtons_Grouped(
+                modifier = Modifier,
+                ui_Mutable_State = p3_ViewModel.ui_Mutable_State,
+            )
+        }
     }
 }
+
 
 // New helper function to filter products by total quantity
 private fun filterProductsByTotalQuantity(

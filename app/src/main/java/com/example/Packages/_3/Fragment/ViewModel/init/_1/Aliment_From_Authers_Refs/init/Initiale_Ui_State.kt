@@ -214,62 +214,89 @@ private suspend fun processVentesData(
         )
     }
 }
+private suspend fun processProduct(
+    productSnapshot: DataSnapshot,
+    soldArticlesSnapshot: DataSnapshot
+): Ui_Mutable_State.Produits_Commend_DataBase {
+    val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
+    val idSupplierSu = productSnapshot.child("idSupplierSu").getValue(Long::class.java) ?: 0L
 
-internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
+    // Fetch supplier and article data concurrently
+    val (supplierInfosData, supplierData) = coroutineScope {
+        val supplierInfosDeferred = async { getSupplierInfosData(idSupplierSu) }
+        val supplierDataDeferred = async { getSupplierArticlesData(idArticle) }
+        Pair(supplierInfosDeferred.await(), supplierDataDeferred.await())
+    }
+
+    // Process colors
+    val colorsList = buildList {
+        for (i in 1..4) {
+            val colorField = "couleur$i"
+            val idColorField = "idcolor$i"
+
+            val color = productSnapshot.child(colorField).getValue(String::class.java)
+            if (!color.isNullOrEmpty()) {
+                val colorId = productSnapshot.child(idColorField).getValue(Long::class.java) ?: 0L
+                val quantity =
+                    supplierData?.child("color${i}SoldQuantity")?.getValue(Int::class.java) ?: 0
+
+                val colorData = getColorData(colorId)
+
+                add(
+                    Ui_Mutable_State.Produits_Commend_DataBase.Colours_Et_Gouts_Commende(
+                        position_Du_Couleur_Au_Produit = i.toLong(),
+                        id_Don_Tout_Couleurs = colorId,
+                        nom = color,
+                        quantity_Achete = quantity,
+                        imogi = colorData?.iconColore ?: ""
+                    )
+                )
+            }
+        }
+    }
+
+    // Process sales data
+    val ventesData = processVentesData(soldArticlesSnapshot, idArticle)
+
+    return Ui_Mutable_State.Produits_Commend_DataBase(
+        id = idArticle.toInt(),
+        nom = productSnapshot.child("nomArticleFinale").getValue(String::class.java) ?: "",
+        colours_Et_Gouts_Commende = colorsList,
+        vent_List_DataBase = ventesData,
+        grossist_Choisi_Pour_Acheter_CeProduit = supplierInfosData
+    )
+}
+
+// Update the Aliment_Fragment3_Ui_State function to use processProduct
+internal suspend fun Aliment_Fragment3_Ui_State(
+    onProgressUpdate: (Float) -> Unit
+): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
     try {
+        onProgressUpdate(0.1f)
+
         // Fetch products from Firebase
         val productsSnapshot = Firebase.database.getReference("e_DBJetPackExport")
             .get()
             .await()
+
+        onProgressUpdate(0.3f)
 
         // Fetch sold articles data once
         val soldArticlesSnapshot = Firebase.database.getReference("ArticlesAcheteModele")
             .get()
             .await()
 
+        onProgressUpdate(0.5f)
+
+        val totalProducts = productsSnapshot.children.count()
+        var processedProducts = 0
+
         productsSnapshot.children.map { productSnapshot ->
             async {
-                val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java) ?: 0L
-                val idSupplierSu =
-                    productSnapshot.child("idSupplierSu").getValue(Long::class.java) ?: 0L
-                val supplierInfosData = getSupplierInfosData(idSupplierSu)
-                val supplierData = getSupplierArticlesData(idArticle)
-
-                val colorsList = buildList {
-                    for (i in 1..4) {
-                        val colorField = "couleur$i"
-                        val idColorField = "idcolor$i"
-
-                        val color = productSnapshot.child(colorField).getValue(String::class.java)
-                        if (!color.isNullOrEmpty()) {
-                            val colorId = productSnapshot.child(idColorField).getValue(Long::class.java) ?: 0L
-                            val quantity = supplierData?.child("color${i}SoldQuantity")?.getValue(Int::class.java) ?: 0
-
-                            val colorData = getColorData(colorId)
-
-                            add(
-                                Ui_Mutable_State.Produits_Commend_DataBase.Colours_Et_Gouts_Commende(
-                                    position_Du_Couleur_Au_Produit = i.toLong(),
-                                    id_Don_Tout_Couleurs = colorId,
-                                    nom = color,
-                                    quantity_Achete = quantity,
-                                    imogi = colorData?.iconColore ?: ""
-                                )
-                            )
-                        }
-                    }
-                }
-
-                // Process ventes data for this product
-                val ventesData = processVentesData(soldArticlesSnapshot, idArticle)
-
-                Ui_Mutable_State.Produits_Commend_DataBase(
-                    id = idArticle.toInt(),
-                    nom = productSnapshot.child("nomArticleFinale").getValue(String::class.java) ?: "",
-                    colours_Et_Gouts_Commende = colorsList,
-                    vent_List_DataBase = ventesData,
-                    grossist_Choisi_Pour_Acheter_CeProduit = supplierInfosData
-                )
+                val result = processProduct(productSnapshot, soldArticlesSnapshot)
+                processedProducts++
+                onProgressUpdate(0.5f + (processedProducts.toFloat() / totalProducts * 0.5f))
+                result
             }
         }.awaitAll()
     } catch (e: Exception) {
@@ -278,16 +305,28 @@ internal suspend fun Aliment_Fragment3_Ui_State(): List<Ui_Mutable_State.Produit
     }
 }
 
-internal suspend fun P3_ViewModel.Init_ImportCalcules_Ui_Stat() {
+// Updated Init_ImportCalcules_Ui_Stat.kt
+internal suspend fun P3_ViewModel.Init_ImportCalcules_Ui_Stat(
+    onProgressUpdate: (Float) -> Unit
+) {
     viewModelScope.launch(Dispatchers.IO) {
         try {
+            onProgressUpdate(0.1f) // Started
+
             // Fetch product data
-            val productsData = Aliment_Fragment3_Ui_State()
+            onProgressUpdate(0.2f)
+            val productsData = Aliment_Fragment3_Ui_State { progress ->
+                // Map inner progress (0-1) to range 0.2-0.8
+                onProgressUpdate(0.2f + (progress * 0.6f))
+            }
+
+            onProgressUpdate(0.8f) // Data fetched
 
             // Get device name
             val phoneName = "${Build.MANUFACTURER} ${Build.MODEL}".trim()
 
             // Create a copy of products with potential future-proofing
+            onProgressUpdate(0.9f)
             val updatedProducts = productsData.map { product ->
                 product.copy(
                     grossist_Choisi_Pour_Acheter_CeProduit = product.grossist_Choisi_Pour_Acheter_CeProduit?.copy()
@@ -304,8 +343,13 @@ internal suspend fun P3_ViewModel.Init_ImportCalcules_Ui_Stat() {
             // Sync with Firebase
             refFirebase.setValue(_ui_Mutable_State.toMap())
 
+            onProgressUpdate(1.0f) // Completed
+
         } catch (e: Exception) {
             Log.e(TAG, "Initialization error", e)
+            onProgressUpdate(1.0f) // Ensure progress bar completes even on error
         }
     }
 }
+
+

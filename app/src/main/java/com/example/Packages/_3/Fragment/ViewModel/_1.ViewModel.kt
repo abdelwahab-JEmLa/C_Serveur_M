@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
+import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.init.Init_Cree_Ui_State
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -33,12 +34,12 @@ internal class P3_ViewModel : ViewModel() {
         viewModelScope.launch {
             setupGroupReferencesListener()
             addRandomTestProductReferences()
-            /*
+
         isInitializing = true
         Init_Cree_Ui_State { progress ->
             initializationProgress = progress
         }
-        isInitializing = false    */
+            isInitializing = false
         }
     }
 
@@ -65,7 +66,7 @@ internal class P3_ViewModel : ViewModel() {
                 position = 1,
                 ref = "Produits_Commend_DataBase",
                 nom = "Produits_Commend_DataBase",
-                description = "Default group for products",
+                description = "Default group for Ref products",
                 last_Update_Time_Formatted = LocalDateTime.now()
                     .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
                 produits_A_Update = randomProducts  // Add the products here

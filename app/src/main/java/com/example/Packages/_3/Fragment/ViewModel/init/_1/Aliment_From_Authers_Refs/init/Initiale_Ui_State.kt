@@ -10,24 +10,30 @@ import com.example.Packages._3.Fragment.Models.toMap
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withTimeout
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.random.Random
 
 const val TAG = "InitialeUiState"
 /*
-       isInitializing = true
-       Init_Cree_Ui_State { progress ->
-           initializationProgress = progress
-       }
-       isInitializing = false    */
+isInitializing = true
+Init_Cree_Ui_State { progress ->
+   initializationProgress = progress
+}
+isInitializing = false    */
 
 internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
     onProgressUpdate: (Float) -> Unit = {}
@@ -36,7 +42,36 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
         try {
             onProgressUpdate(0.1f)
 
-            val productsToUpdate = _ui_Mutable_State.groupeur_References_FireBase_DataBase
+            // Wait for the initial data load from Firebase
+            val groupReferences = withTimeout(10000) { // 10 second timeout
+                suspendCancellableCoroutine { continuation ->
+                    val valueEventListener = object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val referenceData = snapshot.children.mapNotNull {
+                                it.getValue(Ui_Mutable_State.Groupeur_References_FireBase_DataBase::class.java)
+                            }
+                            continuation.resume(referenceData)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            continuation.resumeWithException(error.toException())
+                        }
+                    }
+
+                    val ref = ref_ViewModel_Produit_DataBase
+                        .child("1_Groupeur_References_FireBase_DataBase")
+
+                    ref.addListenerForSingleValueEvent(valueEventListener)
+
+                    continuation.invokeOnCancellation {
+                        ref.removeEventListener(valueEventListener)
+                    }
+                }
+            }
+
+            onProgressUpdate(0.3f)
+
+            val productsToUpdate = groupReferences
                 .firstOrNull { it.id == 1L }
                 ?.produits_A_Update
                 ?.map { it.id }

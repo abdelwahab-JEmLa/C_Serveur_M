@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.Models.Test
+package com.example.Packages._3.Fragment.ViewModel._2.Init
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class UiStateSnapshotStateList(
+class UiState(
     initialLastUpdateTime: String? = getCurrentFormattedTime(),
     initialGroupFireBaseReference: List<GroupFireBaseReference> = emptyList()
 ) {
@@ -24,7 +24,7 @@ class UiStateSnapshotStateList(
 
     // Firebase reference
     private val databaseRef = Firebase.database
-        .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
+        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
 
     // Firebase operations
     suspend fun updateSelfInFirebase() {
@@ -39,7 +39,7 @@ class UiStateSnapshotStateList(
     suspend fun loadFromFirebase() {
         try {
             val snapshot = databaseRef.get().await()
-            snapshot.getValue<UiStateSnapshotStateList>()?.let { state ->
+            snapshot.getValue<UiState>()?.let { state ->
                 lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
                 groupFireBaseReferences.clear()
                 groupFireBaseReferences.addAll(state.groupFireBaseReferences)

@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel.Test.Tests
+package com.example.Packages._3.Fragment.ViewModel.Tests
 
 /*
 internal fun P3_ViewModel.Import_Initiale_Val_FireBase() {

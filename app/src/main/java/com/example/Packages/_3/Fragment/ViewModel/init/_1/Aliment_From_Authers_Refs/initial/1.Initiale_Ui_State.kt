@@ -256,44 +256,44 @@ private suspend fun process_Ventes_Data_Createur(
             val clientName = getClientData(soldData.clientSoldToItId)
             Log.d(TAG, "Processing sale for product $productId to client $clientName")
 
-        val colorsList = buildList {
-            if (soldData.color1IdPicked != 0L && soldData.color1SoldQuantity > 0) {
-                val colorData = getColorData(soldData.color1IdPicked)
-                add(
-                    procces_Create_Colors_Acheter(
-                        soldData.color1IdPicked, colorData?.nameColore ?: "",
-                        soldData.color1SoldQuantity, 1L, colorData
+            val colorsList = buildList {
+                if (soldData.color1IdPicked != 0L && soldData.color1SoldQuantity > 0) {
+                    val colorData = getColorData(soldData.color1IdPicked)
+                    add(
+                        procces_Create_Colors_Acheter(
+                            soldData.color1IdPicked, colorData?.nameColore ?: "",
+                            soldData.color1SoldQuantity, 1L, colorData
+                        )
                     )
-                )
-            }
-            if (soldData.color2IdPicked != 0L && soldData.color2SoldQuantity > 0) {
-                val colorData = getColorData(soldData.color2IdPicked)
-                add(
-                    procces_Create_Colors_Acheter(
-                        soldData.color2IdPicked, colorData?.nameColore ?: "",
-                        soldData.color2SoldQuantity, 2L, colorData
+                }
+                if (soldData.color2IdPicked != 0L && soldData.color2SoldQuantity > 0) {
+                    val colorData = getColorData(soldData.color2IdPicked)
+                    add(
+                        procces_Create_Colors_Acheter(
+                            soldData.color2IdPicked, colorData?.nameColore ?: "",
+                            soldData.color2SoldQuantity, 2L, colorData
+                        )
                     )
-                )
-            }
-            if (soldData.color3IdPicked != 0L && soldData.color3SoldQuantity > 0) {
-                val colorData = getColorData(soldData.color3IdPicked)
-                add(
-                    procces_Create_Colors_Acheter(
-                        soldData.color3IdPicked, colorData?.nameColore ?: "",
-                        soldData.color3SoldQuantity, 3L, colorData
+                }
+                if (soldData.color3IdPicked != 0L && soldData.color3SoldQuantity > 0) {
+                    val colorData = getColorData(soldData.color3IdPicked)
+                    add(
+                        procces_Create_Colors_Acheter(
+                            soldData.color3IdPicked, colorData?.nameColore ?: "",
+                            soldData.color3SoldQuantity, 3L, colorData
+                        )
                     )
-                )
-            }
-            if (soldData.color4IdPicked != 0L && soldData.color4SoldQuantity > 0) {
-                val colorData = getColorData(soldData.color4IdPicked)
-                add(
-                    procces_Create_Colors_Acheter(
-                        soldData.color4IdPicked, colorData?.nameColore ?: "",
-                        soldData.color4SoldQuantity, 4L, colorData
+                }
+                if (soldData.color4IdPicked != 0L && soldData.color4SoldQuantity > 0) {
+                    val colorData = getColorData(soldData.color4IdPicked)
+                    add(
+                        procces_Create_Colors_Acheter(
+                            soldData.color4IdPicked, colorData?.nameColore ?: "",
+                            soldData.color4SoldQuantity, 4L, colorData
+                        )
                     )
-                )
+                }
             }
-        }
 
             val now = LocalDateTime.now()
             Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit(

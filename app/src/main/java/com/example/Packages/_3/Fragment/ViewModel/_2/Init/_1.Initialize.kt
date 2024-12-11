@@ -1,7 +1,6 @@
-package com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial
+package com.example.Packages._3.Fragment.ViewModel._2.Init
 
 import android.util.Log
-import com.example.Packages._3.Fragment.Models.Test.UiStateSnapshotStateList
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import kotlin.random.Random
 
@@ -26,7 +25,7 @@ internal suspend fun P3_ViewModel._1Initialize(
 
         // Create random products
         val randomProducts = List(200) {
-            UiStateSnapshotStateList.Product(
+            UiState.Product(
                 id = Random.nextInt(500, 700).toLong(),
                 initialTriggerTime = System.currentTimeMillis()
             )
@@ -35,7 +34,7 @@ internal suspend fun P3_ViewModel._1Initialize(
         onProgressUpdate(0.5f)
 
         // Create or update the default group
-        val defaultGroup = UiStateSnapshotStateList.GroupFireBaseReference(
+        val defaultGroup = UiState.GroupFireBaseReference(
             id = 1L,
             position = 1,
             nom = "Produits_Commend_DataBase",

@@ -6,9 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Packages._3.Fragment.Models.Test.UiStateSnapshotStateList
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
-import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial._1Initialize
+import com.example.Packages._3.Fragment.ViewModel._2.Init.UiState
+import com.example.Packages._3.Fragment.ViewModel._2.Init._1Initialize
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch
@@ -24,12 +24,12 @@ internal class P3_ViewModel : ViewModel() {
 
     // UiStateSnapshotStateList management with proper initialization
     var _uiStateSnapshotStateList by mutableStateOf(
-        UiStateSnapshotStateList(
+        UiState(
             initialLastUpdateTime = System.currentTimeMillis().toString(),
             initialGroupFireBaseReference = emptyList()
         )
     )
-    val uiStateSnapshotStateList: UiStateSnapshotStateList get() = _uiStateSnapshotStateList
+    val uiStateSnapshotStateList: UiState get() = _uiStateSnapshotStateList
 
     // Progress tracking
     var initializationProgress by mutableFloatStateOf(0f)
@@ -51,16 +51,5 @@ internal class P3_ViewModel : ViewModel() {
         }
     }
 
-    // Function to update the UiStateSnapshotStateList
-    fun updateUiState(newState: UiStateSnapshotStateList) {
-        _uiStateSnapshotStateList = newState
-    }
 
-    // Function to reset the UiStateSnapshotStateList
-    fun resetUiState() {
-        _uiStateSnapshotStateList = UiStateSnapshotStateList(
-            initialLastUpdateTime = System.currentTimeMillis().toString(),
-            initialGroupFireBaseReference = emptyList()
-        )
-    }
 }

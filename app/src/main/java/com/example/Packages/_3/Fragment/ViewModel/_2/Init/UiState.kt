@@ -23,31 +23,9 @@ class UiState(
         initialReferencesFireBaseGroup.toMutableStateList()
 
     // Firebase reference
-    private val databaseRef = Firebase.database
+    private val uiStateFireBaseDatabaseRef = Firebase.database
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
 
-    // Firebase operations
-    suspend fun updateSelfInFirebaseDataBase() {
-        try {
-            databaseRef.setValue(this).await()
-            lastUpdateTimeFormatted = getCurrentFormattedTime()
-        } catch (e: Exception) {
-            throw Exception("Failed to update state in Firebase: ${e.message}")
-        }
-    }
-
-    suspend fun loadFromFirebaseDataBase() {
-        try {
-            val snapshot = databaseRef.get().await()
-            snapshot.getValue<UiState>()?.let { state ->
-                lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
-                referencesFireBaseGroup.clear()
-                referencesFireBaseGroup.addAll(state.referencesFireBaseGroup)
-            }
-        } catch (e: Exception) {
-            throw Exception("Failed to load state from Firebase: ${e.message}")
-        }
-    }
 
     // Nested class for group references
     class ReferencesFireBaseGroup(
@@ -61,17 +39,14 @@ class UiState(
         var productsToUpdate: SnapshotStateList<Product> =
             initialProductsToUpdate.toMutableStateList()
 
-        suspend fun updateSelfInFirebaseDataBase() {
-            try {
-                val groupRef = Firebase.database
-                    .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
-                    .child("groups")
-                    .child(id.toString())
+        class Product(
+            var id: Long = 0L,
+            initialTriggerTime: Long = System.currentTimeMillis()
+        ) {
+            var triggerTime: Long by mutableStateOf(initialTriggerTime)
 
-                groupRef.setValue(this).await()
-                lastUpdateTimeFormatted = getCurrentFormattedTime()
-            } catch (e: Exception) {
-                throw Exception("Failed to update group in Firebase: ${e.message}")
+            fun updateTriggerTime() {
+                triggerTime = System.currentTimeMillis()
             }
         }
 
@@ -90,30 +65,31 @@ class UiState(
                 productsToUpdate[index] = updatedProduct
             }
         }
-    }
+        suspend fun updateReferencesFireBaseGroupSelfInFirebaseDataBase() {
+            try {
+                val groupRef = Firebase.database
+                    .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+                    .child("groups")
+                    .child(id.toString())
 
-    // Product class
-    class Product(
-        var id: Long = 0L,
-        initialTriggerTime: Long = System.currentTimeMillis()
-    ) {
-        var triggerTime: Long by mutableStateOf(initialTriggerTime)
-
-        fun updateTriggerTime() {
-            triggerTime = System.currentTimeMillis()
+                groupRef.setValue(this).await()
+                lastUpdateTimeFormatted = getCurrentFormattedTime()
+            } catch (e: Exception) {
+                throw Exception("Failed to update group in Firebase: ${e.message}")
+            }
         }
     }
 
     // Group management functions
-    fun addReferencesGroup(referenceFireBase: ReferencesFireBaseGroup) {
+    fun addReferencesSnap(referenceFireBase: ReferencesFireBaseGroup) {
         referencesFireBaseGroup.add(referenceFireBase)
     }
 
-    fun removeReferenceFireBase(referenceFireBaseId: Long) {
+    fun removeReferenceSnap(referenceFireBaseId: Long) {
         referencesFireBaseGroup.removeAll { it.id == referenceFireBaseId }
     }
 
-    fun updateReferenceGroup(updatedReferenceGroup: ReferencesFireBaseGroup) {
+    fun updateReferenceSnap(updatedReferenceGroup: ReferencesFireBaseGroup) {
         val index = referencesFireBaseGroup.indexOfFirst { it.id == updatedReferenceGroup.id }
         if (index != -1) {
             referencesFireBaseGroup[index] = updatedReferenceGroup
@@ -130,4 +106,27 @@ class UiState(
                 .format(Date())
         }
     }
+    // Firebase operations
+    suspend fun updateUiStateSelfInFirebaseDataBase() {
+        try {
+            uiStateFireBaseDatabaseRef.setValue(this).await()
+            lastUpdateTimeFormatted = getCurrentFormattedTime()
+        } catch (e: Exception) {
+            throw Exception("Failed to update state in Firebase: ${e.message}")
+        }
+    }
+
+    suspend fun loadFromFirebaseDataBase() {
+        try {
+            val snapshot = uiStateFireBaseDatabaseRef.get().await()
+            snapshot.getValue<UiState>()?.let { state ->
+                lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
+                referencesFireBaseGroup.clear()
+                referencesFireBaseGroup.addAll(state.referencesFireBaseGroup)
+            }
+        } catch (e: Exception) {
+            throw Exception("Failed to load state from Firebase: ${e.message}")
+        }
+    }
+
 }

@@ -59,10 +59,10 @@ internal suspend fun P3_ViewModel._1Initialize(
                 existingGroup.addProduct(product)
             }
             // Update the group in the state
-            _uiState.updateReferenceGroup(existingGroup)
+            _uiState.updateReferenceSnap(existingGroup)
         } else {
             // Add new group if it doesn't exist
-            _uiState.addReferencesGroup(defaultGroup)
+            _uiState.addReferencesSnap(defaultGroup)
         }
 
         val productsData = processes_Organiseur(
@@ -76,7 +76,7 @@ internal suspend fun P3_ViewModel._1Initialize(
         onProgressUpdate(0.9f)
 
         // Update the entire state in Firebase
-        _uiState.updateSelfInFirebaseDataBase()
+        _uiState.updateUiStateSelfInFirebaseDataBase()
 
         onProgressUpdate(1.0f)
         Log.d(com.example.Packages._3.Fragment.ViewModel._2.Init.TAG, "Completed _1Initialize")

@@ -26,7 +26,8 @@ internal class P3_ViewModel : ViewModel() {
     var _uiState by mutableStateOf(
         UiState(
             initialLastUpdateTime = System.currentTimeMillis().toString(),
-            initialReferencesFireBaseGroup = emptyList()
+            initialReferencesFireBaseGroup = emptyList(),
+            initial_Produits_DataBase = emptyList()
         )
     )
     val uiStateSnapshotStateList: UiState get() = _uiState

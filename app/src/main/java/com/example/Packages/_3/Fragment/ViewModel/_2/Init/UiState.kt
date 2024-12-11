@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import com.example.Packages._3.Fragment.ViewModel._2.Init.UiState.ReferencesFireBaseGroup.Produit_Update_Ref
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import com.google.firebase.database.ktx.getValue
@@ -13,19 +14,107 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class UiState(
+class UiState internal constructor(
     initialLastUpdateTime: String? = getCurrentFormattedTime(),
-    initialReferencesFireBaseGroup: List<ReferencesFireBaseGroup> = emptyList()
+    initialReferencesFireBaseGroup: List<ReferencesFireBaseGroup> = emptyList(),
+    initial_Produits_DataBase: List<Produit_DataBase> = emptyList()
 ) {
     // State properties
     var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
     var referencesFireBaseGroup: SnapshotStateList<ReferencesFireBaseGroup> =
         initialReferencesFireBaseGroup.toMutableStateList()
+    var produit_DataBase: SnapshotStateList<Produit_DataBase> =
+        initial_Produits_DataBase.toMutableStateList()
 
     // Firebase reference
     private val uiStateFireBaseDatabaseRef = Firebase.database
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
 
+    /** Nested class  */
+    class Produit_DataBase(
+        val id: Long = 0,
+        val nom: String = "",
+        initialNon_Trouve: Boolean = false,
+        initialColours_Et_Gouts_Commende_Au_Supplier: List<Colours_Et_Gouts_Commende_Au_Supplier> = emptyList(),
+        initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
+        initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_CeProduit> = emptyList(),
+    ) {
+        var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
+        var colours_Et_Gouts_Commende: SnapshotStateList<Colours_Et_Gouts_Commende_Au_Supplier> =
+            initialColours_Et_Gouts_Commende_Au_Supplier.toMutableStateList()
+
+        var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =
+            initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
+
+        var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_CeProduit> =
+            initialGrossist_Choisi_Pour_Acheter_CeProduit.toMutableStateList()
+
+        /** Nested class  */
+        class Colours_Et_Gouts_Commende_Au_Supplier(
+            var position_Du_Couleur_Au_Produit: Long = 0,
+            var id_Don_Tout_Couleurs: Long = 0,
+            var nom: String = "",
+            var quantity_Achete: Int = 0,
+            var imogi: String = ""
+        )
+        class Grossist_Choisi_Pour_Acheter_CeProduit(
+            var id: Long = 0,
+            var position_Grossist_Don_Parent_Grossists_List: Int = 0,
+            var nom: String = "",
+            var couleur: String = "#FFFFFF",
+            var currentCreditBalance: Double = 0.0,
+            val position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0
+        )
+        class Demmende_Achate_De_Cette_Produit(
+            var vid: Long = 0,
+            var id_Acheteur: Long = 0,
+            var nom_Acheteur: String = "",
+            var inseartion_Temp: Long = 0, //HH:mm:ss,
+            var inceartion_Date: Long = 0, //yyyy/mm/dd,
+            initial_Colours_Et_Gouts_Acheter_Depuit_Client: List<Colours_Et_Gouts_Acheter_Depuit_Client> = emptyList(),
+
+        ) {
+            var colours_Et_Gouts_Acheter_Depuit_Client: SnapshotStateList<Colours_Et_Gouts_Acheter_Depuit_Client> =
+                initial_Colours_Et_Gouts_Acheter_Depuit_Client.toMutableStateList()
+            /** Nested class  */
+            class Colours_Et_Gouts_Acheter_Depuit_Client(
+                var vidPosition: Long = 0,
+                var id_Don_Tout_Couleurs: Long = 0,
+                var nom: String = "",
+                var quantity_Achete: Int = 0,
+                var imogi: String = ""
+            )
+        }
+
+        suspend fun updateSelfInFirebaseDataBase() {
+            try {
+                val groupRef = Firebase.database
+                    .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+                    .child("produit_DataBase")
+                    .child(id.toString())
+
+                groupRef.setValue(this).await()
+            } catch (e: Exception) {
+                throw Exception("Failed to update group in Firebase: ${e.message}")
+            }
+        }
+
+    }
+    // Product management functions
+    fun add_Produit(produit: Produit_DataBase) {
+        produit_DataBase.add(produit)
+    }
+
+    fun remove_Produit(produitId: Long) {
+        produit_DataBase.removeAll { it.id == produitId }
+    }
+
+    fun update_Produit(updated_Produit: Produit_DataBase) {
+        val index = produit_DataBase.indexOfFirst { it.id == updated_Produit.id }
+        if (index != -1) {
+            produit_DataBase[index] = updated_Produit
+        }
+    }
 
     // Nested class for group references
     class ReferencesFireBaseGroup(
@@ -34,14 +123,14 @@ class UiState(
         var nom: String = "",
         initialUpdateAllTrigger: Boolean = false,
         initialLastUpdateTime: String? = getCurrentFormattedTime(),
-        initialProductsToUpdate: List<Product> = emptyList()
+        initialProduits_Update_Ref: List<Produit_Update_Ref> = emptyList()
     ) {
         var updateAllTrigger: Boolean by mutableStateOf(initialUpdateAllTrigger)
         var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
-        var productsToUpdate: SnapshotStateList<Product> =
-            initialProductsToUpdate.toMutableStateList()
+        var produit_Update_Ref: SnapshotStateList<Produit_Update_Ref> =
+            initialProduits_Update_Ref.toMutableStateList()
 
-        class Product(
+        class Produit_Update_Ref(
             var id: Long = 0L,
             initialTriggerTime: Long = System.currentTimeMillis()
         ) {
@@ -53,18 +142,18 @@ class UiState(
         }
 
         // Product management functions
-        fun addProduct(product: Product) {
-            productsToUpdate.add(product)
+        fun addProduct(product: Produit_Update_Ref) {
+            produit_Update_Ref.add(product)
         }
 
         fun removeProduct(productId: Long) {
-            productsToUpdate.removeAll { it.id == productId }
+            produit_Update_Ref.removeAll { it.id == productId }
         }
 
-        fun updateProduct(updatedProduct: Product) {
-            val index = productsToUpdate.indexOfFirst { it.id == updatedProduct.id }
+        fun updateProduct(updatedProduct: Produit_Update_Ref) {
+            val index = produit_Update_Ref.indexOfFirst { it.id == updatedProduct.id }
             if (index != -1) {
-                productsToUpdate[index] = updatedProduct
+                produit_Update_Ref[index] = updatedProduct
             }
         }
         suspend fun updateReferencesFireBaseGroupSelfInFirebaseDataBase() {

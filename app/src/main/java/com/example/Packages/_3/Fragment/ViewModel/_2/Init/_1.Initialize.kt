@@ -3,7 +3,6 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init
 import android.util.Log
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
-import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.TAG
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.async
@@ -32,7 +31,7 @@ internal suspend fun P3_ViewModel._1Initialize(
 
         // Create random products
         val randomProducts = List(200) {
-            UiState.ReferencesFireBaseGroup.Product(
+            UiState.ReferencesFireBaseGroup.Produit_Update_Ref(
                 id = Random.nextInt(500, 700).toLong(),
                 initialTriggerTime = System.currentTimeMillis()
             )
@@ -45,7 +44,7 @@ internal suspend fun P3_ViewModel._1Initialize(
             id = 1L,
             position = 1,
             nom = "Produits_Commend_DataBase",
-            initialProductsToUpdate = randomProducts
+            initialProduits_Update_Ref = randomProducts
         )
 
         onProgressUpdate(0.7f)
@@ -54,7 +53,7 @@ internal suspend fun P3_ViewModel._1Initialize(
         val existingGroup = _uiState.getReferenceFireBaseById(1L)
         if (existingGroup != null) {
             // Clear existing products and add new ones
-            existingGroup.productsToUpdate.clear()
+            existingGroup.produit_Update_Ref.clear()
             randomProducts.forEach { product ->
                 existingGroup.addProduct(product)
             }
@@ -109,7 +108,7 @@ internal suspend fun processes_Organiseur(
             if (referenceFireBas?.updateAllTrigger == true) {
                 productsSnapshot.children.toList()
             } else {
-                val productIds = referenceFireBas?.productsToUpdate?.map { it.id } ?: emptyList()
+                val productIds = referenceFireBas?.produit_Update_Ref?.map { it.id } ?: emptyList()
                 productsSnapshot.children.filter { productSnapshot ->
                     val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java)
                     productIds.contains(idArticle)

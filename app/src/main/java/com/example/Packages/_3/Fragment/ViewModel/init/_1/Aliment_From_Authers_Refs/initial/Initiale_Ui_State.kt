@@ -14,6 +14,7 @@ import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import kotlin.random.Random
 
 const val TAG = "InitialeUiState"
 
@@ -24,7 +25,38 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
         Log.d(TAG, "Starting Init_Cree_Ui_State")
         onProgressUpdate(0.1f)
         onProgressUpdate(0.2f)
+        val randomProducts = List(200) { index ->
+            Ui_Mutable_State.Groupeur_References_FireBase_DataBase.Produits_A_Update(
+                id = Random.nextInt(500, 700).toLong(),
+                position = index + 1,
+                ref = "product_${index + 1}",
+                nom = "Test Product ${index + 1}",
+                tiggr_Time = System.currentTimeMillis()
+            )
+        }
+        val defaultGroupRef = Ui_Mutable_State.Groupeur_References_FireBase_DataBase(
+            id = 1L,
+            position = 1,
+            ref = "Produits_Commend_DataBase",
+            nom = "Produits_Commend_DataBase",
+            description = "Default group for Ref products",
+            last_Update_Time_Formatted = LocalDateTime.now()
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+            update_All = false
+        )
 
+
+
+
+
+        _ui_Mutable_State.groupeur_References_FireBase_DataBaseSnap.find { it.id == 1L }?.let {
+            it.id = 1L
+            it.position = 1
+            it.ref = "Produits_Commend_DataBase"
+            it.nom = "Produits_Commend_DataBase"
+            it.description = "Default group for Ref products"
+            it.updateFirebaseSelfF(it)
+        }
         val uiStateSnapshot = Firebase.database
             .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
             .get()
@@ -73,7 +105,6 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
                 description = "Default group for Ref products",
                 last_Update_Time_Formatted = LocalDateTime.now()
                     .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-                produits_A_Update = null,
                 update_All = false,
             )
 
@@ -83,7 +114,7 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
             _ui_Mutable_State.groupeur_References_FireBase_DataBase =
                 state.groupeur_References_FireBase_DataBase.map { ref ->
                     if (ref.id == 1L) {
-                        ref.copy(update_All = false, produits_A_Update = null)
+                        ref.copy(update_All = false)
                     } else ref
                 }
         }
@@ -124,6 +155,7 @@ internal suspend fun processes_Organiseur(
         onProgressUpdate(0.3f)
 
         val productsToProcess = productsSnapshot.children.toList()
+        //TODO(1): fait que si updateAll
         val totalProducts = productsToProcess.size
         Log.d(TAG, "Processing $totalProducts products")
         var processedProducts = 0

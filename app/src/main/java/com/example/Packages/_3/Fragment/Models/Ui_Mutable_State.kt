@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import com.example.Z_Learn.AndriodStatsApp.WellnessTask
 import com.google.firebase.Firebase
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
@@ -19,9 +19,8 @@ class Ui_Mutable_State {
     var groupeur_References_FireBase_DataBase: List<Groupeur_References_FireBase_DataBase> by mutableStateOf(
         emptyList()
     )
-
-    private val _tasks = mutableListOf<WellnessTask>().toMutableStateList()
-    val tasks: List<WellnessTask> get() = _tasks
+    val groupeur_References_FireBase_DataBaseSnap =
+        mutableListOf<Groupeur_References_FireBase_DataBase>().toMutableStateList()
 
     var namePhone: String by mutableStateOf("")
     var selectedSupplierId: Long by mutableLongStateOf(0L)
@@ -29,6 +28,37 @@ class Ui_Mutable_State {
     var mode_Trie_Produit_Non_Trouve: Boolean by mutableStateOf(false)
     var currentMode: Grossists_Buttons_Modes by mutableStateOf(Grossists_Buttons_Modes.NONE)
 
+    class Groupeur_References_FireBase_DataBaseSnap(
+        var id: Long = 0,
+        var position: Int = 0,
+        var nom: String = "",
+        last_Update_Time_Formatted: String? = null,
+        val update_All: Boolean = false,
+        var produits_A_Update: SnapshotStateList<Groupeur_References_FireBase_DataBase> = mutableListOf<Groupeur_References_FireBase_DataBase>().toMutableStateList()
+    ) {
+        constructor() : this(0)
+
+        @IgnoreExtraProperties
+        data class Produits_A_Update(
+            var id: Long = 0,
+            var position: Int = 0,
+            var ref: String = "",
+            var nom: String = "",
+            var tiggr_Time: Long = 0,
+        ) {
+            constructor() : this(0)
+        }
+
+        fun updateFirebaseSelfF(groupRef: Groupeur_References_FireBase_DataBase) {
+            val referencesRef = Firebase.database
+                .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
+                .child("1_Groupeur_References_FireBase_DataBase")
+                .child(groupRef.id.toString())
+            referencesRef.removeValue()
+            referencesRef.setValue(groupRef)
+        }
+
+    }
     @IgnoreExtraProperties
     data class Produits_Commend_DataBase(
         val id: Int = 0,
@@ -92,24 +122,24 @@ class Ui_Mutable_State {
 
     @IgnoreExtraProperties
     data class Groupeur_References_FireBase_DataBase(
-        val id: Long = 0,
-        val position: Int = 0,
-        val nom: String = "",
-        val nom_2: String = "",
-        val description: String = "",
+        var id: Long = 0,
+        var position: Int = 0,
+        var nom: String = "",
+        var nom_2: String = "",
+        var description: String = "",
         var ref: String = "",
         val last_Update_Time_Formatted: String? = null,
         val update_All: Boolean = false,
-        var produits_A_Update: List<Produits_A_Update>? = emptyList(),
+        var produits_A_Update: SnapshotStateList<Groupeur_References_FireBase_DataBase> = mutableListOf<Groupeur_References_FireBase_DataBase>().toMutableStateList()
     ) {
         constructor() : this(0)
 
         @IgnoreExtraProperties
         data class Produits_A_Update(
-            val id: Long = 0,
-            val position: Int = 0,
+            var id: Long = 0,
+            var position: Int = 0,
             var ref: String = "",
-            val nom: String = "",
+            var nom: String = "",
             var tiggr_Time: Long = 0,
         ) {
             constructor() : this(0)

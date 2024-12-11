@@ -36,7 +36,7 @@ internal fun P3_ViewModel.addRandomTestProductReferences() {
             description = "Default group for Ref products",
             last_Update_Time_Formatted = LocalDateTime.now()
                 .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-            update_All = true
+            update_All = false
         )
         defaultGroupRef.updateFirebaseSelfF(defaultGroupRef)
 

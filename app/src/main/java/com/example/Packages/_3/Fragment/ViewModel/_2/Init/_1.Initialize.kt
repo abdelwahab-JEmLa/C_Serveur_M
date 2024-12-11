@@ -30,6 +30,14 @@ internal suspend fun P3_ViewModel._1Initialize(
 
         onProgressUpdate(0.3f)
 
+
+
+        onProgressUpdate(0.5f)
+
+       
+
+        onProgressUpdate(0.7f)
+
         val randomProducts = List(200) {
             UiState.ReferencesFireBaseGroup.Produit_Update_Ref(
                 id = Random.nextInt(500, 700).toLong(),
@@ -37,25 +45,16 @@ internal suspend fun P3_ViewModel._1Initialize(
             )
         }
 
-        onProgressUpdate(0.5f)
-
+        // First create the ReferencesFireBaseGroup object
         val defaultGroup = UiState.ReferencesFireBaseGroup(
             id = 1L,
             position = 1,
             nom = "Produits_Commend_DataBase",
-            initialProduits_Update_Ref = randomProducts
+            initialUpdateAllTrigger = true
         )
 
-        onProgressUpdate(0.7f)
-
-        val existingRefIndex = _uiState.referencesFireBaseGroup.indexOfFirst { it.id == 1L }
-        if (existingRefIndex != -1) {
-            _uiState.referencesFireBaseGroup[existingRefIndex].produit_Update_Ref =
-                randomProducts.toMutableStateList()
-        } else {
-            _uiState.referencesFireBaseGroup.add(defaultGroup)
-        }
-
+        _uiState.referencesFireBaseGroup.add(defaultGroup)
+        
         val productsData = processes_Organiseur(
             referenceFireBas = _uiState.referencesFireBaseGroup.find { it.id == 1L },
             onProgressUpdate = { progress ->

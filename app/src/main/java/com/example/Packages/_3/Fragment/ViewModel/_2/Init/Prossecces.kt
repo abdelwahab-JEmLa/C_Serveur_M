@@ -10,8 +10,6 @@ import kotlinx.coroutines.coroutineScope
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-
-
 private fun procces_Create_Colors_Acheter(
     colorId: Long,
     colorName: String,

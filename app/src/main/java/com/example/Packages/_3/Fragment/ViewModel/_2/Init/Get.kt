@@ -7,7 +7,32 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
+suspend fun getSupplierInfosDataUi(idSupplierSu: Long): UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit? {
+    return try {
+        val supplierSnapshot = Firebase.database.getReference("F_Suppliers")
+            .orderByChild("idSupplierSu")
+            .equalTo(idSupplierSu.toDouble())
+            .get()
+            .await()
+            .children
+            .firstOrNull()
 
+        supplierSnapshot?.let { snapshot ->
+            UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit(
+                id = idSupplierSu,
+                position_Grossist_Don_Parent_Grossists_List = snapshot.child("position")
+                    .getValue(Int::class.java) ?: 0,
+                nom = snapshot.child("nomSupplierSu").getValue(String::class.java) ?: "",
+                couleur = snapshot.child("couleurSu").getValue(String::class.java) ?: "#FFFFFF",
+                currentCreditBalance = snapshot.child("currentCreditBalance")
+                    .getValue(Double::class.java) ?: 0.0,
+            )
+        }
+    } catch (e: Exception) {
+        Log.e(TAG, "Error fetching supplier data for ID $idSupplierSu", e)
+        null
+    }
+}
 suspend fun getColorData(colorId: Long): ColorArticle? {
     return try {
         val colorSnapshot = Firebase.database.getReference("H_ColorsArticles")

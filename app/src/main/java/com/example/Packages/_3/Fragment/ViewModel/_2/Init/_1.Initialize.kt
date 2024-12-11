@@ -1,7 +1,9 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init
 
 import android.util.Log
-import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
@@ -19,7 +21,6 @@ internal suspend fun P3_ViewModel._1Initialize(
         Log.d(TAG_Snap, "Starting _1Initialize")
         onProgressUpdate(0.1f)
 
-        // Load existing state from Firebase
         try {
             _uiState.loadFromFirebaseDataBase()
             Log.d(TAG_Snap, "Successfully loaded existing state from Firebase")
@@ -29,7 +30,6 @@ internal suspend fun P3_ViewModel._1Initialize(
 
         onProgressUpdate(0.3f)
 
-        // Create random products
         val randomProducts = List(200) {
             UiState.ReferencesFireBaseGroup.Produit_Update_Ref(
                 id = Random.nextInt(500, 700).toLong(),
@@ -39,7 +39,6 @@ internal suspend fun P3_ViewModel._1Initialize(
 
         onProgressUpdate(0.5f)
 
-        // Create or update the default group
         val defaultGroup = UiState.ReferencesFireBaseGroup(
             id = 1L,
             position = 1,
@@ -49,29 +48,38 @@ internal suspend fun P3_ViewModel._1Initialize(
 
         onProgressUpdate(0.7f)
 
-        // Update or add the group using the new utility functions
-        val existingGroup = _uiState.getReferenceFireBaseById(1L)
-        if (existingGroup != null) {
-            // Clear existing products and add new ones
-            existingGroup.produit_Update_Ref.clear()
-            randomProducts.forEach { product ->
-                existingGroup.addProduct(product)
-            }
+        val existingRefIndex = _uiState.referencesFireBaseGroup.indexOfFirst { it.id == 1L }
+        if (existingRefIndex != -1) {
+            _uiState.referencesFireBaseGroup[existingRefIndex].produit_Update_Ref =
+                randomProducts.toMutableStateList()
         } else {
-            _uiState.addReferencesSnap(defaultGroup)
+            _uiState.referencesFireBaseGroup.add(defaultGroup)
         }
 
         val productsData = processes_Organiseur(
-            referenceFireBas=_uiState.getReferenceFireBaseById(1),
+            referenceFireBas = _uiState.referencesFireBaseGroup.find { it.id == 1L },
             onProgressUpdate = { progress ->
                 onProgressUpdate(0.2f + (progress * 0.6f))
             }
         )
 
+        // Safely update or add products
+        productsData.forEach { produitUpdate ->
+            val existingIndex = _uiState.produit_DataBase.indexOfFirst { it.id == produitUpdate.id }
+            if (existingIndex != -1) {
+                _uiState.produit_DataBase[existingIndex] = produitUpdate
+            } else {
+                _uiState.produit_DataBase.add(produitUpdate)
+            }
+        }
+
         onProgressUpdate(0.9f)
 
-        // Update the entire state in Firebase
-        _uiState.updateUiStateSelfInFirebaseDataBase()
+        _uiState.referencesFireBaseGroup.find { it.id == 1L }?.let { group ->
+            group.produit_Update_Ref.clear()
+            group.updateAllTrigger = !group.updateAllTrigger
+            group.setSelfInFirebaseDataBase()
+        }
 
         onProgressUpdate(1.0f)
         Log.d(TAG_Snap, "Completed _1Initialize")
@@ -80,10 +88,11 @@ internal suspend fun P3_ViewModel._1Initialize(
         throw e
     }
 }
+
 internal suspend fun processes_Organiseur(
     referenceFireBas: UiState.ReferencesFireBaseGroup?,
     onProgressUpdate: (Float) -> Unit,
-): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
+): SnapshotStateList<UiState.Produit_DataBase> = coroutineScope {
     try {
         onProgressUpdate(0.1f)
 
@@ -119,6 +128,7 @@ internal suspend fun processes_Organiseur(
         Log.d(TAG_Snap, "Processing $totalProducts products")
         var processedProducts = 0
 
+        // Change here: Directly create a SnapshotStateList
         val processedProductsList = productsToProcess.mapNotNull { productSnapshot ->
             try {
                 val idArticle = productSnapshot.child("idArticle").getValue(Long::class.java)
@@ -136,7 +146,7 @@ internal suspend fun processes_Organiseur(
                 Log.e(TAG_Snap, "Error processing product", e)
                 null
             }
-        }
+        }.toMutableStateList() // Explicitly convert to SnapshotStateList
 
         Log.d(TAG_Snap, "Completed processing all products. Total processed: ${processedProductsList.size}")
         onProgressUpdate(0.7f)
@@ -144,6 +154,7 @@ internal suspend fun processes_Organiseur(
 
     } catch (e: Exception) {
         Log.e(TAG_Snap, "Error in processes_Organiseur", e)
-        emptyList()
+        // Return an empty SnapshotStateList in case of error
+        mutableStateListOf()
     }
 }

@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import com.example.Packages._3.Fragment.ViewModel._2.Init.UiState.ReferencesFireBaseGroup.Produit_Update_Ref
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import com.google.firebase.database.ktx.getValue
@@ -37,7 +36,7 @@ class UiState internal constructor(
         initialNon_Trouve: Boolean = false,
         initialColours_Et_Gouts_Commende_Au_Supplier: List<Colours_Et_Gouts_Commende_Au_Supplier> = emptyList(),
         initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
-        initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_CeProduit> = emptyList(),
+        initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit> = emptyList(),
     ) {
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var colours_Et_Gouts_Commende: SnapshotStateList<Colours_Et_Gouts_Commende_Au_Supplier> =
@@ -46,7 +45,7 @@ class UiState internal constructor(
         var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =
             initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
 
-        var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_CeProduit> =
+        var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit> =
             initialGrossist_Choisi_Pour_Acheter_CeProduit.toMutableStateList()
 
         /** Nested class  */
@@ -57,7 +56,7 @@ class UiState internal constructor(
             var quantity_Achete: Int = 0,
             var imogi: String = ""
         )
-        class Grossist_Choisi_Pour_Acheter_CeProduit(
+        class Grossist_Choisi_Pour_Acheter_Ce_Produit(
             var id: Long = 0,
             var position_Grossist_Don_Parent_Grossists_List: Int = 0,
             var nom: String = "",
@@ -86,12 +85,12 @@ class UiState internal constructor(
             )
         }
 
-        suspend fun updateSelfInFirebaseDataBase() {
+        suspend fun updateSelfInFirebaseDataBase(produitId: Long) {
             try {
                 val groupRef = Firebase.database
                     .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
                     .child("produit_DataBase")
-                    .child(id.toString())
+                    .child(produitId.toString())
 
                 groupRef.setValue(this).await()
             } catch (e: Exception) {
@@ -100,22 +99,6 @@ class UiState internal constructor(
         }
 
     }
-    // Product management functions
-    fun add_Produit(produit: Produit_DataBase) {
-        produit_DataBase.add(produit)
-    }
-
-    fun remove_Produit(produitId: Long) {
-        produit_DataBase.removeAll { it.id == produitId }
-    }
-
-    fun update_Produit(updated_Produit: Produit_DataBase) {
-        val index = produit_DataBase.indexOfFirst { it.id == updated_Produit.id }
-        if (index != -1) {
-            produit_DataBase[index] = updated_Produit
-        }
-    }
-
     // Nested class for group references
     class ReferencesFireBaseGroup(
         var id: Long = 0L,
@@ -141,54 +124,18 @@ class UiState internal constructor(
             }
         }
 
-        // Product management functions
-        fun addProduct(product: Produit_Update_Ref) {
-            produit_Update_Ref.add(product)
-        }
-
-        fun removeProduct(productId: Long) {
-            produit_Update_Ref.removeAll { it.id == productId }
-        }
-
-        fun updateProduct(updatedProduct: Produit_Update_Ref) {
-            val index = produit_Update_Ref.indexOfFirst { it.id == updatedProduct.id }
-            if (index != -1) {
-                produit_Update_Ref[index] = updatedProduct
-            }
-        }
-        suspend fun updateReferencesFireBaseGroupSelfInFirebaseDataBase() {
+        suspend fun setSelfInFirebaseDataBase() {
             try {
+                this.lastUpdateTimeFormatted=getCurrentFormattedTime()
                 val groupRef = Firebase.database
                     .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-                    .child("groups")
-                    .child(id.toString())
+                    .child("referencesFireBaseGroup")
 
                 groupRef.setValue(this).await()
-                lastUpdateTimeFormatted = getCurrentFormattedTime()
             } catch (e: Exception) {
                 throw Exception("Failed to update group in Firebase: ${e.message}")
             }
         }
-    }
-
-    // Group management functions
-    fun addReferencesSnap(referenceFireBase: ReferencesFireBaseGroup) {
-        referencesFireBaseGroup.add(referenceFireBase)
-    }
-
-    fun removeReferenceSnap(referenceFireBaseId: Long) {
-        referencesFireBaseGroup.removeAll { it.id == referenceFireBaseId }
-    }
-
-    fun updateReferenceSnap(updatedReferenceGroup: ReferencesFireBaseGroup) {
-        val index = referencesFireBaseGroup.indexOfFirst { it.id == updatedReferenceGroup.id }
-        if (index != -1) {
-            referencesFireBaseGroup[index] = updatedReferenceGroup
-        }
-    }
-
-    fun getReferenceFireBaseById(referenceId: Long): ReferencesFireBaseGroup? {
-        return referencesFireBaseGroup.find { it.id == referenceId }
     }
 
     companion object {

@@ -22,7 +22,7 @@ internal suspend fun P3_ViewModel._1Initialize(
 
         // Load existing state from Firebase
         try {
-            _uiStateSnapshotStateList.loadFromFirebase()
+            _uiState.loadFromFirebaseDataBase()
             Log.d(TAG, "Successfully loaded existing state from Firebase")
         } catch (e: Exception) {
             Log.w(TAG, "No existing state found or error loading, starting fresh", e)
@@ -51,7 +51,7 @@ internal suspend fun P3_ViewModel._1Initialize(
         onProgressUpdate(0.7f)
 
         // Update or add the group using the new utility functions
-        val existingGroup = _uiStateSnapshotStateList.getReferenceById(1L)
+        val existingGroup = _uiState.getReferenceById(1L)
         if (existingGroup != null) {
             // Clear existing products and add new ones
             existingGroup.productsToUpdate.clear()
@@ -59,13 +59,12 @@ internal suspend fun P3_ViewModel._1Initialize(
                 existingGroup.addProduct(product)
             }
             // Update the group in the state
-            _uiStateSnapshotStateList.updateReferenceGroup(existingGroup)
-            // Update the specific group in Firebase
-            existingGroup.updateSelfInFirebase()
+            _uiState.updateReferenceGroup(existingGroup)
         } else {
             // Add new group if it doesn't exist
-            _uiStateSnapshotStateList.addReferencesGroup(defaultGroup)
+            _uiState.addReferencesGroup(defaultGroup)
         }
+
         val productsData = processes_Organiseur(
             updateAll = updateAll,
             productsToUpdate = productsToUpdate,
@@ -77,7 +76,7 @@ internal suspend fun P3_ViewModel._1Initialize(
         onProgressUpdate(0.9f)
 
         // Update the entire state in Firebase
-        _uiStateSnapshotStateList.updateSelfInFirebase()
+        _uiState.updateSelfInFirebaseDataBase()
 
         onProgressUpdate(1.0f)
         Log.d(com.example.Packages._3.Fragment.ViewModel._2.Init.TAG, "Completed _1Initialize")

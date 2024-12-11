@@ -23,13 +23,13 @@ internal class P3_ViewModel : ViewModel() {
     val ui_Mutable_State: Ui_Mutable_State get() = _ui_Mutable_State
 
     // UiStateSnapshotStateList management with proper initialization
-    var _uiStateSnapshotStateList by mutableStateOf(
+    var _uiState by mutableStateOf(
         UiState(
             initialLastUpdateTime = System.currentTimeMillis().toString(),
             initialReferencesFireBaseGroup = emptyList()
         )
     )
-    val uiStateSnapshotStateList: UiState get() = _uiStateSnapshotStateList
+    val uiStateSnapshotStateList: UiState get() = _uiState
 
     // Progress tracking
     var initializationProgress by mutableFloatStateOf(0f)

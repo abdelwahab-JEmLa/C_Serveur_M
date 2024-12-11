@@ -27,7 +27,7 @@ class UiState(
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
 
     // Firebase operations
-    suspend fun updateSelfInFirebase() {
+    suspend fun updateSelfInFirebaseDataBase() {
         try {
             databaseRef.setValue(this).await()
             lastUpdateTimeFormatted = getCurrentFormattedTime()
@@ -36,7 +36,7 @@ class UiState(
         }
     }
 
-    suspend fun loadFromFirebase() {
+    suspend fun loadFromFirebaseDataBase() {
         try {
             val snapshot = databaseRef.get().await()
             snapshot.getValue<UiState>()?.let { state ->
@@ -61,7 +61,7 @@ class UiState(
         var productsToUpdate: SnapshotStateList<Product> =
             initialProductsToUpdate.toMutableStateList()
 
-        suspend fun updateSelfInFirebase() {
+        suspend fun updateSelfInFirebaseDataBase() {
             try {
                 val groupRef = Firebase.database
                     .getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")

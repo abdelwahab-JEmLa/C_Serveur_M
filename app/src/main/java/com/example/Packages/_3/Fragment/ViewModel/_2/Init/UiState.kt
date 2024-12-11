@@ -15,12 +15,12 @@ import java.util.Locale
 
 class UiState(
     initialLastUpdateTime: String? = getCurrentFormattedTime(),
-    initialGroupFireBaseReference: List<GroupFireBaseReference> = emptyList()
+    initialReferencesFireBaseGroup: List<ReferencesFireBaseGroup> = emptyList()
 ) {
     // State properties
     var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
-    var groupFireBaseReferences: SnapshotStateList<GroupFireBaseReference> =
-        initialGroupFireBaseReference.toMutableStateList()
+    var referencesFireBaseGroup: SnapshotStateList<ReferencesFireBaseGroup> =
+        initialReferencesFireBaseGroup.toMutableStateList()
 
     // Firebase reference
     private val databaseRef = Firebase.database
@@ -41,8 +41,8 @@ class UiState(
             val snapshot = databaseRef.get().await()
             snapshot.getValue<UiState>()?.let { state ->
                 lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
-                groupFireBaseReferences.clear()
-                groupFireBaseReferences.addAll(state.groupFireBaseReferences)
+                referencesFireBaseGroup.clear()
+                referencesFireBaseGroup.addAll(state.referencesFireBaseGroup)
             }
         } catch (e: Exception) {
             throw Exception("Failed to load state from Firebase: ${e.message}")
@@ -50,7 +50,7 @@ class UiState(
     }
 
     // Nested class for group references
-    class GroupFireBaseReference(
+    class ReferencesFireBaseGroup(
         var id: Long = 0L,
         var position: Int = 0,
         var nom: String = "",
@@ -105,23 +105,23 @@ class UiState(
     }
 
     // Group management functions
-    fun addGroup(group: GroupFireBaseReference) {
-        groupFireBaseReferences.add(group)
+    fun addReferencesGroup(referenceFireBase: ReferencesFireBaseGroup) {
+        referencesFireBaseGroup.add(referenceFireBase)
     }
 
-    fun removeGroup(groupId: Long) {
-        groupFireBaseReferences.removeAll { it.id == groupId }
+    fun removeReferenceFireBase(referenceFireBaseId: Long) {
+        referencesFireBaseGroup.removeAll { it.id == referenceFireBaseId }
     }
 
-    fun updateGroup(updatedGroup: GroupFireBaseReference) {
-        val index = groupFireBaseReferences.indexOfFirst { it.id == updatedGroup.id }
+    fun updateReferenceGroup(updatedReferenceGroup: ReferencesFireBaseGroup) {
+        val index = referencesFireBaseGroup.indexOfFirst { it.id == updatedReferenceGroup.id }
         if (index != -1) {
-            groupFireBaseReferences[index] = updatedGroup
+            referencesFireBaseGroup[index] = updatedReferenceGroup
         }
     }
 
-    fun getGroupById(groupId: Long): GroupFireBaseReference? {
-        return groupFireBaseReferences.find { it.id == groupId }
+    fun getReferenceById(referenceId: Long): ReferencesFireBaseGroup? {
+        return referencesFireBaseGroup.find { it.id == referenceId }
     }
 
     companion object {

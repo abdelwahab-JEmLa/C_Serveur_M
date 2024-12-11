@@ -46,9 +46,6 @@ internal suspend fun P3_ViewModel.Init_Cree_Ui_State(
         )
 
 
-
-
-
         _ui_Mutable_State.groupeur_References_FireBase_DataBaseSnap.find { it.id == 1L }?.let {
             it.id = 1L
             it.position = 1

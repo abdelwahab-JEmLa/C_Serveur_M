@@ -85,12 +85,12 @@ class UiState internal constructor(
             )
         }
 
-        suspend fun updateSelfInFirebaseDataBase(produitId: Long) {
+        suspend fun updateSelfInFirebaseDataBase() {
             try {
                 val groupRef = Firebase.database
                     .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
                     .child("produit_DataBase")
-                    .child(produitId.toString())
+                    .child(this.id.toString())
 
                 groupRef.setValue(this).await()
             } catch (e: Exception) {
@@ -130,6 +130,7 @@ class UiState internal constructor(
                 val groupRef = Firebase.database
                     .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
                     .child("referencesFireBaseGroup")
+                    .child(this.id.toString())
 
                 groupRef.setValue(this).await()
             } catch (e: Exception) {

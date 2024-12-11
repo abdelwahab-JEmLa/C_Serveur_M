@@ -68,8 +68,9 @@ internal suspend fun P3_ViewModel._1Initialize(
             val existingIndex = _uiState.produit_DataBase.indexOfFirst { it.id == produitUpdate.id }
             if (existingIndex != -1) {
                 _uiState.produit_DataBase[existingIndex] = produitUpdate
+                _uiState.produit_DataBase[existingIndex].updateSelfInFirebaseDataBase()
             } else {
-                _uiState.produit_DataBase.add(produitUpdate)
+                produitUpdate.updateSelfInFirebaseDataBase()
             }
         }
 

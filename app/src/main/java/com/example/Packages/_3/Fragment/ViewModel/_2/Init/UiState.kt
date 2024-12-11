@@ -32,9 +32,11 @@ class UiState(
         var id: Long = 0L,
         var position: Int = 0,
         var nom: String = "",
+        initialUpdateAllTrigger: Boolean = false,
         initialLastUpdateTime: String? = getCurrentFormattedTime(),
         initialProductsToUpdate: List<Product> = emptyList()
     ) {
+        var updateAllTrigger: Boolean by mutableStateOf(initialUpdateAllTrigger)
         var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
         var productsToUpdate: SnapshotStateList<Product> =
             initialProductsToUpdate.toMutableStateList()
@@ -96,7 +98,7 @@ class UiState(
         }
     }
 
-    fun getReferenceById(referenceId: Long): ReferencesFireBaseGroup? {
+    fun getReferenceFireBaseById(referenceId: Long): ReferencesFireBaseGroup? {
         return referencesFireBaseGroup.find { it.id == referenceId }
     }
 

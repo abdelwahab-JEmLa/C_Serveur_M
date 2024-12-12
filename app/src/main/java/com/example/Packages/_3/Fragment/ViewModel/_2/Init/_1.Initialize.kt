@@ -31,11 +31,6 @@ internal suspend fun P3_ViewModel._1Initialize(
         onProgressUpdate(0.3f)
 
 
-
-        onProgressUpdate(0.5f)
-
-       
-
         onProgressUpdate(0.7f)
 
         val randomProducts = List(200) {

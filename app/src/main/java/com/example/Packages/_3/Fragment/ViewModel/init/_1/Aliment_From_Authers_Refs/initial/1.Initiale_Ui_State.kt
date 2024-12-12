@@ -152,7 +152,6 @@ internal suspend fun processes_Organiseur(
         onProgressUpdate(0.3f)
 
         val productsToProcess = productsSnapshot.children.toList()
-        //TODO(1): fait que si updateAll
         val totalProducts = productsToProcess.size
         Log.d(TAG, "Processing $totalProducts products")
         var processedProducts = 0

@@ -11,22 +11,22 @@ internal suspend fun P3_ViewModel._1Initialize() {
         Log.d(TAG_Snap, "Starting _1Initialize")
         initializationProgress = 0.1f  // Better float representation
 
-        // First Init
-            List(1500) { i ->
-                val init_besoin_To_Be_Updated = false
-                val produit = UiState.Produit_DataBase(
-                    id = i.toLong(),
-                    it_ref_Id_don_FireBase = 1L,
-                    it_ref_don_FireBase = "produit_DataBase",
-                    init_besoin_To_Be_Updated = init_besoin_To_Be_Updated
-                )
-                this._uiState.produit_DataBase.add(produit)
-            }
+        val ancienData = get_Ancien_Datas()
+        ancienData.produitsDatabase.forEach {
+            val init_besoin_To_Be_Updated = true
+            val produit = UiState.Produit_DataBase(
+                id = it.idArticle,
+                it_ref_Id_don_FireBase = 1L,
+                it_ref_don_FireBase = "produit_DataBase",
+                init_besoin_To_Be_Updated = init_besoin_To_Be_Updated
+            )
+            this._uiState.produit_DataBase.add(produit)
+        }
+
 
         initializationProgress = 0.3f
 
         // Get ancient data
-        val ancienData = get_Ancien_Datas()
 
         // Update products
         this._uiState.produit_DataBase.filter { !it.besoin_To_Be_Updated }
@@ -141,7 +141,6 @@ internal suspend fun P3_ViewModel._1Initialize() {
                 }
             }
 
-// Only add the grossist if they have colors to order
             if (newGrossist.colours_Et_Gouts_Commende.isNotEmpty()) {
                 new_produit_A_Update.grossist_Choisi_Pour_Acheter_CeProduit.add(newGrossist)
             }

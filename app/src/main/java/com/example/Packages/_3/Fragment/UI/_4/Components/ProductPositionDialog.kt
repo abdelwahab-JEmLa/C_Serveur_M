@@ -27,7 +27,8 @@ fun ProductPositionDialog(
     showDialog: Boolean,
     onDismiss: () -> Unit,
     produit: UiState.Produit_DataBase,
-    onPositionUpdate: (Int) -> Unit
+    onPositionUpdate: (Int) -> Unit,
+    uiState: UiState
 ) {
     if (showDialog) {
         AlertDialog(
@@ -37,7 +38,7 @@ fun ProductPositionDialog(
                 // Filter products where supplier (supp) = 1
                 val supplierProducts = produit.grossist_Choisi_Pour_Acheter_CeProduit
                     .filter { it.supplier_id == 1L }
-                
+
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     modifier = Modifier

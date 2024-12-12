@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NotListedLocation
 import androidx.compose.material.icons.filled.RestartAlt
-import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -255,10 +254,10 @@ internal fun Produit_Item(
                 }
             }
         }
-
-       }
+    }
     // Position Dialog
     ProductPositionDialog(
+        uiState=uiState,
         showDialog = showPositionDialog,
         onDismiss = { showPositionDialog = false },
         produit = produit,

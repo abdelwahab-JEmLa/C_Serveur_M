@@ -21,13 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
+import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 
 @Composable
 fun ProductPositionDialog(
     showDialog: Boolean,
     onDismiss: () -> Unit,
     produit: UiState.Produit_DataBase,
-    onPositionUpdate: (Int) -> Unit,
     uiState: UiState
 ) {
     if (showDialog) {
@@ -35,10 +35,6 @@ fun ProductPositionDialog(
             onDismissRequest = onDismiss,
             title = { Text("Sélectionner la position") },
             text = {
-                // Filter products where supplier (supp) = 1
-                val supplierProducts = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                    .filter { it.supplier_id == 1L }
-
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     modifier = Modifier
@@ -47,30 +43,57 @@ fun ProductPositionDialog(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    items(supplierProducts.size) { index ->
-                        val supplierProduct = supplierProducts[index]
+                    items(
+                        count = uiState.produit_DataBase.size,
+                        key = { index -> uiState.produit_DataBase[index].id }
+                    ) { index ->
+                        val currentProduit = uiState.produit_DataBase[index]
+                        val position_Produit_Clicke = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                            .find { it.supplier_id == 1L }
+                            ?.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp ?: 1
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(1f)
                                 .clickable {
-                                    onPositionUpdate(supplierProduct.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp)
+                                    fun P3_ViewModel.func() {
+                                        _uiState.produit_DataBase.find { it.id==currentProduit.id }.let { currentProduit ->
+                                            currentProduit?.grossist_Choisi_Pour_Acheter_CeProduit?.find { it.vid==1L }
+                                                ?.let { gro->
+                                                  gro.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp= position_Produit_Clicke
+                                                }
+                                        }
+                                    }
                                     onDismiss()
                                 }
                         ) {
                             DisplayeImageById(
-                                produit_Id = produit.id,
+                                produit_Id = currentProduit.id,
                                 modifier = Modifier.fillMaxSize(),
                                 reloadKey = 0
                             )
+
                             // Position overlay
                             Text(
-                                text = "${supplierProduct.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp}",
+                                text = "$position_Produit_Clicke",
                                 modifier = Modifier
                                     .align(Alignment.TopEnd)
                                     .background(MaterialTheme.colorScheme.primary)
                                     .padding(4.dp),
                                 color = Color.White
+                            )
+
+                            // Product name overlay
+                            Text(
+                                text = currentProduit.nom,
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .background(Color.Black.copy(alpha = 0.7f))
+                                    .padding(4.dp)
+                                    .fillMaxWidth(),
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodySmall
                             )
                         }
                     }

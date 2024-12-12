@@ -139,7 +139,7 @@ internal fun Produit_Item(
                         modifier = Modifier.height(36.dp)
                     ) {
                         Text(
-                            text = "Pos: $currentPosition",
+                            text = "Pos: ${if (currentPosition==0) "non def" else currentPosition}",
                             color = Color.White
                         )
                     }
@@ -204,7 +204,8 @@ internal fun Produit_Item(
                                         text = acheteur.nom_Acheteur,
                                         fontSize = 14.sp,
                                         color = Color.Red,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier
+                                            .weight(1f)
                                             .background(Color.Gray)
                                     )
                                     Text(
@@ -257,16 +258,9 @@ internal fun Produit_Item(
     }
     // Position Dialog
     ProductPositionDialog(
-        uiState=uiState,
         showDialog = showPositionDialog,
         onDismiss = { showPositionDialog = false },
         produit = produit,
-        onPositionUpdate = { newPosition ->
-            produit.grossist_Choisi_Pour_Acheter_CeProduit
-                .find { it.supplier_id == 1L }
-                ?.let { supplier ->
-                    supplier.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp = newPosition
-                }
-        }
+        uiState=uiState
     )
 }

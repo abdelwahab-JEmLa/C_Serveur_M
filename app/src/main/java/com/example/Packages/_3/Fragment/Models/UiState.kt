@@ -161,9 +161,8 @@ class UiState internal constructor(
         }
     }
 
-    suspend fun update_remove_UiStateFirebaseDataBase() {
+    suspend fun update_UiStateFirebaseDataBase() {
         try {
-            uiStateFireBaseDatabaseRef.removeValue()
             uiStateFireBaseDatabaseRef.setValue(this).await()
             lastUpdateTimeFormatted = getCurrentFormattedTime()
         } catch (e: Exception) {
@@ -176,8 +175,7 @@ class UiState internal constructor(
             val snapshot = uiStateFireBaseDatabaseRef.get().await()
             snapshot.getValue<UiState>()?.let { state ->
                 lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
-                referencesFireBaseGroup.clear()
-                referencesFireBaseGroup.addAll(state.referencesFireBaseGroup)
+
                 produit_DataBase.clear()
                 produit_DataBase.addAll(state.produit_DataBase)
             }
@@ -185,4 +183,5 @@ class UiState internal constructor(
             throw Exception("Failed to load state from Firebase: ${e.message}")
         }
     }
+
 }

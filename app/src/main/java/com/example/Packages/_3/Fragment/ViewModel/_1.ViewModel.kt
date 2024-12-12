@@ -6,8 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components._1Initialize
 import com.example.Packages._3.Fragment.Models.UiState
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components._1Initialize
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch
@@ -36,14 +36,14 @@ internal class P3_ViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            try {
-                isInitializing = true
-                _1Initialize()
-            } finally {
-                isInitializing = false
-            }
+                try {
+                    isInitializing = true
+                    _1Initialize()
+                } finally {
+                    isInitializing = false
+                }
         }
     }
-
-
 }
+
+

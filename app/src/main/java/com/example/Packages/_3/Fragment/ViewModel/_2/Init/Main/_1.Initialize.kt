@@ -13,11 +13,12 @@ internal suspend fun P3_ViewModel._1Initialize() {
 
         // First Init
             List(1500) { i ->
+                val init_besoin_To_Be_Updated = false
                 val produit = UiState.Produit_DataBase(
                     id = i.toLong(),
                     it_ref_Id_don_FireBase = 1L,
                     it_ref_don_FireBase = "produit_DataBase",
-                    init_besoin_To_Be_Updated = true
+                    init_besoin_To_Be_Updated = init_besoin_To_Be_Updated
                 )
                 this._uiState.produit_DataBase.add(produit)
             }
@@ -28,7 +29,8 @@ internal suspend fun P3_ViewModel._1Initialize() {
         val ancienData = get_Ancien_Datas()
 
         // Update products
-        this._uiState.produit_DataBase.forEach { new_produit_A_Update ->
+        this._uiState.produit_DataBase.filter { !it.besoin_To_Be_Updated }
+            .forEach { new_produit_A_Update ->
             // Find matching ancient product
             ancienData.produitsDatabase.find { it.idArticle == new_produit_A_Update.id }?.let { ancien_DataBase ->
                 new_produit_A_Update.nom = ancien_DataBase.nomArticleFinale
@@ -146,7 +148,8 @@ internal suspend fun P3_ViewModel._1Initialize() {
             }
             new_produit_A_Update.besoin_To_Be_Updated = false
         }
-         this._uiState.update_remove_UiStateFirebaseDataBase()
+
+         this._uiState.update_UiStateFirebaseDataBase()
         initializationProgress = 1.0f
         Log.d(TAG_Snap, "Completed _1Initialize")
     } catch (e: Exception) {

@@ -119,7 +119,6 @@ internal fun Produit_Item(
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
-
                     // Expandable grid of colors and quantities
                     Box(
                         modifier = Modifier

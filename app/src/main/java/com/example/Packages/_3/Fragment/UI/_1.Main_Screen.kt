@@ -11,6 +11,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ui_Mutable_State
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
+import com.example.Packages._3.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
+import com.example.Packages._3.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
 
 // Fragment3_Main_Screen.kt updates
 @Composable
@@ -35,7 +37,13 @@ internal fun Fragment3_Main_Screen(
                 )
             }
 
+            // FABs
 
+
+            GlobalActions_FloatingActionButtons_Grouped(
+                modifier = Modifier,
+                ui_Mutable_State = p3_ViewModel.uiState,
+            )
         }
     }
 }

@@ -160,8 +160,9 @@ class UiState internal constructor(
         }
     }
 
-    suspend fun updateUiStateSelfInFirebaseDataBase() {
+    suspend fun update_remove_UiStateFirebaseDataBase() {
         try {
+            uiStateFireBaseDatabaseRef.removeValue()
             uiStateFireBaseDatabaseRef.setValue(this).await()
             lastUpdateTimeFormatted = getCurrentFormattedTime()
         } catch (e: Exception) {

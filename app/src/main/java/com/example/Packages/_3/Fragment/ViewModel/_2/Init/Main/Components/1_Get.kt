@@ -1,9 +1,10 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import android.util.Log
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_ColorArticle
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_Produits_DataBase
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_SoldArticlesTabelle
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_ClientsDataBase
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_ColorArticle
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_Produits_DataBase
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_SoldArticlesTabelle
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
@@ -11,7 +12,8 @@ import kotlinx.coroutines.tasks.await
 data class AncienData(
     val produitsDatabase: List<Ancien_Produits_DataBase>,
     val soldArticles: List<Ancien_SoldArticlesTabelle>,
-    val couleurs_List: List<Ancien_ColorArticle>
+    val couleurs_List: List<Ancien_ColorArticle>  ,
+    val clients_List: List<Ancien_ClientsDataBase>
 )
 
 suspend fun get_Ancien_Datas(): AncienData {
@@ -31,6 +33,11 @@ suspend fun get_Ancien_Datas(): AncienData {
             .get()
             .await()
 
+        val clients_Snapshot = Firebase.database
+            .getReference("G_Clients")
+            .get()
+            .await()
+
         val produitsList = produitsSnapshot.children.mapNotNull {
             it.getValue(Ancien_Produits_DataBase::class.java)
         }
@@ -43,7 +50,16 @@ suspend fun get_Ancien_Datas(): AncienData {
             it.getValue(Ancien_ColorArticle::class.java)
         }
 
-        return AncienData(produitsList, soldArticlesList,couleurs_List)
+        val clients_List = clients_Snapshot.children.mapNotNull {
+            it.getValue(Ancien_ClientsDataBase::class.java)
+        }
+
+        return AncienData(
+            produitsList,
+            soldArticlesList,
+            couleurs_List,
+            clients_List
+        )
     } catch (e: Exception) {
         Log.e("GetDatas", "Error fetching data from Firebase", e)
         throw e

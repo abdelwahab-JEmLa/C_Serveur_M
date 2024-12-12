@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives
+package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components
 
 data class Ancien_Produits_DataBase(
     var idArticle: Long = 0,
@@ -81,4 +81,16 @@ data class Ancien_ColorArticle(
     val nameColore: String = "",
     val iconColore: String = "",
     var classementColore: Int = 0
+)
+
+data class Ancien_ClientsDataBase(
+    val vidSu: Long = 0,
+    var idClientsSu: Long = 0,
+    var position: Int = 0,
+    var nomClientsSu: String = "",
+    var nameAggregation: String = "",
+    var bonDuClientsSu: String = "",
+    val couleurSu: String = "#FFFFFF", // Default color
+    var currentCreditBalance: Double = 0.0,
+    var itsReadyForEdite: Boolean = false,
 )

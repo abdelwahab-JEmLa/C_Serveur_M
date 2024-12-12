@@ -1,6 +1,7 @@
 package com.example.Packages._3.Fragment.UI
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -10,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,7 +31,7 @@ internal fun Expanded_Item_Displaye(
 
     Box(
         modifier = Modifier
-            .size(initialHeightCard)
+            .height(initialHeightCard)
             .animateContentSize()
             .clickable { onEpandToggle() }
     ) {
@@ -45,7 +47,7 @@ internal fun Expanded_Item_Displaye(
                 ) {
                     Box {
                         DisplayeImageById(
-                            produit_Id = produit.id,
+                            produit_Id = produit.id + 2000,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(initialHeightCard),
@@ -59,23 +61,51 @@ internal fun Expanded_Item_Displaye(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.align(Alignment.Center)
                         ) {
-                            Row {
-                                Text(
-                                    text = colorFlavor.nom,
-                                    fontSize = 30.sp,
-                                    color = Color.White
-                                )
-                                Text(
-                                    text = colorFlavor.imogi,
-                                    fontSize = 30.sp,
-                                    color = Color.White
-                                )
+                            ElevatedCard(
+                                modifier = Modifier
+                                    .padding(4.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Row( modifier = Modifier
+                                    .background(Color.Gray)
+                                ) {
+                                    Text(
+                                        text = colorFlavor.quantity_Achete.toString(),
+                                        fontSize = 30.sp,
+                                        color = Color.Red
+                                    )
+                                    Text(
+                                        text = colorFlavor.imogi,
+                                        fontSize = 30.sp,
+                                        color = Color.White
+                                    )
+                                    Text(
+                                        text = colorFlavor.nom,
+                                        fontSize = 30.sp,
+                                        color = Color.White
+                                    )
+
+                                }
                             }
-                            Text(
-                                text = colorFlavor.quantity_Achete.toString(),
-                                fontSize = 30.sp,
-                                color = Color.White
-                            )
+
+                            produit.demmende_Achate_De_Cette_Produit.forEach { achterur ->
+                                achterur.colours_Et_Gouts_Acheter_Depuit_Client.forEach { couleur ->
+                                    Row {
+                                        if (couleur.vidPosition == colorFlavor.position_Du_Couleur_Au_Produit) {
+                                            Text(
+                                                text = couleur.quantity_Achete.toString(),
+                                                fontSize = 30.sp,
+                                                color = Color.Red
+                                            )
+                                            Text(
+                                                text = achterur.nom_Acheteur,
+                                                fontSize = 24.sp,
+                                                color = Color.Black,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

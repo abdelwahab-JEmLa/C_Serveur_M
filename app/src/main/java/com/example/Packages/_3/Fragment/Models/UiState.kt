@@ -66,6 +66,7 @@ class UiState internal constructor(
             var currentCreditBalance: Double = 0.0,
             val position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
             initialColours_Et_Gouts_Commende_Au_Supplier: List<Colours_Et_Gouts_Commende_Au_Supplier> = emptyList(),
+
             ) {
             var colours_Et_Gouts_Commende: SnapshotStateList<Colours_Et_Gouts_Commende_Au_Supplier> =
                 initialColours_Et_Gouts_Commende_Au_Supplier.toMutableStateList()

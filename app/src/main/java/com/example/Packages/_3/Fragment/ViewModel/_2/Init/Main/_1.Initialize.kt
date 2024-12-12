@@ -29,8 +29,7 @@ internal suspend fun P3_ViewModel._1Initialize() {
         // Get ancient data
 
         // Update products
-        this._uiState.produit_DataBase.filter { !it.besoin_To_Be_Updated }
-            .forEach { new_produit_A_Update ->
+        this._uiState.produit_DataBase.forEach { new_produit_A_Update ->
             // Find matching ancient product
             ancienData.produitsDatabase.find { it.idArticle == new_produit_A_Update.id }?.let { ancien_DataBase ->
                 new_produit_A_Update.nom = ancien_DataBase.nomArticleFinale

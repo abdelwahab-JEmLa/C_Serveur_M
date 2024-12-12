@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN
+package com.example.Packages._3.Fragment.Models
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +23,7 @@ class UiState internal constructor(
         initialReferencesFireBaseGroup.toMutableStateList()
     var produit_DataBase: SnapshotStateList<Produit_DataBase> =
         initial_Produits_DataBase.toMutableStateList()
+    var mode_Trie_Produit_Non_Trouve: Boolean by mutableStateOf(false)
 
     private val uiStateFireBaseDatabaseRef = Firebase.database
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")

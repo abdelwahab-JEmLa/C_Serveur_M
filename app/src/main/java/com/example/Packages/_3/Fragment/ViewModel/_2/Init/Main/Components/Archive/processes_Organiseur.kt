@@ -5,7 +5,7 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Archi
 //import androidx.compose.runtime.snapshots.SnapshotStateList
 //import androidx.compose.runtime.toMutableStateList
 //import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.TAG_Snap
-//import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN.UiState
+//import com.example.Packages._3.Fragment.Models.UiState
 //import com.google.firebase.Firebase
 //import com.google.firebase.database.DataSnapshot
 //import com.google.firebase.database.database

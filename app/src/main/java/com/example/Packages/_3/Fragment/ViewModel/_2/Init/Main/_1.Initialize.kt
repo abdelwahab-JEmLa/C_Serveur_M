@@ -2,7 +2,7 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import android.util.Log
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN.UiState
+import com.example.Packages._3.Fragment.Models.UiState
 
 const val TAG_Snap = "InitialeUiState"
 
@@ -19,7 +19,7 @@ internal suspend fun P3_ViewModel._1Initialize() {
                     it_ref_don_FireBase = "produit_DataBase",
                     init_besoin_To_Be_Updated = true
                 )
-                _uiState.produit_DataBase.add(produit)
+                this._uiState.produit_DataBase.add(produit)
             }
 
         initializationProgress = 0.3f
@@ -28,7 +28,7 @@ internal suspend fun P3_ViewModel._1Initialize() {
         val ancienData = get_Ancien_Datas()
 
         // Update products
-        _uiState.produit_DataBase.forEach { new_produit_A_Update ->
+        this._uiState.produit_DataBase.forEach { new_produit_A_Update ->
             // Find matching ancient product
             ancienData.produitsDatabase.find { it.idArticle == new_produit_A_Update.id }?.let { ancien_DataBase ->
                 new_produit_A_Update.nom = ancien_DataBase.nomArticleFinale
@@ -146,7 +146,7 @@ internal suspend fun P3_ViewModel._1Initialize() {
             }
             new_produit_A_Update.besoin_To_Be_Updated = false
         }
-         _uiState.update_remove_UiStateFirebaseDataBase()
+         this._uiState.update_remove_UiStateFirebaseDataBase()
         initializationProgress = 1.0f
         Log.d(TAG_Snap, "Completed _1Initialize")
     } catch (e: Exception) {

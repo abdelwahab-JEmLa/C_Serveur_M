@@ -3,7 +3,7 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Archi
 //import android.util.Log
 //import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.TAG_Snap
 //import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_SoldArticlesTabelle
-//import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN.UiState
+//import com.example.Packages._3.Fragment.Models.UiState
 //import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.getClientData
 //import com.google.firebase.database.DataSnapshot
 //import kotlinx.coroutines.async

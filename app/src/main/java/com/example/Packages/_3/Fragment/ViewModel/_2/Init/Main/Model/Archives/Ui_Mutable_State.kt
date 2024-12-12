@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.Models
+package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import com.example.Packages._3.Fragment.Models.Grossists_Buttons_Modes
+import com.example.Packages._3.Fragment.Models.UiState
 import com.google.firebase.Firebase
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
@@ -114,8 +116,7 @@ class Ui_Mutable_State {
             }
         }
 
-        fun updateSelf(uiMutableState: Ui_Mutable_State) {
-            uiMutableState.update_Ui_Mutable_State_C_produits_Commend_DataBase(this)
+        fun updateSelf(uiMutableState: UiState) {
         }
 
     }

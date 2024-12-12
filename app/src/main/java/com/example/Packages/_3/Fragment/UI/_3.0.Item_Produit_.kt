@@ -32,181 +32,145 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
-import com.example.Packages._3.Fragment.Models.update_Ui_Mutable_State_C_produits_Commend_DataBase
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
 
 @Composable
 internal fun Produit_Item(
-    uiState: Ui_Mutable_State,
-    produit: Ui_Mutable_State.Produits_Commend_DataBase,
-    groupedProduits_Par_Id_Grossist: Map<Long, List<Ui_Mutable_State.Produits_Commend_DataBase>>,
+    uiState: UiState,
+    produit: UiState.Produit_DataBase,
 ) {
+    // State to control card expansion
     var isExpanded by remember { mutableStateOf(false) }
     val heightCard = if (isExpanded) 300.dp else 100.dp
 
-    // Calculate total quantity
-    val totalQuantity = produit.colours_Et_Gouts_Commende?.sumOf { it.quantity_Achete } ?: 0
+    // Calculate total quantity across all colors
+    val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
+        .find { it.vid == 1L }
+        ?.colours_Et_Gouts_Commende
+        ?.sumOf { it.quantity_Achete } ?: 0
 
-    if (isExpanded) {
-        Expanded_Item_Displaye(
-            produit = produit,
-            initialHeightCard = heightCard,
-            onEpandToggle = {
-                isExpanded = !isExpanded
-            }
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(heightCard)
+    ) {
+        // Product Image
+        DisplayeImageById(
+            produit_Id = produit.id.toLong(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(heightCard),
+            reloadKey = 0
         )
-    } else {
+
+        // Overlay for visual effect
         Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(color = Color.Black.copy(alpha = 0.4f))
+        )
+
+        // Highlight for non-found products
+        if (produit.non_Trouve) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(color = Color(0xFFFFD700).copy(alpha = 0.7f))
+            )
+        }
+
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(heightCard)
         ) {
-            DisplayeImageById(
-                produit_Id = produit.id.toLong(),
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(heightCard),
-                reloadKey = 0
-            )
+                    .width(270.dp)
+                    .padding(8.dp)
+            ) {
+                // Product name and total quantity row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = produit.nom,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "Total: $totalQuantity",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
 
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(color = Color.Black.copy(alpha = 0.4f))
-            )
-            if (produit.non_Trouve) {
+                // Expandable grid of colors and quantities
                 Box(
                     modifier = Modifier
-                        .matchParentSize()
-                        .background(color = Color(0xFFFFD700).copy(alpha = 0.7f))
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(heightCard)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .width(270.dp)
-                        .padding(8.dp)
-                        .clickable {
-                            handleProductPositionUpdate(
-                                produit,
-                                groupedProduits_Par_Id_Grossist,
-                                uiState
-                            )
-                        }
+                        .width(200.dp)
+                        .height(if (isExpanded) 280.dp else 80.dp)
+                        .clickable { isExpanded = !isExpanded }
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.spacedBy(0.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp)
                     ) {
-                        Text(
-                            text = produit.nom,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Text(
-                            text = "Total: $totalQuantity",
-                            color = Color.White,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
+                        // Filter and display colors with purchased quantities
+                        val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                            .find { it.vid == 1L }
+                            ?.colours_Et_Gouts_Commende
+                            ?.filter { it.quantity_Achete > 0 } ?: emptyList()
 
-                    Box(
-                        modifier = Modifier
-                            .width(200.dp)
-                            .height(if (isExpanded) 280.dp else 80.dp)
-                            .clickable { isExpanded = !isExpanded }
-                    ) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.spacedBy(0.dp),
-                            verticalArrangement = Arrangement.spacedBy(0.dp)
-                        ) {
-                            items(
-                                produit.colours_Et_Gouts_Commende?.filter { it.quantity_Achete > 0 }?.size
-                                    ?: 0
-                            ) { index ->
-                                val colorFlavor =
-                                    produit.colours_Et_Gouts_Commende?.filter { it.quantity_Achete > 0 }
-                                        ?.get(index)
-                                colorFlavor?.let {
-                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                        val displayText = when {
-                                            it.imogi.isNotEmpty() -> it.imogi
-                                            else -> it.nom.take(2)
-                                        }
-                                        Text(
-                                            text = "$displayText>(${it.quantity_Achete})",
-                                            fontSize = 24.sp,
-                                            color = Color.White
-                                        )
-                                    }
+                        items(colorsList.size) { index ->
+                            val colorFlavor = colorsList[index]
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                val displayText = when {
+                                    colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
+                                    else -> colorFlavor.nom.take(2)
                                 }
+                                Text(
+                                    text = "$displayText>(${colorFlavor.quantity_Achete})",
+                                    fontSize = 24.sp,
+                                    color = Color.White
+                                )
                             }
                         }
                     }
                 }
+            }
 
-                Row(
-                    modifier = Modifier.width(70.dp),
-                    horizontalArrangement = Arrangement.End
+            // Toggle visibility button
+            Row(
+                modifier = Modifier.width(70.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(
+                    onClick = {
+                        // Toggle the non_Trouve status
+                        produit.non_Trouve = !produit.non_Trouve
+                    },
+                    modifier = Modifier.size(heightCard)
                 ) {
-                    val position =
-                        produit.grossist_Choisi_Pour_Acheter_CeProduit?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                            ?: 0
-                    Text(
-                        text = "${if (position == 0) "" else position}",
-                        fontSize = 80.sp,
-                        color = Color.White
+                    Icon(
+                        imageVector = if (produit.non_Trouve)
+                            Icons.AutoMirrored.Filled.NotListedLocation
+                        else
+                            Icons.Default.Visibility,
+                        contentDescription = "Basculer le statut du produit",
+                        tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
                     )
-                    IconButton(
-                        onClick = {
-                            val updatedProduit = produit.copy(non_Trouve = !produit.non_Trouve)
-                            uiState.update_Ui_Mutable_State_C_produits_Commend_DataBase(updatedProduit)
-                        },
-                        modifier = Modifier.size(heightCard)
-                    ) {
-                        Icon(
-                            imageVector = if (produit.non_Trouve)
-                                Icons.AutoMirrored.Filled.NotListedLocation
-                            else
-                                Icons.Default.Visibility,
-                            contentDescription = "Basculer le statut du produit",
-                            tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
-                        )
-                    }
                 }
             }
         }
     }
-}
-
-// Extracted function to handle product position update
-private fun handleProductPositionUpdate(
-    produit: Ui_Mutable_State.Produits_Commend_DataBase,
-    groupedProduits_Par_Id_Grossist: Map<Long, List<Ui_Mutable_State.Produits_Commend_DataBase>>,
-    uiState: Ui_Mutable_State
-) {
-    val supplierGroup = groupedProduits_Par_Id_Grossist[produit.grossist_Choisi_Pour_Acheter_CeProduit?.id ?: 0]
-        ?: emptyList()
-    val maxPosition = supplierGroup.maxOfOrNull {
-        it.grossist_Choisi_Pour_Acheter_CeProduit?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-            ?: 0
-    } ?: 0
-    val updatedProduit = produit.copy(
-        grossist_Choisi_Pour_Acheter_CeProduit = produit.grossist_Choisi_Pour_Acheter_CeProduit?.copy(
-            position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = maxPosition + 1
-        )
-    )
-    updatedProduit.updateSelf(uiState)
 }

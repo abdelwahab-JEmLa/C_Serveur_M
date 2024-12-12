@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun Produits_Main_List(
     modifier: Modifier = Modifier,
@@ -37,12 +36,17 @@ internal fun Produits_Main_List(
 
                 items(
                     items = ui_Mutable_State.produit_DataBase,
-                    key = { item -> "positive_${item.id}" }
                 ) { produit ->
-                    Produit_Item(
-                        uiState = ui_Mutable_State,
-                        produit = produit,
-                    )
+                    val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                        .find { it.vid == 1L }
+                        ?.colours_Et_Gouts_Commende
+                        ?.sumOf { it.quantity_Achete } ?: 0
+                    if(totalQuantity>0) {
+                        Produit_Item(
+                            uiState = ui_Mutable_State,
+                            produit = produit,
+                        )
+                    }
                 }
             }
 }

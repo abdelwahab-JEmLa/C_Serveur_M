@@ -5,7 +5,12 @@ import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
 
 const val TAG_Snap = "InitialeUiState"
-
+data class Quater(
+    val colorId: Long?,
+    val colorName: String?,
+    val position: Long,
+    val colorsList: MutableList<UiState.Produit_DataBase.Colours_Et_Gouts>
+)
 internal suspend fun P3_ViewModel._1Initialize() {
     try {
         Log.d(TAG_Snap, "Starting _1Initialize")
@@ -35,19 +40,23 @@ internal suspend fun P3_ViewModel._1Initialize() {
 
                 // Process colors more efficiently
                 listOf(
-                    Triple(ancien_DataBase.idcolor1, 1L, new_produit_A_Update.colours_Et_Gouts),
-                    Triple(ancien_DataBase.idcolor2, 2L, new_produit_A_Update.colours_Et_Gouts),
-                    Triple(ancien_DataBase.idcolor3, 3L, new_produit_A_Update.colours_Et_Gouts),
-                    Triple(ancien_DataBase.idcolor4, 4L, new_produit_A_Update.colours_Et_Gouts)
-                ).forEach { (colorId, position, colorsList) ->
+                    Quater(ancien_DataBase.idcolor1, ancien_DataBase.couleur1, 1L, new_produit_A_Update.colours_Et_Gouts),
+                    Quater(ancien_DataBase.idcolor2, ancien_DataBase.couleur2, 2L, new_produit_A_Update.colours_Et_Gouts),
+                    Quater(ancien_DataBase.idcolor3, ancien_DataBase.couleur3, 3L, new_produit_A_Update.colours_Et_Gouts),
+                    Quater(ancien_DataBase.idcolor4, ancien_DataBase.couleur4, 4L, new_produit_A_Update.colours_Et_Gouts)
+                ).forEach { (colorId, colorName, position, colorsList) ->
                     ancienData.couleurs_List.find { it.idColore == colorId }?.let { color ->
-                        colorsList.add(
+                        colorName?.let {
                             UiState.Produit_DataBase.Colours_Et_Gouts(
                                 position_Du_Couleur_Au_Produit = position,
-                                nom = color.nameColore,
+                                nom = it,
                                 imogi = color.iconColore
                             )
-                        )
+                        }?.let {
+                            colorsList.add(
+                                it
+                            )
+                        }
                     }
                 }
             }

@@ -133,16 +133,18 @@ internal fun Produit_Item(
 
                         items(colorsList.size) { index ->
                             val colorFlavor = colorsList[index]
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Row() {
                                 val displayText = when {
                                     colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
-                                    else -> colorFlavor.nom.take(2)
+                                    else -> colorFlavor.nom.take(3)
                                 }
+
                                 Text(
-                                    text = "$displayText>(${colorFlavor.quantity_Achete})",
+                                    text = "(${colorFlavor.quantity_Achete})$displayText",
                                     fontSize = 24.sp,
                                     color = Color.White
                                 )
+
                             }
                         }
                     }

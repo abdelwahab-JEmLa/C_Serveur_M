@@ -5,12 +5,7 @@ import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
 
 const val TAG_Snap = "InitialeUiState"
-data class Quater(
-    val colorId: Long?,
-    val colorName: String?,
-    val position: Long,
-    val colorsList: MutableList<UiState.Produit_DataBase.Colours_Et_Gouts>
-)
+
 internal suspend fun P3_ViewModel._1Initialize() {
     try {
         Log.d(TAG_Snap, "Starting _1Initialize")
@@ -40,26 +35,22 @@ internal suspend fun P3_ViewModel._1Initialize() {
 
                 // Process colors more efficiently
                 listOf(
-                    Quater(ancien_DataBase.idcolor1, ancien_DataBase.couleur1, 1L, new_produit_A_Update.colours_Et_Gouts),
-                    Quater(ancien_DataBase.idcolor2, ancien_DataBase.couleur2, 2L, new_produit_A_Update.colours_Et_Gouts),
-                    Quater(ancien_DataBase.idcolor3, ancien_DataBase.couleur3, 3L, new_produit_A_Update.colours_Et_Gouts),
-                    Quater(ancien_DataBase.idcolor4, ancien_DataBase.couleur4, 4L, new_produit_A_Update.colours_Et_Gouts)
-                ).forEach { (colorId, colorName, position, colorsList) ->
+                    Triple(ancien_DataBase.idcolor1, 1L, new_produit_A_Update.colours_Et_Gouts),
+                    Triple(ancien_DataBase.idcolor2, 2L, new_produit_A_Update.colours_Et_Gouts),
+                    Triple(ancien_DataBase.idcolor3, 3L, new_produit_A_Update.colours_Et_Gouts),
+                    Triple(ancien_DataBase.idcolor4, 4L, new_produit_A_Update.colours_Et_Gouts)
+                ).forEach { (colorId, position, colorsList) ->
                     ancienData.couleurs_List.find { it.idColore == colorId }?.let { color ->
-                        colorName?.let {
+                        colorsList.add(
                             UiState.Produit_DataBase.Colours_Et_Gouts(
                                 position_Du_Couleur_Au_Produit = position,
-                                nom = it,
+                                nom = color.nameColore,
                                 imogi = color.iconColore
                             )
-                        }?.let {
-                            colorsList.add(
-                                it
                             )
                         }
                     }
                 }
-            }
 
             val salesByClientAndArticle = ancienData.soldArticles
                 .groupBy { it.clientSoldToItId }
@@ -68,7 +59,7 @@ internal suspend fun P3_ViewModel._1Initialize() {
                 }
 
             salesByClientAndArticle.forEach { (clientId, articleSales) ->
-                articleSales[new_produit_A_Update.id]?.forEachIndexed { index, ancien_soldArticles ->
+                     articleSales[new_produit_A_Update.id]?.forEachIndexed { index, ancien_soldArticles ->
                     // Safely find related client data, use null-safe operator and provide default
                     val related_Client_Datas = ancienData.clients_List.find {
                         it.idClientsSu == clientId

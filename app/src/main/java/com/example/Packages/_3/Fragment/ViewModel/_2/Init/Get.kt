@@ -1,7 +1,6 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init
 
 import android.util.Log
-import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.ColorArticle
 import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.TAG
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot

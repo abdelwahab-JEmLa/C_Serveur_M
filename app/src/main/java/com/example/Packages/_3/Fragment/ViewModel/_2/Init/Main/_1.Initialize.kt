@@ -16,15 +16,26 @@ internal suspend fun P3_ViewModel._1Initialize(
         _uiState.loadFromFirebaseDataBase()
 
         initializationProgress = (3/10).toFloat()
-
-
-        List(1500) { i ->
-            val produit = UiState.Produit_DataBase(
-                id = i.toLong(),
-                init_besoin_To_Be_Updated = true,
-            )
-            _uiState.produit_DataBase.add(produit)
+         /**First Init*/
+        val cree = true
+        if (cree) {
+            List(1500) { i ->
+                val produit = UiState.Produit_DataBase(
+                    id = i.toLong(),
+                    it_ref_Id_don_FireBase=1L,
+                    it_ref_don_FireBase = "produit_DataBase",
+                    init_besoin_To_Be_Updated = true
+                )
+                _uiState.produit_DataBase.add(produit)
+            }
         }
+
+        _uiState.produit_DataBase.forEach {
+               it.besoin_To_Be_Updated = false
+        }
+        /**------------------------------------------*/
+
+
 
         initializationProgress = 0.9f
 

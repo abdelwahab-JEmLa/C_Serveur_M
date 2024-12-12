@@ -29,6 +29,8 @@ class UiState internal constructor(
 
     class Produit_DataBase(
         val id: Long = 0,
+        val it_ref_Id_don_FireBase: Long = 0,
+        val it_ref_don_FireBase: String = "",
         val nom: String = "",
         init_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,

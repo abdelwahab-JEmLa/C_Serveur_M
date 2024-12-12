@@ -12,7 +12,6 @@ internal suspend fun P3_ViewModel._1Initialize() {
         initializationProgress = 0.1f  // Better float representation
 
         // First Init
-        if (true) { // Replace with actual condition
             List(200) { i ->
                 val produit = UiState.Produit_DataBase(
                     id = i.toLong(),
@@ -22,7 +21,6 @@ internal suspend fun P3_ViewModel._1Initialize() {
                 )
                 _uiState.produit_DataBase.add(produit)
             }
-        }
 
         initializationProgress = 0.3f
 
@@ -110,7 +108,6 @@ internal suspend fun P3_ViewModel._1Initialize() {
                 }
             }
 
-// Create new grossist entry
             val newGrossist = UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
                 vid = 1L,
                 id_Supplier = 1L,
@@ -145,7 +142,7 @@ internal suspend fun P3_ViewModel._1Initialize() {
             }
             new_produit_A_Update.besoin_To_Be_Updated = false
         }
-
+         _uiState.updateUiStateSelfInFirebaseDataBase()
         initializationProgress = 1.0f
         Log.d(TAG_Snap, "Completed _1Initialize")
     } catch (e: Exception) {

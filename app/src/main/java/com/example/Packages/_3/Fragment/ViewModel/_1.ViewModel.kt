@@ -42,9 +42,7 @@ internal class P3_ViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                _1Initialize { progress ->
-                    initializationProgress = progress
-                }
+                _1Initialize()
             } finally {
                 isInitializing = false
             }

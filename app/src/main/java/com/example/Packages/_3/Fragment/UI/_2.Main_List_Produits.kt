@@ -1,6 +1,5 @@
 package com.example.Packages._3.Fragment.UI
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

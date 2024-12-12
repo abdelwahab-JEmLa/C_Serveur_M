@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -142,29 +143,34 @@ internal fun Produit_Item(
                         .wrapContentHeight()
                         .padding(top = 8.dp)
                 ) {
-                    produit.demmende_Achate_De_Cette_Produit.forEach { acheteur ->
-                        acheteur.colours_Et_Gouts_Acheter_Depuit_Client.forEach { couleur ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = acheteur.nom_Acheteur,
-                                    fontSize = 16.sp,
-                                    color = Color.White,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                Text(
-                                    text = "${couleur.quantity_Achete} ${couleur.imogi}",
-                                    fontSize = 16.sp,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(start = 8.dp)
-                                )
+                    produit.demmende_Achate_De_Cette_Produit
+                        .sortedBy { it.nom_Acheteur }
+                        .forEach { acheteur ->
+                        acheteur.colours_Et_Gouts_Acheter_Depuit_Client
+                            .sortedBy { it.quantity_Achete }
+                            .forEach { couleur ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = acheteur.nom_Acheteur,
+                                        fontSize = 14.sp,
+                                        color = Color.Red,
+                                        modifier = Modifier.weight(1f)
+                                            .background(Color.Gray)
+                                    )
+                                    Text(
+                                        text = "${couleur.quantity_Achete}=${couleur.imogi}${couleur.nom}",
+                                        fontSize = 14.sp,
+                                        color = Color.White,
+                                        modifier = Modifier.padding(start = 8.dp)
+                                    )
+                                }
                             }
-                        }
                     }
                 }
             } else {
@@ -184,7 +190,8 @@ internal fun Produit_Item(
                         val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
                             .find { it.vid == 1L }
                             ?.colours_Et_Gouts_Commende
-                            ?.filter { it.quantity_Achete > 0 } ?: emptyList()
+                            ?.sortedBy { it.quantity_Achete }
+                            ?.filter { it.quantity_Achete > 0 } ?: emptyList<UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier>()
 
                         items(colorsList.size) { index ->
                             val colorFlavor = colorsList[index]

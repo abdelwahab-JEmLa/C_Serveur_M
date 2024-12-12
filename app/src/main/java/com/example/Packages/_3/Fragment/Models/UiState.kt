@@ -18,6 +18,7 @@ class UiState internal constructor(
     initialReferencesFireBaseGroup: List<ReferencesFireBaseGroup> = emptyList(),
     initial_Produits_DataBase: List<Produit_DataBase> = emptyList()
 ) {
+
     var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
     var referencesFireBaseGroup: SnapshotStateList<ReferencesFireBaseGroup> =
         initialReferencesFireBaseGroup.toMutableStateList()
@@ -28,6 +29,21 @@ class UiState internal constructor(
     private val uiStateFireBaseDatabaseRef = Firebase.database
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
 
+    var currentMode: ModesAffichage by mutableStateOf(ModesAffichage.MODE_Affiche_Achteurs)
+
+    enum class ModesAffichage {
+        MODE_Affiche_Achteurs,
+        MODE_Affiche_Produits;
+
+        companion object {
+            fun toggle(current: ModesAffichage): ModesAffichage {
+                return when (current) {
+                    MODE_Affiche_Achteurs -> MODE_Affiche_Produits
+                    MODE_Affiche_Produits -> MODE_Affiche_Achteurs
+                }
+            }
+        }
+    }
     class Produit_DataBase(
         val id: Long = 0,
         val it_ref_Id_don_FireBase: Long = 0,

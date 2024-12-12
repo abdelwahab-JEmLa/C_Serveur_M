@@ -12,7 +12,6 @@ import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ui
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
-import com.example.Packages._3.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
 
 // Fragment3_Main_Screen.kt updates
 @Composable
@@ -28,17 +27,12 @@ internal fun Fragment3_Main_Screen(
         Box(modifier = Modifier.fillMaxSize()) {
             // Main content
             Column {
-
-
                 Produits_Main_List(
                     ui_Mutable_State = p3_ViewModel.uiState,
                     viewModel = p3_ViewModel,
                     contentPadding = paddingValues
                 )
             }
-
-            // FABs
-
 
             GlobalActions_FloatingActionButtons_Grouped(
                 modifier = Modifier,

@@ -109,20 +109,15 @@ fun GlobalActions_FloatingActionButtons_Grouped(
                     )
                     FabButton(
                         icon = Icons.Default.Upload,
-                        label = when (clickCount) {
-                            1 -> "mode_Update_Produits_..."
-                            2 -> "mode_Trie_Produit_Non_Trouve"
-                            else -> "No Mode"
+                        label = when (ui_Mutable_State.currentMode) {
+                            UiState.ModesAffichage.MODE_Affiche_Achteurs -> "Mode Acheteurs"
+                            UiState.ModesAffichage.MODE_Affiche_Produits -> "Mode Produits"
                         },
-                        color = when (clickCount) {
-                            1 -> Color(0xFFFF5722)
-                            2 -> Color(0xFFFFC107)
-                            else -> Color(0xEC212020)
-                        },
+                        color = Color(0xFFFF5722),
                         showLabel = showLabels,
-                        isFiltered = clickCount > 0,
+                        isFiltered = true,
                         onClick = {
-
+                            ui_Mutable_State.currentMode = UiState.ModesAffichage.toggle(ui_Mutable_State.currentMode)
                         }
                     )
 

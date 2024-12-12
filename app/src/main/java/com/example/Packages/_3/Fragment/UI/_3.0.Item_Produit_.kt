@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
 
+// In _3.0.Item_Produit_.kt - Modifications principales ici
 @Composable
 internal fun Produit_Item(
     uiState: UiState,
@@ -42,141 +44,161 @@ internal fun Produit_Item(
 ) {
     // State to control card expansion
     var isExpanded by remember { mutableStateOf(false) }
-    val heightCard = if (isExpanded) 300.dp else 100.dp
 
-    // Calculate total quantity across all colors
+    // Calculate height based on mode
+    val heightCard = when {
+        uiState.currentMode == UiState.ModesAffichage.MODE_Affiche_Produits -> if (isExpanded) 300.dp else 100.dp
+        else -> 100.dp // Mode Acheteurs utilise wrapContentHeight
+    }
+
+    // Calculate total quantity
     val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
         .find { it.vid == 1L }
         ?.colours_Et_Gouts_Commende
         ?.sumOf { it.quantity_Achete } ?: 0
 
-    if (isExpanded) {
-        Expanded_Item_Displaye(
-            produit = produit,
-            initialHeightCard = heightCard,
-            onEpandToggle = {
-                isExpanded = !isExpanded
-            }
-        )
-    } else {
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (uiState.currentMode == UiState.ModesAffichage.MODE_Affiche_Achteurs)
+                    Modifier.wrapContentHeight()
+                else
+                    Modifier.height(heightCard)
+            )
+    ) {
+        // Background image
+        DisplayeImageById(
+            produit_Id = produit.id.toLong(),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(heightCard)
-        ) {
-            // Product Image
-            DisplayeImageById(
-                produit_Id = produit.id.toLong(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(heightCard),
-                reloadKey = 0
-            )
+                .height(100.dp), // Hauteur fixe pour l'image
+            reloadKey = 0
+        )
 
-            // Overlay for visual effect
+        // Overlay
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(color = Color.Black.copy(alpha = 0.4f))
+        )
+
+        // Non trouvé highlight
+        if (produit.non_Trouve) {
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .background(color = Color.Black.copy(alpha = 0.4f))
+                    .background(color = Color(0xFFFFD700).copy(alpha = 0.7f))
             )
+        }
 
-            // Highlight for non-found products
-            if (produit.non_Trouve) {
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(color = Color(0xFFFFD700).copy(alpha = 0.7f))
+        // Content
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            // En-tête avec nom et quantité totale
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = produit.nom,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
+                Text(
+                    text = "Total: $totalQuantity",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                // Bouton de visibilité
+                IconButton(
+                    onClick = { produit.non_Trouve = !produit.non_Trouve },
+                    modifier = Modifier.size(48.dp)
+                ) {
+                    Icon(
+                        imageVector = if (produit.non_Trouve)
+                            Icons.AutoMirrored.Filled.NotListedLocation
+                        else
+                            Icons.Default.Visibility,
+                        contentDescription = "Basculer le statut du produit",
+                        tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
+                    )
+                }
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(heightCard)
-            ) {
+            // Contenu spécifique au mode
+            if (uiState.currentMode == UiState.ModesAffichage.MODE_Affiche_Achteurs) {
                 Column(
                     modifier = Modifier
-                        .width(270.dp)
-                        .padding(8.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(top = 8.dp)
                 ) {
-                    // Product name and total quantity row
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = produit.nom,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Color.White,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Text(
-                            text = "Total: $totalQuantity",
-                            color = Color.White,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                    // Expandable grid of colors and quantities
-                    Box(
-                        modifier = Modifier
-                            .width(200.dp)
-                            .height(if (isExpanded) 280.dp else 80.dp)
-                            .clickable { isExpanded = !isExpanded }
-                    ) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(2),
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.spacedBy(0.dp),
-                            verticalArrangement = Arrangement.spacedBy(0.dp)
-                        ) {
-                            // Filter and display colors with purchased quantities
-                            val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                                .find { it.vid == 1L }
-                                ?.colours_Et_Gouts_Commende
-                                ?.filter { it.quantity_Achete > 0 } ?: emptyList()
-
-                            items(colorsList.size) { index ->
-                                val colorFlavor = colorsList[index]
-                                Row() {
-                                    val displayText = when {
-                                        colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
-                                        else -> colorFlavor.nom.take(3)
-                                    }
-
-                                    Text(
-                                        text = "(${colorFlavor.quantity_Achete})$displayText",
-                                        fontSize = 24.sp,
-                                        color = Color.White
-                                    )
-                                }
+                    produit.demmende_Achate_De_Cette_Produit.forEach { acheteur ->
+                        acheteur.colours_Et_Gouts_Acheter_Depuit_Client.forEach { couleur ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = acheteur.nom_Acheteur,
+                                    fontSize = 16.sp,
+                                    color = Color.White,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(
+                                    text = "${couleur.quantity_Achete} ${couleur.imogi}",
+                                    fontSize = 16.sp,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
                             }
                         }
                     }
                 }
-
-                // Toggle visibility button
-                Row(
-                    modifier = Modifier.width(70.dp),
-                    horizontalArrangement = Arrangement.End
+            } else {
+                // Mode Produits - Grille de couleurs
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(if (isExpanded) 280.dp else 80.dp)
+                        .clickable { isExpanded = !isExpanded }
                 ) {
-                    IconButton(
-                        onClick = {
-                            // Toggle the non_Trouve status
-                            produit.non_Trouve = !produit.non_Trouve
-                        },
-                        modifier = Modifier.size(heightCard)
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Icon(
-                            imageVector = if (produit.non_Trouve)
-                                Icons.AutoMirrored.Filled.NotListedLocation
-                            else
-                                Icons.Default.Visibility,
-                            contentDescription = "Basculer le statut du produit",
-                            tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
-                        )
+                        val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                            .find { it.vid == 1L }
+                            ?.colours_Et_Gouts_Commende
+                            ?.filter { it.quantity_Achete > 0 } ?: emptyList()
+
+                        items(colorsList.size) { index ->
+                            val colorFlavor = colorsList[index]
+                            val displayText = when {
+                                colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
+                                else -> colorFlavor.nom.take(3)
+                            }
+
+                            Text(
+                                text = "(${colorFlavor.quantity_Achete})$displayText",
+                                fontSize = 24.sp,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
             }

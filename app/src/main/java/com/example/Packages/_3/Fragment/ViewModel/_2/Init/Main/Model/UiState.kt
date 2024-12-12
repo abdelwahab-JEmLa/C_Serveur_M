@@ -31,19 +31,29 @@ class UiState internal constructor(
         val id: Long = 0,
         val it_ref_Id_don_FireBase: Long = 0,
         val it_ref_don_FireBase: String = "",
-        val nom: String = "",
+        init_nom: String = "",
         init_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,
+        init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
         initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
         initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit> = emptyList(),
     ) {
+        var nom: String by mutableStateOf(init_nom)
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
+
+        var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
+            init_colours_Et_Gouts.toMutableStateList()
         var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =
             initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
         var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit> =
             initialGrossist_Choisi_Pour_Acheter_CeProduit.toMutableStateList()
 
+        class Colours_Et_Gouts(
+            var position_Du_Couleur_Au_Produit: Long = 0,
+            var nom: String = "",
+            var imogi: String = ""
+        )
 
         class Grossist_Choisi_Pour_Acheter_Ce_Produit(
             var id: Long = 0,

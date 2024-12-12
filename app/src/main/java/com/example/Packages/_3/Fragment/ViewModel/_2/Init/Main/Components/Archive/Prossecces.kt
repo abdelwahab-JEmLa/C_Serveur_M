@@ -1,8 +1,11 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Archive
 
 import android.util.Log
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.getColorData
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.getSupplierArticlesData
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.get_Grossist_Choisi_Pour_Acheter_Ce_Produit
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.TAG_Snap
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.SoldArticlesTabelle
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_SoldArticlesTabelle
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.UiState
 import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.getClientData
 import com.google.firebase.database.DataSnapshot
@@ -73,7 +76,7 @@ private suspend fun process_Ventes_Data_Createur(
 ): List<UiState.Produit_DataBase.Demmende_Achate_De_Cette_Produit> {
     return soldArticlesSnapshot.children.mapNotNull { soldArticle ->
         try {
-            val soldData = soldArticle.getValue(SoldArticlesTabelle::class.java)
+            val soldData = soldArticle.getValue(Ancien_SoldArticlesTabelle::class.java)
                 ?: return@mapNotNull null
             if (soldData.idArticle != productId) return@mapNotNull null
 

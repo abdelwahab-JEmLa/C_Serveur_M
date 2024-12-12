@@ -6,7 +6,7 @@ import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
 import com.example.Packages._3.Fragment.Models.update_Ui_Mutable_State_C_produits_Commend_DataBase
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.ColorArticle
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.SoldArticlesTabelle
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_SoldArticlesTabelle
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.database
@@ -247,7 +247,7 @@ private suspend fun process_Ventes_Data_Createur(
 ): List<Ui_Mutable_State.Produits_Commend_DataBase.Demmende_Achate_De_Cette_Produit> {
     return soldArticlesSnapshot.children.mapNotNull { soldArticle ->
         try {
-            val soldData = soldArticle.getValue(SoldArticlesTabelle::class.java)
+            val soldData = soldArticle.getValue(Ancien_SoldArticlesTabelle::class.java)
                 ?: return@mapNotNull null
             if (soldData.idArticle != productId) return@mapNotNull null
 

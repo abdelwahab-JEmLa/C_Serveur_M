@@ -133,7 +133,7 @@ internal suspend fun processes_Organiseur(
     updateAll: Boolean
 ): List<Ui_Mutable_State.Produits_Commend_DataBase> = coroutineScope {
     try {
-        Log.d(TAG, "Starting processes_Organiseur with updateAll=$updateAll, productsToUpdate=${productsToUpdate.size} items")
+        Log.d(TAG, "Starting processes_Cree_Produits_DataBase with updateAll=$updateAll, productsToUpdate=${productsToUpdate.size} items")
         onProgressUpdate(0.1f)
 
         val (productsSnapshot, soldArticlesSnapshot) = coroutineScope {
@@ -182,7 +182,7 @@ internal suspend fun processes_Organiseur(
         processedProductsList
 
     } catch (e: Exception) {
-        Log.e(TAG, "Error in processes_Organiseur", e)
+        Log.e(TAG, "Error in processes_Cree_Produits_DataBase", e)
         emptyList()
     }
 }

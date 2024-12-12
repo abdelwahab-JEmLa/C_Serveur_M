@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
 import com.example.Packages._3.Fragment.ViewModel._2.Init.UiState
-import com.example.Packages._3.Fragment.ViewModel._2.Init._1Initialize
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main._1Initialize
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch
@@ -34,7 +34,6 @@ internal class P3_ViewModel : ViewModel() {
 
     // Progress tracking
     var initializationProgress by mutableFloatStateOf(0f)
-        private set
 
     var isInitializing by mutableStateOf(false)
         private set

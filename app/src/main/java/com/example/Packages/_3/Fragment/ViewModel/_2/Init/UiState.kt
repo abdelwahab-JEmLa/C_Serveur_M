@@ -30,12 +30,13 @@ class UiState internal constructor(
     class Produit_DataBase(
         val id: Long = 0,
         val nom: String = "",
+        init_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,
         initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
         initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit> = emptyList(),
     ) {
+        var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
-
         var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =
             initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
         var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit> =
@@ -104,19 +105,14 @@ class UiState internal constructor(
         var description: String = "",
         var parent_Id: Long = 0L,
         var parent_key: String = "",
-        initialUpdatesModes: items_Need_To_Be_Updated_From_it = items_Need_To_Be_Updated_From_it.ALL,
+        initialUpdateAllTrigger: Boolean = false,
         initialLastUpdateTime: String? = getCurrentFormattedTime(),
         initialProduits_Update_Ref: List<Produit_Update_Ref> = emptyList()
     ) {
-        var updateMode: items_Need_To_Be_Updated_From_it by mutableStateOf(initialUpdatesModes)
+        var updateAllTrigger: Boolean by mutableStateOf(initialUpdateAllTrigger)
         var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
         var produit_Update_Ref: SnapshotStateList<Produit_Update_Ref> =
             initialProduits_Update_Ref.toMutableStateList()
-
-        enum class items_Need_To_Be_Updated_From_it {
-            ALL,
-            TOTAL_QUANTITY_GROSSIST_COMMAND_ABOVE_ZERO
-        }
 
         class Produit_Update_Ref(
             var id: Long = 0L,

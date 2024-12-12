@@ -6,7 +6,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
-suspend fun getSupplierInfosDataUi(idSupplierSu: Long): UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit? {
+
+suspend fun get_Grossist_Choisi_Pour_Acheter_Ce_Produit(idSupplierSu: Long): UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit? {
     return try {
         val supplierSnapshot = Firebase.database.getReference("F_Suppliers")
             .orderByChild("idSupplierSu")

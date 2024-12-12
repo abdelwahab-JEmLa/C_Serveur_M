@@ -1,6 +1,7 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init
 
 import android.util.Log
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.TAG_Snap
 import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.getClientData
 import com.google.firebase.database.DataSnapshot
 import kotlinx.coroutines.async
@@ -18,7 +19,7 @@ suspend fun process_Cree_Product(
     Log.d(TAG_Snap, "Processing product $idArticle with supplier $idSupplierSu")
 
     val (supplierInfosData, supplierData) = coroutineScope {
-        val supplierInfosDeferred = async { getSupplierInfosDataUi(idSupplierSu) }
+        val supplierInfosDeferred = async { get_Grossist_Choisi_Pour_Acheter_Ce_Produit(idSupplierSu) }
         val supplierDataDeferred = async { getSupplierArticlesData(idArticle) }
         Pair(supplierInfosDeferred.await(), supplierDataDeferred.await())
     }

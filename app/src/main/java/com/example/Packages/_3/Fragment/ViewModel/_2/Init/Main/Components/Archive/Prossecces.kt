@@ -1,12 +1,9 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Archive
 
 import android.util.Log
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.getColorData
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.getSupplierArticlesData
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.get_Grossist_Choisi_Pour_Acheter_Ce_Produit
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.TAG_Snap
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_SoldArticlesTabelle
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.UiState
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN.UiState
 import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.getClientData
 import com.google.firebase.database.DataSnapshot
 import kotlinx.coroutines.async

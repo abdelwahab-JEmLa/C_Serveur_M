@@ -2,7 +2,7 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.UiState
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN.UiState
 import kotlin.random.Random
 
 

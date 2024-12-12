@@ -76,3 +76,9 @@ data class Ancien_SoldArticlesTabelle internal constructor(
     val color4SoldQuantity: Int = 0,
     val confimed: Boolean = false,
 )
+data class Ancien_ColorArticle(
+    val idColore: Long = 0,
+    val nameColore: String = "",
+    val iconColore: String = "",
+    var classementColore: Int = 0
+)

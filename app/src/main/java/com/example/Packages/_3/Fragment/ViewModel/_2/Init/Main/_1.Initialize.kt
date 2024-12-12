@@ -1,15 +1,8 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import android.util.Log
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_Produits_DataBase
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Ancien_SoldArticlesTabelle
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.UiState
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
-import kotlinx.coroutines.tasks.await
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN.UiState
 
 
 const val TAG_Snap = "InitialeUiState"
@@ -20,9 +13,7 @@ internal suspend fun P3_ViewModel._1Initialize(
     try {
         Log.d(TAG_Snap, "Starting _1Initialize")
         initializationProgress = (1/10).toFloat()
-        _uiState.loadFromFirebaseDataBase()
 
-        initializationProgress = 0.3f
         initializationProgress = (3/10).toFloat()
         // First Init
         if (true) { // Replace with actual condition
@@ -38,14 +29,63 @@ internal suspend fun P3_ViewModel._1Initialize(
         }
 
         // Get ancient data
-        val ancienData = get_Datas()
+        val ancienData = get_Ancien_Datas()
 
         // Update products
         _uiState.produit_DataBase.forEach { produit ->
             produit.besoin_To_Be_Updated = false
             // Find matching ancient product
-            ancienData.produitsDatabase.find { it.idArticle == produit.id }?.let { ancien ->
-                produit.nom = ancien.nomArticleFinale
+            ancienData.produitsDatabase.find { it.idArticle == produit.id }?.let { ancien_DataBase ->
+                produit.nom = ancien_DataBase.nomArticleFinale
+
+                ancienData.couleurs_List.find { it.idColore== ancien_DataBase.idcolor1}?.let {
+                    UiState.Produit_DataBase.Colours_Et_Gouts(
+                        position_Du_Couleur_Au_Produit=1L,
+                        nom=  it.nameColore,
+                        imogi = it.iconColore
+                    )
+                }?.let {
+                    produit.colours_Et_Gouts.add(
+                        it
+                    )
+                }
+
+                ancienData.couleurs_List.find { it.idColore== ancien_DataBase.idcolor2}?.let {
+                    UiState.Produit_DataBase.Colours_Et_Gouts(
+                        position_Du_Couleur_Au_Produit=2L,
+                        nom=  it.nameColore,
+                        imogi = it.iconColore
+                    )
+                }?.let {
+                    produit.colours_Et_Gouts.add(
+                        it
+                    )
+                }
+
+                ancienData.couleurs_List.find { it.idColore== ancien_DataBase.idcolor3}?.let {
+                    UiState.Produit_DataBase.Colours_Et_Gouts(
+                        position_Du_Couleur_Au_Produit=3L,
+                        nom=  it.nameColore,
+                        imogi = it.iconColore
+                    )
+                }?.let {
+                    produit.colours_Et_Gouts.add(
+                        it
+                    )
+                }
+
+                ancienData.couleurs_List.find { it.idColore== ancien_DataBase.idcolor4}?.let {
+                    UiState.Produit_DataBase.Colours_Et_Gouts(
+                        position_Du_Couleur_Au_Produit=4L,
+                        nom=  it.nameColore,
+                        imogi = it.iconColore
+                    )
+                }?.let {
+                    produit.colours_Et_Gouts.add(
+                        it
+                    )
+                }
+
 
             }
         }

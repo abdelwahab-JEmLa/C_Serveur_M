@@ -2,7 +2,7 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Archi
 
 import android.util.Log
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.ColorArticle
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.UiState
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN.UiState
 import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.TAG
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot

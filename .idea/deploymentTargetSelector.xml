@@ -28,6 +28,14 @@
       </SelectionState>
       <SelectionState runConfigName="MainScreenPreview ">
         <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2024-12-12T19:39:55.355336200Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=fee5ca0c" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection />
       </SelectionState>
       <SelectionState runConfigName="MainScreenPreview (3)">
         <option name="selectionMode" value="DROPDOWN" />

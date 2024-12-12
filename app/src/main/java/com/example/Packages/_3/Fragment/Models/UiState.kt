@@ -74,18 +74,20 @@ class UiState internal constructor(
 
         class Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
             var vid: Long = 0,
-            var id_Supplier: Long = 0,
+            var supplier_id: Long = 0,
             var nom: String = "",
             var date: String = "", //"yyyy-MM-dd HH:mm:ss"
             var position_Grossist_Don_Parent_Grossists_List: Int = 0,
             var couleur: String = "#FFFFFF",
             var currentCreditBalance: Double = 0.0,
-            val position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
+            init_produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp: Int = 0,
             initialColours_Et_Gouts_Commende_Au_Supplier: List<Colours_Et_Gouts_Commende_Au_Supplier> = emptyList(),
-
             ) {
+            var produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp: Int by mutableStateOf(init_produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp)
+
             var colours_Et_Gouts_Commende: SnapshotStateList<Colours_Et_Gouts_Commende_Au_Supplier> =
                 initialColours_Et_Gouts_Commende_Au_Supplier.toMutableStateList()
+
             class Colours_Et_Gouts_Commende_Au_Supplier(
                 var position_Du_Couleur_Au_Produit: Long = 0,
                 var id_Don_Tout_Couleurs: Long = 0,

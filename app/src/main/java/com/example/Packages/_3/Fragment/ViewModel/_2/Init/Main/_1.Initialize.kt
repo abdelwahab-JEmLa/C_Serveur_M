@@ -117,12 +117,11 @@ internal suspend fun P3_ViewModel._1Initialize() {
 
             val newGrossist = UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
                 vid = 1L,
-                id_Supplier = 1L,
+                supplier_id = 1L,
                 position_Grossist_Don_Parent_Grossists_List = 0,  // Set appropriate position
                 nom = "Default Grossist",  // Set appropriate name
                 couleur = "#FFFFFF",  // Set appropriate color
                 currentCreditBalance = 0.0,  // Set appropriate initial balance
-                position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0,  // Set appropriate position
                 initialColours_Et_Gouts_Commende_Au_Supplier = emptyList()
             )
 

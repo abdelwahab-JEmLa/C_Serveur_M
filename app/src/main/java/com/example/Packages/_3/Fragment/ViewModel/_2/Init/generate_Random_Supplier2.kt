@@ -21,12 +21,11 @@ internal fun generate_Random_Supplier2(): SnapshotStateList<UiState.Produit_Data
         }
 
         UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
-            id_Supplier = randomNum.toLong(),
+            supplier_id = randomNum.toLong(),
             nom = if (randomNum == 0) "Undefined Supplier" else "Grossiste $randomNum",
             position_Grossist_Don_Parent_Grossists_List = position,
             couleur = colors.random(),
             currentCreditBalance = Random.nextDouble(0.0, 10000.0),
-            position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = position
         )
     }.toMutableStateList()
 }

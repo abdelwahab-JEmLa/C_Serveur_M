@@ -17,7 +17,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NotListedLocation
+import androidx.compose.material.icons.filled.RestartAlt
+import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,27 +33,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
+import com.example.Packages._3.Fragment.UI._4.Components.ProductPositionDialog
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
 
-// In _3.0.Item_Produit_.kt - Modifications principales ici
 @Composable
 internal fun Produit_Item(
     uiState: UiState,
     produit: UiState.Produit_DataBase,
 ) {
-    // State to control card expansion
     var isExpanded by remember { mutableStateOf(false) }
+    var showPositionDialog by remember { mutableStateOf(false) }
+
+    // Calculate current position for supplier ID 1
+    val currentPosition = produit.grossist_Choisi_Pour_Acheter_CeProduit
+        .find { it.supplier_id == 1L }
+        ?.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp ?: 0
 
     // Calculate height based on mode
     val heightCard = when {
         uiState.currentMode == UiState.ModesAffichage.MODE_Affiche_Produits -> if (isExpanded) 300.dp else 100.dp
-        else -> 100.dp // Mode Acheteurs utilise wrapContentHeight
+        else -> 100.dp
     }
 
     // Calculate total quantity
@@ -70,10 +78,10 @@ internal fun Produit_Item(
     ) {
         // Background image
         DisplayeImageById(
-            produit_Id = produit.id.toLong(),
+            produit_Id = produit.id,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp), // Hauteur fixe pour l'image
+                .height(100.dp),
             reloadKey = 0
         )
 
@@ -93,13 +101,11 @@ internal fun Produit_Item(
             )
         }
 
-        // Content
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            // En-tête avec nom et quantité totale
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -113,25 +119,64 @@ internal fun Produit_Item(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
-                Text(
-                    text = "Total: $totalQuantity",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
-                )
 
-                // Bouton de visibilité
-                IconButton(
-                    onClick = { produit.non_Trouve = !produit.non_Trouve },
-                    modifier = Modifier.size(48.dp)
+                // Position display and buttons
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = if (produit.non_Trouve)
-                            Icons.AutoMirrored.Filled.NotListedLocation
-                        else
-                            Icons.Default.Visibility,
-                        contentDescription = "Basculer le statut du produit",
-                        tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
+                    Text(
+                        text = "Total: $totalQuantity",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
                     )
+
+                    // Position button with current position displayed
+                    Button(
+                        onClick = { showPositionDialog = true },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary
+                        ),
+                        modifier = Modifier.height(36.dp)
+                    ) {
+                        Text(
+                            text = "Pos: $currentPosition",
+                            color = Color.White
+                        )
+                    }
+
+                    // Reset position button
+                    IconButton(
+                        onClick = {
+                            produit.grossist_Choisi_Pour_Acheter_CeProduit
+                                .find { it.supplier_id == 1L }
+                                ?.let { supplier ->
+                                    supplier.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp = 0
+                                }
+                        },
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.RestartAlt,
+                            contentDescription = "Réinitialiser la position",
+                            tint = Color.White
+                        )
+                    }
+
+                    // Visibility toggle button
+                    IconButton(
+                        onClick = { produit.non_Trouve = !produit.non_Trouve },
+                        modifier = Modifier.size(36.dp)
+                    ) {
+                        Icon(
+                            imageVector = if (produit.non_Trouve)
+                                Icons.AutoMirrored.Filled.NotListedLocation
+                            else
+                                Icons.Default.Visibility,
+                            contentDescription = "Basculer le statut du produit",
+                            tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
+                        )
+                    }
                 }
             }
 
@@ -210,5 +255,19 @@ internal fun Produit_Item(
                 }
             }
         }
-    }
+
+       }
+    // Position Dialog
+    ProductPositionDialog(
+        showDialog = showPositionDialog,
+        onDismiss = { showPositionDialog = false },
+        produit = produit,
+        onPositionUpdate = { newPosition ->
+            produit.grossist_Choisi_Pour_Acheter_CeProduit
+                .find { it.supplier_id == 1L }
+                ?.let { supplier ->
+                    supplier.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp = newPosition
+                }
+        }
+    )
 }

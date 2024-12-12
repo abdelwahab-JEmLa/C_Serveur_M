@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.UI
+package com.example.Packages._3.Fragment.UI._4.Components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable

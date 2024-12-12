@@ -21,14 +21,21 @@ internal fun Produits_Main_List(
     viewModel: P3_ViewModel,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp)
 ) {
-    // First filter the items with quantity > 0
-    val visibleItems = ui_Mutable_State.produit_DataBase.filter { produit ->
-        val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
-            .find { it.vid == 1L }
-            ?.colours_Et_Gouts_Commende
-            ?.sumOf { it.quantity_Achete } ?: 0
-        totalQuantity > 0
-    }
+    // Filter items with quantity > 0 and sort by their position
+    val visibleItems = ui_Mutable_State.produit_DataBase
+        .filter { produit ->
+            val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                .find { it.vid == 1L }
+                ?.colours_Et_Gouts_Commende
+                ?.sumOf { it.quantity_Achete } ?: 0
+            totalQuantity > 0
+        }
+        .sortedBy { produit ->
+            // Get the position for the supplier with vid = 1L, default to 0 if not found
+            produit.grossist_Choisi_Pour_Acheter_CeProduit
+                .find { it.vid == 1L }
+                ?.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp ?: 0
+        }
 
     LazyColumn(
         modifier = modifier

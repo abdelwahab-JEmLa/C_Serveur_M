@@ -1,7 +1,7 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
-import com.example.Packages._3.Fragment.ViewModel._2.Init.UiState
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.UiState
 import com.example.Packages._3.Fragment.ViewModel._2.Init.generate_Random_Supplier2
 
 private suspend fun P3_ViewModel.phase3_update_Finale() {

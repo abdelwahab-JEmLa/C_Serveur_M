@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel._2.Init
+package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

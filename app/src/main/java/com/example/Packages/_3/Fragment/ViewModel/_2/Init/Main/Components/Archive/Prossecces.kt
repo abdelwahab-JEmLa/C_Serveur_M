@@ -1,7 +1,9 @@
-package com.example.Packages._3.Fragment.ViewModel._2.Init
+package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Archive
 
 import android.util.Log
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.TAG_Snap
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.SoldArticlesTabelle
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.UiState
 import com.example.Packages._3.Fragment.ViewModel.init._1.Aliment_From_Authers_Refs.initial.getClientData
 import com.google.firebase.database.DataSnapshot
 import kotlinx.coroutines.async
@@ -93,7 +95,8 @@ private suspend fun process_Ventes_Data_Createur(
                 id_Acheteur = soldData.clientSoldToItId,
                 nom_Acheteur = clientName ?: "",
                 inseartion_Temp = now.toInstant(ZoneOffset.UTC).toEpochMilli(),
-                inceartion_Date = now.toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli(),
+                inceartion_Date = now.toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant()
+                    .toEpochMilli(),
                 initial_Colours_Et_Gouts_Acheter_Depuit_Client = colorsList
             )
         } catch (e: Exception) {

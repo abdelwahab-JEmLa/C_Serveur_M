@@ -11,7 +11,7 @@ import com.example.Models.Res.MapArticleInSupplierStore
 import com.example.Models.Res.PlacesOfArticelsInCamionette
 import com.example.Models.Res.PlacesOfArticelsInEacheSupplierSrore
 import com.example.Models.Res.SoldArticlesTabelle
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Commende_Produits_Au_Grossissts_DataBase
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives.Commende_Produits_Au_Grossissts_DataBase
 
 data class Ui_Statue_DataBase internal constructor(
     val produits_DataBase: List<Produits_DataBase> = emptyList(),

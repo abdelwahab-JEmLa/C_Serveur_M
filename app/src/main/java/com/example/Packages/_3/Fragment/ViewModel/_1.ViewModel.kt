@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.Ui_Mutable_State
-import com.example.Packages._3.Fragment.ViewModel._2.Init.UiState
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.UiState
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main._1Initialize
 import com.google.firebase.Firebase
 import com.google.firebase.database.database

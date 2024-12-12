@@ -36,7 +36,7 @@ class UiState internal constructor(
         initialNon_Trouve: Boolean = false,
         init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
         initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
-        initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit> = emptyList(),
+        initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> = emptyList(),
     ) {
         var nom: String by mutableStateOf(init_nom)
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
@@ -46,7 +46,7 @@ class UiState internal constructor(
             init_colours_Et_Gouts.toMutableStateList()
         var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =
             initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
-        var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit> =
+        var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> =
             initialGrossist_Choisi_Pour_Acheter_CeProduit.toMutableStateList()
 
         class Colours_Et_Gouts(
@@ -55,10 +55,12 @@ class UiState internal constructor(
             var imogi: String = ""
         )
 
-        class Grossist_Choisi_Pour_Acheter_Ce_Produit(
-            var id: Long = 0,
-            var position_Grossist_Don_Parent_Grossists_List: Int = 0,
+        class Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+            var vid: Long = 0,
+            var id_Supplier: Long = 0,
             var nom: String = "",
+            var date: String = "", //"yyyy-MM-dd HH:mm:ss"
+            var position_Grossist_Don_Parent_Grossists_List: Int = 0,
             var couleur: String = "#FFFFFF",
             var currentCreditBalance: Double = 0.0,
             val position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
@@ -88,7 +90,6 @@ class UiState internal constructor(
 
             class Colours_Et_Gouts_Acheter_Depuit_Client(
                 var vidPosition: Long = 0,
-                var id_Don_Tout_Couleurs: Long = 0,
                 var nom: String = "",
                 var quantity_Achete: Int = 0,
                 var imogi: String = ""

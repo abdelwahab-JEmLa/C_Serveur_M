@@ -6,7 +6,7 @@ import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model._1.MAIN.UiS
 import kotlin.random.Random
 
 
-internal fun generate_Random_Supplier2(): SnapshotStateList<UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit> {
+internal fun generate_Random_Supplier2(): SnapshotStateList<UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> {
     val colors = listOf(
         "#FF5733", "#33FF57", "#3357FF", "#FF33F1",
         "#33FFF1", "#F1FF33", "#8E44AD", "#3498DB"
@@ -20,8 +20,8 @@ internal fun generate_Random_Supplier2(): SnapshotStateList<UiState.Produit_Data
             else -> Random.nextInt(1, 5) // Positive positions
         }
 
-        UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit(
-            id = randomNum.toLong(),
+        UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+            id_Supplier = randomNum.toLong(),
             nom = if (randomNum == 0) "Undefined Supplier" else "Grossiste $randomNum",
             position_Grossist_Don_Parent_Grossists_List = position,
             couleur = colors.random(),

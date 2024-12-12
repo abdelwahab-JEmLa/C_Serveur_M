@@ -9,7 +9,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
-suspend fun get_Grossist_Choisi_Pour_Acheter_Ce_Produit(idSupplierSu: Long): UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit? {
+suspend fun get_Grossist_Choisi_Pour_Acheter_Ce_Produit(idSupplierSu: Long): UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? {
     return try {
         val supplierSnapshot = Firebase.database.getReference("F_Suppliers")
             .orderByChild("idSupplierSu")
@@ -20,8 +20,8 @@ suspend fun get_Grossist_Choisi_Pour_Acheter_Ce_Produit(idSupplierSu: Long): UiS
             .firstOrNull()
 
         supplierSnapshot?.let { snapshot ->
-            UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit(
-                id = idSupplierSu,
+            UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+                id_Supplier = idSupplierSu,
                 position_Grossist_Don_Parent_Grossists_List = snapshot.child("position")
                     .getValue(Int::class.java) ?: 0,
                 nom = snapshot.child("nomSupplierSu").getValue(String::class.java) ?: "",

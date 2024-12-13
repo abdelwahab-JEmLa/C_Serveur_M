@@ -120,96 +120,81 @@ internal fun Produit_Item(
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-
-                // Visibility toggle button
-                IconButton(
-                    onClick = { produit.non_Trouve = !produit.non_Trouve },
-                    modifier = Modifier.size(36.dp)
-                ) {
-                    Icon(
-                        imageVector = if (produit.non_Trouve)
-                            Icons.AutoMirrored.Filled.NotListedLocation
-                        else
-                            Icons.Default.Visibility,
-                        contentDescription = "Basculer le statut du produit",
-                        tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
-                    )
-                }
             }
-        }
 
-        // Contenu spécifique au mode
-        if (uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(top = 8.dp)
-            ) {
-                produit.demmende_Achate_De_Cette_Produit
-                    .sortedBy { it.nom_Acheteur }
-                    .forEach { acheteur ->
-                        acheteur.colours_Et_Gouts_Acheter_Depuit_Client
-                            .sortedBy { it.quantity_Achete }
-                            .forEach { couleur ->
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = acheteur.nom_Acheteur,
-                                        fontSize = 14.sp,
-                                        color = Color.Red,
+            // Contenu spécifique au mode
+            if (uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(top = 8.dp)
+                ) {
+                    produit.demmende_Achate_De_Cette_Produit
+                        .sortedBy { it.nom_Acheteur }
+                        .forEach { acheteur ->
+                            acheteur.colours_Et_Gouts_Acheter_Depuit_Client
+                                .sortedBy { it.quantity_Achete }
+                                .forEach { couleur ->
+                                    Row(
                                         modifier = Modifier
-                                            .weight(1f)
-                                            .background(Color.Gray)
-                                    )
-                                    Text(
-                                        text = "${couleur.quantity_Achete}=${couleur.imogi}${couleur.nom}",
-                                        fontSize = 14.sp,
-                                        color = Color.White,
-                                        modifier = Modifier.padding(start = 8.dp)
-                                    )
+                                            .fillMaxWidth()
+                                            .padding(vertical = 4.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = acheteur.nom_Acheteur,
+                                            fontSize = 14.sp,
+                                            color = Color.Red,
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .background(Color.Gray)
+                                        )
+                                        Text(
+                                            text = "${couleur.quantity_Achete}=${couleur.imogi}${couleur.nom}",
+                                            fontSize = 14.sp,
+                                            color = Color.White,
+                                            modifier = Modifier.padding(start = 8.dp)
+                                        )
+                                    }
                                 }
-                            }
-                    }
-            }
-        } else {
-            // Mode Produits - Grille de couleurs
-            Box(
-                modifier = Modifier
-                    .width(200.dp)
-                    .height(if (isExpanded) 280.dp else 80.dp)
-                    .clickable { isExpanded = !isExpanded }
-            ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                        .find { it.vid == 1L }
-                        ?.colours_Et_Gouts_Commende
-                        ?.sortedBy { it.quantity_Achete }
-                        ?.filter { it.quantity_Achete > 0 }
-                        ?: emptyList<UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier>()
-
-                    items(colorsList.size) { index ->
-                        val colorFlavor = colorsList[index]
-                        val displayText = when {
-                            colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
-                            else -> colorFlavor.nom.take(3)
                         }
+                }
+            } else {
+                // Mode Produits - Grille de couleurs
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(if (isExpanded) 280.dp else 80.dp)
+                        .clickable { isExpanded = !isExpanded }
+                ) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                            .find { it.vid == 1L }
+                            ?.colours_Et_Gouts_Commende
+                            ?.sortedBy { it.quantity_Achete }
+                            ?.filter { it.quantity_Achete > 0 }
+                            ?: emptyList<UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier>()
 
-                        Text(
-                            text = "(${colorFlavor.quantity_Achete})$displayText",
-                            fontSize = 24.sp,
-                            color = Color.White
-                        )
+                        items(colorsList.size) { index ->
+                            val colorFlavor = colorsList[index]
+                            val displayText = when {
+                                colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
+                                else -> colorFlavor.nom.take(3)
+                            }
+
+                            Text(
+                                text = "(${colorFlavor.quantity_Achete})$displayText",
+                                fontSize = 24.sp,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
             }

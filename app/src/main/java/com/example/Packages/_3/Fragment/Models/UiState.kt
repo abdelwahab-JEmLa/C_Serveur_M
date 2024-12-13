@@ -26,24 +26,29 @@ class UiState internal constructor(
         initial_Produits_DataBase.toMutableStateList()
     var mode_Trie_Produit_Non_Trouve: Boolean by mutableStateOf(false)
 
-    private val uiStateFireBaseDatabaseRef = Firebase.database
-        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+    var selectedSupplierId: Long by mutableStateOf(0)
 
-    var currentMode: ModesAffichage by mutableStateOf(ModesAffichage.MODE_Affiche_Achteurs)
+    var currentMode: Affichage_Et_Click_Modes by mutableStateOf(Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
 
-    enum class ModesAffichage {
+    enum class Affichage_Et_Click_Modes {
+        MODE_Click_Change_Position,
         MODE_Affiche_Achteurs,
         MODE_Affiche_Produits;
 
         companion object {
-            fun toggle(current: ModesAffichage): ModesAffichage {
+            fun toggle(current: Affichage_Et_Click_Modes): Affichage_Et_Click_Modes {
                 return when (current) {
-                    MODE_Affiche_Achteurs -> MODE_Affiche_Produits
                     MODE_Affiche_Produits -> MODE_Affiche_Achteurs
+                    MODE_Click_Change_Position -> MODE_Affiche_Achteurs
+                    MODE_Affiche_Achteurs -> MODE_Affiche_Produits
                 }
             }
         }
     }
+
+    private val uiStateFireBaseDatabaseRef = Firebase.database
+        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+
     class Produit_DataBase(
         val id: Long = 0,
         val it_ref_Id_don_FireBase: Long = 0,
@@ -80,10 +85,10 @@ class UiState internal constructor(
             var position_Grossist_Don_Parent_Grossists_List: Int = 0,
             var couleur: String = "#FFFFFF",
             var currentCreditBalance: Double = 0.0,
-            init_produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp: Int = 0,
+            init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
             initialColours_Et_Gouts_Commende_Au_Supplier: List<Colours_Et_Gouts_Commende_Au_Supplier> = emptyList(),
             ) {
-            var produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp: Int by mutableStateOf(init_produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp)
+            var position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int by mutableStateOf(init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit)
 
             var colours_Et_Gouts_Commende: SnapshotStateList<Colours_Et_Gouts_Commende_Au_Supplier> =
                 initialColours_Et_Gouts_Commende_Au_Supplier.toMutableStateList()

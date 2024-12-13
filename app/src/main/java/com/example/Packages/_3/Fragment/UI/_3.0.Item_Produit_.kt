@@ -17,10 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.NotListedLocation
-import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.UI._4.Components.ProductPositionDialog
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
 
 @Composable
@@ -46,16 +42,10 @@ internal fun Produit_Item(
     produit: UiState.Produit_DataBase,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
-    var showPositionDialog by remember { mutableStateOf(false) }
-
-    // Calculate current position for supplier ID 1
-    val currentPosition = produit.grossist_Choisi_Pour_Acheter_CeProduit
-        .find { it.supplier_id == 1L }
-        ?.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp ?: 0
 
     // Calculate height based on mode
     val heightCard = when {
-        uiState.currentMode == UiState.ModesAffichage.MODE_Affiche_Produits -> if (isExpanded) 300.dp else 100.dp
+        uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> if (isExpanded) 300.dp else 100.dp
         else -> 100.dp
     }
 
@@ -69,7 +59,7 @@ internal fun Produit_Item(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (uiState.currentMode == UiState.ModesAffichage.MODE_Affiche_Achteurs)
+                if (uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
                     Modifier.wrapContentHeight()
                 else
                     Modifier.height(heightCard)
@@ -129,67 +119,36 @@ internal fun Produit_Item(
                         color = Color.White,
                         style = MaterialTheme.typography.bodyMedium
                     )
+                }
 
-                    // Position button with current position displayed
-                    Button(
-                        onClick = { showPositionDialog = true },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        ),
-                        modifier = Modifier.height(36.dp)
-                    ) {
-                        Text(
-                            text = "Pos: ${if (currentPosition==0) "non def" else currentPosition}",
-                            color = Color.White
-                        )
-                    }
-
-                    // Reset position button
-                    IconButton(
-                        onClick = {
-                            produit.grossist_Choisi_Pour_Acheter_CeProduit
-                                .find { it.supplier_id == 1L }
-                                ?.let { supplier ->
-                                    supplier.produit_Position_Ou_Celuila_Va_Etre_Apre_Pour_Ce_Supp = 0
-                                }
-                        },
-                        modifier = Modifier.size(36.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.RestartAlt,
-                            contentDescription = "Réinitialiser la position",
-                            tint = Color.White
-                        )
-                    }
-
-                    // Visibility toggle button
-                    IconButton(
-                        onClick = { produit.non_Trouve = !produit.non_Trouve },
-                        modifier = Modifier.size(36.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (produit.non_Trouve)
-                                Icons.AutoMirrored.Filled.NotListedLocation
-                            else
-                                Icons.Default.Visibility,
-                            contentDescription = "Basculer le statut du produit",
-                            tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
-                        )
-                    }
+                // Visibility toggle button
+                IconButton(
+                    onClick = { produit.non_Trouve = !produit.non_Trouve },
+                    modifier = Modifier.size(36.dp)
+                ) {
+                    Icon(
+                        imageVector = if (produit.non_Trouve)
+                            Icons.AutoMirrored.Filled.NotListedLocation
+                        else
+                            Icons.Default.Visibility,
+                        contentDescription = "Basculer le statut du produit",
+                        tint = if (produit.non_Trouve) Color(0xFFFFD700) else Color.Green,
+                    )
                 }
             }
+        }
 
-            // Contenu spécifique au mode
-            if (uiState.currentMode == UiState.ModesAffichage.MODE_Affiche_Achteurs) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(top = 8.dp)
-                ) {
-                    produit.demmende_Achate_De_Cette_Produit
-                        .sortedBy { it.nom_Acheteur }
-                        .forEach { acheteur ->
+        // Contenu spécifique au mode
+        if (uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(top = 8.dp)
+            ) {
+                produit.demmende_Achate_De_Cette_Produit
+                    .sortedBy { it.nom_Acheteur }
+                    .forEach { acheteur ->
                         acheteur.colours_Et_Gouts_Acheter_Depuit_Client
                             .sortedBy { it.quantity_Achete }
                             .forEach { couleur ->
@@ -217,50 +176,43 @@ internal fun Produit_Item(
                                 }
                             }
                     }
-                }
-            } else {
-                // Mode Produits - Grille de couleurs
-                Box(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(if (isExpanded) 280.dp else 80.dp)
-                        .clickable { isExpanded = !isExpanded }
+            }
+        } else {
+            // Mode Produits - Grille de couleurs
+            Box(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(if (isExpanded) 280.dp else 80.dp)
+                    .clickable { isExpanded = !isExpanded }
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                            .find { it.vid == 1L }
-                            ?.colours_Et_Gouts_Commende
-                            ?.sortedBy { it.quantity_Achete }
-                            ?.filter { it.quantity_Achete > 0 } ?: emptyList<UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier>()
+                    val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                        .find { it.vid == 1L }
+                        ?.colours_Et_Gouts_Commende
+                        ?.sortedBy { it.quantity_Achete }
+                        ?.filter { it.quantity_Achete > 0 }
+                        ?: emptyList<UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier>()
 
-                        items(colorsList.size) { index ->
-                            val colorFlavor = colorsList[index]
-                            val displayText = when {
-                                colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
-                                else -> colorFlavor.nom.take(3)
-                            }
-
-                            Text(
-                                text = "(${colorFlavor.quantity_Achete})$displayText",
-                                fontSize = 24.sp,
-                                color = Color.White
-                            )
+                    items(colorsList.size) { index ->
+                        val colorFlavor = colorsList[index]
+                        val displayText = when {
+                            colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
+                            else -> colorFlavor.nom.take(3)
                         }
+
+                        Text(
+                            text = "(${colorFlavor.quantity_Achete})$displayText",
+                            fontSize = 24.sp,
+                            color = Color.White
+                        )
                     }
                 }
             }
         }
     }
-    // Position Dialog
-    ProductPositionDialog(
-        showDialog = showPositionDialog,
-        onDismiss = { showPositionDialog = false },
-        produit = produit,
-        uiState=uiState
-    )
 }

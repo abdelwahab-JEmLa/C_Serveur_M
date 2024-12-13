@@ -38,7 +38,7 @@ class UiState internal constructor(
         companion object {
             fun toggle(current: Affichage_Et_Click_Modes): Affichage_Et_Click_Modes {
                 return when (current) {
-                    MODE_Affiche_Produits -> MODE_Affiche_Achteurs
+                    MODE_Affiche_Produits -> MODE_Click_Change_Position
                     MODE_Click_Change_Position -> MODE_Affiche_Achteurs
                     MODE_Affiche_Achteurs -> MODE_Affiche_Produits
                 }

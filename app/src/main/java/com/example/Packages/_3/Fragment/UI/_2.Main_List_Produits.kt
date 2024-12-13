@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -77,7 +76,7 @@ internal fun Produits_Main_List(
             items(visibleItems) { produit ->
                 Produit_Item_MODE_Click_Change_Position(
                     uiState = ui_State,
-                    produit = produit,
+                    produit = produit, viewModel=viewModel
                 )
             }
         }

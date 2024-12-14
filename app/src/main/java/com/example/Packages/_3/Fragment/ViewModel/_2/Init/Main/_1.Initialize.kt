@@ -9,7 +9,7 @@ const val TAG_Snap = "InitialeUiState"
 internal suspend fun P3_ViewModel._1Initialize() {
     try {
         Log.d(TAG_Snap, "Starting _1Initialize")
-        initializationProgress = 0.1f  // Better float representation
+        initializationProgress = 0.1f
 
         val ancienData = get_Ancien_Datas()
         val besoin_update_initialise = false
@@ -27,10 +27,7 @@ internal suspend fun P3_ViewModel._1Initialize() {
                 this._uiState.produit_DataBase.add(produit)
             }
 
-
             initializationProgress = 0.3f
-
-            // Get ancient data
 
             // Update products
             this._uiState.produit_DataBase.forEach { new_produit_A_Update ->
@@ -119,13 +116,12 @@ internal suspend fun P3_ViewModel._1Initialize() {
                             }
                         }
 
-                        // Only add the purchase if there were actually colors bought
                         if (newAchate.colours_Et_Gouts_Acheter_Depuit_Client.isNotEmpty()) {
                             new_produit_A_Update.demmende_Achate_De_Cette_Produit.add(newAchate)
                         }
                     }
                 }
-                // First calculate total quantities for each color across all buyers
+
                 val totalQuantitiesByColor = mutableMapOf<Long, Int>()
 
                 new_produit_A_Update.demmende_Achate_De_Cette_Produit.forEach { achate ->

@@ -42,7 +42,6 @@ internal fun Fragment3_Main_Screen(
             // FABs
             Grossissts_FloatingActionButtons_Grouped(
                 modifier = Modifier,
-                grouped_Produits_Par_Id_Grossist = groupedProducts,
                 ui_State = p3_ViewModel.uiState,
             )
 

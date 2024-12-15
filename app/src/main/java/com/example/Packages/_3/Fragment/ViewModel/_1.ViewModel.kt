@@ -32,7 +32,7 @@ class P3_ViewModel : ViewModel() {
     var initializationProgress by mutableFloatStateOf(0f)
 
     var isInitializing by mutableStateOf(false)
-        private set
+    var initializationComplete by mutableStateOf(false)
 
     init {
         viewModelScope.launch {

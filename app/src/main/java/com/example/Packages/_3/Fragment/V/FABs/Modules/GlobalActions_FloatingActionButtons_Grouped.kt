@@ -109,10 +109,10 @@ fun GlobalActions_FloatingActionButtons_Grouped(
                     )
                     FabButton(
                         icon = Icons.Default.Upload,
-                        label = when (ui_Mutable_State.currentMode) {   
+                        label = when (ui_Mutable_State.currentMode) {
+                            UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> "MODE_Click_Change_Position"
                             UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs -> "Mode Acheteurs"
                             UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> "Mode Produits"
-                            UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> "MODE_Click_Change_Position"
                         },
                         color = Color(0xFFFF5722),
                         showLabel = showLabels,

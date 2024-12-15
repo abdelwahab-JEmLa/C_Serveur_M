@@ -44,7 +44,7 @@ internal fun Produit_Item_MODE_Click_Change_Position(
                     ?.takeIf { it.supplier_id == uiState.selectedSupplierId }
 
                 if (currentSupplier != null) {
-                    fun P3_ViewModel.internel_P3_ViewModel_Fun() {
+                    fun P3_ViewModel.internal_P3_ViewModel_Fun() {
                         val maxPosition = _uiState.produit_DataBase
                             .mapNotNull { otherProduit ->
                                 otherProduit.grossist_Choisi_Pour_Acheter_CeProduit
@@ -59,7 +59,7 @@ internal fun Produit_Item_MODE_Click_Change_Position(
                             }
                         }
                     }
-                    viewModel.internel_P3_ViewModel_Fun()
+                    viewModel.internal_P3_ViewModel_Fun()
                 }
             },
         contentAlignment = Alignment.Center

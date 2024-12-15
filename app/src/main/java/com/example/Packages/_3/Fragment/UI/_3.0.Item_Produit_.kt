@@ -180,7 +180,7 @@ internal fun Produit_Item(
                             ?.colours_Et_Gouts_Commende
                             ?.sortedBy { it.quantity_Achete }
                             ?.filter { it.quantity_Achete > 0 }
-                            ?: emptyList<UiState.Produit_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier>()
+                            ?: emptyList()
 
                         items(colorsList.size) { index ->
                             val colorFlavor = colorsList[index]

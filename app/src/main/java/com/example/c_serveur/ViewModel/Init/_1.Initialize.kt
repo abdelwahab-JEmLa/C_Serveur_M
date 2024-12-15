@@ -9,9 +9,9 @@ import com.example.c_serveur.ViewModel.App_Initialize_ViewModel
 
 private const val TAG_Snap = "InitialeUiState"
 
-internal suspend fun App_Initialize_ViewModel.Init_Produit_Main_DataBase() {
+internal suspend fun App_Initialize_ViewModel.Initialise_ViewModel() {
     try {
-        Log.d(TAG_Snap, "Starting Init_Produit_Main_DataBase")
+        Log.d(TAG_Snap, "Starting Initialise_ViewModel")
         initializationProgress = 0.1f
         isInitializing = true
 
@@ -63,10 +63,10 @@ internal suspend fun App_Initialize_ViewModel.Init_Produit_Main_DataBase() {
 
         initializationProgress = 1.0f
         initializationComplete = true
-        Log.d(TAG_Snap, "Completed Init_Produit_Main_DataBase")
+        Log.d(TAG_Snap, "Completed Initialise_ViewModel")
 
     } catch (e: Exception) {
-        Log.e(TAG_Snap, "Error in Init_Produit_Main_DataBase", e)
+        Log.e(TAG_Snap, "Error in Initialise_ViewModel", e)
         throw e
     } finally {
         isInitializing = false

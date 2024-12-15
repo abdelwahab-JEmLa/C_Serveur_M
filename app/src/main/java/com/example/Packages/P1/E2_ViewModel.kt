@@ -267,7 +267,7 @@ open class ClientProductsDisplayerStatsViewModel(
         initializeData()
     }
     /**
-     * Initialise les données
+     * Initialise_ViewModel les données
      */
     private fun initializeData() {
         viewModelScope.launch {

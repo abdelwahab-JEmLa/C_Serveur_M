@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel
+package com.example.Packages._4.Fragment.ViewModel._1.Main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -6,32 +6,28 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Initialise_ViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
+import com.example.Packages._4.Fragment.ViewModel.Model._4_Fragment_Ui_State
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 
-class P3_ViewModel : ViewModel() {
-    private val database = Firebase.database
-    val ref_ViewModel_Produit_DataBase =
-        database.getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
+class F4_ViewModel internal constructor() : ViewModel() {
 
-
-    // UiStateSnapshotStateList management with proper initialization
     var _uiState by mutableStateOf(
-        UiState(
+        _4_Fragment_Ui_State(
             initialLastUpdateTime = System.currentTimeMillis().toString(),
-            initialReferencesFireBaseGroup = emptyList(),
-            initial_Produits_DataBase = emptyList()
         )
     )
-    val uiState: UiState get() = this._uiState
+    var  _app_Initialize_Model by mutableStateOf(
+        App_Initialize_Model(
+        )
+    )
 
-    // Progress tracking
-    var initializationProgress by mutableFloatStateOf(0f)
+    val uiState: _4_Fragment_Ui_State get() = this._uiState
+    val app_Initialize_Model: App_Initialize_Model get() = this._app_Initialize_Model
 
     var isInitializing by mutableStateOf(false)
+    var initializationProgress by mutableFloatStateOf(0f)
     var initializationComplete by mutableStateOf(false)
 
     init {

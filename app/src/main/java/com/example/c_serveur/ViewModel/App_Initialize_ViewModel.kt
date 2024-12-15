@@ -1,18 +1,18 @@
-package com.example.Packages._3.Fragment.ViewModel
-
+package com.example.c_serveur.ViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Init_Produit_Main_DataBase
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch
+import androidx.lifecycle.ViewModel
 
-class P3_ViewModel : ViewModel() {
+open class App_Initialize_ViewModel(
+) : ViewModel() {
     private val database = Firebase.database
     val ref_ViewModel_Produit_DataBase =
         database.getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
@@ -36,14 +36,12 @@ class P3_ViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-                try {
-                    isInitializing = true
-                    Init_Produit_Main_DataBase()
-                } finally {
-                    isInitializing = false
-                }
+            try {
+                isInitializing = true
+                Init_Produit_Main_DataBase()
+            } finally {
+                isInitializing = false
+            }
         }
     }
 }
-
-

@@ -3,6 +3,7 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 import android.util.Log
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.get_Ancien_Datas
 
 const val TAG_Snap = "InitialeUiState"
 

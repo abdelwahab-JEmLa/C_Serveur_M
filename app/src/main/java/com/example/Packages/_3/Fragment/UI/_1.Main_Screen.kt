@@ -1,4 +1,3 @@
-// _1.Main_Screen.kt
 package com.example.Packages._3.Fragment.UI
 
 import androidx.compose.foundation.layout.Box

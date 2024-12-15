@@ -23,8 +23,9 @@ internal fun Produit_Item_MODE_Click_Change_Position(
     produit: UiState.Produit_DataBase,
 ) {
     // Calculate total quantity
-    val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
-        .find { it.vid == 1L }
+    val produiGro = produit.grossist_Choisi_Pour_Acheter_CeProduit
+        .maxByOrNull { it.date }
+    val totalQuantity = produiGro
         ?.colours_Et_Gouts_Commende
         ?.sumOf { it.quantity_Achete } ?: 0
 
@@ -59,6 +60,14 @@ internal fun Produit_Item_MODE_Click_Change_Position(
             },
         contentAlignment = Alignment.Center
     ) {
+
+        // Original image display
+        DisplayeImageById(
+            produit_Id = produit.id,
+            modifier = Modifier.fillMaxWidth(),
+            reloadKey = 0
+        )
+
         // Overlay the first letter at top start
         Text(
             text = firstLetter,
@@ -83,11 +92,17 @@ internal fun Produit_Item_MODE_Click_Change_Position(
             fontWeight = FontWeight.Bold
         )
 
-        // Original image display
-        DisplayeImageById(
-            produit_Id = produit.id,
-            modifier = Modifier.fillMaxWidth(),
-            reloadKey = 0
-        )
+        if (produiGro != null) {
+            Text(
+                text = produiGro.position_Grossist_Don_Parent_Grossists_List.toString(),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(4.dp)
+                    .background(Color.LightGray.copy(alpha = 0.5f))
+                    .padding(4.dp),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }

@@ -64,7 +64,6 @@ internal fun Produit_Item(
                 else
                     Modifier.height(heightCard)
             )
-
     ) {
         // Background image
         DisplayeImageById(

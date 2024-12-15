@@ -26,7 +26,6 @@ fun Produits_Main_List(
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp)
 ) {
-    // Calculate total quantity and filter visible items
     val visibleItems = ui_State.produit_DataBase
         .filter { produit ->
             val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit

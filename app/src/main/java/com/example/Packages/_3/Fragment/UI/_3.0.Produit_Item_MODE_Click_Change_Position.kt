@@ -16,13 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
-import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 
 @Composable
 internal fun Produit_Item_MODE_Click_Change_Position(
     uiState: UiState,
     produit: UiState.Produit_DataBase,
-    viewModel: P3_ViewModel,
 ) {
     // Calculate total quantity
     val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
@@ -44,23 +42,20 @@ internal fun Produit_Item_MODE_Click_Change_Position(
                     ?.takeIf { it.supplier_id == uiState.selectedSupplierId }
 
                 if (currentSupplier != null) {
-                    fun P3_ViewModel.internal_P3_ViewModel_Fun() {
-                        val maxPosition = _uiState.produit_DataBase
+                        val maxPosition = uiState.produit_DataBase
                             .mapNotNull { otherProduit ->
                                 otherProduit.grossist_Choisi_Pour_Acheter_CeProduit
                                     .find { it.supplier_id == uiState.selectedSupplierId }
                                     ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                             }
                             .maxOrNull() ?: 0
-                        _uiState.produit_DataBase.find { it.id==produit.id }.let {
+                    uiState.produit_DataBase.find { it.id==produit.id }.let {
                             if (it != null) {
                                 it.grossist_Choisi_Pour_Acheter_CeProduit.last().position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit=
                                     maxPosition + 1
                             }
                         }
                     }
-                    viewModel.internal_P3_ViewModel_Fun()
-                }
             },
         contentAlignment = Alignment.Center
     ) {

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,13 +17,7 @@ internal fun Fragment3_Main_Screen(
     modifier: Modifier = Modifier,
     p3_ViewModel: P3_ViewModel = viewModel()
 ) {
-    // Group products by their last Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction vid
-    val groupedProducts = remember(p3_ViewModel.uiState.produit_DataBase) {
-        p3_ViewModel.uiState.produit_DataBase.groupBy { produit ->
-            produit.grossist_Choisi_Pour_Acheter_CeProduit
-                .maxByOrNull { it.date }?.vid ?: -1L
-        }
-    }
+
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -34,7 +27,6 @@ internal fun Fragment3_Main_Screen(
             Column {
                 Produits_Main_List(
                     ui_State = p3_ViewModel.uiState,
-                    viewModel = p3_ViewModel,
                     contentPadding = paddingValues
                 )
             }

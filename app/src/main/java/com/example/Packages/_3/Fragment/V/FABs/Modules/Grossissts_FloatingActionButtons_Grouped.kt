@@ -94,8 +94,6 @@ fun Grossissts_FloatingActionButtons_Grouped(
         groupedProducts
     }
     
-    //TODO(1): pk ca ce lence avant
-    // Add after grouping
     Log.d(FAB_TAG, "Total grouped entries: ${grouped_Produits_Par_Id_Grossist.size}")
     grouped_Produits_Par_Id_Grossist.forEach { (supplierId, products) ->
         Log.d(FAB_TAG, "Group for supplier $supplierId has ${products.size} products")
@@ -214,7 +212,6 @@ fun Grossissts_FloatingActionButtons_Grouped(
             )
         }
 
-        // Expand/collapse button with logging
         FloatingActionButton(
             onClick = {
                 Log.d(FAB_TAG, "Expand/collapse button clicked. Current state: $showFloatingButtons")

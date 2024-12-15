@@ -3,13 +3,11 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 import android.util.Log
 import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.AncienData
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.Ancien_Datas_Resources
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.get_Ancien_Datas
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_ClientsDataBase
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_Produits_DataBase
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_SoldArticlesTabelle
-import kotlinx.coroutines.coroutineScope
-import kotlin.random.Random
 
 private const val TAG_Snap = "InitialeUiState"
 
@@ -78,19 +76,19 @@ internal suspend fun P3_ViewModel._1Initialize() {
 }
 
 private fun processColors(
-    ancien_DataBase: Ancien_Produits_DataBase,
-    ancienData: AncienData,
+    ancien_Produits_DataBase: Ancien_Produits_DataBase,
+    ancien_Data_References: Ancien_Datas_Resources,
     new_produit_A_Update: UiState.Produit_DataBase
 ) {
     val colorIds = listOf(
-        ancien_DataBase.idcolor1 to 1L,
-        ancien_DataBase.idcolor2 to 2L,
-        ancien_DataBase.idcolor3 to 3L,
-        ancien_DataBase.idcolor4 to 4L
+        ancien_Produits_DataBase.idcolor1 to 1L,
+        ancien_Produits_DataBase.idcolor2 to 2L,
+        ancien_Produits_DataBase.idcolor3 to 3L,
+        ancien_Produits_DataBase.idcolor4 to 4L
     )
 
     colorIds.forEach { (colorId, position) ->
-        ancienData.couleurs_List.find { it.idColore == colorId }?.let { color ->
+        ancien_Data_References.couleurs_List.find { it.idColore == colorId }?.let { color ->
             new_produit_A_Update.colours_Et_Gouts.add(
                 UiState.Produit_DataBase.Colours_Et_Gouts(
                     position_Du_Couleur_Au_Produit = position,
@@ -103,10 +101,10 @@ private fun processColors(
 }
 
 private fun processSalesData(
-    ancienData: AncienData,
+    ancien_Data_References: Ancien_Datas_Resources,
     new_produit_A_Update: UiState.Produit_DataBase
 ) {
-    val salesByClientAndArticle = ancienData.soldArticles
+    val salesByClientAndArticle = ancien_Data_References.soldArticles
         .groupBy { it.clientSoldToItId }
         .mapValues { (_, sales) ->
             sales.groupBy { it.idArticle }
@@ -114,60 +112,45 @@ private fun processSalesData(
 
     salesByClientAndArticle.forEach { (clientId, articleSales) ->
         articleSales[new_produit_A_Update.id]?.forEachIndexed { index, ancien_soldArticles ->
-            ancienData.clients_List.find { it.idClientsSu == clientId }?.let { client_Data ->
-                createAndAddPurchaseRecord(
-                    index,
-                    clientId,
-                    client_Data,
-                    ancien_soldArticles,
-                    new_produit_A_Update
+            ancien_Data_References.clients_List.find { it.idClientsSu == clientId }?.let { client_Data ->
+
+                val newAchate = UiState.Produit_DataBase.Demmende_Achate_De_Cette_Produit(
+                    vid = (index + 1).toLong(),
+                    id_Acheteur = clientId,
+                    nom_Acheteur = client_Data.nomClientsSu,
+                    initial_Colours_Et_Gouts_Acheter_Depuit_Client = emptyList()
                 )
+
+                // Process color quantities
+                val colorQuantities = listOf(
+                    1L to ancien_soldArticles.color1SoldQuantity,
+                    2L to ancien_soldArticles.color2SoldQuantity,
+                    3L to ancien_soldArticles.color3SoldQuantity,
+                    4L to ancien_soldArticles.color4SoldQuantity
+                )
+
+                colorQuantities.forEach { (position, quantity) ->
+                    if (quantity > 0) {
+                        new_produit_A_Update.colours_Et_Gouts.find {
+                            it.position_Du_Couleur_Au_Produit == position
+                        }?.let { color ->
+                            newAchate.colours_Et_Gouts_Acheter_Depuit_Client.add(
+                                UiState.Produit_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter_Depuit_Client(
+                                    vidPosition = position,
+                                    nom = color.nom,
+                                    quantity_Achete = quantity,
+                                    imogi = color.imogi
+                                )
+                            )
+                        }
+                    }
+                }
+
+                if (newAchate.colours_Et_Gouts_Acheter_Depuit_Client.isNotEmpty()) {
+                    new_produit_A_Update.demmende_Achate_De_Cette_Produit.add(newAchate)
+                }
             }
         }
-    }
-}
-
-private fun createAndAddPurchaseRecord(
-    index: Int,
-    clientId: Long,
-    client_Data: Ancien_ClientsDataBase,
-    ancien_soldArticles: Ancien_SoldArticlesTabelle,
-    new_produit_A_Update: UiState.Produit_DataBase
-) {
-    val newAchate = UiState.Produit_DataBase.Demmende_Achate_De_Cette_Produit(
-        vid = (index + 1).toLong(),
-        id_Acheteur = clientId,
-        nom_Acheteur = client_Data.nomClientsSu,
-        initial_Colours_Et_Gouts_Acheter_Depuit_Client = emptyList()
-    )
-
-    // Process color quantities
-    val colorQuantities = listOf(
-        1L to ancien_soldArticles.color1SoldQuantity,
-        2L to ancien_soldArticles.color2SoldQuantity,
-        3L to ancien_soldArticles.color3SoldQuantity,
-        4L to ancien_soldArticles.color4SoldQuantity
-    )
-
-    colorQuantities.forEach { (position, quantity) ->
-        if (quantity > 0) {
-            new_produit_A_Update.colours_Et_Gouts.find {
-                it.position_Du_Couleur_Au_Produit == position
-            }?.let { color ->
-                newAchate.colours_Et_Gouts_Acheter_Depuit_Client.add(
-                    UiState.Produit_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter_Depuit_Client(
-                        vidPosition = position,
-                        nom = color.nom,
-                        quantity_Achete = quantity,
-                        imogi = color.imogi
-                    )
-                )
-            }
-        }
-    }
-
-    if (newAchate.colours_Et_Gouts_Acheter_Depuit_Client.isNotEmpty()) {
-        new_produit_A_Update.demmende_Achate_De_Cette_Produit.add(newAchate)
     }
 }
 

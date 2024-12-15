@@ -9,14 +9,14 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
-data class AncienData(
+data class Ancien_Datas_Resources(
     val produitsDatabase: List<Ancien_Produits_DataBase>,
     val soldArticles: List<Ancien_SoldArticlesTabelle>,
     val couleurs_List: List<Ancien_ColorArticle>  ,
     val clients_List: List<Ancien_ClientsDataBase>
 )
 
-suspend fun get_Ancien_Datas(): AncienData {
+suspend fun get_Ancien_Datas(): Ancien_Datas_Resources {
     try {
         val produitsSnapshot = Firebase.database
             .getReference("e_DBJetPackExport")
@@ -54,7 +54,7 @@ suspend fun get_Ancien_Datas(): AncienData {
             it.getValue(Ancien_ClientsDataBase::class.java)
         }
 
-        return AncienData(
+        return Ancien_Datas_Resources(
             produitsList,
             soldArticlesList,
             couleurs_List,

@@ -17,7 +17,6 @@ internal fun Fragment3_Main_Screen(
     modifier: Modifier = Modifier,
     p3_ViewModel: P3_ViewModel = viewModel()
 ) {
-
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->

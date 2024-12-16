@@ -28,17 +28,12 @@ class App_Initialize_Model internal constructor(
         initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> = emptyList(),
     ) {
         var nom: String by mutableStateOf(init_nom)
-
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
-
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
-
         var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
             init_colours_Et_Gouts.toMutableStateList()
-
         var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =
             initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
-
         var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> =
             initialGrossist_Choisi_Pour_Acheter_CeProduit.toMutableStateList()
 

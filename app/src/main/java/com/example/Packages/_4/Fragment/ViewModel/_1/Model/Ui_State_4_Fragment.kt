@@ -5,11 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
-import com.google.firebase.database.getValue
+import com.google.firebase.database.ktx.getValue  // Keep only this getValue import
 import kotlinx.coroutines.tasks.await
 import java.util.Date
 import java.util.Locale
-import com.google.firebase.database.ktx.getValue
 import java.text.SimpleDateFormat
 
 class Ui_State_4_Fragment internal constructor(
@@ -59,12 +58,8 @@ class Ui_State_4_Fragment internal constructor(
     suspend fun load_Self_FromFirebaseDataBase() {
         try {
             val snapshot = ref_4_Fragment_Ui_State.get().await()
-            snapshot.getValue<Ui_State_4_Fragment>()?.let { state ->  //->
-                //FIXME: ("Overload resolution ambiguity. All these functions match.
-                //public inline fun <reified T> DataSnapshot.getValue(): TypeVariable(T)? defined in com.google.firebase.database.ktx
-                //public inline fun <reified T> DataSnapshot.getValue(): TypeVariable(T)? defined in com.google.firebase.databaseq")
+            snapshot.getValue<Ui_State_4_Fragment>()?.let { state ->
                 lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
-                // Copy other properties from state to this instance
                 selectedSupplierId = state.selectedSupplierId
                 currentMode = state.currentMode
             }

@@ -118,6 +118,7 @@ dependencies {
     implementation(libs.osmdroid.android)
     implementation(libs.osmdroid.wms)
     implementation(libs.osmdroid.mapsforge)
+    implementation ("com.google.firebase:firebase-database-ktx")
 
 }
 apply(plugin = "com.google.gms.google-services")

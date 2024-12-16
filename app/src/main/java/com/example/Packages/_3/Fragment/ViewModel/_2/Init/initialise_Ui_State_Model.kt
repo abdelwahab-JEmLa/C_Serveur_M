@@ -3,9 +3,9 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 import android.util.Log
 import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.Ancien_Datas_Resources
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.Ancien_Resources_DataBase
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.get_Ancien_Datas
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_Produits_DataBase
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Produits_Ancien_DataBase
 
 private const val TAG_Snap = "InitialeUiState"
 
@@ -74,8 +74,8 @@ internal suspend fun F4_ViewModel.Initialise_ViewModel() {
 }
 
 private fun processColors(
-    ancien_Produits_DataBase: Ancien_Produits_DataBase,
-    ancien_Data_References: Ancien_Datas_Resources,
+    ancien_Produits_DataBase: Produits_Ancien_DataBase,
+    ancien_Data_References: Ancien_Resources_DataBase,
     new_produit_A_Update: UiState.Produit_DataBase
 ) {
     val colorIds = listOf(
@@ -99,7 +99,7 @@ private fun processColors(
 }
 
 private fun processSalesData(
-    ancien_Data_References: Ancien_Datas_Resources,
+    ancien_Data_References: Ancien_Resources_DataBase,
     new_produit_A_Update: UiState.Produit_DataBase
 ) {
     val salesByClientAndArticle = ancien_Data_References.soldArticles

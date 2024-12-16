@@ -1,6 +1,6 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components
 
-data class Ancien_Produits_DataBase(
+data class Produits_Ancien_DataBase(
     var idArticle: Long = 0,
     var nomArticleFinale: String = "",
     var classementCate: Double = 0.0,

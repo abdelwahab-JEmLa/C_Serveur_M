@@ -3,20 +3,20 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Components
 import android.util.Log
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_ClientsDataBase
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_ColorArticle
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_Produits_DataBase
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Produits_Ancien_DataBase
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_SoldArticlesTabelle
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
-data class Ancien_Datas_Resources(
-    val produitsDatabase: List<Ancien_Produits_DataBase>,
+data class Ancien_Resources_DataBase(
+    val produitsDatabase: List<Produits_Ancien_DataBase>,
     val soldArticles: List<Ancien_SoldArticlesTabelle>,
-    val couleurs_List: List<Ancien_ColorArticle>  ,
+    val couleurs_List: List<Ancien_ColorArticle>,
     val clients_List: List<Ancien_ClientsDataBase>
 )
 
-suspend fun get_Ancien_Datas(): Ancien_Datas_Resources {
+suspend fun get_Ancien_Datas(): Ancien_Resources_DataBase {
     try {
         val produitsSnapshot = Firebase.database
             .getReference("e_DBJetPackExport")
@@ -39,7 +39,7 @@ suspend fun get_Ancien_Datas(): Ancien_Datas_Resources {
             .await()
 
         val produitsList = produitsSnapshot.children.mapNotNull {
-            it.getValue(Ancien_Produits_DataBase::class.java)
+            it.getValue(Produits_Ancien_DataBase::class.java)
         }
 
         val soldArticlesList = soldArticlesSnapshot.children.mapNotNull {
@@ -54,7 +54,7 @@ suspend fun get_Ancien_Datas(): Ancien_Datas_Resources {
             it.getValue(Ancien_ClientsDataBase::class.java)
         }
 
-        return Ancien_Datas_Resources(
+        return Ancien_Resources_DataBase(
             produitsList,
             soldArticlesList,
             couleurs_List,

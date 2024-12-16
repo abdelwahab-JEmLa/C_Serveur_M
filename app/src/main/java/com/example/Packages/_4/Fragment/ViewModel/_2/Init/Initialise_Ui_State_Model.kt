@@ -15,13 +15,16 @@ suspend fun F4_ViewModel.Initialise_ViewModel() {
 
         _app_Initialize_Model.produit_Main_DataBase.forEach { product ->
             try {
-                product.load_Self_FromFirebaseDataBase()
+                product.
 
                 product.besoin_To_Be_Updated = false
+
             } catch (e: Exception) {
                 Log.e(TAG_Snap, "Error processing product ${product.id}", e)
             }
         }
+
+        _app_Initialize_Model.produit_Main_DataBase.update_Produits_FireBase()
 
         _uiState.update_UiStateFirebaseDataBase()
 

@@ -16,37 +16,6 @@ class App_Initialize_Model internal constructor(
     var produit_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
         initial_Produit_Main_DataBase.toMutableStateList()
 
-    suspend fun update_Ref_Produit_Main_DataBase() {
-        try {
-            val ref_Produit_Main_DataBase = Firebase.database
-                .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-                .child("produit_DataBase")
-
-            ref_Produit_Main_DataBase.setValue(produit_Main_DataBase).await()
-        } catch (e: Exception) {
-            throw Exception("Failed to update group in Firebase: ${e.message}")
-        }
-    }
-
-    suspend fun load_Ref_Produit_Main_DataBase() {
-        try {
-            val ref_Produit_Main_DataBase = Firebase.database
-                .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-                .child("produit_DataBase")
-
-            val snapshot = ref_Produit_Main_DataBase.get().await()
-            val loadedProduits = snapshot.getValue<List<Produit_Main_DataBase>>()
-
-            if (loadedProduits != null) {
-                // Clear existing list and add all loaded products
-                produit_Main_DataBase.clear()
-                produit_Main_DataBase.addAll(loadedProduits)
-            }
-        } catch (e: Exception) {
-            throw Exception("Failed to load state from Firebase: ${e.message}")
-        }
-    }
-
     class Produit_Main_DataBase(
         val id: Long = 0,
         val it_ref_Id_don_FireBase: Long = 0,
@@ -123,6 +92,36 @@ class App_Initialize_Model internal constructor(
                 var quantity_Achete: Int = 0,
                 var imogi: String = ""
             )
+        }
+    }
+    suspend fun update_Produits_FireBase() {
+        try {
+            val ref_Produit_Main_DataBase = Firebase.database
+                .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+                .child("produit_DataBase")
+
+            ref_Produit_Main_DataBase.setValue(produit_Main_DataBase).await()
+        } catch (e: Exception) {
+            throw Exception("Failed to update group in Firebase: ${e.message}")
+        }
+    }
+
+    suspend fun load_Produits_FireBase() {
+        try {
+            val ref_Produit_Main_DataBase = Firebase.database
+                .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+                .child("produit_DataBase")
+
+            val snapshot = ref_Produit_Main_DataBase.get().await()
+            val loadedProduits = snapshot.getValue<List<Produit_Main_DataBase>>()
+
+            if (loadedProduits != null) {
+                // Clear existing list and add all loaded products
+                produit_Main_DataBase.clear()
+                produit_Main_DataBase.addAll(loadedProduits)
+            }
+        } catch (e: Exception) {
+            throw Exception("Failed to load state from Firebase: ${e.message}")
         }
     }
 }

@@ -30,7 +30,6 @@ import java.time.format.DateTimeFormatter
 /**
  * Actions UI pour ClientBonsByDay
  */
-// In ClientBonsByDayActions:
 data class InitViewModelActions(
     val onClick: () -> Unit = {},
     val onStatisticsDateSelected: (String) -> Unit = {}

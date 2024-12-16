@@ -59,7 +59,10 @@ class _4_Fragment_Ui_State internal constructor(
     suspend fun load_Self_FromFirebaseDataBase() {
         try {
             val snapshot = ref_4_Fragment_Ui_State.get().await()
-            snapshot.getValue<_4_Fragment_Ui_State>()?.let { state ->
+            snapshot.getValue<_4_Fragment_Ui_State>()?.let { state ->  //->
+                //FIXME: ("Overload resolution ambiguity. All these functions match.
+                //public inline fun <reified T> DataSnapshot.getValue(): TypeVariable(T)? defined in com.google.firebase.database.ktx
+                //public inline fun <reified T> DataSnapshot.getValue(): TypeVariable(T)? defined in com.google.firebase.databaseq")
                 lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
                 // Copy other properties from state to this instance
                 selectedSupplierId = state.selectedSupplierId

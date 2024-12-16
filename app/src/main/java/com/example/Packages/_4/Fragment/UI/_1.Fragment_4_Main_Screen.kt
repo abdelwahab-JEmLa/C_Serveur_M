@@ -24,8 +24,8 @@ internal fun Fragment_4_Main_Screen(
             // Main content
             Column {
                 Main_List(
-                    uiState = f4_ViewModel.uiState,
-                    contentPadding = paddingValues
+                    contentPadding = paddingValues,
+                    uiState = f4_ViewModel.uiState
                 )
             }
 
@@ -38,7 +38,6 @@ internal fun Fragment_4_Main_Screen(
                 modifier = Modifier,
                 uiState = f4_ViewModel.uiState,
             )
-
         }
     }
 }

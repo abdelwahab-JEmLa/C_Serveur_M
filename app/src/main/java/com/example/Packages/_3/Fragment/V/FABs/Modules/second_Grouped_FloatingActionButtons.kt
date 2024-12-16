@@ -45,7 +45,7 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
+import com.example.Packages._3.Fragment.ViewModel.F3_ViewModel
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -60,7 +60,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
     val viewModel = checkNotNull(LocalViewModelStoreOwner.current) {
         "No ViewModelStoreOwner found"
     }.let { viewModelStoreOwner ->
-        ViewModelProvider(viewModelStoreOwner)[F4_ViewModel::class.java]
+        ViewModelProvider(viewModelStoreOwner)[F3_ViewModel::class.java]
     }
 
     if (!viewModel.initializationComplete) {

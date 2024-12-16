@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.UI
+package com.example.Packages._4.Fragment.UI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageByIdd
+import com.example.Packages._4.Fragment.UI._5.Objects.DisplayeImageByIdd
 
 @Composable
 fun Main_Item_Second_Type_D_Affiche(

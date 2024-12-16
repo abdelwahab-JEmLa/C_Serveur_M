@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.UI
+package com.example.Packages._4.Fragment.UI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,33 +27,37 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
+import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 
 @Composable
 internal fun Main_Item(
-    uiState: UiState,
-    produit: UiState.Produit_DataBase,
+    uiState: Ui_State_4_Fragment,
+    produit: App_Initialize_Model.Produit_Main_DataBase,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
     // Calculate height based on mode
     val heightCard = when {
-        uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> if (isExpanded) 300.dp else 100.dp
+        uiState.currentMode == Ui_State_4_Fragment.Affichage_Et_Click_Modes.MODE_Affiche_Produits ->
+            if (isExpanded) 300.dp else 100.dp
+
         else -> 100.dp
     }
 
     // Calculate total quantity
-    val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
-        .find { it.vid == 1L }
-        ?.colours_Et_Gouts_Commende
+    val last_Demend_Achat = produit.demmende_Achate_De_Cette_Produit
+        .maxByOrNull { it.time_String }
+    val totalQuantity = last_Demend_Achat
+        ?.colours_Et_Gouts_Acheter_Depuit_Client
         ?.sumOf { it.quantity_Achete } ?: 0
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
+                if (uiState.currentMode == Ui_State_4_Fragment.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
                     Modifier.wrapContentHeight()
                 else
                     Modifier.height(heightCard)
@@ -116,79 +120,36 @@ internal fun Main_Item(
                 }
             }
 
-            // Contenu spécifique au mode
-            if (uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(top = 8.dp)
+            Box(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(if (isExpanded) 280.dp else 80.dp)
+                    .clickable { isExpanded = !isExpanded }
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    produit.demmende_Achate_De_Cette_Produit
-                        .sortedBy { it.nom_Acheteur }
-                        .forEach { acheteur ->
-                            acheteur.colours_Et_Gouts_Acheter_Depuit_Client
-                                .sortedBy { it.quantity_Achete }
-                                .forEach { couleur ->
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            text = acheteur.nom_Acheteur,
-                                            fontSize = 14.sp,
-                                            color = Color.Red,
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .background(Color.Gray)
-                                        )
-                                        Text(
-                                            text = "${couleur.quantity_Achete}=${couleur.imogi}${couleur.nom}",
-                                            fontSize = 14.sp,
-                                            color = Color.White,
-                                            modifier = Modifier.padding(start = 8.dp)
-                                        )
-                                    }
-                                }
-                        }
-                }
-            } else {
-                // Mode Produits - Grille de couleurs
-                Box(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(if (isExpanded) 280.dp else 80.dp)
-                        .clickable { isExpanded = !isExpanded }
-                ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                            .find { it.vid == 1L }
-                            ?.colours_Et_Gouts_Commende
-                            ?.sortedBy { it.quantity_Achete }
-                            ?.filter { it.quantity_Achete > 0 }
-                            ?: emptyList()
+                    val colorsList = last_Demend_Achat
+                        ?.colours_Et_Gouts_Acheter_Depuit_Client  // Changed to match the correct property name
+                        ?.sortedBy { it.quantity_Achete }
+                        ?.filter { it.quantity_Achete > 0 }
+                        ?: emptyList()
 
-                        items(colorsList.size) { index ->
-                            val colorFlavor = colorsList[index]
-                            val displayText = when {
-                                colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
-                                else -> colorFlavor.nom.take(3)
-                            }
-
-                            Text(
-                                text = "(${colorFlavor.quantity_Achete})$displayText",
-                                fontSize = 24.sp,
-                                color = Color.White
-                            )
+                    items(colorsList.size) { index ->
+                        val colorFlavor = colorsList[index]
+                        val displayText = when {
+                            colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
+                            else -> colorFlavor.nom.take(3)
                         }
+
+                        Text(
+                            text = "(${colorFlavor.quantity_Achete})$displayText",
+                            fontSize = 24.sp,
+                            color = Color.White
+                        )
                     }
                 }
             }

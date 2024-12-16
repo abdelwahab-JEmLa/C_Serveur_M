@@ -18,6 +18,7 @@ import com.example.Main.StartFragment.StartFragmentDestination
 import com.example.Packages.P1.ClientProductsDisplayerStatsDestination
 import com.example.Packages.P1.ClientProductsDisplayerStatsFragment
 import com.example.Packages._3.Fragment.UI.Fragment3_Main_Screen
+import com.example.Packages._4.Fragment.UI.Fragment_4_Main_Screen
 import com.example.c_serveur.AppViewModels
 import kotlinx.serialization.Serializable
 
@@ -44,6 +45,9 @@ fun AppNavHost(
             composable(Fragment3_Main_ScreenDestination().route) {
                 Fragment3_Main_Screen()
             }
+            composable(Fragment_4_Main_Screen_Destination().route) {
+                Fragment_4_Main_Screen(app_Initialize_ViewModel=appViewModels.app_Initialize_ViewModel)
+            }
         }
     }
 }
@@ -52,6 +56,9 @@ fun AppNavHost(
  */
 @Serializable
 data class Fragment3_Main_ScreenDestination(val route: String = "Fragment3_Main_Screen") : java.io.Serializable
+
+@Serializable
+data class Fragment_4_Main_Screen_Destination(val route: String = "Fragment_4_Main_Screen") : java.io.Serializable
 
 sealed class Screen(
     val route: String,
@@ -77,6 +84,12 @@ sealed class Screen(
         title = "Fragment3_Main_Screen",
         color = Color(0xFFFF5722)
     )
+    data object Fragment_4_Main_Screen : Screen(
+        route = "Fragment_4_Main_Screen",
+        icon = Icons.Default.Tab,
+        title = "Fragment_4_Main_Screen",
+        color = Color(0xFFFF5722)
+    )
 }
 
 // Update NavigationItems to include the new screen
@@ -84,8 +97,8 @@ object NavigationItems {
     fun getItems() = listOf(
         Screen.StartFragment ,
         Screen.ClientProductsDisplayerStatsFragment,
-        Screen.Fragment3_Main_Screen
-
+        Screen.Fragment3_Main_Screen,
+        Screen.Fragment_4_Main_Screen
     )
 }
 

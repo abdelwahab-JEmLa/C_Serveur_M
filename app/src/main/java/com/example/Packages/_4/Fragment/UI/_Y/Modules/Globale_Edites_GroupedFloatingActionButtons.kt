@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.V.FABs.Modules
+package com.example.Packages._4.Fragment.UI._Y.Modules
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Dehaze
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -45,13 +44,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.Packages._3.Fragment.Models.UiState
+import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
 import kotlin.math.roundToInt
 
 @Composable
-internal fun Grouped_FloatingActionButtons(
+internal fun Globale_Edites_GroupedFloatingActionButtons(
     modifier: Modifier = Modifier,
-    uiState: UiState,
+    uiState: Ui_State_4_Fragment,
 ) {
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
@@ -107,7 +106,7 @@ internal fun Grouped_FloatingActionButtons(
 
                         }
                     )
-                    FabButton(
+                    /**FabButton(
                         icon = Icons.Default.Upload,
                         label = when (uiState.currentMode) {
                             UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> "MODE_Click_Change_Position"
@@ -120,7 +119,7 @@ internal fun Grouped_FloatingActionButtons(
                         onClick = {
                             uiState.currentMode = UiState.Affichage_Et_Click_Modes.toggle(uiState.currentMode)
                         }
-                    )
+                    )  */
 
                     FabButton(
                         icon = if (showLabels) Icons.Default.Close else Icons.Default.Dehaze,

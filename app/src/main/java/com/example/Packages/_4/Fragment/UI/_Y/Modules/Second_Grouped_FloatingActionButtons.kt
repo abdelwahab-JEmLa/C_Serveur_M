@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.V.FABs.Modules
+package com.example.Packages._4.Fragment.UI._Y.Modules
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,10 +43,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
+import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -54,48 +53,29 @@ private const val FAB_TAG = "FAB_DEBUG"
 @Composable
 internal fun Second_Grouped_FloatingActionButtons(
     modifier: Modifier = Modifier,
-    uiState: UiState,
+    uiState: Ui_State_4_Fragment,
+    produit_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
 ) {
-    // Only proceed if initialization is complete
-    val viewModel = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner found"
-    }.let { viewModelStoreOwner ->
-        ViewModelProvider(viewModelStoreOwner)[F4_ViewModel::class.java]
-    }
 
-    if (!viewModel.initializationComplete) {
-        Log.d(FAB_TAG, "Waiting for initialization to complete")
-        return
-    }
-    // Log the initialization of the composable
-    LaunchedEffect(Unit) {
-        Log.d(FAB_TAG, "Grossissts_FloatingActionButtons_Grouped initialized")
-        Log.d(FAB_TAG, "Total products in database: ${uiState.produit_DataBase.size}")
-    }
-    // Add before grouping
-    Log.d(FAB_TAG, "Total products before grouping: ${uiState.produit_DataBase.size}")
-    uiState.produit_DataBase.forEach { product ->
-        Log.d(FAB_TAG, "Product ${product.id} has ${product.grossist_Choisi_Pour_Acheter_CeProduit.size} suppliers")
-    }
-    
-    val grouped_Produits_Par_Id_Grossist = remember(uiState.produit_DataBase) {
-        val groupedProducts = uiState.produit_DataBase.groupBy { produit ->
-            produit.grossist_Choisi_Pour_Acheter_CeProduit
-                .maxByOrNull { it.date }?.vid ?: -1L
+    val grouped_Produits_Par_Id_Acheteur = remember(produit_Main_DataBase) {
+        val groupedProducts = produit_Main_DataBase.groupBy { produit ->
+            produit.demmende_Achate_De_Cette_Produit
+                .maxByOrNull { it.time_String }
+                ?.id_Acheteur ?: -1L
         }
 
         // Log the grouping results
-        Log.d(FAB_TAG, "Grouped products by supplier:")
-        groupedProducts.forEach { (supplierId, products) ->
-            Log.d(FAB_TAG, "Supplier ID: $supplierId, Product Count: ${products.size}")
+        Log.d(FAB_TAG, "Grouped products by buyer:")
+        groupedProducts.forEach { (buyerId, products) ->
+            Log.d(FAB_TAG, "Buyer ID: $buyerId, Product Count: ${products.size}")
         }
 
         groupedProducts
     }
-    
-    Log.d(FAB_TAG, "Total grouped entries: ${grouped_Produits_Par_Id_Grossist.size}")
-    grouped_Produits_Par_Id_Grossist.forEach { (supplierId, products) ->
-        Log.d(FAB_TAG, "Group for supplier $supplierId has ${products.size} products")
+
+    Log.d(FAB_TAG, "Total grouped entries: ${grouped_Produits_Par_Id_Acheteur.size}")
+    grouped_Produits_Par_Id_Acheteur.forEach { (Id, products) ->
+        Log.d(FAB_TAG, "Group for  $Id has ${products.size} products")
     }
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
@@ -108,9 +88,9 @@ internal fun Second_Grouped_FloatingActionButtons(
         Log.d(FAB_TAG, "showFloatingButtons: $showFloatingButtons")
     }
 
-    // Remember supplier colors to keep them consistent
-    val supplierColors = remember {
-        val colors = grouped_Produits_Par_Id_Grossist.keys.associateWith {
+    // Remember  colors to keep them consistent
+    val achteurColors = remember {
+        val colors = grouped_Produits_Par_Id_Acheteur.keys.associateWith {
             Color(
                 red = Random.nextFloat(),
                 green = Random.nextFloat(),
@@ -119,9 +99,9 @@ internal fun Second_Grouped_FloatingActionButtons(
             )
         }
 
-        // Log supplier colors
-        colors.forEach { (supplierId, color) ->
-            Log.d(FAB_TAG, "Supplier $supplierId color: $color")
+        // Log  colors
+        colors.forEach { (Id, color) ->
+            Log.d(FAB_TAG, " $Id color: $color")
         }
 
         colors
@@ -163,33 +143,33 @@ internal fun Second_Grouped_FloatingActionButtons(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
-                    val filteredSuppliers = grouped_Produits_Par_Id_Grossist
-                        .filter { it.key != -1L } // Filter out products without a supplier
+                    val filteredacheteur = grouped_Produits_Par_Id_Acheteur
+                        .filter { it.key != -1L } // Filter out products without a acheteur
 
-                    Log.d(FAB_TAG, "Filtered suppliers count: ${filteredSuppliers.size}")
+                    Log.d(FAB_TAG, "Filtered acheteur count: ${filteredacheteur.size}")
 
-                    filteredSuppliers.forEach { (supplierId, products) ->
-                        val supplier = products.firstOrNull()
-                            ?.grossist_Choisi_Pour_Acheter_CeProduit
-                            ?.maxByOrNull { it.date }
+                    filteredacheteur.forEach { (acheteurId, products) ->
+                        val acheteur = products.firstOrNull()
+                            ?.demmende_Achate_De_Cette_Produit
+                            ?.maxByOrNull { it.time_String }
 
-                        if (supplier != null) {
-                            Log.d(FAB_TAG, "Creating FAB for supplier: ${supplier.nom}, ID: $supplierId, Products: ${products.size}")
+                        if (acheteur != null) {
+                            Log.d(FAB_TAG, "Creating FAB for acheteur: ${acheteur.nom_Acheteur}, ID: $acheteurId, Products: ${products.size}")
 
                             FabButton(
-                                supplierProductssize = products.size,
-                                label = supplier.nom,
-                                color = supplierColors[supplierId] ?: MaterialTheme.colorScheme.primary,
+                                acheteurProductssize = products.size,
+                                label = acheteur.nom_Acheteur,
+                                color = achteurColors[acheteurId] ?: MaterialTheme.colorScheme.primary,
                                 showLabel = showLabels,
-                                isFiltered = uiState.selectedSupplierId == supplierId,
+                                isFiltered = uiState.selected_Client_Id == acheteurId,
                                 onClick = {
-                                    Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
-                                    uiState.selectedSupplierId =
-                                        if (uiState.selectedSupplierId == supplierId) 0L else supplierId
+                                    Log.d(FAB_TAG, "FAB clicked for Acheteur $acheteurId")
+                                    uiState.selected_Client_Id =
+                                        if (uiState.selected_Client_Id == acheteurId) 0L else acheteurId
                                 }
                             )
                         } else {
-                            Log.w(FAB_TAG, "No supplier found for ID: $supplierId")
+                            Log.w(FAB_TAG, "No Acheteur found for ID: $acheteurId")
                         }
                     }
                 }
@@ -235,7 +215,7 @@ private fun FabButton(
     showLabel: Boolean,
     isFiltered: Boolean = false,
     onClick: () -> Unit,
-    supplierProductssize: Int
+    acheteurProductssize: Int
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -255,7 +235,7 @@ private fun FabButton(
                     MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
             ) {
                 Text(
-                    text = "$label ($supplierProductssize)",
+                    text = "$label ($acheteurProductssize)",
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
@@ -271,7 +251,7 @@ private fun FabButton(
             containerColor = color
         ) {
             Text(
-                text = supplierProductssize.toString(),
+                text = acheteurProductssize.toString(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White
             )

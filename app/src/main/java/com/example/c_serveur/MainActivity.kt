@@ -17,6 +17,7 @@ import com.example.Main.MainScreen.MainScreen
 import com.example.Main.StartFragment.StartFragmentViewModel
 import com.example.Packages.P1.ClientProductsDisplayerStatsViewModel
 import com.example.Packages.P3.E.ViewModel.ViewModelFragment
+import com.example.c_serveur.ViewModel.App_Initialize_ViewModel
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.AppDatabase
 import com.example.clientjetpack.Modules.PermissionHandler
@@ -27,7 +28,8 @@ data class AppViewModels(
     val startFragmentViewModel: StartFragmentViewModel,
     val clientProductsDisplayerStatsViewModel: ClientProductsDisplayerStatsViewModel,
     val grossistProductsDiviseurViewModelsFragment: ViewModelFragment,
-)
+    val app_Initialize_ViewModel: App_Initialize_ViewModel,
+    )
 
 // ViewModelFactory.kt
 class ViewModelFactory(
@@ -58,6 +60,8 @@ class ViewModelFactory(
                     context.applicationContext,
                     database,
                 ) as T
+            modelClass.isAssignableFrom(App_Initialize_ViewModel::class.java) ->
+                App_Initialize_ViewModel() as T
             else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
         }
     }
@@ -73,6 +77,7 @@ class MainActivity : ComponentActivity() {
     private val startFragmentViewModel: StartFragmentViewModel by viewModels { viewModelFactory }
     private val clientProductsDisplayerStatsViewModel: ClientProductsDisplayerStatsViewModel by viewModels { viewModelFactory }
     private val grossistProductsDiviseurViewModelsFragment: ViewModelFragment by viewModels { viewModelFactory }
+    private val app_Initialize_ViewModel: App_Initialize_ViewModel by viewModels { viewModelFactory }
 
 
 
@@ -82,7 +87,8 @@ class MainActivity : ComponentActivity() {
             startFragmentViewModel = startFragmentViewModel,
             clientProductsDisplayerStatsViewModel = clientProductsDisplayerStatsViewModel,
             grossistProductsDiviseurViewModelsFragment = grossistProductsDiviseurViewModelsFragment,
-        )
+            app_Initialize_ViewModel=app_Initialize_ViewModel
+            )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

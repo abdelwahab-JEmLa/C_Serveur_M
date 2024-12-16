@@ -201,7 +201,17 @@ class UiState internal constructor(
                 lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
 
                 produit_DataBase.clear()
-                produit_DataBase.addAll(state.produit_DataBase)
+                state.produit_DataBase.forEach { sourceProduit ->
+                    val newProduit = Produit_DataBase(
+                        id = sourceProduit.id,
+                        it_ref_Id_don_FireBase = sourceProduit.it_ref_Id_don_FireBase,
+                        it_ref_don_FireBase = sourceProduit.it_ref_don_FireBase,
+                        init_nom = sourceProduit.nom,
+                        init_besoin_To_Be_Updated = sourceProduit.besoin_To_Be_Updated,
+                        initialNon_Trouve = sourceProduit.non_Trouve,
+                    )
+                    produit_DataBase.add(newProduit)
+                }
             }
         } catch (e: Exception) {
             throw Exception("Failed to load state from Firebase: ${e.message}")

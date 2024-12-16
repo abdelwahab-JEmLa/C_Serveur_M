@@ -11,18 +11,15 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModel
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 
 open class App_Initialize_ViewModel : ViewModel() {
 
-    // UiStateSnapshotStateList management with proper initialization
-    var _uiState by mutableStateOf(
-        UiState(
-            initialLastUpdateTime = System.currentTimeMillis().toString(),
-            initialReferencesFireBaseGroup = emptyList(),
-            initial_Produits_DataBase = emptyList()
-        )
+    var _app_Initialize_Model by mutableStateOf(
+        App_Initialize_Model()
     )
-    val uiState: UiState get() = this._uiState
+
+    val app_Initialize_Model: App_Initialize_Model get() = this._app_Initialize_Model
 
     // Progress tracking
     var initializationProgress by mutableFloatStateOf(0f)
@@ -34,7 +31,7 @@ open class App_Initialize_ViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                Initialise_ViewModel()
+                _app_Initialize_Model.load_Produits_FireBase()
             } finally {
                 isInitializing = false
             }

@@ -1,7 +1,7 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import android.util.Log
-import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
+import com.example.Packages._3.Fragment.ViewModel.F3_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.Ancien_Resources_DataBase
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.get_Ancien_Datas
@@ -9,14 +9,14 @@ import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.
 
 private const val TAG_Snap = "InitialeUiState"
 
-internal suspend fun F4_ViewModel.Initialise_ViewModel() {
+internal suspend fun F3_ViewModel.Initialise_ViewModel() {
     try {
         Log.d(TAG_Snap, "Starting Initialise_ViewModel")
         initializationProgress = 0.1f
         isInitializing = true
 
         val ancienData = get_Ancien_Datas()
-        val besoin_update_initialise = true
+        val besoin_update_initialise = false
 
         if (!besoin_update_initialise) {
             _uiState.loadFromFirebaseDataBase()

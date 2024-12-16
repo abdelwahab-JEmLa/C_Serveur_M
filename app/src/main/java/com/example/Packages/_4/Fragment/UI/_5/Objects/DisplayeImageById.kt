@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.UI._5.Objects
+package com.example.Packages._4.Fragment.UI._5.Objects
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize

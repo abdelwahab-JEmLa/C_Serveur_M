@@ -19,8 +19,7 @@ class F4_ViewModel internal constructor() : ViewModel() {
         )
     )
     var  _app_Initialize_Model by mutableStateOf(
-        App_Initialize_Model(
-        )
+        App_Initialize_Model()
     )
 
     val uiState: Ui_State_4_Fragment get() = this._uiState

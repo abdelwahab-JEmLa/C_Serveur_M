@@ -10,10 +10,10 @@ import com.google.firebase.database.database
 import com.google.firebase.database.getValue
 import kotlinx.coroutines.tasks.await
 
-class App_Initialize_Model internal constructor(
+class App_Initialize_Model(
     initial_Produit_Main_DataBase: List<Produit_Main_DataBase> = emptyList()
 ) {
-    var produit_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
+    private var produit_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
         initial_Produit_Main_DataBase.toMutableStateList()
 
     class Produit_Main_DataBase(

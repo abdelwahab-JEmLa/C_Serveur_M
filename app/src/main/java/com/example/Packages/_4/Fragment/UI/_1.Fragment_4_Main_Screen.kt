@@ -25,7 +25,7 @@ internal fun Fragment_4_Main_Screen(
             Column {
                 Main_List(
                     contentPadding = paddingValues,
-                    uiState = f4_ViewModel.uiState
+                    uiState = f4_ViewModel.app_Initialize_Model.produit_Main_DataBase
                 )
             }
 

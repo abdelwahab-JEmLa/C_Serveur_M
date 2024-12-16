@@ -1,6 +1,7 @@
-package com.example.Packages._4.Fragment.ViewModel._1.Model
+package com.example.Packages._4.Fragment._1.Main.Model
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.firebase.Firebase
@@ -20,7 +21,7 @@ class Ui_State_4_Fragment internal constructor(
         .child("_4_Fragment_Ui_State")
 
     var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
-    var selectedSupplierId: Long by mutableStateOf(0)
+    var selected_Client_Id: Long by mutableLongStateOf(0)
     var currentMode: Affichage_Et_Click_Modes by mutableStateOf(Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
 
     enum class Affichage_Et_Click_Modes {
@@ -60,7 +61,7 @@ class Ui_State_4_Fragment internal constructor(
             val snapshot = ref_4_Fragment_Ui_State.get().await()
             snapshot.getValue<Ui_State_4_Fragment>()?.let { state ->
                 lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
-                selectedSupplierId = state.selectedSupplierId
+                selected_Client_Id = state.selected_Client_Id
                 currentMode = state.currentMode
             }
         } catch (e: Exception) {

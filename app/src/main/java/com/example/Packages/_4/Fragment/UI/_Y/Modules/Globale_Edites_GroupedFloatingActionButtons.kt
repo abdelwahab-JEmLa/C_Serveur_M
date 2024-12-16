@@ -46,12 +46,13 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
+import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
 import kotlin.math.roundToInt
 
 @Composable
-internal fun Grouped_FloatingActionButtons(
+internal fun Globale_Edites_GroupedFloatingActionButtons(
     modifier: Modifier = Modifier,
-    uiState: UiState,
+    uiState: Ui_State_4_Fragment,
 ) {
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
@@ -107,7 +108,7 @@ internal fun Grouped_FloatingActionButtons(
 
                         }
                     )
-                    FabButton(
+                    /**FabButton(
                         icon = Icons.Default.Upload,
                         label = when (uiState.currentMode) {
                             UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> "MODE_Click_Change_Position"
@@ -120,7 +121,7 @@ internal fun Grouped_FloatingActionButtons(
                         onClick = {
                             uiState.currentMode = UiState.Affichage_Et_Click_Modes.toggle(uiState.currentMode)
                         }
-                    )
+                    )  */
 
                     FabButton(
                         icon = if (showLabels) Icons.Default.Close else Icons.Default.Dehaze,

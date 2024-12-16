@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages._3.Fragment.V.FABs.Modules.Grouped_FloatingActionButtons
+import com.example.Packages._3.Fragment.V.FABs.Modules.Globale_Edites_GroupedFloatingActionButtons
 import com.example.Packages._3.Fragment.V.FABs.Modules.Second_Grouped_FloatingActionButtons
-import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
+import com.example.Packages._4.Fragment._1.Main.ViewModel.F4_ViewModel
 
 @Composable
 internal fun Fragment_4_Main_Screen(
@@ -25,11 +25,12 @@ internal fun Fragment_4_Main_Screen(
             Column {
                 Main_List(
                     contentPadding = paddingValues,
-                    uiState = f4_ViewModel.app_Initialize_Model.produit_Main_DataBase
+                    uiState = f4_ViewModel.uiState,
+                    produit_Main_DataBase = f4_ViewModel.app_Initialize_Model.produit_Main_DataBase
                 )
             }
 
-            Grouped_FloatingActionButtons(
+            Globale_Edites_GroupedFloatingActionButtons(
                 modifier = Modifier,
                 uiState = f4_ViewModel.uiState,
             )
@@ -37,6 +38,7 @@ internal fun Fragment_4_Main_Screen(
             Second_Grouped_FloatingActionButtons(
                 modifier = Modifier,
                 uiState = f4_ViewModel.uiState,
+                produit_Main_DataBase = f4_ViewModel.app_Initialize_Model.produit_Main_DataBase
             )
         }
     }

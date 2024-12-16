@@ -13,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 class App_Initialize_Model(
     initial_Produit_Main_DataBase: List<Produit_Main_DataBase> = emptyList()
 ) {
-    private var produit_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
+    var produit_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
         initial_Produit_Main_DataBase.toMutableStateList()
 
     class Produit_Main_DataBase(
@@ -74,6 +74,7 @@ class App_Initialize_Model(
             var vid: Long = 0,
             var id_Acheteur: Long = 0,
             var nom_Acheteur: String = "",
+            var time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
             var inseartion_Temp: Long = 0,
             var inceartion_Date: Long = 0,
             initial_Colours_Et_Gouts_Acheter_Depuit_Client: List<Colours_Et_Gouts_Acheter_Depuit_Client> = emptyList(),

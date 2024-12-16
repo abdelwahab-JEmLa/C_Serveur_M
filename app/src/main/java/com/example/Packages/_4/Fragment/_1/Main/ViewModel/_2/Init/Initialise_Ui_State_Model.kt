@@ -1,7 +1,7 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import android.util.Log
-import com.example.Packages._4.Fragment.ViewModel._3.Main.F4_ViewModel
+import com.example.Packages._4.Fragment._1.Main.ViewModel.F4_ViewModel
 
 private const val TAG_Snap = "Initiale"
 

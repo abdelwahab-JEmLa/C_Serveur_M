@@ -29,17 +29,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
+import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 
 @Composable
 internal fun Main_Item(
-    uiState: UiState,
-    produit: UiState.Produit_DataBase,
+    uiState: Ui_State_4_Fragment,
+    produit: App_Initialize_Model.Produit_Main_DataBase,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
     // Calculate height based on mode
     val heightCard = when {
-        uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> if (isExpanded) 300.dp else 100.dp
+        uiState.currentMode == Ui_State_4_Fragment.Affichage_Et_Click_Modes.MODE_Affiche_Produits ->
+            if (isExpanded) 300.dp else 100.dp
         else -> 100.dp
     }
 
@@ -53,7 +56,7 @@ internal fun Main_Item(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
+                if (uiState.currentMode == Ui_State_4_Fragment.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
                     Modifier.wrapContentHeight()
                 else
                     Modifier.height(heightCard)
@@ -117,7 +120,7 @@ internal fun Main_Item(
             }
 
             // Contenu spécifique au mode
-            if (uiState.currentMode == UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs) {
+            if (uiState.currentMode == Ui_State_4_Fragment.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

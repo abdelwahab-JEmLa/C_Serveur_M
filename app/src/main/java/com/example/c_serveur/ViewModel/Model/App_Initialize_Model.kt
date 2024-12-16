@@ -36,7 +36,7 @@ class App_Initialize_Model internal constructor(
             initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
         var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> =
             initialGrossist_Choisi_Pour_Acheter_CeProduit.toMutableStateList()
-
+           //
         class Colours_Et_Gouts(
             var position_Du_Couleur_Au_Produit: Long = 0,
             var nom: String = "",

@@ -53,7 +53,6 @@ internal fun Grouped_FloatingActionButtons(
     modifier: Modifier = Modifier,
     uiState: UiState,
 ) {
-
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
     var clickCount by remember { mutableIntStateOf(0) }

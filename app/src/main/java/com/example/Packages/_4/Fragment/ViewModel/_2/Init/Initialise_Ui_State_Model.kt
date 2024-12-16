@@ -5,7 +5,6 @@ import com.example.Packages._4.Fragment.ViewModel._1.Main.F4_ViewModel
 
 private const val TAG_Snap = "InitialeUiState"
 
-// Initialise_Ui_State_Model.kt
 suspend fun F4_ViewModel.Initialise_ViewModel() {
     try {
         Log.d(TAG_Snap, "Starting Initialise_ViewModel")
@@ -28,6 +27,7 @@ suspend fun F4_ViewModel.Initialise_ViewModel() {
 
         initializationProgress = 1.0f
         initializationComplete = true
+
         Log.d(TAG_Snap, "Completed Initialise_ViewModel")
     } catch (e: Exception) {
         Log.e(TAG_Snap, "Error in Initialise_ViewModel", e)

@@ -45,14 +45,14 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
+import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
 private const val FAB_TAG = "FAB_DEBUG"
 
 @Composable
-fun Grossissts_FloatingActionButtons_Grouped(
+internal fun Grossissts_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_State: UiState,
 ) {
@@ -60,7 +60,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
     val viewModel = checkNotNull(LocalViewModelStoreOwner.current) {
         "No ViewModelStoreOwner found"
     }.let { viewModelStoreOwner ->
-        ViewModelProvider(viewModelStoreOwner)[P3_ViewModel::class.java]
+        ViewModelProvider(viewModelStoreOwner)[F4_ViewModel::class.java]
     }
 
     if (!viewModel.initializationComplete) {

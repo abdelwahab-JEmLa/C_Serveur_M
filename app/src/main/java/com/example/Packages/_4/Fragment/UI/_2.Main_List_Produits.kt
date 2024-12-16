@@ -1,6 +1,5 @@
 package com.example.Packages._3.Fragment.UI
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,32 +18,32 @@ import androidx.compose.ui.unit.dp
 import com.example.Packages._3.Fragment.Models.UiState
 
 @Composable
-fun Produits_Main_List(
+fun Main_List(
     modifier: Modifier = Modifier,
-    ui_State: UiState,
+    uiState: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp)
 ) {
-    val visibleItems = ui_State.produit_DataBase
+    val visibleItems = uiState.produit_DataBase
         .filter { produit ->
             val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
                 .flatMap { it.colours_Et_Gouts_Commende }
                 .sumOf { it.quantity_Achete }
 
-            val supplierMatch = if (ui_State.selectedSupplierId != 0L) {
+            val supplierMatch = if (uiState.selectedSupplierId != 0L) {
                 produit.grossist_Choisi_Pour_Acheter_CeProduit.any {
-                    it.supplier_id == ui_State.selectedSupplierId
+                    it.supplier_id == uiState.selectedSupplierId
                 }
             } else true
 
             totalQuantity > 0 && supplierMatch
         }
 
-    when (ui_State.currentMode) {
+    when (uiState.currentMode) {
         UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> {
             // Partition items into those with and without positions
             val (itemsWithPosition, itemsWithoutPosition) = visibleItems.partition { produit ->
                 val position = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                    .find { it.supplier_id == ui_State.selectedSupplierId }
+                    .find { it.supplier_id == uiState.selectedSupplierId }
                     ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
 
                 position != null && position > 0
@@ -53,7 +52,7 @@ fun Produits_Main_List(
             // Sort items with positions by their position value (ascending)
             val sortedPositionItems = itemsWithPosition.sortedBy { produit ->
                 produit.grossist_Choisi_Pour_Acheter_CeProduit
-                    .find { it.supplier_id == ui_State.selectedSupplierId }
+                    .find { it.supplier_id == uiState.selectedSupplierId }
                     ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: Int.MAX_VALUE
             }
 
@@ -86,8 +85,8 @@ fun Produits_Main_List(
                     }
 
                     items(sortedPositionItems) { produit ->
-                        Produit_Item_MODE_Click_Change_Position(
-                            uiState = ui_State,
+                        Main_Item_Second_Type_D_Affiche(
+                            uiState = uiState,
                             produit = produit
                         )
                     }
@@ -107,8 +106,8 @@ fun Produits_Main_List(
                     }
 
                     items(sortedNoPositionItems) { produit ->
-                        Produit_Item_MODE_Click_Change_Position(
-                            uiState = ui_State,
+                        Main_Item_Second_Type_D_Affiche(
+                            uiState = uiState,
                             produit = produit
                         )
                     }
@@ -139,7 +138,7 @@ fun Produits_Main_List(
                     )
                 ) { produit ->
                     Produit_Item(
-                        uiState = ui_State,
+                        uiState = uiState,
                         produit = produit
                     )
                 }

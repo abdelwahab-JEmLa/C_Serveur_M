@@ -26,7 +26,7 @@ import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
 
 @Composable
-internal fun Expanded_Item_Displaye(
+internal fun Main_Item_Expanded_Displaye(
     produit: UiState.Produit_DataBase,
     initialHeightCard: Dp = 300.dp,
     onEpandToggle: () -> Unit

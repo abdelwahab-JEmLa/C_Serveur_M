@@ -12,9 +12,7 @@ import com.google.firebase.database.database
 import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModel
 
-open class App_Initialize_ViewModel(
-) : ViewModel() {
-    private val database = Firebase.database
+open class App_Initialize_ViewModel : ViewModel() {
 
     // UiStateSnapshotStateList management with proper initialization
     var _uiState by mutableStateOf(

@@ -49,7 +49,7 @@ import com.example.Packages._3.Fragment.Models.UiState
 import kotlin.math.roundToInt
 
 @Composable
-fun GlobalActions_FloatingActionButtons_Grouped(
+internal fun GlobalActions_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_Mutable_State: UiState,
 ) {

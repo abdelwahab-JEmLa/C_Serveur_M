@@ -3,14 +3,14 @@ package com.example.Packages._4.Fragment.ViewModel.Model
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.Packages._3.Fragment.Models.UiState
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
-import com.google.firebase.database.ktx.getValue
+import com.google.firebase.database.getValue
 import kotlinx.coroutines.tasks.await
-import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.google.firebase.database.ktx.getValue
+import java.text.SimpleDateFormat
 
 class _4_Fragment_Ui_State internal constructor(
     initialLastUpdateTime: String? = getCurrentFormattedTime(),
@@ -21,10 +21,7 @@ class _4_Fragment_Ui_State internal constructor(
         .child("_4_Fragment_Ui_State")
 
     var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
-
-
     var selectedSupplierId: Long by mutableStateOf(0)
-
     var currentMode: Affichage_Et_Click_Modes by mutableStateOf(Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
 
     enum class Affichage_Et_Click_Modes {
@@ -42,8 +39,6 @@ class _4_Fragment_Ui_State internal constructor(
             }
         }
     }
-
-
 
     companion object {
         private fun getCurrentFormattedTime(): String {
@@ -64,19 +59,14 @@ class _4_Fragment_Ui_State internal constructor(
     suspend fun load_Self_FromFirebaseDataBase() {
         try {
             val snapshot = ref_4_Fragment_Ui_State.get().await()
-            snapshot.getValue<UiState>()?.let { state ->
+            snapshot.getValue<_4_Fragment_Ui_State>()?.let { state ->
                 lastUpdateTimeFormatted = state.lastUpdateTimeFormatted
-
-                this.addAll(this)       //->
-                //FIXME: ("
-                //Unresolved reference. None of the following candidates is applicable because of receiver type mismatch:
-                //public fun <T> MutableCollection<in TypeVariable(T)>.addAll(elements: Array<out TypeVariable(T)>): Boolean defined in kotlin.collections
-                //public fun <T> MutableCollection<in TypeVariable(T)>.addAll(elements: Iterable<TypeVariable(T)>): Boolean defined in kotlin.collections
-                //public fun <T> MutableCollection<in TypeVariable(T)>.addAll(elements: Sequence<TypeVariable(T)>): Boolean defined in kotlin.collections")
+                // Copy other properties from state to this instance
+                selectedSupplierId = state.selectedSupplierId
+                currentMode = state.currentMode
             }
         } catch (e: Exception) {
             throw Exception("Failed to load state from Firebase: ${e.message}")
         }
     }
-
 }

@@ -45,22 +45,22 @@ import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
+import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
 private const val FAB_TAG = "FAB_DEBUG"
 
 @Composable
-fun Grossissts_FloatingActionButtons_Grouped(
+internal fun Second_Grouped_FloatingActionButtons(
     modifier: Modifier = Modifier,
-    ui_State: UiState,
+    uiState: UiState,
 ) {
     // Only proceed if initialization is complete
     val viewModel = checkNotNull(LocalViewModelStoreOwner.current) {
         "No ViewModelStoreOwner found"
     }.let { viewModelStoreOwner ->
-        ViewModelProvider(viewModelStoreOwner)[P3_ViewModel::class.java]
+        ViewModelProvider(viewModelStoreOwner)[F4_ViewModel::class.java]
     }
 
     if (!viewModel.initializationComplete) {
@@ -70,16 +70,16 @@ fun Grossissts_FloatingActionButtons_Grouped(
     // Log the initialization of the composable
     LaunchedEffect(Unit) {
         Log.d(FAB_TAG, "Grossissts_FloatingActionButtons_Grouped initialized")
-        Log.d(FAB_TAG, "Total products in database: ${ui_State.produit_DataBase.size}")
+        Log.d(FAB_TAG, "Total products in database: ${uiState.produit_DataBase.size}")
     }
     // Add before grouping
-    Log.d(FAB_TAG, "Total products before grouping: ${ui_State.produit_DataBase.size}")
-    ui_State.produit_DataBase.forEach { product ->
+    Log.d(FAB_TAG, "Total products before grouping: ${uiState.produit_DataBase.size}")
+    uiState.produit_DataBase.forEach { product ->
         Log.d(FAB_TAG, "Product ${product.id} has ${product.grossist_Choisi_Pour_Acheter_CeProduit.size} suppliers")
     }
     
-    val grouped_Produits_Par_Id_Grossist = remember(ui_State.produit_DataBase) {
-        val groupedProducts = ui_State.produit_DataBase.groupBy { produit ->
+    val grouped_Produits_Par_Id_Grossist = remember(uiState.produit_DataBase) {
+        val groupedProducts = uiState.produit_DataBase.groupBy { produit ->
             produit.grossist_Choisi_Pour_Acheter_CeProduit
                 .maxByOrNull { it.date }?.vid ?: -1L
         }
@@ -181,11 +181,11 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                 label = supplier.nom,
                                 color = supplierColors[supplierId] ?: MaterialTheme.colorScheme.primary,
                                 showLabel = showLabels,
-                                isFiltered = ui_State.selectedSupplierId == supplierId,
+                                isFiltered = uiState.selectedSupplierId == supplierId,
                                 onClick = {
                                     Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
-                                    ui_State.selectedSupplierId =
-                                        if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
+                                    uiState.selectedSupplierId =
+                                        if (uiState.selectedSupplierId == supplierId) 0L else supplierId
                                 }
                             )
                         } else {

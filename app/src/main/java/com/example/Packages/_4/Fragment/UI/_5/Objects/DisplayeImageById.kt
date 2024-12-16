@@ -18,7 +18,7 @@ import com.example.c_serveur.R
 import java.io.File
 
 @Composable
-internal fun DisplayeImageById(
+internal fun DisplayeImageByIdd(
     modifier: Modifier = Modifier,
     produit_Id: Long,
     index: Int = 0,
@@ -94,14 +94,3 @@ internal fun DisplayeImageById(
     )
 }
 
-fun checkArticleImageExists(
-    idArticle: Long,
-    index: Int = 0
-): Boolean {
-    val baseImagePath = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne/${idArticle}_${index + 1}"
-    val supportedExtensions = listOf("jpg", "jpeg", "png", "webp")
-
-    return supportedExtensions.any { extension ->
-        File("$baseImagePath.$extension").exists()
-    }
-}

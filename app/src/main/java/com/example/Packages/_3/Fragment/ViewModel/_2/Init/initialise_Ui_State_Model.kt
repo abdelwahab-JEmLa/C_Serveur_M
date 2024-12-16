@@ -1,17 +1,15 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import android.util.Log
-import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
+import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.Ancien_Datas_Resources
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.get_Ancien_Datas
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_ClientsDataBase
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_Produits_DataBase
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_SoldArticlesTabelle
 
 private const val TAG_Snap = "InitialeUiState"
 
-internal suspend fun P3_ViewModel.Initialise_ViewModel() {
+internal suspend fun F4_ViewModel.Initialise_ViewModel() {
     try {
         Log.d(TAG_Snap, "Starting Initialise_ViewModel")
         initializationProgress = 0.1f

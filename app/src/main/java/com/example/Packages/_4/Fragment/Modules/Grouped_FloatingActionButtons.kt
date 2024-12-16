@@ -49,9 +49,9 @@ import com.example.Packages._3.Fragment.Models.UiState
 import kotlin.math.roundToInt
 
 @Composable
-fun GlobalActions_FloatingActionButtons_Grouped(
+internal fun Grouped_FloatingActionButtons(
     modifier: Modifier = Modifier,
-    ui_Mutable_State: UiState,
+    uiState: UiState,
 ) {
 
     var showLabels by remember { mutableStateOf(true) }
@@ -110,7 +110,7 @@ fun GlobalActions_FloatingActionButtons_Grouped(
                     )
                     FabButton(
                         icon = Icons.Default.Upload,
-                        label = when (ui_Mutable_State.currentMode) {
+                        label = when (uiState.currentMode) {
                             UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> "MODE_Click_Change_Position"
                             UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs -> "Mode Acheteurs"
                             UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> "Mode Produits"
@@ -119,7 +119,7 @@ fun GlobalActions_FloatingActionButtons_Grouped(
                         showLabel = showLabels,
                         isFiltered = true,
                         onClick = {
-                            ui_Mutable_State.currentMode = UiState.Affichage_Et_Click_Modes.toggle(ui_Mutable_State.currentMode)
+                            uiState.currentMode = UiState.Affichage_Et_Click_Modes.toggle(uiState.currentMode)
                         }
                     )
 

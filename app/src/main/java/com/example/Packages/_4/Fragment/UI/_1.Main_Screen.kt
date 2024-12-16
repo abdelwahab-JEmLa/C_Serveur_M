@@ -8,14 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages._3.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
-import com.example.Packages._3.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
-import com.example.Packages._3.Fragment.ViewModel.P3_ViewModel
+import com.example.Packages._3.Fragment.V.FABs.Modules.Grouped_FloatingActionButtons
+import com.example.Packages._3.Fragment.V.FABs.Modules.Second_Grouped_FloatingActionButtons
+import com.example.Packages._3.Fragment.ViewModel.F4_ViewModel
 
 @Composable
-internal fun Fragment3_Main_Screen(
+internal fun Fragment_4_Main_Screen(
     modifier: Modifier = Modifier,
-    p3_ViewModel: P3_ViewModel = viewModel()
+    f4_ViewModel: F4_ViewModel = viewModel()
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -23,28 +23,28 @@ internal fun Fragment3_Main_Screen(
         Box(modifier = Modifier.fillMaxSize()) {
             // Main content
             Column {
-                Produits_Main_List(
-                    ui_State = p3_ViewModel.uiState,
+                Main_List(
+                    uiState = f4_ViewModel.uiState,
                     contentPadding = paddingValues
                 )
             }
 
-            // FABs
-            Grossissts_FloatingActionButtons_Grouped(
+            Grouped_FloatingActionButtons(
                 modifier = Modifier,
-                ui_State = p3_ViewModel.uiState,
+                uiState = f4_ViewModel.uiState,
             )
 
-            GlobalActions_FloatingActionButtons_Grouped(
+            Second_Grouped_FloatingActionButtons(
                 modifier = Modifier,
-                ui_Mutable_State = p3_ViewModel.uiState,
+                uiState = f4_ViewModel.uiState,
             )
+
         }
     }
 }
 
 @Preview
 @Composable
-private fun MainScreenPreview() {
-    Fragment3_Main_Screen(modifier = Modifier.fillMaxSize())
+private fun Preview_Fragment_4_Main_Screen() {
+    Fragment_4_Main_Screen(modifier = Modifier.fillMaxSize())
 }

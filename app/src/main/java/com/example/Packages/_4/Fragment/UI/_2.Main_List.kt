@@ -137,7 +137,7 @@ fun Main_List(
                         }.thenBy { it.nom }
                     )
                 ) { produit ->
-                    Produit_Item(
+                    Main_Item(
                         uiState = uiState,
                         produit = produit
                     )

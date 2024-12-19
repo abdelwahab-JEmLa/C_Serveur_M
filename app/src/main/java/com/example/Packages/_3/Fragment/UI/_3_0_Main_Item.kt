@@ -29,11 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 
 @Composable
 internal fun Produit_Item(
     uiState: UiState,
-    produit: UiState.Produit_DataBase,
+    produit: App_Initialize_Model.Produit_Main_DataBase,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 

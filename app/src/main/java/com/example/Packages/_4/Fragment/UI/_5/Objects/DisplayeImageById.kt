@@ -8,12 +8,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import coil.size.Size
 import coil.size.Dimension
+import coil.size.Size
 import com.example.c_serveur.R
 import java.io.File
 

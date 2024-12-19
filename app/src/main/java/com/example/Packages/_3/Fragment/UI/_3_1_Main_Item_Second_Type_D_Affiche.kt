@@ -16,11 +16,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 
 @Composable
 fun Produit_Item_MODE_Click_Change_Position(
     uiState: UiState,
-    produit: UiState.Produit_DataBase,
+    produit: App_Initialize_Model.Produit_Main_DataBase,
 ) {
     val currentPosition = produit.grossist_Choisi_Pour_Acheter_CeProduit
         .find { it.supplier_id == uiState.selectedSupplierId }
@@ -42,13 +43,10 @@ fun Produit_Item_MODE_Click_Change_Position(
                     .find { it.supplier_id == uiState.selectedSupplierId }
 
                 if (currentSupplier != null) {
-                    val maxPosition = uiState.produit_DataBase
-                        .mapNotNull { otherProduit ->
-                            otherProduit.grossist_Choisi_Pour_Acheter_CeProduit
-                                .find { it.supplier_id == uiState.selectedSupplierId }
-                                ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                        }
-                        .maxOrNull() ?: 0
+                    // Fix: Get max position from all products' suppliers
+                    val maxPosition = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                        .filter { it.supplier_id == uiState.selectedSupplierId }
+                        .maxOfOrNull { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit } ?: 0
 
                     currentSupplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = maxPosition + 1
                     currentSupplier.position_Grossist_Don_Parent_Grossists_List = maxPosition + 1

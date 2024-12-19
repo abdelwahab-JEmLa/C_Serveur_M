@@ -105,8 +105,6 @@ class App_Initialize_Model(
         }
     }
 
-// In App_Initialize_Model.kt, modify the load_Produits_FireBase() function
-
     suspend fun load_Produits_FireBase() {
         try {
             val ref_Produit_Main_DataBase = Firebase.database
@@ -114,33 +112,69 @@ class App_Initialize_Model(
                 .child("produit_DataBase")
 
             val snapshot = ref_Produit_Main_DataBase.get().await()
-
             val rawData = snapshot.getValue<List<Map<String, Any?>>>()
 
             if (rawData != null) {
+                Log.d("App_Initialize_Model", "Raw data loaded successfully with ${rawData.size} entries")
 
                 val convertedProduits = rawData.map { productMap ->
-                    val demandes = (productMap["demmende_Achate_De_Cette_Produit"] as? List<Map<String, Any?>>)?.map {
-                        val colors = (it["colours_Et_Gouts_Acheter_Depuit_Client"] as? List<Map<String, Any?>>)?.map { clientColor ->
+                    // Map colors and tastes
+                    val coloursEtGouts = (productMap["colours_Et_Gouts"] as? List<Map<String, Any?>>)?.map { color ->
+                        Produit_Main_DataBase.Colours_Et_Gouts(
+                            position_Du_Couleur_Au_Produit = (color["position_Du_Couleur_Au_Produit"] as? Long) ?: 0,
+                            nom = (color["nom"] as? String) ?: "",
+                            imogi = (color["imogi"] as? String) ?: ""
+                        )
+                    } ?: emptyList()
+
+                    // Map purchase demands
+                    val demandes = (productMap["demmende_Achate_De_Cette_Produit"] as? List<Map<String, Any?>>)?.map { demand ->
+                        val clientColors = (demand["colours_Et_Gouts_Acheter_Depuit_Client"] as? List<Map<String, Any?>>)?.map { clientColor ->
                             Produit_Main_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter_Depuit_Client(
                                 vidPosition = (clientColor["vidPosition"] as? Long) ?: 0,
                                 nom = (clientColor["nom"] as? String) ?: "",
-                                quantity_Achete = (clientColor["quantity_Achete"] as? Long)?.toInt() ?: 0, // Changed to handle Long
+                                quantity_Achete = (clientColor["quantity_Achete"] as? Long)?.toInt() ?: 0,
                                 imogi = (clientColor["imogi"] as? String) ?: ""
                             )
                         } ?: emptyList()
 
                         Produit_Main_DataBase.Demmende_Achate_De_Cette_Produit(
-                            vid = (it["vid"] as? Long) ?: 0,
-                            id_Acheteur = (it["id_Acheteur"] as? Long) ?: 0,
-                            nom_Acheteur = (it["nom_Acheteur"] as? String) ?: "",
-                            time_String = (it["time_String"] as? String) ?: "",
-                            inseartion_Temp = (it["inseartion_Temp"] as? Long) ?: 0,
-                            inceartion_Date = (it["inceartion_Date"] as? Long) ?: 0,
-                            initial_Colours_Et_Gouts_Acheter_Depuit_Client = colors
+                            vid = (demand["vid"] as? Long) ?: 0,
+                            id_Acheteur = (demand["id_Acheteur"] as? Long) ?: 0,
+                            nom_Acheteur = (demand["nom_Acheteur"] as? String) ?: "",
+                            time_String = (demand["time_String"] as? String) ?: "",
+                            inseartion_Temp = (demand["inseartion_Temp"] as? Long) ?: 0,
+                            inceartion_Date = (demand["inceartion_Date"] as? Long) ?: 0,
+                            initial_Colours_Et_Gouts_Acheter_Depuit_Client = clientColors
                         )
                     } ?: emptyList()
 
+                    // Map supplier choices
+                    val suppliers = (productMap["grossist_Choisi_Pour_Acheter_CeProduit"] as? List<Map<String, Any?>>)?.map { supplier ->
+                        val supplierColors = (supplier["colours_Et_Gouts_Commende"] as? List<Map<String, Any?>>)?.map { colorMap ->
+                            Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier(
+                                position_Du_Couleur_Au_Produit = (colorMap["position_Du_Couleur_Au_Produit"] as? Long) ?: 0,
+                                id_Don_Tout_Couleurs = (colorMap["id_Don_Tout_Couleurs"] as? Long) ?: 0,
+                                nom = (colorMap["nom"] as? String) ?: "",
+                                quantity_Achete = (colorMap["quantity_Achete"] as? Long)?.toInt() ?: 0,
+                                imogi = (colorMap["imogi"] as? String) ?: ""
+                            )
+                        } ?: emptyList()
+
+                        Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+                            vid = (supplier["vid"] as? Long) ?: 0,
+                            supplier_id = (supplier["supplier_id"] as? Long) ?: 0,
+                            nom = (supplier["nom"] as? String) ?: "",
+                            date = (supplier["date"] as? String) ?: "",
+                            couleur = (supplier["couleur"] as? String) ?: "#FFFFFF",
+                            currentCreditBalance = (supplier["currentCreditBalance"] as? Double) ?: 0.0,
+                            init_position_Grossist_Don_Parent_Grossists_List = (supplier["position_Grossist_Don_Parent_Grossists_List"] as? Long)?.toInt() ?: 0,
+                            init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = (supplier["position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit"] as? Long)?.toInt() ?: 0,
+                            initialColours_Et_Gouts_Commende_Au_Supplier = supplierColors
+                        )
+                    } ?: emptyList()
+
+                    // Create the final product object
                     Produit_Main_DataBase(
                         id = (productMap["id"] as? Long) ?: 0,
                         it_ref_Id_don_FireBase = (productMap["it_ref_Id_don_FireBase"] as? Long) ?: 0,
@@ -148,18 +182,28 @@ class App_Initialize_Model(
                         init_nom = (productMap["nom"] as? String) ?: "",
                         init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean) ?: false,
                         initialNon_Trouve = (productMap["non_Trouve"] as? Boolean) ?: false,
-                        initialDemmende_Achate_De_Cette_Produit = demandes
+                        init_colours_Et_Gouts = coloursEtGouts,
+                        initialDemmende_Achate_De_Cette_Produit = demandes,
+                        initialGrossist_Choisi_Pour_Acheter_CeProduit = suppliers
                     )
                 }
 
+                // Log statistics for debugging
+                Log.d("App_Initialize_Model", "Converted ${convertedProduits.size} products")
+                Log.d("App_Initialize_Model", "Products with suppliers: ${convertedProduits.count { it.grossist_Choisi_Pour_Acheter_CeProduit.isNotEmpty() }}")
+                Log.d("App_Initialize_Model", "Products with demands: ${convertedProduits.count { it.demmende_Achate_De_Cette_Produit.isNotEmpty() }}")
+                Log.d("App_Initialize_Model", "Products with colors: ${convertedProduits.count { it.colours_Et_Gouts.isNotEmpty() }}")
+
+                // Update the state list
                 produit_Main_DataBase.clear()
                 produit_Main_DataBase.addAll(convertedProduits)
 
             } else {
                 Log.w("App_Initialize_Model", "No data found in Firebase")
+                produit_Main_DataBase.clear()
             }
         } catch (e: Exception) {
-            Log.e("App_Initialize_Model", "Failed to load state from Firebase: ${e.message}")
+            Log.e("App_Initialize_Model", "Failed to load state from Firebase", e)
             throw Exception("Failed to load state from Firebase: ${e.message}")
         }
     }

@@ -11,10 +11,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages._3.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._3.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._3.Fragment.ViewModel.F3_ViewModel
+import com.example.c_serveur.ViewModel.App_Initialize_ViewModel
 
 @Composable
 internal fun Fragment3_Main_Screen(
     modifier: Modifier = Modifier,
+    app_Initialize_ViewModel: App_Initialize_ViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel()
 ) {
     Scaffold(
@@ -25,6 +27,7 @@ internal fun Fragment3_Main_Screen(
             Column {
                 Produits_Main_List(
                     ui_State = p3_ViewModel.uiState,
+                    produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produit_Main_DataBase,
                     contentPadding = paddingValues
                 )
             }
@@ -33,12 +36,14 @@ internal fun Fragment3_Main_Screen(
             Grossissts_FloatingActionButtons_Grouped(
                 modifier = Modifier,
                 ui_State = p3_ViewModel.uiState,
-            )
+                produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produit_Main_DataBase,
+                )
 
             GlobalActions_FloatingActionButtons_Grouped(
                 modifier = Modifier,
                 ui_Mutable_State = p3_ViewModel.uiState,
-            )
+                produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produit_Main_DataBase,
+                )
         }
     }
 }

@@ -6,11 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
-import com.google.firebase.database.ktx.getValue  // Keep only this getValue import
+import com.google.firebase.database.ktx.getValue
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.text.SimpleDateFormat
 
 class Ui_State_4_Fragment internal constructor(
     initialLastUpdateTime: String? = getCurrentFormattedTime(),

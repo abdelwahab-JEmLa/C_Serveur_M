@@ -43,7 +43,7 @@ fun AppNavHost(
                 ClientProductsDisplayerStatsFragment(appViewModels.clientProductsDisplayerStatsViewModel)
             }
             composable(Fragment3_Main_ScreenDestination().route) {
-                Fragment3_Main_Screen()
+                Fragment3_Main_Screen(app_Initialize_ViewModel=appViewModels.app_Initialize_ViewModel)
             }
             composable(Fragment_4_Main_Screen_Destination().route) {
                 Fragment_4_Main_Screen(app_Initialize_ViewModel=appViewModels.app_Initialize_ViewModel)

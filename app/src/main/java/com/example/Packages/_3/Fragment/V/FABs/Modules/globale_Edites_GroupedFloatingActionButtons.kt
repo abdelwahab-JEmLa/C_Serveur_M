@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,12 +47,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 import kotlin.math.roundToInt
 
 @Composable
 internal fun GlobalActions_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_Mutable_State: UiState,
+    produits_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
 ) {
 
     var showLabels by remember { mutableStateOf(true) }

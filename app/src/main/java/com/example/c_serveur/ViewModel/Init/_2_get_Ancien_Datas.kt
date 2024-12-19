@@ -1,11 +1,6 @@
 package com.example.c_serveur.ViewModel.Init
 
 import android.util.Log
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Components.Ancien_Resources_DataBase
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_ClientsDataBase
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_ColorArticle
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Produits_Ancien_DataBase
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components.Ancien_SoldArticlesTabelle
 import com.example.c_serveur.ViewModel.Model.Ancien_ClientsDataBase_Main
 import com.example.c_serveur.ViewModel.Model.Ancien_ColorArticle_Main
 import com.example.c_serveur.ViewModel.Model.Ancien_SoldArticlesTabelle_Main

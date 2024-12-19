@@ -1,7 +1,10 @@
 package com.example.Packages._4.Fragment.UI
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -9,7 +12,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import android.util.Log
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
 import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 

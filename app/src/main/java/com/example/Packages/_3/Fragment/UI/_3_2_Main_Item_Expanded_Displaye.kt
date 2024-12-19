@@ -22,12 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 
 @Composable
 internal fun Expanded_Item_Displaye(
-    produit: UiState.Produit_DataBase,
+    produit: App_Initialize_Model.Produit_Main_DataBase,
     initialHeightCard: Dp = 300.dp,
     onEpandToggle: () -> Unit
 ) {

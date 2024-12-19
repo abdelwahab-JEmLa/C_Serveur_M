@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +47,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.ViewModel.F3_ViewModel
+import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -55,31 +57,10 @@ private const val FAB_TAG = "FAB_DEBUG"
 internal fun Grossissts_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_State: UiState,
+    produits_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
 ) {
-    // Only proceed if initialization is complete
-    val viewModel = checkNotNull(LocalViewModelStoreOwner.current) {
-        "No ViewModelStoreOwner found"
-    }.let { viewModelStoreOwner ->
-        ViewModelProvider(viewModelStoreOwner)[F3_ViewModel::class.java]
-    }
-
-    if (!viewModel.initializationComplete) {
-        Log.d(FAB_TAG, "Waiting for initialization to complete")
-        return
-    }
-    // Log the initialization of the composable
-    LaunchedEffect(Unit) {
-        Log.d(FAB_TAG, "Grossissts_FloatingActionButtons_Grouped initialized")
-        Log.d(FAB_TAG, "Total products in database: ${ui_State.produit_DataBase.size}")
-    }
-    // Add before grouping
-    Log.d(FAB_TAG, "Total products before grouping: ${ui_State.produit_DataBase.size}")
-    ui_State.produit_DataBase.forEach { product ->
-        Log.d(FAB_TAG, "Product ${product.id} has ${product.grossist_Choisi_Pour_Acheter_CeProduit.size} suppliers")
-    }
-    
-    val grouped_Produits_Par_Id_Grossist = remember(ui_State.produit_DataBase) {
-        val groupedProducts = ui_State.produit_DataBase.groupBy { produit ->
+    val grouped_Produits_Par_Id_Grossist = remember(produits_Main_DataBase) {
+        val groupedProducts = produits_Main_DataBase.groupBy { produit ->
             produit.grossist_Choisi_Pour_Acheter_CeProduit
                 .maxByOrNull { it.date }?.vid ?: -1L
         }

@@ -23,6 +23,7 @@ class App_Initialize_Model(
         val it_ref_don_FireBase: String = "",
         init_nom: String = "",
         init_besoin_To_Be_Updated: Boolean = false,
+        init_it_Image_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,
         init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
         initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
@@ -30,6 +31,8 @@ class App_Initialize_Model(
     ) {
         var nom: String by mutableStateOf(init_nom)
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
+        var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)     
+        //TODO(1): 
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
             init_colours_Et_Gouts.toMutableStateList()

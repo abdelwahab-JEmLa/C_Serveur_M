@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Initialise_ViewModel_Main
 import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 
@@ -27,7 +28,7 @@ open class App_Initialize_ViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                _app_Initialize_Model.load_Produits_FireBase()
+                Initialise_ViewModel_Main()
             } finally {
                 isInitializing = false
             }

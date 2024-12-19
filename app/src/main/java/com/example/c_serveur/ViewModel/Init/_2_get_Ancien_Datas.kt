@@ -1,10 +1,10 @@
 package com.example.c_serveur.ViewModel.Init
 
 import android.util.Log
-import com.example.c_serveur.ViewModel.Model.Ancien_ClientsDataBase_Main
-import com.example.c_serveur.ViewModel.Model.Ancien_ColorArticle_Main
-import com.example.c_serveur.ViewModel.Model.Ancien_SoldArticlesTabelle_Main
-import com.example.c_serveur.ViewModel.Model.Produits_Ancien_DataBase_Main
+import com.example.c_serveur.ViewModel.Model.Components.Ancien_ClientsDataBase_Main
+import com.example.c_serveur.ViewModel.Model.Components.Ancien_ColorArticle_Main
+import com.example.c_serveur.ViewModel.Model.Components.Ancien_SoldArticlesTabelle_Main
+import com.example.c_serveur.ViewModel.Model.Components.Produits_Ancien_DataBase_Main
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await

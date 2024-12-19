@@ -1,26 +1,14 @@
 package com.example.Packages._4.Fragment.UI
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +19,8 @@ import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
 import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 
+private const val TAG = "Main_Item"
+
 @Composable
 internal fun Main_Item(
     uiState: Ui_State_4_Fragment,
@@ -38,19 +28,35 @@ internal fun Main_Item(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
-    // Calculate height based on mode
     val heightCard = when {
         uiState.currentMode == Ui_State_4_Fragment.Affichage_Et_Click_Modes.MODE_Affiche_Produits ->
             if (isExpanded) 300.dp else 100.dp
         else -> 100.dp
     }
 
-    // Calculate total quantity
+    // Debug log for demande achat list
+    Log.d(TAG, "Product ${produit.nom} has ${produit.demmende_Achate_De_Cette_Produit.size} demandes")
+    produit.demmende_Achate_De_Cette_Produit.forEach { demande ->
+        Log.d(TAG, "Demande time: ${demande.time_String}, colors size: ${demande.colours_Et_Gouts_Acheter_Depuit_Client.size}")
+    }
+
     val last_Demend_Achat = produit.demmende_Achate_De_Cette_Produit
         .maxByOrNull { it.time_String }
-    val totalQuantity = last_Demend_Achat
-        ?.colours_Et_Gouts_Acheter_Depuit_Client
-        ?.sumOf { it.quantity_Achete } ?: 0
+        ?.also { lastDemand ->
+            Log.d(TAG, "Last demand for ${produit.nom} at time: ${lastDemand.time_String}")
+        }
+
+    val totalQuantity = last_Demend_Achat?.let { demand ->
+        demand.colours_Et_Gouts_Acheter_Depuit_Client.sumOf { it.quantity_Achete }
+            .also { sum ->
+                Log.d(TAG, "Total quantity for ${produit.nom}: $sum")
+                Log.d(TAG, "Colors breakdown: ${
+                    demand.colours_Et_Gouts_Acheter_Depuit_Client.joinToString {
+                        "${it.nom}:${it.quantity_Achete}"
+                    }
+                }")
+            }
+    } ?: 0
 
     Box(
         modifier = Modifier
@@ -106,7 +112,6 @@ internal fun Main_Item(
                     modifier = Modifier.weight(1f)
                 )
 
-                // Position display and buttons
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -131,11 +136,14 @@ internal fun Main_Item(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    val colorsList = last_Demend_Achat
-                        ?.colours_Et_Gouts_Acheter_Depuit_Client  // Changed to match the correct property name
-                        ?.sortedBy { it.quantity_Achete }
-                        ?.filter { it.quantity_Achete > 0 }
-                        ?: emptyList()
+                    val colorsList = last_Demend_Achat?.let { demand ->
+                        demand.colours_Et_Gouts_Acheter_Depuit_Client
+                            .filter { it.quantity_Achete > 0 }
+                            .sortedByDescending { it.quantity_Achete }  // Changed to sortedByDescending
+                            .also { filtered ->
+                                Log.d(TAG, "Displaying ${filtered.size} colors for ${produit.nom}")
+                            }
+                    } ?: emptyList()
 
                     items(colorsList.size) { index ->
                         val colorFlavor = colorsList[index]

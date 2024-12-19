@@ -9,6 +9,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -24,16 +25,22 @@ class CameraPickImageHandler(
     var tempImageUri: Uri? = null
 
     fun createTempImageUri(): Uri {
-        val tempFile = File.createTempFile(
-            "temp_image",
-            ".jpg",
-            context.cacheDir
-        )
-        return FileProvider.getUriForFile(
-            context,
-            "${context.packageName}.fileprovider",
-            tempFile
-        )
+        return try {
+            val tempFile = File.createTempFile(
+                "temp_image",
+                ".jpg",
+                context.cacheDir
+            )
+            FileProvider.getUriForFile(
+                context,
+                "com.example.c_serveur.fileprovider",
+                tempFile
+            ).also { tempImageUri = it }
+        } catch (e: IOException) {
+            throw IllegalStateException("Could not create temp file", e)
+        } catch (e: IllegalArgumentException) {
+            throw IllegalStateException("Could not create URI for file", e)
+        }
     }
 
     suspend fun handleNewProductImageCapture(

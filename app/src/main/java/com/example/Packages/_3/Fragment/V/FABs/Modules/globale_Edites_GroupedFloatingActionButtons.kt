@@ -126,10 +126,6 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
                         color = Color(0xFF4CAF50),
                         showLabel = showLabels,
                         onClick = {
-
-
-
-
                             imageHandler.tempImageUri = imageHandler.createTempImageUri()
                             imageHandler.tempImageUri?.let { uri ->
                                 cameraLauncher.launch(uri)

@@ -1,73 +1,90 @@
 package com.example.Packages._3.Fragment.V.FABs.Modules
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.*
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CleaningServices
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Dehaze
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Upload
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
+import com.example.c_serveur.Modules.CameraPickImageHandler
 import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 internal fun GlobalActions_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
-    ui_Mutable_State: UiState,
-    produits_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
+    fragment_Ui_State: UiState,
+    app_Initialize_Model: App_Initialize_Model,
 ) {
-
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
-    var clickCount by remember { mutableIntStateOf(0) }
 
-    // State for drag position
     var offsetX by remember { mutableFloatStateOf(-600f) }
-    var offsetY by remember { mutableFloatStateOf(-0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
 
-    LaunchedEffect(showFloatingButtons) {
-        if (!showFloatingButtons) {
-            clickCount = 0
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val imageHandler = remember { CameraPickImageHandler(context, app_Initialize_Model) }
+
+    // First filter products based on quantity and supplier
+    val produit_New_Pour_Ajoute_Au_DataBase = app_Initialize_Model.produit_Main_DataBase
+        .filter { produit ->
+            // Calculate total quantity ordered across all suppliers and colors
+            val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                .flatMap { it.colours_Et_Gouts_Commende }
+                .sumOf { it.quantity_Achete }
+
+            // Check if the product matches the selected supplier filter
+            val supplierMatch = if (fragment_Ui_State.selectedSupplierId != 0L) {
+                produit.grossist_Choisi_Pour_Acheter_CeProduit.any {
+                    it.supplier_id == fragment_Ui_State.selectedSupplierId
+                }
+            } else true
+
+            // Return true for products meeting both criteria
+            totalQuantity > 0 && supplierMatch
+        }
+        // Then find the first product that has a valid position in its supplier data
+        .firstOrNull { produit ->
+            produit.grossist_Choisi_Pour_Acheter_CeProduit
+                .any { supplier ->
+                    supplier.supplier_id == fragment_Ui_State.selectedSupplierId &&
+                            supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit >= 1 &&
+                            produit.id>2000
+                }
+        }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            imageHandler.tempImageUri?.let { uri ->
+                coroutineScope.launch {
+                    try {
+                        imageHandler.handleNewProductImageCapture(uri, produit_New_Pour_Ajoute_Au_DataBase)
+                    } catch (e: Exception) {
+                        Log.e("CameraPickImageHandler", "Failed to process image", e)
+                    }
+                }
+            }
         }
     }
 
@@ -102,30 +119,41 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
+                    // Camera FAB
                     FabButton(
-                        icon =  Icons.Default.CleaningServices ,
-                        label =  "No Mode" ,
-                        color = Color(0xEC212020),
+                        icon = Icons.Default.AddAPhoto,
+                        label = "Take Photo",
+                        color = Color(0xFF4CAF50),
                         showLabel = showLabels,
-                        onClick = {  // Reset all modes
+                        onClick = {
 
+
+
+
+                            imageHandler.tempImageUri = imageHandler.createTempImageUri()
+                            imageHandler.tempImageUri?.let { uri ->
+                                cameraLauncher.launch(uri)
+                            }
                         }
                     )
+
+                    // Mode Toggle FAB
                     FabButton(
                         icon = Icons.Default.Upload,
-                        label = when (ui_Mutable_State.currentMode) {
-                            UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> "MODE_Click_Change_Position"
-                            UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs -> "Mode Acheteurs"
-                            UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> "Mode Produits"
+                        label = when (fragment_Ui_State.currentMode) {
+                            UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> "Change Position Mode"
+                            UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs -> "Buyers Mode"
+                            UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> "Products Mode"
                         },
                         color = Color(0xFFFF5722),
                         showLabel = showLabels,
                         isFiltered = true,
                         onClick = {
-                            ui_Mutable_State.currentMode = UiState.Affichage_Et_Click_Modes.toggle(ui_Mutable_State.currentMode)
+                            fragment_Ui_State.currentMode = UiState.Affichage_Et_Click_Modes.toggle(fragment_Ui_State.currentMode)
                         }
                     )
 
+                    // Labels Toggle FAB
                     FabButton(
                         icon = if (showLabels) Icons.Default.Close else Icons.Default.Dehaze,
                         label = if (showLabels) "Hide Labels" else "Show Labels",
@@ -137,13 +165,15 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
             }
         }
 
+        // Main Toggle FAB
         FloatingActionButton(
             onClick = { showFloatingButtons = !showFloatingButtons },
             modifier = Modifier.size(48.dp),
             containerColor = Color(0xFF3F51B5)
         ) {
             Icon(
-                imageVector = if (showFloatingButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                imageVector = if (showFloatingButtons)
+                    Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                 contentDescription = if (showFloatingButtons) "Collapse" else "Expand"
             )
         }
@@ -163,7 +193,6 @@ private fun FabButton(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
-
         AnimatedVisibility(
             visible = showLabel,
             enter = fadeIn() + expandHorizontally(),
@@ -184,6 +213,7 @@ private fun FabButton(
                 )
             }
         }
+
         FloatingActionButton(
             onClick = onClick,
             modifier = Modifier.size(48.dp),
@@ -194,6 +224,5 @@ private fun FabButton(
                 contentDescription = label
             )
         }
-
     }
 }

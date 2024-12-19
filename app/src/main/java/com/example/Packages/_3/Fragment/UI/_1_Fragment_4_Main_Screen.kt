@@ -41,8 +41,8 @@ internal fun Fragment3_Main_Screen(
 
             GlobalActions_FloatingActionButtons_Grouped(
                 modifier = Modifier,
-                ui_Mutable_State = p3_ViewModel.uiState,
-                produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produit_Main_DataBase,
+                fragment_Ui_State = p3_ViewModel.uiState,
+                app_Initialize_Model=app_Initialize_ViewModel.app_Initialize_Model,
                 )
         }
     }

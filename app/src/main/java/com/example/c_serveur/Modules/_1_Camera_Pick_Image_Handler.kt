@@ -52,16 +52,10 @@ class CameraPickImageHandler(
             val maxId = appInitializeModel.produit_Main_DataBase.filter { it.id>2000 }.maxOfOrNull { it.id } ?: 0
             val newId = maxId + 1
 
-            // Create timestamp
-            val timestamp = SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss",
-                Locale.getDefault()
-            ).format(Date())
-
             // Upload image to Firebase Storage
-            val fileName = "${newId}_0.jpg" // Using 0 as initial color index
+            val fileName = "${newId}_1.jpg"
             val storageRef = Firebase.storage.reference
-                .child("Images Articles Data Base/$fileName")
+                .child("Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase/$fileName")
 
             // Create new product using existing product data or default values
             val newProduct = if (produit != null) {
@@ -88,6 +82,7 @@ class CameraPickImageHandler(
             // Add to database
             appInitializeModel.produit_Main_DataBase.add(newProduct)
 
+                                                              //TODO(1): apre add ce new produit delete produit
             // Upload image
             context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
                 val bytes = inputStream.readBytes()

@@ -22,7 +22,7 @@ fun Main_List(
 ) {
     val filtered_Items = produit_Main_DataBase.filter { produit ->
         val lastDemand = produit.demmende_Achate_De_Cette_Produit
-            .maxByOrNull { it.time_String }
+            .maxByOrNull { it.time_String }?.colours_Et_Gouts_Acheter_Depuit_Client?.isEmpty()
         lastDemand != null
     }
 

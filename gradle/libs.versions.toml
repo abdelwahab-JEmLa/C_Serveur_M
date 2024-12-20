@@ -1,6 +1,8 @@
 [versions]
 agp = "8.6.1"
 coilCompose = "2.4.0"
+compose = "1.0.0-beta01"
+glideTransformations = "4.3.0"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -29,6 +31,9 @@ firebaseStorage = "21.0.1"
 
 [libraries]
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+compose = { module = "com.github.bumptech.glide:compose", version.ref = "compose" }
+firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx" }
+glide-transformations = { module = "jp.wasabeef:glide-transformations", version.ref = "glideTransformations" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-icons-extended" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

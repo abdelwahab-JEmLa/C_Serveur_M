@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
+import com.example.Packages._3.Fragment.UI._5.Objects.Display_Image_By_Id
 import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 
 @Composable
@@ -53,7 +53,7 @@ internal fun Expanded_Item_Displaye(
                         .fillMaxWidth()
                 ) {
                     Box {
-                        DisplayeImageById(
+                        Display_Image_By_Id(
                             produit_Id = produit.id + 2000,
                             modifier = Modifier
                                 .fillMaxWidth()

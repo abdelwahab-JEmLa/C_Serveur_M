@@ -21,7 +21,7 @@ class CameraPickImageHandler(
     var tempImageUri: Uri? = null
     private var pendingProduct: App_Initialize_Model.Produit_Main_DataBase? = null
 
-    fun createTempImageUri(): Uri {
+    private fun createTempImageUri(): Uri {
         val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
         return FileProvider.getUriForFile(
             context,

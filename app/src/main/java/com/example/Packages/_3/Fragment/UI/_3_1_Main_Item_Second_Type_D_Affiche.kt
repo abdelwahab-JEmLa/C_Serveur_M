@@ -14,8 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
+import com.example.Packages._3.Fragment.UI._5.Objects.Display_Image_By_Id
 import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 
@@ -65,7 +66,7 @@ fun Produit_Item_MODE_Click_Change_Position(
         contentAlignment = Alignment.Center
     ) {
 
-        DisplayeImageById(
+        Display_Image_By_Id(
             produit_Id = produit.id,
             produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,
             modifier = Modifier
@@ -97,6 +98,19 @@ fun Produit_Item_MODE_Click_Change_Position(
             )
         }
 
+        Text(
+            text = "ID: ${produit.id}",
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(4.dp)
+                .background(
+                    color = Color.LightGray.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .padding(4.dp),
+            style = MaterialTheme.typography.bodySmall,
+            fontSize = 8.sp
+        )
 
         Text(
             text = produit.nom.firstOrNull()?.toString() ?: "",

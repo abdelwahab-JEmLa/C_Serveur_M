@@ -33,7 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 
-private const val TAG = "CameraPickImageHandler"
+private const val TAG = "Suive_Le_tigere_quend_Update"
 private const val BASE_PATH = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
 private const val IMAGE_QUALITY = 3
 
@@ -62,20 +62,41 @@ internal fun Display_Image_By_Id(
         label = "blur"
     )
 
+    // Wait for image update before triggering reload
     LaunchedEffect(produit_Image_Need_Update, reloadKey) {
-        if (produit_Image_Need_Update && retryCount < maxRetries) {
-            delay(1000)
-            retryCount++
+        if (produit_Image_Need_Update) {
+            isLoading = true
+            // Check if image file exists and wait for update
+            val baseImagePath = "$BASE_PATH/${produit_Id}_${index + 1}"
+            val initialFileSize = File("$baseImagePath.jpg").length()
+
+            while (retryCount < maxRetries) {
+                delay(1000)
+                val currentFileSize = File("$baseImagePath.jpg").length()
+
+                // If file size has changed, image has been updated
+                if (currentFileSize != initialFileSize && currentFileSize > 0) {
+                    break
+                }
+                retryCount++
+            }
+
+            // Reset loading state and trigger reload
+            isLoading = false
+            currentQuality = IMAGE_QUALITY.toFloat()
+            imageLoaded = true
         }
     }
 
     LaunchedEffect(reloadKey) {
-        isLoading = true
-        imageLoaded = false
-        currentQuality = 5f
-        delay(300)
-        currentQuality = IMAGE_QUALITY.toFloat()
-        imageLoaded = true
+        if (!produit_Image_Need_Update) {
+            isLoading = true
+            imageLoaded = false
+            currentQuality = 5f
+            delay(300)
+            currentQuality = IMAGE_QUALITY.toFloat()
+            imageLoaded = true
+        }
     }
 
     val imageFile by produceState<File?>(

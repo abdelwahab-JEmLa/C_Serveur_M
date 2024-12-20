@@ -18,9 +18,9 @@ class UiState internal constructor(
 
     var mode_Trie_Produit_Non_Trouve: Boolean by mutableStateOf(false)
 
-    var selectedSupplierId: Long by mutableStateOf(0)
+    var selectedSupplierId: Long by mutableStateOf(3)
 
-    var currentMode: Affichage_Et_Click_Modes by mutableStateOf(Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
+    var currentMode: Affichage_Et_Click_Modes by mutableStateOf(Affichage_Et_Click_Modes.MODE_Click_Change_Position)
 
     enum class Affichage_Et_Click_Modes {
         MODE_Click_Change_Position,
@@ -30,8 +30,8 @@ class UiState internal constructor(
         companion object {
             fun toggle(current: Affichage_Et_Click_Modes): Affichage_Et_Click_Modes {
                 return when (current) {
-                    MODE_Click_Change_Position -> MODE_Affiche_Achteurs
                     MODE_Affiche_Produits -> MODE_Click_Change_Position
+                    MODE_Click_Change_Position -> MODE_Affiche_Achteurs
                     MODE_Affiche_Achteurs -> MODE_Affiche_Produits
                 }
             }

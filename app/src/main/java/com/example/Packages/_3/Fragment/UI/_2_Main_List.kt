@@ -91,7 +91,8 @@ fun Produits_Main_List(
                     items(sortedPositionItems) { produit ->
                         Produit_Item_MODE_Click_Change_Position(
                             uiState = ui_State,
-                            produit = produit
+                            produit = produit,
+                            produits_Main_DataBase = produits_Main_DataBase
                         )
                     }
                 }
@@ -112,7 +113,8 @@ fun Produits_Main_List(
                     items(sortedNoPositionItems) { produit ->
                         Produit_Item_MODE_Click_Change_Position(
                             uiState = ui_State,
-                            produit = produit
+                            produit = produit,
+                            produits_Main_DataBase = produits_Main_DataBase
                         )
                     }
                 }

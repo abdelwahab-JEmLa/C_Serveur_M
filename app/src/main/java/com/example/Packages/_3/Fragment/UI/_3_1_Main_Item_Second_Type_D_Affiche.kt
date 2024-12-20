@@ -2,14 +2,14 @@ package com.example.Packages._3.Fragment.UI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,12 +17,16 @@ import androidx.compose.ui.unit.dp
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.UI._5.Objects.DisplayeImageById
 import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
+import kotlinx.coroutines.launch
 
 @Composable
 fun Produit_Item_MODE_Click_Change_Position(
     uiState: UiState,
     produit: App_Initialize_Model.Produit_Main_DataBase,
+    produits_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     val currentPosition = produit.grossist_Choisi_Pour_Acheter_CeProduit
         .find { it.supplier_id == uiState.selectedSupplierId }
         ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
@@ -39,22 +43,51 @@ fun Produit_Item_MODE_Click_Change_Position(
                 shape = RoundedCornerShape(4.dp)
             )
             .clickable {
-                val currentSupplier = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                    .find { it.supplier_id == uiState.selectedSupplierId }
+                coroutineScope.launch {
+                    val currentSupplier = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                        .find { it.supplier_id == uiState.selectedSupplierId }
 
-                if (currentSupplier != null) {
-                    // Fix: Get max position from all products' suppliers
-                    val maxPosition = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                        .filter { it.supplier_id == uiState.selectedSupplierId }
-                        .maxOfOrNull { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit } ?: 0
+                    currentSupplier?.let { supplier ->
+                        val allPositions = produits_Main_DataBase.flatMap { prod ->
+                            prod.grossist_Choisi_Pour_Acheter_CeProduit
+                                .filter { it.supplier_id == uiState.selectedSupplierId }
+                                .map { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
+                        }
 
-                    currentSupplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = maxPosition + 1
-                    currentSupplier.position_Grossist_Don_Parent_Grossists_List = maxPosition + 1
+                        val maxPosition = allPositions.maxOrNull() ?: 0
+                        val newPosition = maxPosition + 1
+
+                        supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
+                        supplier.position_Grossist_Don_Parent_Grossists_List = newPosition
+                    }
                 }
             },
         contentAlignment = Alignment.Center
     ) {
-        // Dans le composant Produit_Item, modifier l'appel de DisplayeImageById :
+        // Delete button at top start
+        IconButton(
+            onClick = {
+                coroutineScope.launch {
+                    produit.grossist_Choisi_Pour_Acheter_CeProduit
+                        .find { it.supplier_id == uiState.selectedSupplierId }
+                        ?.let { supplier ->
+                            supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
+                            supplier.position_Grossist_Don_Parent_Grossists_List = 0
+                        }
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(4.dp)
+                .size(24.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Remove position",
+                tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+            )
+        }
+
         DisplayeImageById(
             produit_Id = produit.id,
             produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,
@@ -64,11 +97,10 @@ fun Produit_Item_MODE_Click_Change_Position(
             reloadKey = 0
         )
 
-        // Display first letter of product name
         Text(
             text = produit.nom.firstOrNull()?.toString() ?: "",
             modifier = Modifier
-                .align(Alignment.TopStart)
+                .align(Alignment.TopCenter)
                 .padding(4.dp)
                 .background(
                     color = Color.LightGray.copy(alpha = 0.7f),
@@ -78,7 +110,6 @@ fun Produit_Item_MODE_Click_Change_Position(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        // Display position if available
         currentPosition?.let { position ->
             Text(
                 text = position.toString(),

@@ -41,10 +41,20 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
     var offsetY by remember { mutableFloatStateOf(0f) }
 
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val imageHandler = remember { CameraPickImageHandler(context, app_Initialize_Model) }
-    val cameraHandler = CameraPickImageHandler(context, app_Initialize_Model)
-    val imageUri = cameraHandler.createTempImageUri()
+    val scope = rememberCoroutineScope()
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            imageHandler.tempImageUri?.let { uri ->
+                scope.launch {
+                    imageHandler.handleImageCaptureResult(uri)
+                }
+            }
+        }
+    }
 
     // First filter products based on quantity and supplier
     val existingProduct = app_Initialize_Model.produit_Main_DataBase
@@ -74,21 +84,7 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
                 }
         }
 
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success) {
-            imageHandler.tempImageUri?.let { uri ->
-                coroutineScope.launch {
-                    try {
-                        cameraHandler.handleNewProductImageCapture(imageUri, existingProduct)
-                    } catch (e: Exception) {
-                        Log.e("CameraPickImageHandler", "Failed to process image", e)
-                    }
-                }
-            }
-        }
-    }
+
 
     Column(
         horizontalAlignment = Alignment.End,
@@ -128,10 +124,8 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
                         color = Color(0xFF4CAF50),
                         showLabel = showLabels,
                         onClick = {
-                            imageHandler.tempImageUri = imageHandler.createTempImageUri()
-                            imageHandler.tempImageUri?.let { uri ->
-                                cameraLauncher.launch(uri)
-                            }
+                            val uri = imageHandler.handleNewProductImageCapture(existingProduct)
+                            cameraLauncher.launch(uri)
                         }
                     )
 

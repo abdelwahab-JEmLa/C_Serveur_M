@@ -1,4 +1,3 @@
-// Display_Image_By_Id.kt
 package com.example.Packages._3.Fragment.UI._5.Objects
 
 import android.graphics.drawable.Drawable

@@ -1,3 +1,4 @@
+// CameraPickImageHandler.kt
 package com.example.c_serveur.Modules
 
 import android.content.Context
@@ -20,14 +21,32 @@ class CameraPickImageHandler(
 ) {
     companion object {
         private const val TAG = "CameraPickImageHandler"
+        private const val BASE_PATH = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
     }
 
     var tempImageUri: Uri? = null
+    private var isHandlingImage = false
+    private val storageBasePath = "Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase"
+
+    init {
+        Log.d(TAG, "Initializing CameraPickImageHandler")
+        createBasePath()
+    }
+
+    private fun createBasePath() {
+        val baseDir = File(BASE_PATH)
+        if (!baseDir.exists()) {
+            val created = baseDir.mkdirs()
+            Log.d(TAG, "Base directory creation ${if (created) "successful" else "failed"}: $BASE_PATH")
+        }
+    }
 
     fun createTempImageUri(): Uri {
+        Log.d(TAG, "Creating temporary image URI")
         return try {
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
             val tempFile = File.createTempFile(
-                "temp_image",
+                "JPEG_${timeStamp}_",
                 ".jpg",
                 context.cacheDir
             )
@@ -35,11 +54,13 @@ class CameraPickImageHandler(
                 context,
                 "com.example.c_serveur.fileprovider",
                 tempFile
-            ).also { tempImageUri = it }
+            ).also {
+                tempImageUri = it
+                Log.d(TAG, "Temporary URI created: $it")
+            }
         } catch (e: IOException) {
+            Log.e(TAG, "Failed to create temp file", e)
             throw IllegalStateException("Could not create temp file", e)
-        } catch (e: IllegalArgumentException) {
-            throw IllegalStateException("Could not create URI for file", e)
         }
     }
 
@@ -47,70 +68,97 @@ class CameraPickImageHandler(
         imageUri: Uri,
         produit: App_Initialize_Model.Produit_Main_DataBase?
     ) {
-        try {
-            // Get max ID from existing products
-            val maxId = appInitializeModel.produit_Main_DataBase.filter { it.id>2000 }.maxOfOrNull { it.id } ?: 0
-            val newId = maxId + 1
+        if (isHandlingImage) {
+            Log.w(TAG, "Already handling an image capture, skipping")
+            return
+        }
 
-            // Upload image to Firebase Storage
+        isHandlingImage = true
+        Log.d(TAG, "Starting image capture for URI: $imageUri")
+
+        try {
+            val maxId = appInitializeModel.produit_Main_DataBase.maxOfOrNull { it.id } ?: 2000         
+            //TODO(1): fait que ici d evite les produit ou leur id >2000 ajoute au <2000
+            val newId = maxId + 1
+            Log.d(TAG, "Generated new ID: $newId")
+
             val fileName = "${newId}_1.jpg"
             val storageRef = Firebase.storage.reference
-                .child("Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase/$fileName")
+                .child("$storageBasePath/$fileName")
 
-            // Create new product using existing product data or default values
-            val newProduct = if (produit != null) {
-                App_Initialize_Model.Produit_Main_DataBase(
-                    id = newId,
-                    it_ref_Id_don_FireBase = newId,
-                    it_ref_don_FireBase = fileName,
-                    init_nom = produit.nom,
-                    init_besoin_To_Be_Updated = true,
-                    init_it_Image_besoin_To_Be_Updated = true,
-                    initialNon_Trouve = produit.non_Trouve,
-                    init_colours_Et_Gouts = produit.colours_Et_Gouts.toList(),
-                    initialDemmende_Achate_De_Cette_Produit = produit.demmende_Achate_De_Cette_Produit.toList(),
-                    initialGrossist_Choisi_Pour_Acheter_CeProduit = produit.grossist_Choisi_Pour_Acheter_CeProduit.toList()
-                )
-            } else {
-                App_Initialize_Model.Produit_Main_DataBase(
-                    id = newId,
-                    it_ref_Id_don_FireBase = newId,
-                    it_ref_don_FireBase = fileName,
-                    init_besoin_To_Be_Updated = true
-                )
-            }
-
-            // Add to database
-            appInitializeModel.produit_Main_DataBase.add(newProduct)
-
-            // Delete the original product if it exists
-            produit?.let { originalProduct ->
-                appInitializeModel.produit_Main_DataBase.removeAll { it.id == originalProduct.id }
-                // Optionally delete the old image from Firebase Storage
-                try {
-                    val oldImageRef = Firebase.storage.reference
-                        .child("Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase/${originalProduct.it_ref_don_FireBase}")
-                    oldImageRef.delete().await()
-                } catch (e: Exception) {
-                    Log.w(TAG, "Failed to delete old image from storage", e)
-                    // Continue execution even if old image deletion fails
+            // Save locally first
+            val localFile = File(BASE_PATH, fileName)
+            context.contentResolver.openInputStream(imageUri)?.use { input ->
+                localFile.outputStream().use { output ->
+                    input.copyTo(output)
                 }
+                Log.d(TAG, "Saved image locally: ${localFile.absolutePath}")
             }
 
-            // Upload image
-            context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
-                val bytes = inputStream.readBytes()
-                storageRef.putBytes(bytes).await()
+            // Upload to Firebase
+            localFile.inputStream().use { input ->
+                storageRef.putStream(input).await()
+                Log.d(TAG, "Uploaded to Firebase: $fileName")
             }
 
-            // Update Firebase
-            appInitializeModel.update_Produits_FireBase()
+            // Create or update product
+            val newProduct = createProductEntry(newId, fileName, produit)
+            updateDatabase(newProduct, produit)
 
-            Log.d(TAG, "Successfully created new product with ID: $newId")
-
+            Log.d(TAG, "Image handling completed successfully")
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to create new product", e)
+            Log.e(TAG, "Failed to handle image capture", e)
             throw e
+        } finally {
+            isHandlingImage = false
         }
     }
+
+    private fun createProductEntry(
+        newId: Long,
+        fileName: String,
+        existingProduct: App_Initialize_Model.Produit_Main_DataBase?
+    ): App_Initialize_Model.Produit_Main_DataBase {
+        return existingProduct?.let {
+            App_Initialize_Model.Produit_Main_DataBase(
+                id = newId,
+                it_ref_Id_don_FireBase = newId,
+                it_ref_don_FireBase = fileName,
+                init_nom = it.nom,
+                init_besoin_To_Be_Updated = true,
+                init_it_Image_besoin_To_Be_Updated = true,
+                initialNon_Trouve = it.non_Trouve,
+                init_colours_Et_Gouts = it.colours_Et_Gouts.toList(),
+                initialDemmende_Achate_De_Cette_Produit = it.demmende_Achate_De_Cette_Produit.toList(),
+                initialGrossist_Choisi_Pour_Acheter_CeProduit = it.grossist_Choisi_Pour_Acheter_CeProduit.toList()
+            )
+        } ?: App_Initialize_Model.Produit_Main_DataBase(
+            id = newId,
+            it_ref_Id_don_FireBase = newId,
+            it_ref_don_FireBase = fileName,
+            init_besoin_To_Be_Updated = true
+        )
+    }
+
+    private suspend fun updateDatabase(
+        newProduct: App_Initialize_Model.Produit_Main_DataBase,
+        oldProduct: App_Initialize_Model.Produit_Main_DataBase?
+    ) {
+        oldProduct?.let {
+            appInitializeModel.produit_Main_DataBase.removeAll { prod -> prod.id == it.id }
+            try {
+                val oldImageRef = Firebase.storage.reference
+                    .child("$storageBasePath/${it.it_ref_don_FireBase}")
+                oldImageRef.delete().await()
+                Log.d(TAG, "Deleted old image: ${it.it_ref_don_FireBase}")
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to delete old image", e)
+            }
+        }
+
+        appInitializeModel.produit_Main_DataBase.add(newProduct)
+        appInitializeModel.update_Produits_FireBase()
+        Log.d(TAG, "Database updated with new product: ${newProduct.id}")
+    }
 }
+

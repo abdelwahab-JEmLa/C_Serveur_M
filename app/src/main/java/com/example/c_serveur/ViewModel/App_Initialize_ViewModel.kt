@@ -1,5 +1,6 @@
 package com.example.c_serveur.ViewModel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -20,7 +21,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
-
+// Add TAG constant at the top of the class
+    private const val TAG = "CameraPickImageHandler"
 open class App_Initialize_ViewModel : ViewModel() {
 
     var _app_Initialize_Model by mutableStateOf(
@@ -54,26 +56,30 @@ open class App_Initialize_ViewModel : ViewModel() {
         }
     }
 
+    // In App_Initialize_ViewModel.kt
     private fun setupDatabaseListener() {
         databaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 viewModelScope.launch {
                     try {
                         _app_Initialize_Model.load_Produits_FireBase()
-                        // Vérifie chaque produit après le chargement
+                        // Log the start of product checking
+                        Log.d(TAG, "Starting to check products for image updates")
+
                         _app_Initialize_Model.produit_Main_DataBase.forEach { produit ->
                             if (produit.it_Image_besoin_To_Be_Updated) {
+                                Log.d(TAG, "Product ${produit.id} needs image update, initiating update process")
                                 startImageUpdate(produit.id)
                             }
                         }
                     } catch (e: Exception) {
-                        // Gérer l'erreur
+                        Log.e(TAG, "Error in database listener: ${e.message}", e)
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Gérer l'erreur de base de données
+                Log.e(TAG, "Database error: ${error.message}", error.toException())
             }
         })
     }

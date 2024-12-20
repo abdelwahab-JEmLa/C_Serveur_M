@@ -64,6 +64,15 @@ fun Produit_Item_MODE_Click_Change_Position(
             },
         contentAlignment = Alignment.Center
     ) {
+
+        DisplayeImageById(
+            produit_Id = produit.id,
+            produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
+            reloadKey = 0
+        )
         // Delete button at top start
         IconButton(
             onClick = {
@@ -88,14 +97,6 @@ fun Produit_Item_MODE_Click_Change_Position(
             )
         }
 
-        DisplayeImageById(
-            produit_Id = produit.id,
-            produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp),
-            reloadKey = 0
-        )
 
         Text(
             text = produit.nom.firstOrNull()?.toString() ?: "",

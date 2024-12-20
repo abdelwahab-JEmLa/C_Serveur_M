@@ -43,9 +43,11 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val imageHandler = remember { CameraPickImageHandler(context, app_Initialize_Model) }
+    val cameraHandler = CameraPickImageHandler(context, app_Initialize_Model)
+    val imageUri = cameraHandler.createTempImageUri()
 
     // First filter products based on quantity and supplier
-    val produit_New_Pour_Ajoute_Au_DataBase = app_Initialize_Model.produit_Main_DataBase
+    val existingProduct = app_Initialize_Model.produit_Main_DataBase
         .filter { produit ->
             // Calculate total quantity ordered across all suppliers and colors
             val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
@@ -79,7 +81,7 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
             imageHandler.tempImageUri?.let { uri ->
                 coroutineScope.launch {
                     try {
-                        imageHandler.handleNewProductImageCapture(uri, produit_New_Pour_Ajoute_Au_DataBase)
+                        cameraHandler.handleNewProductImageCapture(imageUri, existingProduct)
                     } catch (e: Exception) {
                         Log.e("CameraPickImageHandler", "Failed to process image", e)
                     }

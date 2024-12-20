@@ -26,6 +26,8 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.example.c_serveur.R
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -33,6 +35,7 @@ import java.io.File
 
 private const val TAG = "CameraPickImageHandler"
 private const val BASE_PATH = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
+private const val IMAGE_QUALITY = 30 // Reduced quality to 30%
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -59,21 +62,19 @@ internal fun Display_Image_By_Id(
         label = "blur"
     )
 
-    // Add automatic retry mechanism for image loading
     LaunchedEffect(produit_Image_Need_Update, reloadKey) {
         if (produit_Image_Need_Update && retryCount < maxRetries) {
-            delay(1000) // Wait before retry
+            delay(1000)
             retryCount++
         }
     }
 
-    // Reset loading states when reloadKey changes
     LaunchedEffect(reloadKey) {
         isLoading = true
         imageLoaded = false
         currentQuality = 5f
-        delay(300) // Initial loading delay
-        currentQuality = 100f
+        delay(300)
+        currentQuality = IMAGE_QUALITY.toFloat()
         imageLoaded = true
     }
 
@@ -124,8 +125,10 @@ internal fun Display_Image_By_Id(
                         requestBuilder.clone()
                             .transform(jp.wasabeef.glide.transformations.BlurTransformation(10))
                     )
+                    .downsample(DownsampleStrategy.AT_MOST)
+                    .encodeQuality(IMAGE_QUALITY)
                     .error(R.drawable.ic_launcher_background)
-                    .transition(com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade())
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .priority(com.bumptech.glide.Priority.HIGH)
                     .signature(ObjectKey("${produit_Id}_${index}_${currentQuality}"))
@@ -147,8 +150,8 @@ internal fun Display_Image_By_Id(
                             dataSource: DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
-                            if (isFirstResource && currentQuality < 100f) {
-                                currentQuality = 100f
+                            if (isFirstResource && currentQuality < IMAGE_QUALITY.toFloat()) {
+                                currentQuality = IMAGE_QUALITY.toFloat()
                             }
                             isLoading = false
                             return false

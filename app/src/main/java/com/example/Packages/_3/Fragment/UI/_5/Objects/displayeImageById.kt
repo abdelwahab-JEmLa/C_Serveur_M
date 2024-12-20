@@ -21,6 +21,7 @@ import java.io.File
 internal fun DisplayeImageById(
     modifier: Modifier = Modifier,
     produit_Id: Long,
+    produit_Image_Need_Update: Boolean = false,
     index: Int = 0,
     reloadKey: Any = Unit,
     contentDescription: String? = null,
@@ -33,7 +34,8 @@ internal fun DisplayeImageById(
     val baseImagePath = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne/${produit_Id}_${index + 1}"
     val supportedExtensions = listOf("jpg", "jpeg", "png", "webp")
 
-    val imageExist = remember(reloadKey, produit_Id, index) {
+    // Ajout du flag it_Image_besoin_To_Be_Updated dans le remember key
+    val imageExist = remember(reloadKey, produit_Id, index, produit_Image_Need_Update) {
         supportedExtensions.firstNotNullOfOrNull { _ ->
             supportedExtensions.map { ext ->
                 File("$baseImagePath.$ext")

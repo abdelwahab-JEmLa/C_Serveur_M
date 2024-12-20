@@ -54,10 +54,13 @@ fun Produit_Item_MODE_Click_Change_Position(
             },
         contentAlignment = Alignment.Center
     ) {
-        // Display product image
+        // Dans le composant Produit_Item, modifier l'appel de DisplayeImageById :
         DisplayeImageById(
             produit_Id = produit.id,
-            modifier = Modifier.fillMaxWidth(),
+            produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp),
             reloadKey = 0
         )
 

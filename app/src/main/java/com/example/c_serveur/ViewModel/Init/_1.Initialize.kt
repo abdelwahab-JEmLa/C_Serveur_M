@@ -33,7 +33,7 @@ internal suspend fun App_Initialize_ViewModel.Initialise_ViewModel_Main() {
             }
             initializationProgress = 0.3f
 
-            // Update products with details
+            // "0_UiState_3_Host_Package_3_Prototype11Dec"
             _app_Initialize_Model.produit_Main_DataBase
                 .forEach { new_produit_A_Update ->
                     try {

@@ -32,7 +32,6 @@ class App_Initialize_Model(
         var nom: String by mutableStateOf(init_nom)
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
         var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)     
-        //TODO(1): 
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
             init_colours_Et_Gouts.toMutableStateList()
@@ -184,6 +183,7 @@ class App_Initialize_Model(
                         it_ref_don_FireBase = (productMap["it_ref_don_FireBase"] as? String) ?: "",
                         init_nom = (productMap["nom"] as? String) ?: "",
                         init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean) ?: false,
+                        init_it_Image_besoin_To_Be_Updated = (productMap["it_Image_besoin_To_Be_Updated"] as? Boolean) ?: false,
                         initialNon_Trouve = (productMap["non_Trouve"] as? Boolean) ?: false,
                         init_colours_Et_Gouts = coloursEtGouts,
                         initialDemmende_Achate_De_Cette_Produit = demandes,

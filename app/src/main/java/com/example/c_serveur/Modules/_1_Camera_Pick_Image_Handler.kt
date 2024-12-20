@@ -65,6 +65,7 @@ class CameraPickImageHandler(
                     it_ref_don_FireBase = fileName,
                     init_nom = produit.nom,
                     init_besoin_To_Be_Updated = true,
+                    init_it_Image_besoin_To_Be_Updated = true,
                     initialNon_Trouve = produit.non_Trouve,
                     init_colours_Et_Gouts = produit.colours_Et_Gouts.toList(),
                     initialDemmende_Achate_De_Cette_Produit = produit.demmende_Achate_De_Cette_Produit.toList(),
@@ -82,7 +83,20 @@ class CameraPickImageHandler(
             // Add to database
             appInitializeModel.produit_Main_DataBase.add(newProduct)
 
-                                                              //TODO(1): apre add ce new produit delete produit
+            // Delete the original product if it exists
+            produit?.let { originalProduct ->
+                appInitializeModel.produit_Main_DataBase.removeAll { it.id == originalProduct.id }
+                // Optionally delete the old image from Firebase Storage
+                try {
+                    val oldImageRef = Firebase.storage.reference
+                        .child("Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase/${originalProduct.it_ref_don_FireBase}")
+                    oldImageRef.delete().await()
+                } catch (e: Exception) {
+                    Log.w(TAG, "Failed to delete old image from storage", e)
+                    // Continue execution even if old image deletion fails
+                }
+            }
+
             // Upload image
             context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
                 val bytes = inputStream.readBytes()

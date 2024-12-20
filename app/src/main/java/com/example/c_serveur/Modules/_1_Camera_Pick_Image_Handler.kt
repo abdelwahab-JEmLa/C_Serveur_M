@@ -1,4 +1,3 @@
-// _1_Camera_Pick_Image_Handler.kt
 package com.example.c_serveur.Modules
 
 import android.content.Context
@@ -63,6 +62,12 @@ class CameraPickImageHandler(
         }
 
         try {
+            // Remove the original product if it exists
+            pendingProduct?.let { original ->
+                appInitializeModel.produit_Main_DataBase.removeAll { it.id == original.id }
+                Log.d(TAG, "Removed original product with ID: ${original.id}")
+            }
+
             val newId = findNextAvailableId().toLong()
             val fileName = "${newId}_1.jpg"
             val storageRef = Firebase.storage.reference

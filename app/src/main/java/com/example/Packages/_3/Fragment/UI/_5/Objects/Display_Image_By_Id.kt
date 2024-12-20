@@ -48,7 +48,6 @@ internal fun Display_Image_By_Id(
     width_Defini: Dp? = null,
     cornerRadius: Dp = 8.dp
 ) {
-
     var retryCount by remember { mutableStateOf(0) }
     val maxRetries = 3
     var currentQuality by remember { mutableStateOf(5f) }

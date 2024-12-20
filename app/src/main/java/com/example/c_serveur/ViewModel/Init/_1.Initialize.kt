@@ -54,7 +54,7 @@ internal suspend fun App_Initialize_ViewModel.Initialise_ViewModel_Main() {
                         processSalesData_Main(ancienData, new_produit_A_Update)
 
                         // Process wholesaler data
-                        processWholesalerData_Main(new_produit_A_Update)
+                        process_Random_WholesalerData_Main(new_produit_A_Update)
 
                         new_produit_A_Update.besoin_To_Be_Updated = false
 
@@ -159,7 +159,7 @@ private fun processSalesData_Main(
     }
 }
 
-private fun processWholesalerData_Main(new_produit_A_Update: App_Initialize_Model.Produit_Main_DataBase) {
+private fun process_Random_WholesalerData_Main(new_produit_A_Update: App_Initialize_Model.Produit_Main_DataBase) {
     val sampleWholesalers = listOf(
         createWholesaler_Main(1L, "Wholesaler Alpha", "#FF5733", 1000.0),
         createWholesaler_Main(2L, "Wholesaler Beta", "#33FF57", 1500.0),

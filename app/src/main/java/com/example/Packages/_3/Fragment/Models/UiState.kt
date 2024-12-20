@@ -18,7 +18,7 @@ class UiState internal constructor(
 
     var mode_Trie_Produit_Non_Trouve: Boolean by mutableStateOf(false)
 
-    var selectedSupplierId: Long by mutableStateOf(3)
+    var selectedSupplierId: Long by mutableStateOf(2)
 
     var currentMode: Affichage_Et_Click_Modes by mutableStateOf(Affichage_Et_Click_Modes.MODE_Click_Change_Position)
 

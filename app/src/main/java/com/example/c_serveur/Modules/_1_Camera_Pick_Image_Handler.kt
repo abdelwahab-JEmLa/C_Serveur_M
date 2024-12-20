@@ -1,19 +1,21 @@
-// CameraPickImageHandler.kt
 package com.example.c_serveur.Modules
 
 import android.content.Context
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
-import java.io.File
-import java.io.IOException
+import kotlinx.coroutines.withContext
+import java.io.*
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 class CameraPickImageHandler(
     private val context: Context,
@@ -21,12 +23,20 @@ class CameraPickImageHandler(
 ) {
     companion object {
         private const val TAG = "CameraPickImageHandler"
-        private const val BASE_PATH = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
+        private const val BUFFER_SIZE = 8192
+        private const val MAX_ID_THRESHOLD = 2000
+        private const val MAX_UPLOAD_RETRIES = 3
+        private const val STORAGE_BASE_PATH = "Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase"
+    }
+
+    private val basePath by lazy {
+        File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "BaseDonne").apply {
+            if (!exists()) mkdirs()
+        }.absolutePath
     }
 
     var tempImageUri: Uri? = null
     private var isHandlingImage = false
-    private val storageBasePath = "Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase"
 
     init {
         Log.d(TAG, "Initializing CameraPickImageHandler")
@@ -34,10 +44,14 @@ class CameraPickImageHandler(
     }
 
     private fun createBasePath() {
-        val baseDir = File(BASE_PATH)
+        val baseDir = File(basePath)
         if (!baseDir.exists()) {
             val created = baseDir.mkdirs()
-            Log.d(TAG, "Base directory creation ${if (created) "successful" else "failed"}: $BASE_PATH")
+            Log.d(TAG, "Base directory creation ${if (created) "successful" else "failed"}: $basePath")
+            if (!created) {
+                Log.e(TAG, "Failed to create directory: $basePath")
+                throw IOException("Failed to create base directory: $basePath")
+            }
         }
     }
 
@@ -64,6 +78,24 @@ class CameraPickImageHandler(
         }
     }
 
+    private fun findNextAvailableId(): Number {
+        val maxId = appInitializeModel.produit_Main_DataBase
+            .filter { it.id < MAX_ID_THRESHOLD }
+            .maxOfOrNull { it.id } ?: 0
+
+        return if (maxId + 1 < MAX_ID_THRESHOLD) {
+            maxId + 1
+        } else {
+            val existingIds = appInitializeModel.produit_Main_DataBase
+                .filter { it.id < MAX_ID_THRESHOLD }
+                .map { it.id }
+                .toSet()
+
+            (1..MAX_ID_THRESHOLD).firstOrNull { it.toLong() !in existingIds }
+                ?: throw IllegalStateException("No available IDs under $MAX_ID_THRESHOLD")
+        }
+    }
+
     suspend fun handleNewProductImageCapture(
         imageUri: Uri,
         produit: App_Initialize_Model.Produit_Main_DataBase?
@@ -74,44 +106,117 @@ class CameraPickImageHandler(
         }
 
         isHandlingImage = true
-        Log.d(TAG, "Starting image capture for URI: $imageUri")
+        var localFile: File? = null
 
         try {
-            val maxId = appInitializeModel.produit_Main_DataBase.maxOfOrNull { it.id } ?: 2000         
-            //TODO(1): fait que ici d evite les produit ou leur id >2000 ajoute au <2000
-            val newId = maxId + 1
-            Log.d(TAG, "Generated new ID: $newId")
-
+            validateInputUri(imageUri)
+            val newId = findNextAvailableId()
             val fileName = "${newId}_1.jpg"
-            val storageRef = Firebase.storage.reference
-                .child("$storageBasePath/$fileName")
+            localFile = createLocalFile(fileName)
 
-            // Save locally first
-            val localFile = File(BASE_PATH, fileName)
-            context.contentResolver.openInputStream(imageUri)?.use { input ->
-                localFile.outputStream().use { output ->
-                    input.copyTo(output)
-                }
-                Log.d(TAG, "Saved image locally: ${localFile.absolutePath}")
-            }
+            copyImageToLocal(imageUri, localFile)
+            val downloadUrl = uploadToFirebase(localFile, fileName)
 
-            // Upload to Firebase
-            localFile.inputStream().use { input ->
-                storageRef.putStream(input).await()
-                Log.d(TAG, "Uploaded to Firebase: $fileName")
-            }
-
-            // Create or update product
-            val newProduct = createProductEntry(newId, fileName, produit)
-            updateDatabase(newProduct, produit)
+            val newProduct = createProductEntry(newId.toLong(), fileName, produit)
+            updateDatabase(newProduct)
 
             Log.d(TAG, "Image handling completed successfully")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to handle image capture", e)
+            Log.e(TAG, "Error details: ${e.message}")
+            e.printStackTrace()
+            localFile?.delete()
             throw e
         } finally {
             isHandlingImage = false
         }
+    }
+
+    private suspend fun validateInputUri(imageUri: Uri) {
+        Log.d(TAG, "Validating input URI: $imageUri")
+        val inputSize = context.contentResolver.openInputStream(imageUri)?.use {
+            it.available().also { size ->
+                Log.d(TAG, "Input stream size: $size bytes")
+                if (size == 0) throw IOException("Input stream is empty")
+            }
+        } ?: throw IOException("Cannot open input stream for URI: $imageUri")
+    }
+
+    private fun createLocalFile(fileName: String): File {
+        val file = File(basePath, fileName)
+        Log.d(TAG, "Creating local file at: ${file.absolutePath}")
+
+        file.parentFile?.let { parent ->
+            if (!parent.exists() && !parent.mkdirs()) {
+                throw IOException("Failed to create parent directories for ${file.absolutePath}")
+            }
+        }
+        return file
+    }
+
+    private suspend fun copyImageToLocal(sourceUri: Uri, destinationFile: File) {
+        var totalBytesCopied = 0L
+        context.contentResolver.openInputStream(sourceUri)?.use { input ->
+            BufferedInputStream(input, BUFFER_SIZE).use { bufferedInput ->
+                destinationFile.outputStream().use { output ->
+                    BufferedOutputStream(output, BUFFER_SIZE).use { bufferedOutput ->
+                        val buffer = ByteArray(BUFFER_SIZE)
+                        var bytes: Int
+                        var lastLogged = 0L
+
+                        while (bufferedInput.read(buffer).also { bytes = it } != -1) {
+                            bufferedOutput.write(buffer, 0, bytes)
+                            totalBytesCopied += bytes
+
+                            if (totalBytesCopied - lastLogged > 102400) {
+                                Log.d(TAG, "Copied $totalBytesCopied bytes")
+                                lastLogged = totalBytesCopied
+                            }
+                        }
+                        bufferedOutput.flush()
+                    }
+                }
+            }
+        } ?: throw IOException("Failed to open input stream for copying")
+
+        if (totalBytesCopied == 0L || !destinationFile.exists() || destinationFile.length() == 0L) {
+            throw IOException("File copy failed or resulted in empty file")
+        }
+
+        Log.d(TAG, "Successfully copied $totalBytesCopied bytes to local file")
+    }
+
+    private suspend fun uploadToFirebase(localFile: File, fileName: String): String = withContext(Dispatchers.IO) {
+        val storageRef = Firebase.storage.reference.child("$STORAGE_BASE_PATH/$fileName")
+        var lastException: Exception? = null
+
+        repeat(MAX_UPLOAD_RETRIES) { attempt ->
+            try {
+                return@withContext performUpload(localFile, storageRef)
+            } catch (e: Exception) {
+                lastException = e
+                if (attempt < MAX_UPLOAD_RETRIES - 1) {
+                    Log.w(TAG, "Upload attempt ${attempt + 1} failed, retrying...", e)
+                    delay(1000L * (attempt + 1))
+                }
+            }
+        }
+
+        throw lastException ?: IOException("Upload failed after $MAX_UPLOAD_RETRIES attempts")
+    }
+
+    private suspend fun performUpload(localFile: File, storageRef: StorageReference): String {
+        val uploadTask = localFile.inputStream().use { input ->
+            storageRef.putStream(input)
+        }
+
+        uploadTask.addOnProgressListener { taskSnapshot ->
+            val progress = (100.0 * taskSnapshot.bytesTransferred / taskSnapshot.totalByteCount)
+            Log.d(TAG, "Upload progress: $progress% (${taskSnapshot.bytesTransferred}/${taskSnapshot.totalByteCount} bytes)")
+        }
+
+        uploadTask.await()
+        return storageRef.downloadUrl.await().toString()
     }
 
     private fun createProductEntry(
@@ -140,25 +245,9 @@ class CameraPickImageHandler(
         )
     }
 
-    private suspend fun updateDatabase(
-        newProduct: App_Initialize_Model.Produit_Main_DataBase,
-        oldProduct: App_Initialize_Model.Produit_Main_DataBase?
-    ) {
-        oldProduct?.let {
-            appInitializeModel.produit_Main_DataBase.removeAll { prod -> prod.id == it.id }
-            try {
-                val oldImageRef = Firebase.storage.reference
-                    .child("$storageBasePath/${it.it_ref_don_FireBase}")
-                oldImageRef.delete().await()
-                Log.d(TAG, "Deleted old image: ${it.it_ref_don_FireBase}")
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to delete old image", e)
-            }
-        }
-
+    private suspend fun updateDatabase(newProduct: App_Initialize_Model.Produit_Main_DataBase) {
         appInitializeModel.produit_Main_DataBase.add(newProduct)
         appInitializeModel.update_Produits_FireBase()
         Log.d(TAG, "Database updated with new product: ${newProduct.id}")
     }
 }
-

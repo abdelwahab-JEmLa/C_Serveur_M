@@ -64,7 +64,7 @@ fun Produits_Main_List(
             val sortedNoPositionItems = itemsWithoutPosition.sortedBy { it.nom }
 
             LazyVerticalGrid(
-                columns = GridCells.Fixed(4),
+                columns = GridCells.Fixed(5),
                 modifier = modifier
                     .fillMaxWidth()
                     .background(
@@ -77,7 +77,7 @@ fun Produits_Main_List(
             ) {
                 // First display items with positions > 0
                 if (sortedPositionItems.isNotEmpty()) {
-                    item(span = { GridItemSpan(4) }) {
+                    item(span = { GridItemSpan(5) }) {
                         Text(
                             text = "Products with Position",
                             modifier = Modifier
@@ -99,7 +99,7 @@ fun Produits_Main_List(
 
                 // Then display items with no position at the bottom
                 if (sortedNoPositionItems.isNotEmpty()) {
-                    item(span = { GridItemSpan(4) }) {
+                    item(span = { GridItemSpan(5) }) {
                         Text(
                             text = "Products without Position",
                             modifier = Modifier

@@ -35,7 +35,7 @@ import java.io.File
 
 private const val TAG = "CameraPickImageHandler"
 private const val BASE_PATH = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
-private const val IMAGE_QUALITY = 30 // Reduced quality to 30%
+private const val IMAGE_QUALITY = 10 // Reduced quality to 30%
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable

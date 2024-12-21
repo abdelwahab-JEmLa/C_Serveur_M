@@ -41,7 +41,8 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                         ancienData.produitsDatabase.find { it.idArticle == new_produit_A_Update.id }
                             ?.let { ancien_DataBase ->
                                 new_produit_A_Update.nom = ancien_DataBase.nomArticleFinale
-
+                                new_produit_A_Update.mutable_App_Produit_Statues.dernier_Vent_date_time_String=
+                                    process_Random_date()
                                 // Process colors
                                 processColors_Main(
                                     ancien_DataBase,
@@ -78,6 +79,14 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
     }
 }
 
+private fun process_Random_date(): String {
+    val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
+    val calendar = java.util.Calendar.getInstance()
+    calendar.set(java.util.Calendar.HOUR_OF_DAY, 12)
+    calendar.set(java.util.Calendar.MINUTE, 5)
+    calendar.set(java.util.Calendar.SECOND, 0)
+    return dateFormat.format(calendar.time)
+}
 private fun processColors_Main(
     ancien_Produits_DataBase: Produits_Ancien_DataBase_Main,
     ancien_Data_References: Ancien_Resources_DataBase_Main,

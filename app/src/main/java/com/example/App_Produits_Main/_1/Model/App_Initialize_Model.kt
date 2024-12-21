@@ -29,6 +29,9 @@ class App_Initialize_Model(
         init_besoin_To_Be_Updated: Boolean = false,
         init_it_Image_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,
+        init_mutable_App_Produit_Statues: Mutable_App_Produit_Statues = Mutable_App_Produit_Statues(),
+
+
         init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
         initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
         initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> = emptyList(),
@@ -37,6 +40,8 @@ class App_Initialize_Model(
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
         var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)     
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
+        var mutable_App_Produit_Statues: Mutable_App_Produit_Statues by mutableStateOf(init_mutable_App_Produit_Statues)
+        
         var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
             init_colours_Et_Gouts.toMutableStateList()
         var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =
@@ -50,9 +55,8 @@ class App_Initialize_Model(
             var imogi: String = ""
         )
 
-        class mutable_App_Statues(
-            var date_String_Divise: String = "", //"yyyy-MM-dd"
-            var time_String_Divise: String = "", //"HH:mm:ss"
+        class Mutable_App_Produit_Statues(
+            var dernier_Vent_date_time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
         )
 
         class Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
@@ -137,7 +141,11 @@ class App_Initialize_Model(
                             imogi = (color["imogi"] as? String) ?: ""
                         )
                     } ?: emptyList()
-
+                    val mutableStatus = (productMap["mutable_App_Produit_Statues"] as? Map<String, Any?>)?.let { statusMap ->
+                        Produit_Main_DataBase.Mutable_App_Produit_Statues(
+                            dernier_Vent_date_time_String = (statusMap["dernier_Vent_date_time_String"] as? String) ?: ""
+                        )
+                    } ?: Produit_Main_DataBase.Mutable_App_Produit_Statues()
                     // Map purchase demands
                     val demandes = (productMap["demmende_Achate_De_Cette_Produit"] as? List<Map<String, Any?>>)?.map { demand ->
                         val clientColors = (demand["colours_Et_Gouts_Acheter_Depuit_Client"] as? List<Map<String, Any?>>)?.map { clientColor ->
@@ -203,7 +211,8 @@ class App_Initialize_Model(
                         initialNon_Trouve = (productMap["non_Trouve"] as? Boolean) ?: false,
                         init_colours_Et_Gouts = coloursEtGouts,
                         initialDemmende_Achate_De_Cette_Produit = demandes,
-                        initialGrossist_Choisi_Pour_Acheter_CeProduit = suppliers
+                        initialGrossist_Choisi_Pour_Acheter_CeProduit = suppliers,
+                        init_mutable_App_Produit_Statues = mutableStatus
                     )
                 }
 

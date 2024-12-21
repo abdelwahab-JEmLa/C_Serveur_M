@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
-import com.example.App_Produits_Main.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.App_Initialize_Model
 
 @Composable
 fun Main_List(

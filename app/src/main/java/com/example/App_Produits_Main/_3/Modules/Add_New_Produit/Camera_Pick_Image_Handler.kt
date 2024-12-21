@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.content.FileProvider
-import com.example.App_Produits_Main.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.App_Initialize_Model
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await

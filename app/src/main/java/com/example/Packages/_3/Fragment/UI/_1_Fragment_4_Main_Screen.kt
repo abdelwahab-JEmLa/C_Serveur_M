@@ -27,7 +27,7 @@ internal fun Fragment3_Main_Screen(
             Column {
                 Produits_Main_List(
                     ui_State = p3_ViewModel.uiState,
-                    produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produit_Main_DataBase,
+                    produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase,
                     contentPadding = paddingValues
                 )
             }
@@ -36,7 +36,7 @@ internal fun Fragment3_Main_Screen(
             Grossissts_FloatingActionButtons_Grouped(
                 modifier = Modifier,
                 ui_State = p3_ViewModel.uiState,
-                produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produit_Main_DataBase,
+                produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase,
                 )
 
             GlobalActions_FloatingActionButtons_Grouped(

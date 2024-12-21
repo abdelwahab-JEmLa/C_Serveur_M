@@ -56,7 +56,7 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
     }
 
     // First filter products based on quantity and supplier
-    val existingProduct = app_Initialize_Model.produit_Main_DataBase
+    val existingProduct = app_Initialize_Model.produits_Main_DataBase
         .filter { produit ->
             // Calculate total quantity ordered across all suppliers and colors
             val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
@@ -82,8 +82,6 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
                             produit.id>2000
                 }
         }
-
-
 
     Column(
         horizontalAlignment = Alignment.End,

@@ -38,14 +38,14 @@ class CameraPickImageHandler(
     }
 
     private fun findNextAvailableId(): Number {
-        val maxId = appInitializeModel.produit_Main_DataBase
+        val maxId = appInitializeModel.produits_Main_DataBase
             .filter { it.id < 2000 }
             .maxOfOrNull { it.id } ?: 0
 
         return if (maxId + 1 < 2000) {
             maxId + 1
         } else {
-            val existingIds = appInitializeModel.produit_Main_DataBase
+            val existingIds = appInitializeModel.produits_Main_DataBase
                 .filter { it.id < 2000 }
                 .map { it.id }
                 .toSet()
@@ -64,7 +64,7 @@ class CameraPickImageHandler(
         try {
             // Remove the original product if it exists
             pendingProduct?.let { original ->
-                appInitializeModel.produit_Main_DataBase.removeAll { it.id == original.id }
+                appInitializeModel.produits_Main_DataBase.removeAll { it.id == original.id }
                 Log.d(TAG, "Removed original product with ID: ${original.id}")
             }
 
@@ -95,7 +95,7 @@ class CameraPickImageHandler(
                 )
             }
 
-            appInitializeModel.produit_Main_DataBase.add(newProduct)
+            appInitializeModel.produits_Main_DataBase.add(newProduct)
 
             context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
                 val bytes = inputStream.readBytes()

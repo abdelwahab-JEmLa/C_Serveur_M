@@ -12,12 +12,12 @@ import com.google.firebase.database.getValue
 import kotlinx.coroutines.tasks.await
 
 class App_Initialize_Model(
-    initial_Produit_Main_DataBase: List<Produit_Main_DataBase> = emptyList()
+    initial_Produits_Main_DataBase: List<Produit_Main_DataBase> = emptyList()
 ) {
-    var produit_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
-        initial_Produit_Main_DataBase.toMutableStateList()
+    var produits_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
+        initial_Produits_Main_DataBase.toMutableStateList()
 
-    val ref_Produit_Main_DataBase = Firebase.database
+    val ref_Produits_Main_DataBase = Firebase.database
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
         .child("produit_DataBase")
 
@@ -56,8 +56,12 @@ class App_Initialize_Model(
         )
 
         class Mutable_App_Produit_Statues(
-            var dernier_Vent_date_time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
-        )
+            var init_dernier_Vent_date_time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
+            var init_its_Filtre_Au_Grossists_Buttons: Boolean = false,
+        ){
+            var dernier_Vent_date_time_String: String by mutableStateOf(init_dernier_Vent_date_time_String)
+            var its_Filtre_Au_Grossists_Buttons: Boolean by mutableStateOf(init_its_Filtre_Au_Grossists_Buttons)
+        }
 
         class Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
             var vid: Long = 0,
@@ -116,7 +120,7 @@ class App_Initialize_Model(
                 .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
                 .child("produit_DataBase")
 
-            ref_Produit_Main_DataBase.setValue(produit_Main_DataBase).await()
+            ref_Produit_Main_DataBase.setValue(produits_Main_DataBase).await()
         } catch (e: Exception) {
             throw Exception("Failed to update group in Firebase: ${e.message}")
         }
@@ -125,7 +129,7 @@ class App_Initialize_Model(
     suspend fun load_Produits_FireBase() {
         try {
 
-            val snapshot = ref_Produit_Main_DataBase.get().await()
+            val snapshot = ref_Produits_Main_DataBase.get().await()
             val rawData = snapshot.getValue<List<Map<String, Any?>>>()
 
             if (rawData != null) {
@@ -143,7 +147,7 @@ class App_Initialize_Model(
                     } ?: emptyList()
                     val mutableStatus = (productMap["mutable_App_Produit_Statues"] as? Map<String, Any?>)?.let { statusMap ->
                         Produit_Main_DataBase.Mutable_App_Produit_Statues(
-                            dernier_Vent_date_time_String = (statusMap["dernier_Vent_date_time_String"] as? String) ?: ""
+                            init_dernier_Vent_date_time_String = (statusMap["dernier_Vent_date_time_String"] as? String) ?: ""
                         )
                     } ?: Produit_Main_DataBase.Mutable_App_Produit_Statues()
                     // Map purchase demands
@@ -223,12 +227,12 @@ class App_Initialize_Model(
                 Log.d("App_Initialize_Model", "Products with colors: ${convertedProduits.count { it.colours_Et_Gouts.isNotEmpty() }}")
 
                 // Update the state list
-                produit_Main_DataBase.clear()
-                produit_Main_DataBase.addAll(convertedProduits)
+                produits_Main_DataBase.clear()
+                produits_Main_DataBase.addAll(convertedProduits)
 
             } else {
                 Log.w("App_Initialize_Model", "No data found in Firebase")
-                produit_Main_DataBase.clear()
+                produits_Main_DataBase.clear()
             }
         } catch (e: Exception) {
             Log.e("App_Initialize_Model", "Failed to load state from Firebase", e)

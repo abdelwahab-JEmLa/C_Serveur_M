@@ -31,12 +31,12 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                     it_ref_don_FireBase = "produit_DataBase",
                     init_besoin_To_Be_Updated = besoin_update_initialise
                 )
-                _app_Initialize_Model.produit_Main_DataBase.add(produit)
+                _app_Initialize_Model.produits_Main_DataBase.add(produit)
             }
             initializationProgress = 0.3f
 
             // "0_UiState_3_Host_Package_3_Prototype11Dec"
-            _app_Initialize_Model.produit_Main_DataBase
+            _app_Initialize_Model.produits_Main_DataBase
                 .forEach { new_produit_A_Update ->
                     try {
                         // Find and update from ancient database

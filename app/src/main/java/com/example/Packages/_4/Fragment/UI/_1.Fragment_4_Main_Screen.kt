@@ -28,7 +28,7 @@ fun Fragment_4_Main_Screen(
                 Main_List(
                     contentPadding = paddingValues,
                     uiState = f4_ViewModel.uiState,
-                    produit_Main_DataBase = app_Initialize_ViewModel.app_Initialize_Model.produit_Main_DataBase
+                    produit_Main_DataBase = app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase
                 )
             }
 
@@ -40,7 +40,7 @@ fun Fragment_4_Main_Screen(
             Second_Grouped_FloatingActionButtons(
                 modifier = Modifier,
                 uiState = f4_ViewModel.uiState,
-                produit_Main_DataBase = app_Initialize_ViewModel.app_Initialize_Model.produit_Main_DataBase
+                produit_Main_DataBase = app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase
             )
         }
     }

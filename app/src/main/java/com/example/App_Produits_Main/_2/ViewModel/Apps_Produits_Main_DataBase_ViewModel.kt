@@ -46,12 +46,12 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
     }
 
     private fun setupDatabaseListener() {
-        _app_Initialize_Model.ref_Produit_Main_DataBase.addValueEventListener(object : ValueEventListener {
+        _app_Initialize_Model.ref_Produits_Main_DataBase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 viewModelScope.launch {
                     try {
                         // Store current positions before loading new data
-                        val previousPositions = _app_Initialize_Model.produit_Main_DataBase.associate { produit ->
+                        val previousPositions = _app_Initialize_Model.produits_Main_DataBase.associate { produit ->
                             produit.id to produit.grossist_Choisi_Pour_Acheter_CeProduit.map { grossist ->
                                 grossist.vid to grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                             }
@@ -62,7 +62,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
                         Log.d(TAG, "Starting to check products for updates")
 
                         // Check for image updates and position changes
-                        _app_Initialize_Model.produit_Main_DataBase.forEach { produit ->
+                        _app_Initialize_Model.produits_Main_DataBase.forEach { produit ->
                             // Handle image updates
                             if (produit.it_Image_besoin_To_Be_Updated) {
                                 Log.d(TAG, "Product ${produit.id} needs image update, initiating update process")
@@ -95,7 +95,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // Update the position in Firebase
-                val productRef = _app_Initialize_Model.ref_Produit_Main_DataBase.child(productId.toString())
+                val productRef = _app_Initialize_Model.ref_Produits_Main_DataBase.child(productId.toString())
                     .child("grossist_Choisi_Pour_Acheter_CeProduit")
                     .child(supplierId.toString())
                     .child("position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit")

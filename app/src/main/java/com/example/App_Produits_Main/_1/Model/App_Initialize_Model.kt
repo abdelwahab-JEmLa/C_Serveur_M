@@ -32,6 +32,7 @@ class App_Initialize_Model(
         init_it_Image_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,
         init_mutable_App_Produit_Statues: Mutable_App_Produit_Statues = Mutable_App_Produit_Statues(),
+        init_Grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? = null,
 
         init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
         initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
@@ -42,7 +43,8 @@ class App_Initialize_Model(
         var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)     
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var mutable_App_Produit_Statues: Mutable_App_Produit_Statues by mutableStateOf(init_mutable_App_Produit_Statues)
-        
+        var grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? by mutableStateOf(init_Grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota)
+
         var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
             init_colours_Et_Gouts.toMutableStateList()
         var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =

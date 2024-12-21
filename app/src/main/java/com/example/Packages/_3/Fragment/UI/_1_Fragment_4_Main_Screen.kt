@@ -43,7 +43,6 @@ internal fun Fragment3_Main_Screen(
                 modifier = Modifier,
                 fragment_Ui_State = p3_ViewModel.uiState,
                 app_Initialize_Model=app_Initialize_ViewModel.app_Initialize_Model,
-
                 )
         }
     }

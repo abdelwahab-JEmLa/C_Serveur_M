@@ -196,6 +196,7 @@ private fun process_Random_WholesalerData_Main(new_produit_A_Update: App_Initial
         App_Initialize_Model.Produit_Main_DataBase.Mutable_App_Produit_Statues(
             init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction = wholesalerOrder
         )
+    new_produit_A_Update.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota= wholesalerOrder
     new_produit_A_Update.grossist_Choisi_Pour_Acheter_CeProduit.add(wholesalerOrder)
 }
 

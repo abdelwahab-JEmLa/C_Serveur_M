@@ -30,7 +30,7 @@ fun Produits_Main_List(
 ) {
     val visibleItems = app_Initialize_Model.produits_Main_DataBase
         .filter {
-            it.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons
+            it.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota != null
         }
 
     when (ui_State.currentMode) {
@@ -39,17 +39,15 @@ fun Produits_Main_List(
             val (itemsWithPosition, itemsWithoutPosition) =
                 visibleItems.partition { produit ->
                     val position = produit
-                        .mutable_App_Produit_Statues
-                        .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
-                        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                        .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
+                    ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
 
                 position != null && position > 0
             }
 
             val sortedPositionItems = itemsWithPosition.sortedBy { produit ->
                 produit
-                    .mutable_App_Produit_Statues
-                    .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
+                    .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
                     ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                     ?: Int.MAX_VALUE
             }
@@ -130,8 +128,7 @@ fun Produits_Main_List(
                     visibleItems.sortedWith(
                         compareBy<App_Initialize_Model.Produit_Main_DataBase> { produit ->
                             produit
-                                .mutable_App_Produit_Statues
-                                .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
+                                .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
                                 ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                                 ?: Int.MAX_VALUE
                         }.thenBy { it.nom }

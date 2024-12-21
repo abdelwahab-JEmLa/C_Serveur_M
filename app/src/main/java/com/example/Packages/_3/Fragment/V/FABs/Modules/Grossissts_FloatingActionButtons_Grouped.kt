@@ -73,22 +73,13 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
         groupedProducts
     }
 
-    Log.d(FAB_TAG, "Total grouped entries: ${grouped_Produits_Par_Id_Grossist.size}")
-    grouped_Produits_Par_Id_Grossist.forEach { (supplierId, products) ->
-        Log.d(FAB_TAG, "Group for supplier $supplierId has ${products.size} products")
-    }
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
-    LaunchedEffect(showLabels, showFloatingButtons) {
-        Log.d(FAB_TAG, "showLabels: $showLabels")
-        Log.d(FAB_TAG, "showFloatingButtons: $showFloatingButtons")
-    }
-
     val supplierColors = remember {
-        val colors = grouped_Produits_Par_Id_Grossist.keys.associateWith {
+        grouped_Produits_Par_Id_Grossist.keys.associateWith {
             Color(
                 red = Random.nextFloat(),
                 green = Random.nextFloat(),
@@ -96,12 +87,6 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
                 alpha = 1f
             )
         }
-
-        colors.forEach { (supplierId, color) ->
-            Log.d(FAB_TAG, "Supplier $supplierId color: $color")
-        }
-
-        colors
     }
 
     Column(
@@ -121,10 +106,6 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
             }
             .zIndex(1f)
     ) {
-        LaunchedEffect(showFloatingButtons) {
-            Log.d(FAB_TAG, "AnimatedVisibility showFloatingButtons: $showFloatingButtons")
-        }
-
         AnimatedVisibility(
             visible = showFloatingButtons,
             enter = fadeIn() + expandHorizontally(),
@@ -142,16 +123,12 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
                     val filteredSuppliers = grouped_Produits_Par_Id_Grossist
                         .filter { it.key != -1L }
 
-                    Log.d(FAB_TAG, "Filtered suppliers count: ${filteredSuppliers.size}")
-
                     filteredSuppliers.forEach { (supplierId, products) ->
                         val supplier = products.firstOrNull()
                             ?.grossist_Choisi_Pour_Acheter_CeProduit
                             ?.maxByOrNull { it.date }
 
                         if (supplier != null) {
-                            Log.d(FAB_TAG, "Creating FAB for supplier: ${supplier.nom}, ID: $supplierId, Products: ${products.size}")
-
                             FabButton(
                                 supplierProductssize = products.size,
                                 label = supplier.nom,
@@ -160,22 +137,39 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
                                 isFiltered = ui_State.selectedSupplierId == supplierId,
                                 onClick = {
                                     Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
-                                    ui_State.selectedSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
 
-                                    app_Initialize_Model.produits_Main_DataBase.find { product ->
-                                        product.grossist_Choisi_Pour_Acheter_CeProduit
-                                            .maxByOrNull { it.date }?.supplier_id == supplier.supplier_id
-                                    }?.let { product ->
-                                        product.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons = true
+                                    // Toggle selection state
+                                    val newSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
+                                    ui_State.selectedSupplierId = newSupplierId
+
+                                    // Update filter status for all products
+                                    app_Initialize_Model.produits_Main_DataBase.forEach { product ->
+                                        val latestSupplier = product.grossist_Choisi_Pour_Acheter_CeProduit
+                                            .maxByOrNull { it.date }
+
+                                        // Calculate total quantity for the latest supplier
+                                        val totalQuantity = latestSupplier?.colours_Et_Gouts_Commende
+                                            ?.sumOf { it.quantity_Achete } ?: 0
+
+                                        // Calculate if this product should be filtered
+                                        val shouldFilter = if (newSupplierId == 0L) {
+                                            // If no supplier selected, show all products
+                                            false
+                                        } else {
+                                            // Show products from this supplier with quantity > 0
+                                            latestSupplier?.supplier_id == supplier.supplier_id && totalQuantity > 0
+                                        }
+
+                                        // Update the filter status
+                                        product.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons = shouldFilter
                                     }
 
+                                    // Update Firebase
                                     coroutineScope.launch {
                                         app_Initialize_Model.update_Produits_FireBase()
                                     }
                                 }
                             )
-                        } else {
-                            Log.w(FAB_TAG, "No supplier found for ID: $supplierId")
                         }
                     }
                 }
@@ -183,10 +177,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
         }
 
         FloatingActionButton(
-            onClick = {
-                Log.d(FAB_TAG, "Toggle labels button clicked. Current state: $showLabels")
-                showLabels = !showLabels
-            },
+            onClick = { showLabels = !showLabels },
             modifier = Modifier.size(48.dp),
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ) {
@@ -197,10 +188,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
         }
 
         FloatingActionButton(
-            onClick = {
-                Log.d(FAB_TAG, "Expand/collapse button clicked. Current state: $showFloatingButtons")
-                showFloatingButtons = !showFloatingButtons
-            },
+            onClick = { showFloatingButtons = !showFloatingButtons },
             modifier = Modifier.size(48.dp),
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ) {

@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.c_serveur.Modules.CameraPickImageHandler
-import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
+import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

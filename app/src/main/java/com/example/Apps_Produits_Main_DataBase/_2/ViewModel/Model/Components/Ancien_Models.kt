@@ -1,4 +1,4 @@
-package com.example.c_serveur.ViewModel.Model.Components
+package com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.Components
 
 data class Produits_Ancien_DataBase_Main internal constructor(
     var idArticle: Long = 0,

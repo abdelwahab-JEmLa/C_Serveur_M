@@ -1,4 +1,4 @@
-package com.example.c_serveur.ViewModel.Model
+package com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -125,7 +125,8 @@ class App_Initialize_Model(
                     // Map colors and tastes
                     val coloursEtGouts = (productMap["colours_Et_Gouts"] as? List<Map<String, Any?>>)?.map { color ->
                         Produit_Main_DataBase.Colours_Et_Gouts(
-                            position_Du_Couleur_Au_Produit = (color["position_Du_Couleur_Au_Produit"] as? Long) ?: 0,
+                            position_Du_Couleur_Au_Produit = (color["position_Du_Couleur_Au_Produit"] as? Long)
+                                ?: 0,
                             nom = (color["nom"] as? String) ?: "",
                             imogi = (color["imogi"] as? String) ?: ""
                         )
@@ -137,7 +138,8 @@ class App_Initialize_Model(
                             Produit_Main_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter_Depuit_Client(
                                 vidPosition = (clientColor["vidPosition"] as? Long) ?: 0,
                                 nom = (clientColor["nom"] as? String) ?: "",
-                                quantity_Achete = (clientColor["quantity_Achete"] as? Long)?.toInt() ?: 0,
+                                quantity_Achete = (clientColor["quantity_Achete"] as? Long)?.toInt()
+                                    ?: 0,
                                 imogi = (clientColor["imogi"] as? String) ?: ""
                             )
                         } ?: emptyList()
@@ -157,10 +159,13 @@ class App_Initialize_Model(
                     val suppliers = (productMap["grossist_Choisi_Pour_Acheter_CeProduit"] as? List<Map<String, Any?>>)?.map { supplier ->
                         val supplierColors = (supplier["colours_Et_Gouts_Commende"] as? List<Map<String, Any?>>)?.map { colorMap ->
                             Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier(
-                                position_Du_Couleur_Au_Produit = (colorMap["position_Du_Couleur_Au_Produit"] as? Long) ?: 0,
-                                id_Don_Tout_Couleurs = (colorMap["id_Don_Tout_Couleurs"] as? Long) ?: 0,
+                                position_Du_Couleur_Au_Produit = (colorMap["position_Du_Couleur_Au_Produit"] as? Long)
+                                    ?: 0,
+                                id_Don_Tout_Couleurs = (colorMap["id_Don_Tout_Couleurs"] as? Long)
+                                    ?: 0,
                                 nom = (colorMap["nom"] as? String) ?: "",
-                                quantity_Achete = (colorMap["quantity_Achete"] as? Long)?.toInt() ?: 0,
+                                quantity_Achete = (colorMap["quantity_Achete"] as? Long)?.toInt()
+                                    ?: 0,
                                 imogi = (colorMap["imogi"] as? String) ?: ""
                             )
                         } ?: emptyList()
@@ -171,9 +176,12 @@ class App_Initialize_Model(
                             nom = (supplier["nom"] as? String) ?: "",
                             date = (supplier["date"] as? String) ?: "",
                             couleur = (supplier["couleur"] as? String) ?: "#FFFFFF",
-                            currentCreditBalance = (supplier["currentCreditBalance"] as? Double) ?: 0.0,
-                            init_position_Grossist_Don_Parent_Grossists_List = (supplier["position_Grossist_Don_Parent_Grossists_List"] as? Long)?.toInt() ?: 0,
-                            init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = (supplier["position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit"] as? Long)?.toInt() ?: 0,
+                            currentCreditBalance = (supplier["currentCreditBalance"] as? Double)
+                                ?: 0.0,
+                            init_position_Grossist_Don_Parent_Grossists_List = (supplier["position_Grossist_Don_Parent_Grossists_List"] as? Long)?.toInt()
+                                ?: 0,
+                            init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = (supplier["position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit"] as? Long)?.toInt()
+                                ?: 0,
                             initialColours_Et_Gouts_Commende_Au_Supplier = supplierColors
                         )
                     } ?: emptyList()

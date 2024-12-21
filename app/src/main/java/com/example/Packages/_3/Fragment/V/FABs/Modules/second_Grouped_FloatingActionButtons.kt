@@ -47,7 +47,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.Packages._3.Fragment.ViewModel.F3_ViewModel
-import com.example.c_serveur.ViewModel.Model.App_Initialize_Model
+import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
 import kotlin.math.roundToInt
 import kotlin.random.Random
 

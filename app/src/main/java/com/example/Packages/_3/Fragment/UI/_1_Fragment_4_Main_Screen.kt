@@ -11,7 +11,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages._3.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._3.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._3.Fragment.ViewModel.F3_ViewModel
-import com.example.c_serveur.ViewModel.App_Initialize_ViewModel
+import com.example.Apps_Produits_Main_DataBase._2.ViewModel.App_Initialize_ViewModel
 
 @Composable
 internal fun Fragment3_Main_Screen(

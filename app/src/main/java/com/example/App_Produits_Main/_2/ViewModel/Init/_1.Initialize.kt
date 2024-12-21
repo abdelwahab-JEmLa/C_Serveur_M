@@ -62,6 +62,12 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                             // Process wholesaler data
                             process_Random_WholesalerData_Main(new_produit_A_Update)
                         }
+                        new_produit_A_Update.mutable_App_Produit_Statues
+                            .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
+                            ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit=
+                            new_produit_A_Update
+                                .grossist_Choisi_Pour_Acheter_CeProduit
+                                .maxByOrNull { it.date }?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit!!
 
                         new_produit_A_Update.besoin_To_Be_Updated = false
 

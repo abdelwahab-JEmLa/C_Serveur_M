@@ -38,15 +38,19 @@ fun Produits_Main_List(
             // Partition items into those with and without positions
             val (itemsWithPosition, itemsWithoutPosition) =
                 visibleItems.partition { produit ->
-                    val position = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                        .maxByOrNull { it.date }?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                    val position = produit
+                        .mutable_App_Produit_Statues
+                        .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
+                        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
 
                 position != null && position > 0
             }
 
             val sortedPositionItems = itemsWithPosition.sortedBy { produit ->
-                produit.grossist_Choisi_Pour_Acheter_CeProduit
-                    .maxByOrNull { it.date }?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                produit
+                    .mutable_App_Produit_Statues
+                    .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
+                    ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                     ?: Int.MAX_VALUE
             }
 
@@ -125,8 +129,9 @@ fun Produits_Main_List(
                 items(
                     visibleItems.sortedWith(
                         compareBy<App_Initialize_Model.Produit_Main_DataBase> { produit ->
-                            produit.grossist_Choisi_Pour_Acheter_CeProduit
-                                .maxByOrNull { it.date }
+                            produit
+                                .mutable_App_Produit_Statues
+                                .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
                                 ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                                 ?: Int.MAX_VALUE
                         }.thenBy { it.nom }

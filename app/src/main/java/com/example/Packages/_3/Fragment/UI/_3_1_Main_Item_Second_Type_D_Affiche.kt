@@ -45,15 +45,14 @@ fun Host_Affiche_Produit_Item(
                     // Find the maximum position across all products
                     val maxPosition = app_Initialize_Model.produits_Main_DataBase
                         .flatMap { it.grossist_Choisi_Pour_Acheter_CeProduit }
-                        .maxOfOrNull { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit } ?: 0
+                        .maxOfOrNull { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
+                        ?: 0
 
                     // Create new position as max + 1
                     val newPosition = maxPosition + 1
 
                     // Update the current product's position
-                    grossist_Actuel?.let { supplier ->
-                        supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
-                    }
+                    grossist_Actuel?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
 
                     // Update Firebase
                     app_Initialize_Model.update_Produits_FireBase()
@@ -61,6 +60,7 @@ fun Host_Affiche_Produit_Item(
             },
         contentAlignment = Alignment.Center
     ) {
+        // Rest of the composable remains the same...
         Glide_Display_Image_By_Id(
             produit_Id = produit.id,
             produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,
@@ -70,11 +70,9 @@ fun Host_Affiche_Produit_Item(
             reloadKey = 0
         )
 
-        // Delete button at top start
         IconButton(
             onClick = {
                 coroutineScope.launch {
-                    // Reset the position to 0
                     grossist_Actuel?.let { supplier ->
                         supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
                     }
@@ -120,7 +118,6 @@ fun Host_Affiche_Produit_Item(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        // Fixed syntax for position display
         grossist_Actuel?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
             if (position != 0) {
                 Text(

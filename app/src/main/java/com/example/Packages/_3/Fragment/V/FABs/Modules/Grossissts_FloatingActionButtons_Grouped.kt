@@ -33,8 +33,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -54,15 +55,16 @@ private const val FAB_TAG = "FAB_DEBUG"
 internal fun Grossissts_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_State: UiState,
-    produits_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
+    app_Initialize_Model: App_Initialize_Model,
 ) {
-    val grouped_Produits_Par_Id_Grossist = remember(produits_Main_DataBase) {
-        val groupedProducts = produits_Main_DataBase.groupBy { produit ->
+    val coroutineScope = rememberCoroutineScope()
+
+    val grouped_Produits_Par_Id_Grossist = remember(app_Initialize_Model.produits_Main_DataBase) {
+        val groupedProducts = app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
             produit.grossist_Choisi_Pour_Acheter_CeProduit
                 .maxByOrNull { it.date }?.vid ?: -1L
         }
 
-        // Log the grouping results
         Log.d(FAB_TAG, "Grouped products by supplier:")
         groupedProducts.forEach { (supplierId, products) ->
             Log.d(FAB_TAG, "Supplier ID: $supplierId, Product Count: ${products.size}")
@@ -70,7 +72,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
 
         groupedProducts
     }
-    
+
     Log.d(FAB_TAG, "Total grouped entries: ${grouped_Produits_Par_Id_Grossist.size}")
     grouped_Produits_Par_Id_Grossist.forEach { (supplierId, products) ->
         Log.d(FAB_TAG, "Group for supplier $supplierId has ${products.size} products")
@@ -80,13 +82,11 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
-    // Log state changes
     LaunchedEffect(showLabels, showFloatingButtons) {
         Log.d(FAB_TAG, "showLabels: $showLabels")
         Log.d(FAB_TAG, "showFloatingButtons: $showFloatingButtons")
     }
 
-    // Remember supplier colors to keep them consistent
     val supplierColors = remember {
         val colors = grouped_Produits_Par_Id_Grossist.keys.associateWith {
             Color(
@@ -97,7 +97,6 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
             )
         }
 
-        // Log supplier colors
         colors.forEach { (supplierId, color) ->
             Log.d(FAB_TAG, "Supplier $supplierId color: $color")
         }
@@ -122,7 +121,6 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
             }
             .zIndex(1f)
     ) {
-        // Extensive logging for the AnimatedVisibility of floating buttons
         LaunchedEffect(showFloatingButtons) {
             Log.d(FAB_TAG, "AnimatedVisibility showFloatingButtons: $showFloatingButtons")
         }
@@ -142,7 +140,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     val filteredSuppliers = grouped_Produits_Par_Id_Grossist
-                        .filter { it.key != -1L } // Filter out products without a supplier
+                        .filter { it.key != -1L }
 
                     Log.d(FAB_TAG, "Filtered suppliers count: ${filteredSuppliers.size}")
 
@@ -162,8 +160,18 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
                                 isFiltered = ui_State.selectedSupplierId == supplierId,
                                 onClick = {
                                     Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
-                                    ui_State.selectedSupplierId =
-                                        if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
+                                    ui_State.selectedSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
+
+                                    app_Initialize_Model.produits_Main_DataBase.find { product ->
+                                        product.grossist_Choisi_Pour_Acheter_CeProduit
+                                            .maxByOrNull { it.date }?.supplier_id == supplier.supplier_id
+                                    }?.let { product ->
+                                        product.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons = true
+                                    }
+
+                                    coroutineScope.launch {
+                                        app_Initialize_Model.update_Produits_FireBase()
+                                    }
                                 }
                             )
                         } else {
@@ -174,7 +182,6 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
             }
         }
 
-        // Toggle labels button with logging
         FloatingActionButton(
             onClick = {
                 Log.d(FAB_TAG, "Toggle labels button clicked. Current state: $showLabels")
@@ -204,7 +211,6 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
         }
     }
 }
-
 
 @Composable
 private fun FabButton(

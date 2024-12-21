@@ -54,11 +54,11 @@ class App_Initialize_Model(
         class Mutable_App_Produit_Statues(
             var init_dernier_Vent_date_time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
             var init_its_Filtre_Au_Grossists_Buttons: Boolean = false,
-            var init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction = Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(),//change a null
+            var init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? = null
             ){
             var dernier_Vent_date_time_String: String by mutableStateOf(init_dernier_Vent_date_time_String)
             var its_Filtre_Au_Grossists_Buttons: Boolean by mutableStateOf(init_its_Filtre_Au_Grossists_Buttons)
-            var son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction by mutableStateOf(init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction)
+            var son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? by mutableStateOf(init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction)
         }
 
         class Colours_Et_Gouts(
@@ -179,12 +179,40 @@ class App_Initialize_Model(
                     } ?: emptyList()
 
                     // Safely extract mutable status
+                    // Safely extract mutable status
                     val mutableStatus = (productMap["mutable_App_Produit_Statues"] as? Map<String, Any?>)?.let { statusMap ->
+                        val supplierTransaction = (statusMap["son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction"] as? Map<String, Any?>)?.let { supplierMap ->
+                            val supplierColors = (supplierMap["colours_Et_Gouts_Commende"] as? List<*>)?.mapNotNull { colorMap ->
+                                (colorMap as? Map<String, Any?>)?.let {
+                                    Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier(
+                                        position_Du_Couleur_Au_Produit = (it["position_Du_Couleur_Au_Produit"] as? Number)?.toLong() ?: 0,
+                                        id_Don_Tout_Couleurs = (it["id_Don_Tout_Couleurs"] as? Number)?.toLong() ?: 0,
+                                        nom = (it["nom"] as? String) ?: "",
+                                        quantity_Achete = (it["quantity_Achete"] as? Number)?.toInt() ?: 0,
+                                        imogi = (it["imogi"] as? String) ?: ""
+                                    )
+                                }
+                            } ?: emptyList()
+
+                            Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+                                vid = (supplierMap["vid"] as? Number)?.toLong() ?: 0,
+                                supplier_id = (supplierMap["supplier_id"] as? Number)?.toLong() ?: 0,
+                                nom = (supplierMap["nom"] as? String) ?: "",
+                                date = (supplierMap["date"] as? String) ?: "",
+                                couleur = (supplierMap["couleur"] as? String) ?: "#FFFFFF",
+                                currentCreditBalance = (supplierMap["currentCreditBalance"] as? Number)?.toDouble() ?: 0.0,
+                                init_position_Grossist_Don_Parent_Grossists_List = (supplierMap["position_Grossist_Don_Parent_Grossists_List"] as? Number)?.toInt() ?: 0,
+                                init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = (supplierMap["position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit"] as? Number)?.toInt() ?: 0,
+                                initialColours_Et_Gouts_Commende_Au_Supplier = supplierColors
+                            )
+                        }
+
                         Produit_Main_DataBase.Mutable_App_Produit_Statues(
                             init_dernier_Vent_date_time_String = (statusMap["dernier_Vent_date_time_String"] as? String) ?: "",
-                            init_its_Filtre_Au_Grossists_Buttons = (statusMap["its_Filtre_Au_Grossists_Buttons"] as? Boolean) ?: false
+                            init_its_Filtre_Au_Grossists_Buttons = (statusMap["its_Filtre_Au_Grossists_Buttons"] as? Boolean) ?: false,
+                            init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction = supplierTransaction ?: Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction()
                         )
-                    } ?: Produit_Main_DataBase.Mutable_App_Produit_Statues()
+                    }  ?: Produit_Main_DataBase.Mutable_App_Produit_Statues()
 
                     // Create the product object with basic properties
                     Produit_Main_DataBase(

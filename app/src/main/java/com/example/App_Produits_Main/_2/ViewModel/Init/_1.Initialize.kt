@@ -46,6 +46,7 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                                 if (cree_Randoms) {
                                     new_produit_A_Update.mutable_App_Produit_Statues.dernier_Vent_date_time_String =
                                         process_Random_date()
+                                    
                                 }
                                 // Process colors
                                 processColors_Main(
@@ -185,6 +186,10 @@ private fun process_Random_WholesalerData_Main(new_produit_A_Update: App_Initial
     // Add random wholesaler with minimum order
     val selectedWholesaler = sampleWholesalers.random()
     val wholesalerOrder = createWholesalerOrder_Main(selectedWholesaler, new_produit_A_Update)
+    new_produit_A_Update.mutable_App_Produit_Statues =
+        App_Initialize_Model.Produit_Main_DataBase.Mutable_App_Produit_Statues(
+            init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction = wholesalerOrder
+        )
     new_produit_A_Update.grossist_Choisi_Pour_Acheter_CeProduit.add(wholesalerOrder)
 }
 

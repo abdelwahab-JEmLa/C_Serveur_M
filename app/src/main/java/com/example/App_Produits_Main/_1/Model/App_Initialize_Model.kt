@@ -9,7 +9,9 @@ import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import com.google.firebase.database.getValue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class App_Initialize_Model(
     initial_Produits_Main_DataBase: List<Produit_Main_DataBase> = emptyList()
@@ -52,7 +54,7 @@ class App_Initialize_Model(
         class Mutable_App_Produit_Statues(
             var init_dernier_Vent_date_time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
             var init_its_Filtre_Au_Grossists_Buttons: Boolean = false,
-            var init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction = Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(),
+            var init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction = Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(),//change a null
             ){
             var dernier_Vent_date_time_String: String by mutableStateOf(init_dernier_Vent_date_time_String)
             var its_Filtre_Au_Grossists_Buttons: Boolean by mutableStateOf(init_its_Filtre_Au_Grossists_Buttons)
@@ -64,8 +66,6 @@ class App_Initialize_Model(
             var nom: String = "",
             var imogi: String = ""
         )
-
-
 
         class Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
             var vid: Long = 0,
@@ -124,8 +124,12 @@ class App_Initialize_Model(
                 .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
                 .child("produit_DataBase")
 
-            ref_Produit_Main_DataBase.setValue(produits_Main_DataBase).await()
+            // Use supervisorScope to prevent cancellation from propagating
+            withContext(Dispatchers.IO) {
+                ref_Produit_Main_DataBase.setValue(produits_Main_DataBase).await()
+            }
         } catch (e: Exception) {
+            Log.e("App_Initialize_Model", "Failed to update group in Firebase", e)
             throw Exception("Failed to update group in Firebase: ${e.message}")
         }
     }

@@ -1,20 +1,9 @@
 package com.example.Packages._3.Fragment.V.FABs.Modules
 
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandHorizontally
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.*
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -22,19 +11,8 @@ import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,13 +30,15 @@ import kotlin.random.Random
 private const val FAB_TAG = "FAB_DEBUG"
 
 @Composable
-internal fun Grossissts_FloatingActionButtons_Grouped(
+fun Grossissts_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_State: UiState,
     app_Initialize_Model: App_Initialize_Model,
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    // Create a stable coroutine scope that survives recomposition
+    val scope = rememberCoroutineScope()
 
+    // Group products by supplier ID
     val grouped_Produits_Par_Id_Grossist = remember(app_Initialize_Model.produits_Main_DataBase) {
         val groupedProducts = app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
             produit.grossist_Choisi_Pour_Acheter_CeProduit
@@ -73,11 +53,13 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
         groupedProducts
     }
 
+    // State variables
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
+    // Generate random colors for suppliers
     val supplierColors = remember {
         grouped_Produits_Par_Id_Grossist.keys.associateWith {
             Color(
@@ -89,6 +71,42 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
         }
     }
 
+    // Handler for supplier click events
+    val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction ->
+        scope.launch {
+            try {
+                Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
+
+                // Toggle selection state
+                val newSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
+                ui_State.selectedSupplierId = newSupplierId
+
+                // Update filter status for all products
+                app_Initialize_Model.produits_Main_DataBase.forEach { product ->
+                    val latestSupplier = product.grossist_Choisi_Pour_Acheter_CeProduit
+                        .maxByOrNull { it.date }
+
+                    val totalQuantity = latestSupplier?.colours_Et_Gouts_Commende
+                        ?.sumOf { it.quantity_Achete } ?: 0
+
+                    val shouldFilter = if (newSupplierId == 0L) {
+                        false
+                    } else {
+                        latestSupplier?.supplier_id == supplier.supplier_id && totalQuantity > 0
+                    }
+
+                    product.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons = shouldFilter
+                }
+
+                app_Initialize_Model.update_Produits_FireBase()
+            } catch (e: Exception) {
+                Log.e(FAB_TAG, "Error updating supplier filter", e)
+                // Handle the error appropriately
+            }
+        }
+    }}
+
+    // Main layout
     Column(
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -106,6 +124,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
             }
             .zIndex(1f)
     ) {
+        // Supplier buttons section
         AnimatedVisibility(
             visible = showFloatingButtons,
             enter = fadeIn() + expandHorizontally(),
@@ -135,40 +154,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
                                 color = supplierColors[supplierId] ?: MaterialTheme.colorScheme.primary,
                                 showLabel = showLabels,
                                 isFiltered = ui_State.selectedSupplierId == supplierId,
-                                onClick = {
-                                    // Update Firebase
-                                    coroutineScope.launch {
-                                    Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
-
-                                    // Toggle selection state
-                                    val newSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
-                                    ui_State.selectedSupplierId = newSupplierId
-
-                                    // Update filter status for all products
-                                    app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                                        val latestSupplier = product.grossist_Choisi_Pour_Acheter_CeProduit
-                                            .maxByOrNull { it.date }
-
-                                        // Calculate total quantity for the latest supplier
-                                        val totalQuantity = latestSupplier?.colours_Et_Gouts_Commende
-                                            ?.sumOf { it.quantity_Achete } ?: 0
-
-                                        // Calculate if this product should be filtered
-                                        val shouldFilter = if (newSupplierId == 0L) {
-                                            // If no supplier selected, show all products
-                                            false
-                                        } else {
-                                            // Show products from this supplier with quantity > 0
-                                            latestSupplier?.supplier_id == supplier.supplier_id && totalQuantity > 0
-                                        }
-
-                                        // Update the filter status
-                                        product.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons = shouldFilter
-                                    }
-
-                                        app_Initialize_Model.update_Produits_FireBase()
-                                    }
-                                }
+                                onClick = { handleSupplierClick(supplierId, supplier) }
                             )
                         }
                     }
@@ -176,6 +162,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
             }
         }
 
+        // Label toggle button
         FloatingActionButton(
             onClick = { showLabels = !showLabels },
             modifier = Modifier.size(48.dp),
@@ -187,6 +174,7 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
             )
         }
 
+        // Expand/collapse button
         FloatingActionButton(
             onClick = { showFloatingButtons = !showFloatingButtons },
             modifier = Modifier.size(48.dp),

@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,17 +26,15 @@ fun Host_Affiche_Produit_Item(
     produit: App_Initialize_Model.Produit_Main_DataBase,
 ) {
     val coroutineScope = rememberCoroutineScope()
-
-    val currentPosition = produit.grossist_Choisi_Pour_Acheter_CeProduit
-        .find { it.supplier_id == uiState.selectedSupplierId }
-        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+    val grossist_Actuel = produit.grossist_Choisi_Pour_Acheter_CeProduit
+        .maxByOrNull { it.date }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
             .background(
-                color = if (currentPosition != null)
+                color = if (grossist_Actuel?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit != null)
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                 else
                     MaterialTheme.colorScheme.surface,
@@ -45,27 +42,25 @@ fun Host_Affiche_Produit_Item(
             )
             .clickable {
                 coroutineScope.launch {
-                    val currentSupplier = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                        .find { it.supplier_id == uiState.selectedSupplierId }
+                    // Find the maximum position across all products
+                    val maxPosition = app_Initialize_Model.produits_Main_DataBase
+                        .flatMap { it.grossist_Choisi_Pour_Acheter_CeProduit }
+                        .maxOfOrNull { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit } ?: 0
 
-                    currentSupplier?.let { supplier ->
-                        val allPositions = app_Initialize_Model.produits_Main_DataBase.flatMap { prod ->
-                            prod.grossist_Choisi_Pour_Acheter_CeProduit
-                                .filter { it.supplier_id == uiState.selectedSupplierId }
-                                .map { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
-                        }
+                    // Create new position as max + 1
+                    val newPosition = maxPosition + 1
 
-                        val maxPosition = allPositions.maxOrNull() ?: 0
-                        val newPosition = maxPosition + 1
-
+                    // Update the current product's position
+                    grossist_Actuel?.let { supplier ->
                         supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
-                        supplier.position_Grossist_Don_Parent_Grossists_List = newPosition
                     }
+
+                    // Update Firebase
+                    app_Initialize_Model.update_Produits_FireBase()
                 }
             },
         contentAlignment = Alignment.Center
     ) {
-
         Glide_Display_Image_By_Id(
             produit_Id = produit.id,
             produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,
@@ -74,16 +69,16 @@ fun Host_Affiche_Produit_Item(
                 .height(100.dp),
             reloadKey = 0
         )
+
         // Delete button at top start
         IconButton(
             onClick = {
                 coroutineScope.launch {
-                    produit.grossist_Choisi_Pour_Acheter_CeProduit
-                        .find { it.supplier_id == uiState.selectedSupplierId }
-                        ?.let { supplier ->
-                            supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
-                            supplier.position_Grossist_Don_Parent_Grossists_List = 0
-                        }
+                    // Reset the position to 0
+                    grossist_Actuel?.let { supplier ->
+                        supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
+                    }
+                    app_Initialize_Model.update_Produits_FireBase()
                 }
             },
             modifier = Modifier
@@ -125,20 +120,23 @@ fun Host_Affiche_Produit_Item(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        currentPosition?.let { position ->
-            Text(
-                text = position.toString(),
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(4.dp)
-                    .background(
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(4.dp)
-                    )
-                    .padding(4.dp),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+        // Fixed syntax for position display
+        grossist_Actuel?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+            if (position != 0) {
+                Text(
+                    text = position.toString(),
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(4.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                        .padding(4.dp),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
 }

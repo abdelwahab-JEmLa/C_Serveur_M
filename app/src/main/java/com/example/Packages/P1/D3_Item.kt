@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.Packages.P.ClientButton
-import com.example.Apps_Produits_Main_DataBase._1.Images_Handler.Display_Image_By_Id
+import com.example.Apps_Produits_Main_DataBase._1.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages.P1.FragmentsActions
 import com.example.Models.ClientsDataBase
 import com.example.Models.DiviseurDeDisplayProductForEachClient
@@ -41,7 +41,7 @@ internal fun Item(
             modifier = modifier.fillMaxSize()
         ) {
             // Background image
-            Display_Image_By_Id(
+            Glide_Display_Image_By_Id(
                 produit_Id = product.idArticle,
                 modifier = modifier
                     .fillMaxWidth()

@@ -1,13 +1,12 @@
 package com.example.Apps_Produits_Main_DataBase._1.Images_Handler
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,15 +15,11 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 
-open class FireBase_Store_Handler : ViewModel() {
-    protected val databaseRef = Firebase.database
-        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-        .child("produit_DataBase")
-
+open class FireBase_Store_Handler : Apps_Produits_Main_DataBase_ViewModel() {
     // Pour suivre les opérations de mise à jour d'image en cours
     private var currentImageUpdateJobs = mutableMapOf<Long, Job>()
 
-    protected fun startImageUpdate(_app_Initialize_Model: App_Initialize_Model, produitId: Long) {
+    fun startImageUpdate(_app_Initialize_Model: App_Initialize_Model, produitId: Long) {
         // Si une mise à jour est déjà en cours pour ce produit, on ne fait rien
         if (currentImageUpdateJobs[produitId]?.isActive == true) {
             return

@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Apps_Produits_Main_DataBase._1.Images_Handler.Display_Image_By_Id
+import com.example.Apps_Produits_Main_DataBase._1.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
 import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
 
@@ -82,7 +82,7 @@ internal fun Main_Item(
             )
     ) {
         // Background image
-        Display_Image_By_Id(
+        Glide_Display_Image_By_Id(
             produit_Id = produit.id,
             modifier = Modifier
                 .fillMaxWidth()

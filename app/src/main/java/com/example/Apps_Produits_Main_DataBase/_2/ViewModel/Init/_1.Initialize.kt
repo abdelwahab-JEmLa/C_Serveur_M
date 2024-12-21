@@ -1,7 +1,7 @@
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import android.util.Log
-import com.example.Apps_Produits_Main_DataBase._2.ViewModel.App_Initialize_ViewModel
+import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Init.Ancien_Resources_DataBase_Main
 import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Init.get_Ancien_DataBases_Main
 import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
@@ -9,7 +9,7 @@ import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.Components.Pro
 
 private const val TAG_Snap = "InitialeUiState"
 
-internal suspend fun App_Initialize_ViewModel.Initialise_ViewModel_Main() {
+internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_Main() {
     try {
         Log.d(TAG_Snap, "Starting Initialise_ViewModel")
         initializationProgress = 0.1f

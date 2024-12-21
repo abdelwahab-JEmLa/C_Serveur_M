@@ -22,7 +22,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 // Add TAG constant at the top of the class
-    private const val TAG = "CameraPickImageHandler"
+private const val TAG = "CameraPickImageHandler"
 open class App_Initialize_ViewModel : ViewModel() {
 
     var _app_Initialize_Model by mutableStateOf(

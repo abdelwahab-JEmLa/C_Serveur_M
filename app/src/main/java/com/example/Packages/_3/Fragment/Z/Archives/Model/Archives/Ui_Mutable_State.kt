@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import com.example.Packages._3.Fragment.Models.Grossists_Buttons_Modes
+import com.example.Packages._3.Fragment.Models.Archives.Grossists_Buttons_Modes
 import com.example.Packages._3.Fragment.Models.UiState
 import com.google.firebase.Firebase
 import com.google.firebase.database.IgnoreExtraProperties

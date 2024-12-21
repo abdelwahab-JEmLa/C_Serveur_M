@@ -13,7 +13,6 @@ import java.util.Locale
 class UiState internal constructor(
     initialLastUpdateTime: String? = getCurrentFormattedTime(),
 ) {
-
     var lastUpdateTimeFormatted: String? by mutableStateOf(initialLastUpdateTime)
 
     var mode_Trie_Produit_Non_Trouve: Boolean by mutableStateOf(false)

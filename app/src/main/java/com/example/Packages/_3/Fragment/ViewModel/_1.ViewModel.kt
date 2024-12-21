@@ -12,9 +12,6 @@ import com.google.firebase.database.database
 import kotlinx.coroutines.launch
 
 class F3_ViewModel : ViewModel() {
-    private val database = Firebase.database
-    val ref_ViewModel_Produit_DataBase =
-        database.getReference("_1_Prototype4Dec_3_Host_Package_3_DataBase")
 
     var _uiState by mutableStateOf(
         UiState(

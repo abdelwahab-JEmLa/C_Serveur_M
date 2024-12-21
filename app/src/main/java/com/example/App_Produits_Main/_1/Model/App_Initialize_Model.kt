@@ -50,6 +50,11 @@ class App_Initialize_Model(
             var imogi: String = ""
         )
 
+        class mutable_App_Statues(
+            var date_String_Divise: String = "", //"yyyy-MM-dd"
+            var time_String_Divise: String = "", //"HH:mm:ss"
+        )
+
         class Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
             var vid: Long = 0,
             var supplier_id: Long = 0,

@@ -26,15 +26,13 @@ fun Host_Affiche_Produit_Item(
     produit: App_Initialize_Model.Produit_Main_DataBase,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val grossist_Actuel = produit.grossist_Choisi_Pour_Acheter_CeProduit
-        .maxByOrNull { it.date }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
             .background(
-                color = if (grossist_Actuel?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit != null)
+                color = if (produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit != null)
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                 else
                     MaterialTheme.colorScheme.surface,
@@ -44,7 +42,7 @@ fun Host_Affiche_Produit_Item(
                 coroutineScope.launch {
                     // Find the maximum position across all products
                     val maxPosition = app_Initialize_Model.produits_Main_DataBase
-                        .flatMap { it.grossist_Choisi_Pour_Acheter_CeProduit }
+                        .mapNotNull { it.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota }
                         .maxOfOrNull { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
                         ?: 0
 
@@ -52,7 +50,7 @@ fun Host_Affiche_Produit_Item(
                     val newPosition = maxPosition + 1
 
                     // Update the current product's position
-                    grossist_Actuel?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
+                    produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
 
                     // Update Firebase
                     app_Initialize_Model.update_Produits_FireBase()
@@ -60,7 +58,7 @@ fun Host_Affiche_Produit_Item(
             },
         contentAlignment = Alignment.Center
     ) {
-        // Rest of the composable remains the same...
+        // Rest of the composable implementation remains the same...
         Glide_Display_Image_By_Id(
             produit_Id = produit.id,
             produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,
@@ -73,7 +71,7 @@ fun Host_Affiche_Produit_Item(
         IconButton(
             onClick = {
                 coroutineScope.launch {
-                    grossist_Actuel?.let { supplier ->
+                    produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota?.let { supplier ->
                         supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
                     }
                     app_Initialize_Model.update_Produits_FireBase()
@@ -118,7 +116,7 @@ fun Host_Affiche_Produit_Item(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        grossist_Actuel?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+        produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
             if (position != 0) {
                 Text(
                     text = position.toString(),

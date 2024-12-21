@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Apps_Produits_Main_DataBase._1.Images_Handler.Glide_Display_Image_By_Id
-import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Images_Handler.Glide_Display_Image_By_Id
+import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 
 @Composable

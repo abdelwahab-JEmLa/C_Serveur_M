@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.Packages.P.ClientButton
-import com.example.Apps_Produits_Main_DataBase._1.Images_Handler.Glide_Display_Image_By_Id
+import com.example.App_Produits_Main._1.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages.P1.FragmentsActions
 import com.example.Models.ClientsDataBase
 import com.example.Models.DiviseurDeDisplayProductForEachClient

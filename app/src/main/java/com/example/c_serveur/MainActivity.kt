@@ -17,7 +17,7 @@ import com.example.Main.MainScreen.MainScreen
 import com.example.Main.StartFragment.StartFragmentViewModel
 import com.example.Packages.P1.ClientProductsDisplayerStatsViewModel
 import com.example.Packages.P3.E.ViewModel.ViewModelFragment
-import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
+import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.AppDatabase
 import com.example.clientjetpack.Modules.PermissionHandler

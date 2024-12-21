@@ -1,6 +1,5 @@
 package com.example.Packages._3.Fragment.V.FABs.Modules
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.*
@@ -24,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.c_serveur.Modules.CameraPickImageHandler
-import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
+import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

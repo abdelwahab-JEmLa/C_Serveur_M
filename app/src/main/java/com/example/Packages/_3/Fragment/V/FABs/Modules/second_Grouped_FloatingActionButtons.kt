@@ -43,11 +43,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.Packages._3.Fragment.ViewModel.F3_ViewModel
-import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
+import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
 import kotlin.math.roundToInt
 import kotlin.random.Random
 

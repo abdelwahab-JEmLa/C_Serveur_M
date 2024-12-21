@@ -33,7 +33,6 @@ class App_Initialize_Model(
         initialNon_Trouve: Boolean = false,
         init_mutable_App_Produit_Statues: Mutable_App_Produit_Statues = Mutable_App_Produit_Statues(),
 
-
         init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
         initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
         initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> = emptyList(),

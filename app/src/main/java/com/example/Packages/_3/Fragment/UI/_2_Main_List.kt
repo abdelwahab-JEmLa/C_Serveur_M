@@ -82,7 +82,6 @@ fun Produits_Main_List(
                             app_Initialize_Model=app_Initialize_Model,
                             uiState = ui_State,
                             produit = produit,
-                            produits_Main_DataBase = app_Initialize_Model.produits_Main_DataBase
                         )
                     }
                 }
@@ -102,10 +101,9 @@ fun Produits_Main_List(
 
                     items(sortedNoPositionItems) { produit ->
                         Host_Affiche_Produit_Item(
+                            app_Initialize_Model = app_Initialize_Model,
                             uiState = ui_State,
-                            produit = produit,
-                            produits_Main_DataBase = app_Initialize_Model.produits_Main_DataBase,
-                            app_Initialize_Model = app_Initialize_Model
+                            produit = produit
                         )
                     }
                 }

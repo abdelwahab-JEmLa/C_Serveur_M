@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -25,40 +24,30 @@ import com.example.App_Produits_Main._1.Model.App_Initialize_Model
 @Composable
 fun Produits_Main_List(
     modifier: Modifier = Modifier,
+    app_Initialize_Model: App_Initialize_Model,
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
-    produits_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>
-) {     
-    val visibleItems = produits_Main_DataBase
-        .filter { produit ->
-            val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                .flatMap { it.colours_Et_Gouts_Commende }
-                .sumOf { it.quantity_Achete }
-
-            val supplierMatch = if (ui_State.selectedSupplierId != 0L) {
-                produit.grossist_Choisi_Pour_Acheter_CeProduit.any {
-                    it.supplier_id == ui_State.selectedSupplierId
-                }
-            } else true
-
-            totalQuantity > 0 && supplierMatch
+) {
+    val visibleItems = app_Initialize_Model.produits_Main_DataBase
+        .filter {
+            it.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons
         }
 
     when (ui_State.currentMode) {
         UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> {
             // Partition items into those with and without positions
-            val (itemsWithPosition, itemsWithoutPosition) = visibleItems.partition { produit ->
-                val position = produit.grossist_Choisi_Pour_Acheter_CeProduit
-                    .find { it.supplier_id == ui_State.selectedSupplierId }
-                    ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+            val (itemsWithPosition, itemsWithoutPosition) =
+                visibleItems.partition { produit ->
+                    val position = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                        .maxByOrNull { it.date }?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
 
                 position != null && position > 0
             }
 
             val sortedPositionItems = itemsWithPosition.sortedBy { produit ->
                 produit.grossist_Choisi_Pour_Acheter_CeProduit
-                    .find { it.supplier_id == ui_State.selectedSupplierId }
-                    ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: Int.MAX_VALUE
+                    .maxByOrNull { it.date }?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                    ?: Int.MAX_VALUE
             }
 
             val sortedNoPositionItems = itemsWithoutPosition.sortedBy { it.nom }
@@ -89,10 +78,11 @@ fun Produits_Main_List(
                     }
 
                     items(sortedPositionItems) { produit ->
-                        Produit_Item_MODE_Click_Change_Position(
+                        Host_Affiche_Produit_Item(
+                            app_Initialize_Model=app_Initialize_Model,
                             uiState = ui_State,
                             produit = produit,
-                            produits_Main_DataBase = produits_Main_DataBase
+                            produits_Main_DataBase = app_Initialize_Model.produits_Main_DataBase
                         )
                     }
                 }
@@ -111,10 +101,11 @@ fun Produits_Main_List(
                     }
 
                     items(sortedNoPositionItems) { produit ->
-                        Produit_Item_MODE_Click_Change_Position(
+                        Host_Affiche_Produit_Item(
                             uiState = ui_State,
                             produit = produit,
-                            produits_Main_DataBase = produits_Main_DataBase
+                            produits_Main_DataBase = app_Initialize_Model.produits_Main_DataBase,
+                            app_Initialize_Model = app_Initialize_Model
                         )
                     }
                 }

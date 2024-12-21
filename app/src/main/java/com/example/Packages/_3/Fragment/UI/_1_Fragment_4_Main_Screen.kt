@@ -26,8 +26,9 @@ internal fun Fragment3_Main_Screen(
             // Main content
             Column {
                 Produits_Main_List(
+                    app_Initialize_Model=app_Initialize_ViewModel.app_Initialize_Model,
                     ui_State = p3_ViewModel.uiState,
-                    produits_Main_DataBase=app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase,
+                    `app_Initialize_Model.produits_Main_DataBase`=app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase,
                     contentPadding = paddingValues
                 )
             }

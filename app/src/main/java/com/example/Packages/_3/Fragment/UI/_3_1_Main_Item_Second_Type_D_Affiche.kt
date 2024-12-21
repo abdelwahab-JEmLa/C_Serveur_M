@@ -21,10 +21,10 @@ import com.example.App_Produits_Main._1.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 
 @Composable
-fun Produit_Item_MODE_Click_Change_Position(
+fun Host_Affiche_Produit_Item(
+    app_Initialize_Model: App_Initialize_Model,
     uiState: UiState,
     produit: App_Initialize_Model.Produit_Main_DataBase,
-    produits_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -49,7 +49,7 @@ fun Produit_Item_MODE_Click_Change_Position(
                         .find { it.supplier_id == uiState.selectedSupplierId }
 
                     currentSupplier?.let { supplier ->
-                        val allPositions = produits_Main_DataBase.flatMap { prod ->
+                        val allPositions = app_Initialize_Model.produits_Main_DataBase.flatMap { prod ->
                             prod.grossist_Choisi_Pour_Acheter_CeProduit
                                 .filter { it.supplier_id == uiState.selectedSupplierId }
                                 .map { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }

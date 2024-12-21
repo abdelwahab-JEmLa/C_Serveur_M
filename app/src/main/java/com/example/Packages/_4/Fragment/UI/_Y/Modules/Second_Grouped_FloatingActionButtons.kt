@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
-import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
+import com.example.App_Produits_Main.Model.App_Initialize_Model
 import kotlin.math.roundToInt
 import kotlin.random.Random
 

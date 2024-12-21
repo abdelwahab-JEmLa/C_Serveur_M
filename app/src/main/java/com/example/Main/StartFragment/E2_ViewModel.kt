@@ -3,8 +3,8 @@ package com.example.Main.StartFragment
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.c_serveur.Modules.FireBaseHandler
-import com.example.clientjetpack.Modules.AppDatabase
+import com.example.c_serveur.Modules.Z.Archives.FireBaseHandler
+import com.example.c_serveur.Modules.Z.Archives.AppDatabase
 import com.example.serveurecherielhanaaebeljemla.Models.UiStat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

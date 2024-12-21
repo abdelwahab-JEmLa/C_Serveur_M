@@ -5,15 +5,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Models.AppSettingsSaverModel
-import com.example.Models.ClientsDataBase
-import com.example.Models.DiviseurDeDisplayProductForEachClient
-import com.example.Models.Grossissts_DataBAse
-import com.example.Models.ProductsCategoriesDataBase
-import com.example.Models.Produits_DataBase
-import com.example.Packages.P3.Historique_D_Achate_Grossisst_DataBase
+import com.example.Packages.Z.Archives.Models.AppSettingsSaverModel
+import com.example.Packages.Z.Archives.Models.ClientsDataBase
+import com.example.Packages.Z.Archives.Models.DiviseurDeDisplayProductForEachClient
+import com.example.Packages.Z.Archives.Models.Grossissts_DataBAse
+import com.example.Packages.Z.Archives.Models.ProductsCategoriesDataBase
+import com.example.Packages.Z.Archives.Models.Produits_DataBase
+import com.example.Packages.Z.Archives.P3.Historique_D_Achate_Grossisst_DataBase
 import com.example.Packages._3.Fragment.Z.Archives.Model.Archives.Commende_Produits_Au_Grossissts_DataBase
-import com.example.clientjetpack.Modules.AppDatabase
+import com.example.c_serveur.Modules.Z.Archives.AppDatabase
 import com.example.serveurecherielhanaaebeljemla.Models.UiStat
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -328,7 +328,8 @@ open class InitializeViewModel(
                         val productsList = mutableListOf<DiviseurDeDisplayProductForEachClient>()
 
                         for (childSnapshot in snapshot.children) {
-                            val product = childSnapshot.getValue(DiviseurDeDisplayProductForEachClient::class.java)
+                            val product = childSnapshot.getValue(
+                                DiviseurDeDisplayProductForEachClient::class.java)
                             product?.let {
                                 productsList.add(it)
                             }

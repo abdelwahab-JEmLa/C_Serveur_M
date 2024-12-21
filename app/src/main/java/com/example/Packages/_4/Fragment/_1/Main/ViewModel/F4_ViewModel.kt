@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Initialise_ViewModel
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
-import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
+import com.example.App_Produits_Main.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 
 class F4_ViewModel internal constructor() : ViewModel() {

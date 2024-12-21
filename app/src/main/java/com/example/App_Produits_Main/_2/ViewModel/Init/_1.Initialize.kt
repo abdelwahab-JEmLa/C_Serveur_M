@@ -4,8 +4,8 @@ import android.util.Log
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.example.App_Produits_Main._2.ViewModel.Init.Ancien_Resources_DataBase_Main
 import com.example.App_Produits_Main._2.ViewModel.Init.get_Ancien_DataBases_Main
-import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
-import com.example.App_Produits_Main._2.ViewModel.Model.Components.Produits_Ancien_DataBase_Main
+import com.example.App_Produits_Main.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.Components.Produits_Ancien_DataBase_Main
 
 private const val TAG_Snap = "InitialeUiState"
 

@@ -7,8 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.App_Produits_Main._1.Images_Handler.FireBase_Store_Handler
-import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
+import com.example.App_Produits_Main._3.Modules.Images_Handler.FireBase_Store_Handler
+import com.example.App_Produits_Main.Model.App_Initialize_Model
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Initialise_ViewModel_Main
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

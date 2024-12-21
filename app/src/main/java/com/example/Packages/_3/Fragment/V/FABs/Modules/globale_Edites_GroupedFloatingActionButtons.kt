@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.c_serveur.Modules.CameraPickImageHandler
-import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
+import com.example.App_Produits_Main._3.Modules.Add_New_Produit.CameraPickImageHandler
+import com.example.App_Produits_Main.Model.App_Initialize_Model
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

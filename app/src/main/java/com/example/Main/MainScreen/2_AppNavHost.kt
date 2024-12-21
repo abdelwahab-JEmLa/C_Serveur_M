@@ -15,8 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.Main.StartFragment.StartFragment
 import com.example.Main.StartFragment.StartFragmentDestination
-import com.example.Packages.P1.ClientProductsDisplayerStatsDestination
-import com.example.Packages.P1.ClientProductsDisplayerStatsFragment
+import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsDestination
+import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsFragment
 import com.example.Packages._3.Fragment.UI.Fragment3_Main_Screen
 import com.example.Packages._4.Fragment.UI.Fragment_4_Main_Screen
 import com.example.c_serveur.AppViewModels

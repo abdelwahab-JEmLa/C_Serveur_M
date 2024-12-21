@@ -1,10 +1,10 @@
 package com.example.App_Produits_Main._2.ViewModel.Init
 
 import android.util.Log
-import com.example.App_Produits_Main._2.ViewModel.Model.Components.Ancien_ClientsDataBase_Main
-import com.example.App_Produits_Main._2.ViewModel.Model.Components.Ancien_ColorArticle_Main
-import com.example.App_Produits_Main._2.ViewModel.Model.Components.Ancien_SoldArticlesTabelle_Main
-import com.example.App_Produits_Main._2.ViewModel.Model.Components.Produits_Ancien_DataBase_Main
+import com.example.App_Produits_Main._1.Model.Components.Ancien_ClientsDataBase_Main
+import com.example.App_Produits_Main._1.Model.Components.Ancien_ColorArticle_Main
+import com.example.App_Produits_Main._1.Model.Components.Ancien_SoldArticlesTabelle_Main
+import com.example.App_Produits_Main._1.Model.Components.Produits_Ancien_DataBase_Main
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await

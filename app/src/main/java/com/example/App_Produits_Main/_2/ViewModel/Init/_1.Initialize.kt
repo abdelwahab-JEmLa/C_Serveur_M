@@ -17,7 +17,7 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
 
         val ancienData = get_Ancien_DataBases_Main()
         val besoin_update_initialise = false
-        val cree_Randoms = false
+        val cree_Randoms = true
 
 
         if (!besoin_update_initialise) {

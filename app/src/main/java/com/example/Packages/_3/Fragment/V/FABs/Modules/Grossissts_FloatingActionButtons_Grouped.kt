@@ -136,6 +136,8 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
                                 showLabel = showLabels,
                                 isFiltered = ui_State.selectedSupplierId == supplierId,
                                 onClick = {
+                                    // Update Firebase
+                                    coroutineScope.launch {
                                     Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
 
                                     // Toggle selection state
@@ -164,8 +166,6 @@ internal fun Grossissts_FloatingActionButtons_Grouped(
                                         product.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons = shouldFilter
                                     }
 
-                                    // Update Firebase
-                                    coroutineScope.launch {
                                         app_Initialize_Model.update_Produits_FireBase()
                                     }
                                 }

@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Archives
+package com.example.Packages._3.Fragment.Z.Archives.Model.Archives
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf

@@ -1,6 +1,11 @@
-package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Model.Components
+package com.example.Packages._3.Fragment.Z.Archives.Model.Archives
 
-data class Produits_Ancien_DataBase(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
+data class Produits_DataBase(
+    @PrimaryKey(autoGenerate = true)
     var idArticle: Long = 0,
     var nomArticleFinale: String = "",
     var classementCate: Double = 0.0,
@@ -60,7 +65,66 @@ data class Produits_Ancien_DataBase(
     constructor() : this(0)
 }
 
-data class Ancien_SoldArticlesTabelle internal constructor(
+@Entity
+data class Commende_Produits_Au_Grossissts_DataBase(
+    @PrimaryKey(autoGenerate = true)
+    val vid: Long = 0,
+    var a_c_idarticle_c: Long = 0,
+    val nameArticle: String = "",
+    var idSupplierTSA: Int = 0,
+    var nomSupplierTSA: String? = null,
+    var idInStoreOfSupp: Long = 0,
+    var nmbrCat: Int = 0,
+    val trouve_c: Boolean = false,
+    val a_u_prix_1_q1_c: Double = 0.0,
+    var a_q_prixachat_c: Double = 0.0,
+    val a_l_nmbunite_c: Int = 0,
+    val a_r_prixdevent_c: Double = 0.0,
+    val idsClientsNeedItGBC: String = "",
+    val nameClientsNeedItGBC: String = "",
+    val datedachate: String = "",
+    val a_d_nomarticlefinale_c_1: String = "",
+    val color1SoldQuantity: Int = 0,
+    val a_d_nomarticlefinale_c_2: String = "",
+    val color2SoldQuantity: Int = 0,
+    val a_d_nomarticlefinale_c_3: String = "",
+    val color3SoldQuantity: Int = 0,
+    val a_d_nomarticlefinale_c_4: String = "",
+    val color4SoldQuantity: Int = 0,
+    val totalquantity: Int = 0,
+    var itsInFindedAskSupplierSA: Boolean = false,
+    var disponibylityStatInSupplierStore: String = "",
+    var pret_pour_deplace_au_grossisst: Boolean = false,
+) {
+    constructor() : this(0L)
+}
+
+// File: ColorArticle.kt - Assurez-vous que cette classe correspond exactement à la structure de votre base de données
+data class ColorArticle(
+    val idColore: Long = 0,
+    val nameColore: String = "",
+    val iconColore: String = "",
+    var classementColore: Int = 0
+) {
+    // Firebase necessite un constructeur vide
+    constructor() : this(0, "", "", 0)
+}
+data class Grossist_Choisi_Pour_Acheter_CeProduit internal constructor(
+    var idSupplierSu: Long = 0,
+    var nomSupplierSu: String = "",
+    var nomVocaleArabeDuSupplier: String = "",
+    var nameInFrenche: String = "",
+    var bonDuSupplierSu: String = "",
+    val couleurSu: String = "#FFFFFF",
+    var currentCreditBalance: Double = 0.0,
+    var longTermCredit: Boolean = false,
+    var ignoreItProdects: Boolean = false,
+    var classmentSupplier: Double = 0.0,
+) {
+    constructor() : this(0)
+
+}
+data class SoldArticlesTabelle internal constructor(
     val vid: Long = 0,
     val idArticle: Long = 0,
     val nameArticle: String = "",
@@ -75,15 +139,11 @@ data class Ancien_SoldArticlesTabelle internal constructor(
     val color4IdPicked: Long = 0,
     val color4SoldQuantity: Int = 0,
     val confimed: Boolean = false,
-)
-data class Ancien_ColorArticle(
-    val idColore: Long = 0,
-    val nameColore: String = "",
-    val iconColore: String = "",
-    var classementColore: Int = 0
-)
+) {
+    constructor() : this(0)
+}
 
-data class Ancien_ClientsDataBase(
+data class ClientsDataBase(
     val vidSu: Long = 0,
     var idClientsSu: Long = 0,
     var position: Int = 0,
@@ -93,4 +153,6 @@ data class Ancien_ClientsDataBase(
     val couleurSu: String = "#FFFFFF", // Default color
     var currentCreditBalance: Double = 0.0,
     var itsReadyForEdite: Boolean = false,
-)
+) {
+    constructor() : this(0)
+}

@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel._2.Init.Components.Archive
+package com.example.Packages._3.Fragment.Z.Archives.Components.Archive
 //
 //import android.util.Log
 //import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.TAG_Snap

@@ -51,6 +51,8 @@ class App_Initialize_Model(
             var supplier_id: Long = 0,
             var nom: String = "",
             var date: String = "", //"yyyy-MM-dd HH:mm:ss"
+            var date_String_Divise: String = "", //"yyyy-MM-dd"
+            var time_String_Divise: String = "", //"HH:mm:ss"
             var couleur: String = "#FFFFFF",
             var currentCreditBalance: Double = 0.0,
             init_position_Grossist_Don_Parent_Grossists_List: Int = 0,

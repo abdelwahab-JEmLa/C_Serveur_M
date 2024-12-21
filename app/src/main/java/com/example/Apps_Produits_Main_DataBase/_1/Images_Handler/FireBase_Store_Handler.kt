@@ -77,7 +77,7 @@ open class FireBase_Store_Handler : Apps_Produits_Main_DataBase_ViewModel() {
         currentImageUpdateJobs.clear()
 
         // Supprime le listener de la base de données
-        databaseRef.removeEventListener(object : ValueEventListener {
+        _app_Initialize_Model.ref_Produit_Main_DataBase.removeEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {}
             override fun onCancelled(error: DatabaseError) {}
         })

@@ -21,9 +21,7 @@ import kotlinx.coroutines.tasks.await
 // Add TAG constant at the top of the class
 private const val TAG = "CameraPickImageHandler"
 open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
-    val databaseRef = Firebase.database
-        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-        .child("produit_DataBase")
+
 
     var _app_Initialize_Model by mutableStateOf(
         App_Initialize_Model()
@@ -50,7 +48,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
     }
 
     private fun setupDatabaseListener() {
-        databaseRef.addValueEventListener(object : ValueEventListener {
+        _app_Initialize_Model.ref_Produit_Main_DataBase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 viewModelScope.launch {
                     try {
@@ -99,7 +97,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // Update the position in Firebase
-                val productRef = databaseRef.child(productId.toString())
+                val productRef = _app_Initialize_Model.ref_Produit_Main_DataBase.child(productId.toString())
                     .child("grossist_Choisi_Pour_Acheter_CeProduit")
                     .child(supplierId.toString())
                     .child("position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit")

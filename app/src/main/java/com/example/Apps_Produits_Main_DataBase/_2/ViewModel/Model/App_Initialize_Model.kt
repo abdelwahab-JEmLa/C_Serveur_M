@@ -17,6 +17,10 @@ class App_Initialize_Model(
     var produit_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
         initial_Produit_Main_DataBase.toMutableStateList()
 
+    val ref_Produit_Main_DataBase = Firebase.database
+        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+        .child("produit_DataBase")
+
     class Produit_Main_DataBase(
         val id: Long = 0,
         val it_ref_Id_don_FireBase: Long = 0,
@@ -111,9 +115,6 @@ class App_Initialize_Model(
 
     suspend fun load_Produits_FireBase() {
         try {
-            val ref_Produit_Main_DataBase = Firebase.database
-                .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-                .child("produit_DataBase")
 
             val snapshot = ref_Produit_Main_DataBase.get().await()
             val rawData = snapshot.getValue<List<Map<String, Any?>>>()

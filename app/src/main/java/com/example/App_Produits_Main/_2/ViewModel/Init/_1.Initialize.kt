@@ -17,6 +17,8 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
 
         val ancienData = get_Ancien_DataBases_Main()
         val besoin_update_initialise = false
+        val cree_Randoms = false
+
 
         if (!besoin_update_initialise) {
             _app_Initialize_Model.load_Produits_FireBase()
@@ -41,8 +43,10 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                         ancienData.produitsDatabase.find { it.idArticle == new_produit_A_Update.id }
                             ?.let { ancien_DataBase ->
                                 new_produit_A_Update.nom = ancien_DataBase.nomArticleFinale
-                                new_produit_A_Update.mutable_App_Produit_Statues.dernier_Vent_date_time_String=
-                                    process_Random_date()
+                                if (cree_Randoms) {
+                                    new_produit_A_Update.mutable_App_Produit_Statues.dernier_Vent_date_time_String =
+                                        process_Random_date()
+                                }
                                 // Process colors
                                 processColors_Main(
                                     ancien_DataBase,
@@ -53,9 +57,10 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
 
                         // Process sales data
                         processSalesData_Main(ancienData, new_produit_A_Update)
-
-                        // Process wholesaler data
-                        process_Random_WholesalerData_Main(new_produit_A_Update)
+                        if (cree_Randoms) {
+                            // Process wholesaler data
+                            process_Random_WholesalerData_Main(new_produit_A_Update)
+                        }
 
                         new_produit_A_Update.besoin_To_Be_Updated = false
 

@@ -1,4 +1,4 @@
-package com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model
+package com.example.App_Produits_Main._2.ViewModel.Model
 
 import android.util.Log
 import androidx.compose.runtime.getValue

@@ -1,8 +1,8 @@
-package com.example.Apps_Produits_Main_DataBase._1.Images_Handler
+package com.example.App_Produits_Main._1.Images_Handler
 
 import androidx.lifecycle.viewModelScope
-import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
-import com.example.Apps_Produits_Main_DataBase._2.ViewModel.Model.App_Initialize_Model
+import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
+import com.example.App_Produits_Main._2.ViewModel.Model.App_Initialize_Model
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

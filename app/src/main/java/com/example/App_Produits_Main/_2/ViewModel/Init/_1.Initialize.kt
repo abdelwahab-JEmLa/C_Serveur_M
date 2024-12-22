@@ -6,6 +6,7 @@ import com.example.App_Produits_Main._1.Model.Components.Produits_Ancien_DataBas
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.example.App_Produits_Main._2.ViewModel.Init.Ancien_Resources_DataBase_Main
 import com.example.App_Produits_Main._2.ViewModel.Init.get_Ancien_DataBases_Main
+import com.example.App_Produits_Main._2.ViewModel.Init.init_load_Depuit_FireBase
 
 private const val TAG_Snap = "InitialeUiState"
 
@@ -16,11 +17,11 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
         isInitializing = true
 
         val ancienData = get_Ancien_DataBases_Main()
-        val besoin_update_initialise = false
+        val load_Depuit_FireBase = true
         val cree_Randoms = true
 
-        if (!besoin_update_initialise) {
-            _app_Initialize_Model.load_Produits_FireBase()
+        if (load_Depuit_FireBase) {
+            init_load_Depuit_FireBase()
         } else {
             // Initialize products database
             ancienData.produitsDatabase.forEach { ancien ->
@@ -28,7 +29,6 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                     id = ancien.idArticle,
                     it_ref_Id_don_FireBase = 1L,
                     it_ref_don_FireBase = "produit_DataBase",
-                    init_besoin_To_Be_Updated = besoin_update_initialise
                 )
                 _app_Initialize_Model.produits_Main_DataBase.add(produit)
             }
@@ -89,6 +89,8 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
         isInitializing = false
     }
 }
+
+
 
 private fun process_Random_date(): String {
     val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())

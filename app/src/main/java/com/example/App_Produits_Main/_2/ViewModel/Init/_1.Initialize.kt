@@ -21,7 +21,7 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
         val cree_Randoms = true
 
         if (load_Depuit_FireBase) {
-            init_load_Depuit_FireBase()
+           init_load_Depuit_FireBase()
         } else {
             // Initialize products database
             ancienData.produitsDatabase.forEach { ancien ->

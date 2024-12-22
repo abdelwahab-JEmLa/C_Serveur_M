@@ -19,7 +19,6 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
         val besoin_update_initialise = false
         val cree_Randoms = true
 
-
         if (!besoin_update_initialise) {
             _app_Initialize_Model.load_Produits_FireBase()
         } else {

@@ -179,7 +179,35 @@ class App_Initialize_Model(
                         }
                     } ?: emptyList()
 
-                    // Safely extract mutable status
+                    // Extract current grossist data
+                    val currentGrossist = (productMap["grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota"] as? Map<String, Any?>)?.let { grossistMap ->
+                        val grossistColors = (grossistMap["colours_Et_Gouts_Commende"] as? List<*>)?.mapNotNull { colorMap ->
+                            (colorMap as? Map<String, Any?>)?.let {
+                                Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier(
+                                    position_Du_Couleur_Au_Produit = (it["position_Du_Couleur_Au_Produit"] as? Number)?.toLong() ?: 0,
+                                    id_Don_Tout_Couleurs = (it["id_Don_Tout_Couleurs"] as? Number)?.toLong() ?: 0,
+                                    nom = (it["nom"] as? String) ?: "",
+                                    quantity_Achete = (it["quantity_Achete"] as? Number)?.toInt() ?: 0,
+                                    imogi = (it["imogi"] as? String) ?: ""
+                                )
+                            }
+                        } ?: emptyList()
+
+                        Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+                            vid = (grossistMap["vid"] as? Number)?.toLong() ?: 0,
+                            supplier_id = (grossistMap["supplier_id"] as? Number)?.toLong() ?: 0,
+                            nom = (grossistMap["nom"] as? String) ?: "",
+                            date = (grossistMap["date"] as? String) ?: "",
+                            date_String_Divise = (grossistMap["date_String_Divise"] as? String) ?: "",
+                            time_String_Divise = (grossistMap["time_String_Divise"] as? String) ?: "",
+                            couleur = (grossistMap["couleur"] as? String) ?: "#FFFFFF",
+                            currentCreditBalance = (grossistMap["currentCreditBalance"] as? Number)?.toDouble() ?: 0.0,
+                            init_position_Grossist_Don_Parent_Grossists_List = (grossistMap["position_Grossist_Don_Parent_Grossists_List"] as? Number)?.toInt() ?: 0,
+                            init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = (grossistMap["position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit"] as? Number)?.toInt() ?: 0,
+                            initialColours_Et_Gouts_Commende_Au_Supplier = grossistColors
+                        )
+                    }
+
                     // Safely extract mutable status
                     val mutableStatus = (productMap["mutable_App_Produit_Statues"] as? Map<String, Any?>)?.let { statusMap ->
                         val supplierTransaction = (statusMap["son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction"] as? Map<String, Any?>)?.let { supplierMap ->
@@ -200,6 +228,8 @@ class App_Initialize_Model(
                                 supplier_id = (supplierMap["supplier_id"] as? Number)?.toLong() ?: 0,
                                 nom = (supplierMap["nom"] as? String) ?: "",
                                 date = (supplierMap["date"] as? String) ?: "",
+                                date_String_Divise = (supplierMap["date_String_Divise"] as? String) ?: "",
+                                time_String_Divise = (supplierMap["time_String_Divise"] as? String) ?: "",
                                 couleur = (supplierMap["couleur"] as? String) ?: "#FFFFFF",
                                 currentCreditBalance = (supplierMap["currentCreditBalance"] as? Number)?.toDouble() ?: 0.0,
                                 init_position_Grossist_Don_Parent_Grossists_List = (supplierMap["position_Grossist_Don_Parent_Grossists_List"] as? Number)?.toInt() ?: 0,
@@ -211,11 +241,11 @@ class App_Initialize_Model(
                         Produit_Main_DataBase.Mutable_App_Produit_Statues(
                             init_dernier_Vent_date_time_String = (statusMap["dernier_Vent_date_time_String"] as? String) ?: "",
                             init_its_Filtre_Au_Grossists_Buttons = (statusMap["its_Filtre_Au_Grossists_Buttons"] as? Boolean) ?: false,
-                            init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction = supplierTransaction ?: Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction()
+                            init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction = supplierTransaction
                         )
-                    }  ?: Produit_Main_DataBase.Mutable_App_Produit_Statues()
+                    } ?: Produit_Main_DataBase.Mutable_App_Produit_Statues()
 
-                    // Create the product object with basic properties
+                    // Create the product object with all properties
                     Produit_Main_DataBase(
                         id = (productMap["id"] as? Number)?.toLong() ?: 0,
                         it_ref_Id_don_FireBase = (productMap["it_ref_Id_don_FireBase"] as? Number)?.toLong() ?: 0,
@@ -225,9 +255,10 @@ class App_Initialize_Model(
                         init_it_Image_besoin_To_Be_Updated = (productMap["it_Image_besoin_To_Be_Updated"] as? Boolean) ?: false,
                         initialNon_Trouve = (productMap["non_Trouve"] as? Boolean) ?: false,
                         init_colours_Et_Gouts = coloursEtGouts,
-                        init_mutable_App_Produit_Statues = mutableStatus
+                        init_mutable_App_Produit_Statues = mutableStatus,
+                        init_Grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota = currentGrossist
                     ).apply {
-                        // Safely add purchase demands
+                        // Add purchase demands
                         (productMap["demmende_Achate_De_Cette_Produit"] as? List<*>)?.forEach { demand ->
                             (demand as? Map<String, Any?>)?.let { demandMap ->
                                 val clientColors = (demandMap["colours_Et_Gouts_Acheter_Depuit_Client"] as? List<*>)?.mapNotNull { clientColor ->
@@ -255,7 +286,7 @@ class App_Initialize_Model(
                             }
                         }
 
-                        // Safely add supplier choices
+                        // Add supplier choices
                         (productMap["grossist_Choisi_Pour_Acheter_CeProduit"] as? List<*>)?.forEach { supplier ->
                             (supplier as? Map<String, Any?>)?.let { supplierMap ->
                                 val supplierColors = (supplierMap["colours_Et_Gouts_Commende"] as? List<*>)?.mapNotNull { colorMap ->
@@ -276,6 +307,8 @@ class App_Initialize_Model(
                                         supplier_id = (supplierMap["supplier_id"] as? Number)?.toLong() ?: 0,
                                         nom = (supplierMap["nom"] as? String) ?: "",
                                         date = (supplierMap["date"] as? String) ?: "",
+                                        date_String_Divise = (supplierMap["date_String_Divise"] as? String) ?: "",
+                                        time_String_Divise = (supplierMap["time_String_Divise"] as? String) ?: "",
                                         couleur = (supplierMap["couleur"] as? String) ?: "#FFFFFF",
                                         currentCreditBalance = (supplierMap["currentCreditBalance"] as? Number)?.toDouble() ?: 0.0,
                                         init_position_Grossist_Don_Parent_Grossists_List = (supplierMap["position_Grossist_Don_Parent_Grossists_List"] as? Number)?.toInt() ?: 0,

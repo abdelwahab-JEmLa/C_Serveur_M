@@ -19,7 +19,7 @@ class CameraPickImageHandler(
     }
 
     var tempImageUri: Uri? = null
-    private var pendingProduct: AppInitializeModel.Produit_Model? = null
+    private var pendingProduct: AppInitializeModel.ProduitModel? = null
 
     private fun createTempImageUri(): Uri {
         val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
@@ -32,7 +32,7 @@ class CameraPickImageHandler(
         }
     }
 
-    fun handleNewProductImageCapture(existingProduct: AppInitializeModel.Produit_Model?): Uri {
+    fun handleNewProductImageCapture(existingProduct: AppInitializeModel.ProduitModel?): Uri {
         pendingProduct = existingProduct
         return createTempImageUri()
     }
@@ -74,7 +74,7 @@ class CameraPickImageHandler(
                 .child("Images Articles Data Base/AppInitializeModel.Produit_Main_DataBase/$fileName")
 
             val newProduct = if (pendingProduct != null) {
-                AppInitializeModel.Produit_Model(
+                AppInitializeModel.ProduitModel(
                     id = newId,
                     it_ref_Id_don_FireBase = newId,
                     it_ref_don_FireBase = fileName,
@@ -82,12 +82,12 @@ class CameraPickImageHandler(
                     init_besoin_To_Be_Updated = true,
                     init_it_Image_besoin_To_Be_Updated = true,
                     initialNon_Trouve = pendingProduct!!.non_Trouve,
-                    init_colours_Et_Gouts = pendingProduct!!.colours_Et_Gouts.toList(),
+                    init_colours_Et_Gouts = pendingProduct!!.coloursEtGouts.toList(),
                     initialDemmende_Achate_De_Cette_Produit = pendingProduct!!.acheteurs_pour_Cette_Cota.toList(),
-                    init_historique_BonS_Commend = pendingProduct!!.historique_BonS_Commend.toList()
+                    init_historiqueBonsCommend = pendingProduct!!.historiqueBonsCommend.toList()
                 )
             } else {
-                AppInitializeModel.Produit_Model(
+                AppInitializeModel.ProduitModel(
                     id = newId,
                     it_ref_Id_don_FireBase = newId,
                     it_ref_don_FireBase = fileName,

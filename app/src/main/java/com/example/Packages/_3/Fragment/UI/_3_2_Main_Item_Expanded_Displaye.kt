@@ -27,13 +27,13 @@ import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Ima
 
 @Composable
 internal fun Expanded_Item_Displaye(
-    produit: AppInitializeModel.Produit_Model,
+    produit: AppInitializeModel.ProduitModel,
     initialHeightCard: Dp = 300.dp,
     onEpandToggle: () -> Unit
 ) {
-    val filteredColorFlavors = produit.historique_BonS_Commend
+    val filteredColorFlavors = produit.historiqueBonsCommend
         .find { it.vid == 1L }
-        ?.colours_Et_Gouts_Commende?.filter { it.quantity_Achete > 0 }
+        ?.coloursEtGoutsCommendee?.filter { it.quantityAchete > 0 }
         ?: emptyList()
 
     Box(
@@ -77,7 +77,7 @@ internal fun Expanded_Item_Displaye(
                                     .background(Color.Gray)
                                 ) {
                                     Text(
-                                        text = colorFlavor.quantity_Achete.toString(),
+                                        text = colorFlavor.quantityAchete.toString(),
                                         fontSize = 30.sp,
                                         color = Color.Red
                                     )

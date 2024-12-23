@@ -37,7 +37,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                     // Safely extract colors and tastes
                     val coloursEtGouts = (productMap["colours_Et_Gouts"] as? List<*>)?.mapNotNull { color ->
                         (color as? Map<String, Any?>)?.let {
-                            AppInitializeModel.Produit_Model.Colours_Et_Gouts(
+                            AppInitializeModel.ProduitModel.ColourEtGout_Model(
                                 position_Du_Couleur_Au_Produit = (it["position_Du_Couleur_Au_Produit"] as? Number)?.toLong() ?: 0,
                                 nom = (it["nom"] as? String) ?: "",
                                 imogi = (it["imogi"] as? String) ?: ""
@@ -49,7 +49,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                     val currentGrossist = (productMap["grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota"] as? Map<String, Any?>)?.let { grossistMap ->
                         val grossistColors = (grossistMap["colours_Et_Gouts_Commende"] as? List<*>)?.mapNotNull { colorMap ->
                             (colorMap as? Map<String, Any?>)?.let {
-                                AppInitializeModel.Produit_Model.GrossistBonCommandesModel.Colours_Et_Gouts_Commende_Au_Supplier(
+                                AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                                     position_Du_Couleur_Au_Produit = (it["position_Du_Couleur_Au_Produit"] as? Number)?.toLong() ?: 0,
                                     id_Don_Tout_Couleurs = (it["id_Don_Tout_Couleurs"] as? Number)?.toLong() ?: 0,
                                     nom = (it["nom"] as? String) ?: "",
@@ -59,7 +59,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                             }
                         } ?: emptyList()
 
-                        AppInitializeModel.Produit_Model.GrossistBonCommandesModel(
+                        AppInitializeModel.ProduitModel.GrossistBonCommandes(
                             vid = (grossistMap["vid"] as? Number)?.toLong() ?: 0,
                             supplier_id = (grossistMap["supplier_id"] as? Number)?.toLong() ?: 0,
                             nom = (grossistMap["nom"] as? String) ?: "",
@@ -79,7 +79,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                         val supplierTransaction = (statusMap["son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction"] as? Map<String, Any?>)?.let { supplierMap ->
                             val supplierColors = (supplierMap["colours_Et_Gouts_Commende"] as? List<*>)?.mapNotNull { colorMap ->
                                 (colorMap as? Map<String, Any?>)?.let {
-                                    AppInitializeModel.Produit_Model.GrossistBonCommandesModel.Colours_Et_Gouts_Commende_Au_Supplier(
+                                    AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                                         position_Du_Couleur_Au_Produit = (it["position_Du_Couleur_Au_Produit"] as? Number)?.toLong() ?: 0,
                                         id_Don_Tout_Couleurs = (it["id_Don_Tout_Couleurs"] as? Number)?.toLong() ?: 0,
                                         nom = (it["nom"] as? String) ?: "",
@@ -89,7 +89,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                                 }
                             } ?: emptyList()
 
-                            AppInitializeModel.Produit_Model.GrossistBonCommandesModel(
+                            AppInitializeModel.ProduitModel.GrossistBonCommandes(
                                 vid = (supplierMap["vid"] as? Number)?.toLong() ?: 0,
                                 supplier_id = (supplierMap["supplier_id"] as? Number)?.toLong() ?: 0,
                                 nom = (supplierMap["nom"] as? String) ?: "",
@@ -104,15 +104,15 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                             )
                         }
 
-                        AppInitializeModel.Produit_Model.Mutable_App_Produit_Statues(
+                        AppInitializeModel.ProduitModel.StatuesMutableProduit_Model(
                             init_dernier_Vent_date_time_String = (statusMap["dernier_Vent_date_time_String"] as? String) ?: "",
                             init_its_Filtre_Au_Grossists_Buttons = (statusMap["its_Filtre_Au_Grossists_Buttons"] as? Boolean) ?: false,
                             init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction = supplierTransaction
                         )
-                    } ?: AppInitializeModel.Produit_Model.Mutable_App_Produit_Statues()
+                    } ?: AppInitializeModel.ProduitModel.StatuesMutableProduit_Model()
 
                     // Create the product object with all properties
-                    AppInitializeModel.Produit_Model(
+                    AppInitializeModel.ProduitModel(
                         id = (productMap["id"] as? Number)?.toLong() ?: 0,
                         it_ref_Id_don_FireBase = (productMap["it_ref_Id_don_FireBase"] as? Number)?.toLong() ?: 0,
                         it_ref_don_FireBase = (productMap["it_ref_don_FireBase"] as? String) ?: "",
@@ -129,7 +129,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                             (demand as? Map<String, Any?>)?.let { demandMap ->
                                 val clientColors = (demandMap["colours_Et_Gouts_Acheter_Depuit_Client"] as? List<*>)?.mapNotNull { clientColor ->
                                     (clientColor as? Map<String, Any?>)?.let {
-                                        AppInitializeModel.Produit_Model.Client_Bon_Vent_Model.Color_Achat_Model(
+                                        AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
                                             vidPosition = (it["vidPosition"] as? Number)?.toLong() ?: 0,
                                             nom = (it["nom"] as? String) ?: "",
                                             quantity_Achete = (it["quantity_Achete"] as? Number)?.toInt() ?: 0,
@@ -139,7 +139,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                                 } ?: emptyList()
 
                                 this.acheteurs_pour_Cette_Cota.add(
-                                    AppInitializeModel.Produit_Model.Client_Bon_Vent_Model(
+                                    AppInitializeModel.ProduitModel.ClientBonVent_Model(
                                         vid = (demandMap["vid"] as? Number)?.toLong() ?: 0,
                                         id_Acheteur = (demandMap["id_Acheteur"] as? Number)?.toLong() ?: 0,
                                         nom_Acheteur = (demandMap["nom_Acheteur"] as? String) ?: "",
@@ -157,7 +157,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                             (supplier as? Map<String, Any?>)?.let { supplierMap ->
                                 val supplierColors = (supplierMap["colours_Et_Gouts_Commende"] as? List<*>)?.mapNotNull { colorMap ->
                                     (colorMap as? Map<String, Any?>)?.let {
-                                        AppInitializeModel.Produit_Model.GrossistBonCommandesModel.Colours_Et_Gouts_Commende_Au_Supplier(
+                                        AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                                             position_Du_Couleur_Au_Produit = (it["position_Du_Couleur_Au_Produit"] as? Number)?.toLong() ?: 0,
                                             id_Don_Tout_Couleurs = (it["id_Don_Tout_Couleurs"] as? Number)?.toLong() ?: 0,
                                             nom = (it["nom"] as? String) ?: "",
@@ -168,7 +168,7 @@ suspend fun AppInitializeModel.load_Produits_FireBase() {
                                 } ?: emptyList()
 
                                 historique_BonS_Commend.add(
-                                    AppInitializeModel.Produit_Model.GrossistBonCommandesModel(
+                                    AppInitializeModel.ProduitModel.GrossistBonCommandes(
                                         vid = (supplierMap["vid"] as? Number)?.toLong() ?: 0,
                                         supplier_id = (supplierMap["supplier_id"] as? Number)?.toLong() ?: 0,
                                         nom = (supplierMap["nom"] as? String) ?: "",

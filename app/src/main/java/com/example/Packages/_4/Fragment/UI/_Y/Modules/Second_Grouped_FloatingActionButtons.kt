@@ -54,7 +54,7 @@ private const val FAB_TAG = "FAB_DEBUG"
 internal fun Second_Grouped_FloatingActionButtons(
     modifier: Modifier = Modifier,
     uiState: Ui_State_4_Fragment,
-    produit_Main_DataBase: SnapshotStateList<AppInitializeModel.Produit_Model>,
+    produit_Main_DataBase: SnapshotStateList<AppInitializeModel.ProduitModel>,
 ) {
 
     val grouped_Produits_Par_Id_Acheteur = remember(produit_Main_DataBase) {

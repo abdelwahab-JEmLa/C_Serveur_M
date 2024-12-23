@@ -34,7 +34,7 @@ import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Ima
 @Composable
 internal fun Produit_Item(
     uiState: UiState,
-    produit: AppInitializeModel.Produit_Model,
+    produit: AppInitializeModel.ProduitModel,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -45,10 +45,10 @@ internal fun Produit_Item(
     }
 
     // Calculate total quantity
-    val totalQuantity = produit.historique_BonS_Commend
+    val totalQuantity = produit.historiqueBonsCommend
         .find { it.vid == 1L }
-        ?.colours_Et_Gouts_Commende
-        ?.sumOf { it.quantity_Achete } ?: 0
+        ?.coloursEtGoutsCommendee
+        ?.sumOf { it.quantityAchete } ?: 0
 
     Box(
         modifier = Modifier
@@ -170,11 +170,11 @@ internal fun Produit_Item(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        val colorsList = produit.historique_BonS_Commend
+                        val colorsList = produit.historiqueBonsCommend
                             .find { it.vid == 1L }
-                            ?.colours_Et_Gouts_Commende
-                            ?.sortedBy { it.quantity_Achete }
-                            ?.filter { it.quantity_Achete > 0 }
+                            ?.coloursEtGoutsCommendee
+                            ?.sortedBy { it.quantityAchete }
+                            ?.filter { it.quantityAchete > 0 }
                             ?: emptyList()
 
                         items(colorsList.size) { index ->
@@ -185,7 +185,7 @@ internal fun Produit_Item(
                             }
 
                             Text(
-                                text = "(${colorFlavor.quantity_Achete})$displayText",
+                                text = "(${colorFlavor.quantityAchete})$displayText",
                                 fontSize = 24.sp,
                                 color = Color.White
                             )

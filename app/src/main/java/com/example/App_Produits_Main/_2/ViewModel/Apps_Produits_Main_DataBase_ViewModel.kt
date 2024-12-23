@@ -9,10 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-import com.example.App_Produits_Main._2.ViewModel.Init.Produit_Loader
 import com.example.App_Produits_Main._2.ViewModel.Init.load_Depuit_FireBase
 import com.example.App_Produits_Main._3.Modules.Images_Handler.FireBase_Store_Handler
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Cree_New_Start
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.cree_New_Start
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -63,7 +61,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
                     try {
                         // Store current positions before loading new data
                         val previousPositions = _app_Initialize_Model.produits_Main_DataBase.associate { produit ->
-                            produit.id to produit.historique_BonS_Commend.map { grossist ->
+                            produit.id to produit.historiqueBonsCommend.map { grossist ->
                                 grossist.vid to grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                             }
                         }
@@ -82,7 +80,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
 
                             // Check for position changes
                             val previousProductPositions = previousPositions[produit.id] ?: emptyList()
-                            produit.historique_BonS_Commend.forEach { grossist ->
+                            produit.historiqueBonsCommend.forEach { grossist ->
                                 val previousPosition = previousProductPositions.find { it.first == grossist.vid }?.second
                                 if (previousPosition != null && previousPosition != grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit) {
                                     Log.d(TAG, "Position changed for product ${produit.id}, supplier ${grossist.vid}: $previousPosition -> ${grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}")

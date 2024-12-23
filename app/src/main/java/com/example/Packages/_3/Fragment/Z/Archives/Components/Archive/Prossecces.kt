@@ -43,7 +43,7 @@ package com.example.Packages._3.Fragment.Z.Archives.Components.Archive
 //                Log.d(TAG_Snap, "Processing color $i: ID=$colorId, name=$color")
 //
 //                add(
-//                    UiState.Produit_DataBase.Colours_Et_Gouts_Commende_Au_Supplier(
+//                    UiState.Produit_DataBase.ColoursGoutsCommendee(
 //                        position_Du_Couleur_Au_Produit = i.toLong(),
 //                        id_Don_Tout_Couleurs = colorId,
 //                        nom = color,

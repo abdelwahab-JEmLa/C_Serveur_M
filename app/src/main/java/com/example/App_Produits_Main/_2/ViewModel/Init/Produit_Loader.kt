@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.google.firebase.Firebase
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
@@ -20,7 +19,7 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.load_Depuit_FireBase() {
             // Ajouter les produits manquants
             val produitsManquants = NOMBRE_PRODUITS - size
             if (produitsManquants > 0) {
-                repeat(produitsManquants) { add(AppInitializeModel.Produit_Model()) }
+                repeat(produitsManquants) { add(AppInitializeModel.ProduitModel()) }
             }
             // Attribuer les IDs
             forEachIndexed { index, produit -> produit.id = index.toLong() }
@@ -40,10 +39,10 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.load_Depuit_FireBase() {
                 }
 
                 // Charger les couleurs
-                produit.colours_Et_Gouts.clear()
+                produit.coloursEtGouts.clear()
                 refProduit.child("colours_Et_Gouts").get().await().children.forEach { snapshot ->
-                    snapshot.getValue(AppInitializeModel.Produit_Model.Colours_Et_Gouts::class.java)
-                        ?.let { produit.colours_Et_Gouts.add(it) }
+                    snapshot.getValue(AppInitializeModel.ProduitModel.ColourEtGout_Model::class.java)
+                        ?.let { produit.coloursEtGouts.add(it) }
                 }
 
                 // Charger les transactions grossiste
@@ -52,9 +51,9 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.load_Depuit_FireBase() {
                     .child("0")
                     .get()
                     .await()
-                    .getValue(AppInitializeModel.Produit_Model.GrossistBonCommandesModel::class.java)
+                    .getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)
 
-                produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota = when {
+                produit.bonCommendDeCetteCota = when {
                     grossiste != null -> grossiste
                     else -> null
                 }
@@ -65,7 +64,7 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.load_Depuit_FireBase() {
                     .await()
                     .children
                     .forEach { snapshot ->
-                        snapshot.getValue(AppInitializeModel.Produit_Model.Client_Bon_Vent_Model::class.java)
+                        snapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)
                             ?.let { produit.acheteurs_pour_Cette_Cota.add(it) }
                     }
 
@@ -74,7 +73,7 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.load_Depuit_FireBase() {
                 // Gestion des erreurs pour ce produit
                 produit.apply {
                     nom = "Produit ${produit.id} (Erreur)"
-                    colours_Et_Gouts.clear()
+                    coloursEtGouts.clear()
                     besoin_To_Be_Updated = true
                     it_Image_besoin_To_Be_Updated = true
                 }

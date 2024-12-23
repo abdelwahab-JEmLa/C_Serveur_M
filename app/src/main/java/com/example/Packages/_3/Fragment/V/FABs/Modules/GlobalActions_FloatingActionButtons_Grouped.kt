@@ -59,13 +59,13 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
     val existingProduct = app_Initialize_Model.produits_Main_DataBase
         .filter { produit ->
             // Calculate total quantity ordered across all suppliers and colors
-            val totalQuantity = produit.historique_BonS_Commend
-                .flatMap { it.colours_Et_Gouts_Commende }
-                .sumOf { it.quantity_Achete }
+            val totalQuantity = produit.historiqueBonsCommend
+                .flatMap { it.coloursEtGoutsCommendee }
+                .sumOf { it.quantityAchete }
 
             // Check if the product matches the selected supplier filter
             val supplierMatch = if (fragment_Ui_State.selectedSupplierId != 0L) {
-                produit.historique_BonS_Commend.any {
+                produit.historiqueBonsCommend.any {
                     it.supplier_id == fragment_Ui_State.selectedSupplierId
                 }
             } else true
@@ -75,7 +75,7 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
         }
         // Then find the first product that has a valid position in its supplier data
         .firstOrNull { produit ->
-            produit.historique_BonS_Commend
+            produit.historiqueBonsCommend
                 .any { supplier ->
                     supplier.supplier_id == fragment_Ui_State.selectedSupplierId &&
                             supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit >= 1 &&

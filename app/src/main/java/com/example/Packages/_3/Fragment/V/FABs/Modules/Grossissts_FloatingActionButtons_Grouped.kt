@@ -41,7 +41,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
     // Group products by supplier ID
     val grouped_Produits_Par_Id_Grossist = remember(app_Initialize_Model.produits_Main_DataBase) {
         val groupedProducts = app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
-            produit.historique_BonS_Commend
+            produit.historiqueBonsCommend
                 .maxByOrNull { it.date }?.vid ?: -1L
         }
 
@@ -72,7 +72,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
     }
 
     // Handler for supplier click events
-    val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: AppInitializeModel.Produit_Model.GrossistBonCommandesModel ->
+    val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: AppInitializeModel.ProduitModel.GrossistBonCommandes ->
         scope.launch {
             try {
                 Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
@@ -83,11 +83,11 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                 // Update filter status for all products
                 app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                    val latestSupplier = product.historique_BonS_Commend
+                    val latestSupplier = product.historiqueBonsCommend
                         .maxByOrNull { it.date }
 
-                    val totalQuantity = latestSupplier?.colours_Et_Gouts_Commende
-                        ?.sumOf { it.quantity_Achete } ?: 0
+                    val totalQuantity = latestSupplier?.coloursEtGoutsCommendee
+                        ?.sumOf { it.quantityAchete } ?: 0
 
                     val shouldFilter = if (newSupplierId == 0L) {
                         false
@@ -144,7 +144,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                     filteredSuppliers.forEach { (supplierId, products) ->
                         val supplier = products.firstOrNull()
-                            ?.historique_BonS_Commend
+                            ?.historiqueBonsCommend
                             ?.maxByOrNull { it.date }
 
                         if (supplier != null) {

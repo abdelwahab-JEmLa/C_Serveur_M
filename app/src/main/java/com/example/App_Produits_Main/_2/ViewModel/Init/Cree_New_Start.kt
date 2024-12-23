@@ -2,9 +2,7 @@ package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import android.util.Log
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-import com.example.App_Produits_Main._1.Model.Components.Produits_Ancien_DataBase_Main
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
-import com.example.App_Produits_Main._2.ViewModel.Init.Z.Components.Ancien_Resources_DataBase_Main
 import com.example.App_Produits_Main._2.ViewModel.Init.Z.Components.get_Ancien_DataBases_Main
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -26,7 +24,7 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
         // Traitement de chaque produit
         ancienData.produitsDatabase.forEach { ancien ->
             // Création du produit de base
-            val nouveauProduit = AppInitializeModel.Produit_Model(
+            val nouveauProduit = AppInitializeModel.ProduitModel(
                 id = ancien.idArticle,
                 it_ref_Id_don_FireBase = 1L,
                 it_ref_don_FireBase = "produit_DataBase"
@@ -55,8 +53,8 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                     ancienData.couleurs_List
                         .find { it.idColore == colorId }
                         ?.let { couleur ->
-                            colours_Et_Gouts.add(
-                                AppInitializeModel.Produit_Model.Colours_Et_Gouts(
+                            coloursEtGouts.add(
+                                AppInitializeModel.ProduitModel.ColourEtGout_Model(
                                     position_Du_Couleur_Au_Produit = position,
                                     nom = couleur.nameColore,
                                     imogi = couleur.iconColore
@@ -66,12 +64,12 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                 }
 
                 // Ajout des données de vente
-                historique_bonS_Vents.clear()
-                bonS_Vent_De_Cette_Cota.clear()
+                historiqueBonsVents.clear()
+                bonsVentDeCetteCota.clear()
 
                 // Ventes historiques
                 repeat((1..5).random()) { ventIndex ->
-                    val vente = AppInitializeModel.Produit_Model.Client_Bon_Vent_Model(
+                    val vente = AppInitializeModel.ProduitModel.ClientBonVent_Model(
                         vid = ventIndex.toLong(),
                         id_Acheteur = ventIndex.toLong(),
                         nom_Acheteur = "Client $ventIndex",
@@ -83,9 +81,9 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                     )
 
                     // Ajout des couleurs à la vente historique
-                    colours_Et_Gouts.take((1..3).random()).forEach { couleur ->
+                    coloursEtGouts.take((1..3).random()).forEach { couleur ->
                         vente.colours_Achete.add(
-                            AppInitializeModel.Produit_Model.Client_Bon_Vent_Model.Color_Achat_Model(
+                            AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
                                 vidPosition = couleur.position_Du_Couleur_Au_Produit,
                                 nom = couleur.nom,
                                 quantity_Achete = (1..10).random(),
@@ -94,12 +92,12 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                         )
                     }
 
-                    historique_bonS_Vents.add(vente)
+                    historiqueBonsVents.add(vente)
                 }
 
                 // Ventes actuelles
                 repeat((1..3).random()) { ventIndex ->
-                    val vente = AppInitializeModel.Produit_Model.Client_Bon_Vent_Model(
+                    val vente = AppInitializeModel.ProduitModel.ClientBonVent_Model(
                         vid = ventIndex.toLong(),
                         id_Acheteur = ventIndex.toLong(),
                         nom_Acheteur = "Client $ventIndex",
@@ -109,9 +107,9 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                     )
 
                     // Ajout des couleurs à la vente actuelle
-                    colours_Et_Gouts.take((1..3).random()).forEach { couleur ->
+                    coloursEtGouts.take((1..3).random()).forEach { couleur ->
                         vente.colours_Achete.add(
-                            AppInitializeModel.Produit_Model.Client_Bon_Vent_Model.Color_Achat_Model(
+                            AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
                                 vidPosition = couleur.position_Du_Couleur_Au_Produit,
                                 nom = couleur.nom,
                                 quantity_Achete = (1..10).random(),
@@ -120,7 +118,7 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                         )
                     }
 
-                    bonS_Vent_De_Cette_Cota.add(vente)
+                    bonsVentDeCetteCota.add(vente)
                 }
 
                 // Ajout des données grossiste
@@ -131,7 +129,7 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                 )
                 val (grossisteId, grossisteNom, grossisteCouleur) = grossistes.random()
 
-                val grossiste = AppInitializeModel.Produit_Model.GrossistBonCommandesModel(
+                val grossiste = AppInitializeModel.ProduitModel.GrossistBonCommandes(
                     vid = grossisteId,
                     supplier_id = grossisteId,
                     nom = grossisteNom,
@@ -142,21 +140,21 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                 )
 
                 // Ajout des couleurs au grossiste
-                colours_Et_Gouts.firstOrNull()?.let { couleur ->
-                    grossiste.colours_Et_Gouts_Commende.add(
-                        AppInitializeModel.Produit_Model.GrossistBonCommandesModel.Colours_Et_Gouts_Commende_Au_Supplier(
+                coloursEtGouts.firstOrNull()?.let { couleur ->
+                    grossiste.coloursEtGoutsCommendee.add(
+                        AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                             position_Du_Couleur_Au_Produit = couleur.position_Du_Couleur_Au_Produit,
                             id_Don_Tout_Couleurs = couleur.position_Du_Couleur_Au_Produit,
                             nom = couleur.nom,
-                            quantity_Achete = 1,
+                            quantityAchete = 1,
                             imogi = couleur.imogi
                         )
                     )
                 }
 
-                historique_BonS_Commend.clear()
-                bon_Commend_De_Cette_Cota = grossiste
-                historique_BonS_Commend.add(grossiste)
+                historiqueBonsCommend.clear()
+                bonCommendDeCetteCota = grossiste
+                historiqueBonsCommend.add(grossiste)
 
                 besoin_To_Be_Updated = false
             }

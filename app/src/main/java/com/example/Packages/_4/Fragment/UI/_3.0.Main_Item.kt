@@ -37,7 +37,7 @@ private const val TAG = "Main_Item"
 @Composable
 internal fun Main_Item(
     uiState: Ui_State_4_Fragment,
-    produit: AppInitializeModel.Produit_Model,
+    produit: AppInitializeModel.ProduitModel,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 

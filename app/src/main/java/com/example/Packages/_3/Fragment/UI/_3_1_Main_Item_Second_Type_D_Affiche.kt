@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 fun Host_Affiche_Produit_Item(
     app_Initialize_Model: AppInitializeModel,
     uiState: UiState,
-    produit: AppInitializeModel.Produit_Model,
+    produit: AppInitializeModel.ProduitModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
 

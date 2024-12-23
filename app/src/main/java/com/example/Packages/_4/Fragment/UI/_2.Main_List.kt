@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-
+   /*
 @Composable
 fun Main_List(
     modifier: Modifier = Modifier,
@@ -23,7 +23,7 @@ fun Main_List(
     uiState: Ui_State_4_Fragment
 ) {
     val filtered_Items = produit_Main_DataBase.filter { produit ->
-        val lastDemand = produit.acheteurs_pour_Cette_Cota
+        val lastDemand = produit.bonCommendDeCetteCota
             .maxByOrNull { it.time_String }?.colours_Et_Gouts_Acheter_Depuit_Client?.isEmpty()
         lastDemand != null
     }
@@ -66,3 +66,4 @@ fun Main_List(
         }
     }
 }
+        */

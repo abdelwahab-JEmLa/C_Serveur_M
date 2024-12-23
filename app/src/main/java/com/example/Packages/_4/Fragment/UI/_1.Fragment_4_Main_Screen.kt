@@ -12,7 +12,7 @@ import com.example.Packages._4.Fragment.UI._Y.Modules.Globale_Edites_GroupedFloa
 import com.example.Packages._4.Fragment.UI._Y.Modules.Second_Grouped_FloatingActionButtons
 import com.example.Packages._4.Fragment._1.Main.ViewModel.F4_ViewModel
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
-
+/*
 @Composable
 fun Fragment_4_Main_Screen(
     modifier: Modifier = Modifier,
@@ -51,3 +51,4 @@ fun Fragment_4_Main_Screen(
 private fun Preview_Fragment_4_Main_Screen() {
     Fragment_4_Main_Screen(modifier = Modifier.fillMaxSize())
 }
+      */

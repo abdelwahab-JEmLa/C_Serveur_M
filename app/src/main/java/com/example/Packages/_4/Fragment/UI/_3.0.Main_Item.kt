@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-
+   /*
 private const val TAG = "Main_Item"
 
 @Composable
@@ -176,3 +176,4 @@ internal fun Main_Item(
         }
     }
 }
+                   */

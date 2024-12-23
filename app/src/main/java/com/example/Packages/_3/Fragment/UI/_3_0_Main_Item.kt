@@ -125,10 +125,10 @@ internal fun Produit_Item(
                         .wrapContentHeight()
                         .padding(top = 8.dp)
                 ) {
-                    produit.acheteurs_pour_Cette_Cota
+                    produit.bonsVentDeCetteCota
                         .sortedBy { it.nom_Acheteur }
                         .forEach { acheteur ->
-                            acheteur.colours_Et_Gouts_Acheter_Depuit_Client
+                            acheteur.colours_Achete
                                 .sortedBy { it.quantity_Achete }
                                 .forEach { couleur ->
                                     Row(
@@ -170,8 +170,7 @@ internal fun Produit_Item(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        val colorsList = produit.historiqueBonsCommend
-                            .find { it.vid == 1L }
+                        val colorsList = produit.bonCommendDeCetteCota
                             ?.coloursEtGoutsCommendee
                             ?.sortedBy { it.quantityAchete }
                             ?.filter { it.quantityAchete > 0 }
@@ -180,8 +179,9 @@ internal fun Produit_Item(
                         items(colorsList.size) { index ->
                             val colorFlavor = colorsList[index]
                             val displayText = when {
-                                colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
-                                else -> colorFlavor.nom.take(3)
+                                colorFlavor.statues?.imogi?.isNotEmpty() == true ->
+                                    colorFlavor.statues?.imogi
+                                else -> colorFlavor.statues?.nom?.take(3) ?: ""
                             }
 
                             Text(

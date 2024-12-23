@@ -30,7 +30,7 @@ fun Produits_Main_List(
 ) {
     val visibleItems = app_Initialize_Model.produits_Main_DataBase
         .filter {
-            it.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota != null
+            it.bonCommendDeCetteCota?.auFilterFAB ?: false
         }
 
     when (ui_State.currentMode) {
@@ -39,7 +39,7 @@ fun Produits_Main_List(
             val (itemsWithPosition, itemsWithoutPosition) =
                 visibleItems.partition { produit ->
                     val position = produit
-                        .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
+                        .bonCommendDeCetteCota
                     ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
 
                 position != null && position > 0
@@ -47,7 +47,7 @@ fun Produits_Main_List(
 
             val sortedPositionItems = itemsWithPosition.sortedBy { produit ->
                 produit
-                    .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
+                    .bonCommendDeCetteCota
                     ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                     ?: Int.MAX_VALUE
             }
@@ -128,7 +128,7 @@ fun Produits_Main_List(
                     visibleItems.sortedWith(
                         compareBy<AppInitializeModel.ProduitModel> { produit ->
                             produit
-                                .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
+                                .bonCommendDeCetteCota
                                 ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                                 ?: Int.MAX_VALUE
                         }.thenBy { it.nom }

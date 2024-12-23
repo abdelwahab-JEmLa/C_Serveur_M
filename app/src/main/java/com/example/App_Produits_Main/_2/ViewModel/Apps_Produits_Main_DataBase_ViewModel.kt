@@ -10,8 +10,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.App_Produits_Main._2.ViewModel.Init.Produit_Loader
+import com.example.App_Produits_Main._2.ViewModel.Init.load_Depuit_FireBase
 import com.example.App_Produits_Main._3.Modules.Images_Handler.FireBase_Store_Handler
 import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Cree_New_Start
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.cree_New_Start
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -26,7 +28,8 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
 
-    private fun initializeData() {
+    private fun initializeData() {  //-->
+    //TODO(1): change au init
         viewModelScope.launch {
             try {
                 isInitializing = true
@@ -35,12 +38,10 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
                 val createStart = false // Toggle between new start and loading from Firebase
                 if (createStart) {
                     // Fixed: Pass the ViewModel instance instead of the coroutine scope
-                    val creator = Cree_New_Start(this@Apps_Produits_Main_DataBase_ViewModel)
-                    creator.pointEntreePrincipal() // Fixed: Use the correct method name
+                    cree_New_Start() // Fixed: Use the correct method name
                     initializationProgress = 1f
                 } else {
-                    val loader = Produit_Loader(this@Apps_Produits_Main_DataBase_ViewModel)
-                    loader.loadAllProducts()
+                    load_Depuit_FireBase()
                     initializationProgress = 1f
                 }
 

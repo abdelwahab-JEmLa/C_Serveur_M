@@ -16,14 +16,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Image_By_Id
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun Host_Affiche_Produit_Item(
-    app_Initialize_Model: App_Initialize_Model,
+    app_Initialize_Model: AppInitializeModel,
     uiState: UiState,
-    produit: App_Initialize_Model.Produit_Model,
+    produit: AppInitializeModel.Produit_Model,
 ) {
     val coroutineScope = rememberCoroutineScope()
 

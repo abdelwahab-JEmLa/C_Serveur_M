@@ -27,14 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 
 @Composable
 internal fun Produit_Item(
     uiState: UiState,
-    produit: App_Initialize_Model.Produit_Model,
+    produit: AppInitializeModel.Produit_Model,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -45,7 +45,7 @@ internal fun Produit_Item(
     }
 
     // Calculate total quantity
-    val totalQuantity = produit.historique_Commends
+    val totalQuantity = produit.historique_BonS_Commend
         .find { it.vid == 1L }
         ?.colours_Et_Gouts_Commende
         ?.sumOf { it.quantity_Achete } ?: 0
@@ -170,7 +170,7 @@ internal fun Produit_Item(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        val colorsList = produit.historique_Commends
+                        val colorsList = produit.historique_BonS_Commend
                             .find { it.vid == 1L }
                             ?.colours_Et_Gouts_Commende
                             ?.sortedBy { it.quantity_Achete }

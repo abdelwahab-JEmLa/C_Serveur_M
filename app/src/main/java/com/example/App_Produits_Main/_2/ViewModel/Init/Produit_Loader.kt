@@ -1,7 +1,7 @@
 package com.example.App_Produits_Main._2.ViewModel.Init
 
 import android.util.Log
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
@@ -11,7 +11,7 @@ private const val TAG = "FirebaseLoader"
 private const val DATABASE_PATH = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
 private const val DEFAULT_PRODUCTS_COUNT = 20
 
-class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel) {
+class Produit_Loader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel) {
 
     private val database = Firebase.database.getReference(DATABASE_PATH)
 
@@ -29,7 +29,7 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
         with(viewModel._app_Initialize_Model.produits_Main_DataBase) {
             val missingProducts = DEFAULT_PRODUCTS_COUNT - size
             if (missingProducts > 0) {
-                repeat(missingProducts) { add(App_Initialize_Model.Produit_Model()) }
+                repeat(missingProducts) { add(AppInitializeModel.Produit_Model()) }
             }
             forEachIndexed { index, product -> product.id = index.toLong() }
         }
@@ -45,14 +45,14 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
         }
     }
 
-    private suspend fun loadProductDetails(product: App_Initialize_Model.Produit_Model) {
+    private suspend fun loadProductDetails(product: AppInitializeModel.Produit_Model) {
         loadName(product)
         loadColors(product)
         load_Transaction_Vent_Grossist(product)
         load_acheteurs_pour_Cette_Cota(product)
     }
 
-    private suspend fun loadName(product: App_Initialize_Model.Produit_Model) {
+    private suspend fun loadName(product: AppInitializeModel.Produit_Model) {
         val name = database
             .child(product.id.toString())
             .child("nom")
@@ -67,7 +67,7 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
         }
     }
 
-    private suspend fun loadColors(product: App_Initialize_Model.Produit_Model) {
+    private suspend fun loadColors(product: AppInitializeModel.Produit_Model) {
         val colors = database
             .child(product.id.toString())
             .child("colours_Et_Gouts")
@@ -77,11 +77,11 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
         product.colours_Et_Gouts.clear()
 
         colors.children.forEach { colorSnapshot ->
-            colorSnapshot.getValue(App_Initialize_Model.Produit_Model.Colours_Et_Gouts::class.java)
+            colorSnapshot.getValue(AppInitializeModel.Produit_Model.Colours_Et_Gouts::class.java)
                 ?.let { product.colours_Et_Gouts.add(it) }
         }
     }
-    private suspend fun load_Transaction_Vent_Grossist(product: App_Initialize_Model.Produit_Model) {
+    private suspend fun load_Transaction_Vent_Grossist(product: AppInitializeModel.Produit_Model) {
         val snapshot = database
             .child(product.id.toString())
             .child("grossist_Choisi_Pour_Acheter_CeProduit")
@@ -90,7 +90,7 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
             .await()
 
         // Get the grossist transaction data
-        val grossistTransaction = snapshot.getValue(App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model::class.java)
+        val grossistTransaction = snapshot.getValue(AppInitializeModel.Produit_Model.GrossistBonCommandesModel::class.java)
 
         // Update the product's grossist transaction
         product.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota = when {
@@ -99,7 +99,7 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
             else -> null  // For other cases, set to null
         }
     }
-    private suspend fun load_acheteurs_pour_Cette_Cota(product: App_Initialize_Model.Produit_Model) {
+    private suspend fun load_acheteurs_pour_Cette_Cota(product: AppInitializeModel.Produit_Model) {
         val snapshot = database
             .child(product.id.toString())
             .child("acheteurs_pour_Cette_Cota")
@@ -108,11 +108,11 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
 
 
         snapshot.children.forEach { snapshot ->
-            snapshot.getValue(App_Initialize_Model.Produit_Model.Client_Bon_Vent_Model::class.java)
+            snapshot.getValue(AppInitializeModel.Produit_Model.Client_Bon_Vent_Model::class.java)
                 ?.let { product.acheteurs_pour_Cette_Cota.add(it) }
         }
     }
-    private fun handleLoadError(product: App_Initialize_Model.Produit_Model) {
+    private fun handleLoadError(product: AppInitializeModel.Produit_Model) {
         product.apply {
             nom = "Produit $id (Erreur)"
             colours_Et_Gouts.clear()
@@ -124,5 +124,5 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
 
 // Extension function for the ViewModel
 suspend fun Apps_Produits_Main_DataBase_ViewModel.init_load_Depuit_FireBase() {
-    ProductLoader(this).loadAllProducts()
+    Produit_Loader(this).loadAllProducts()
 }

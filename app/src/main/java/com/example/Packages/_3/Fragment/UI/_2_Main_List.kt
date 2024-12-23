@@ -19,12 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 
 @Composable
 fun Produits_Main_List(
     modifier: Modifier = Modifier,
-    app_Initialize_Model: App_Initialize_Model,
+    app_Initialize_Model: AppInitializeModel,
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
 ) {
@@ -126,7 +126,7 @@ fun Produits_Main_List(
             ) {
                 items(
                     visibleItems.sortedWith(
-                        compareBy<App_Initialize_Model.Produit_Model> { produit ->
+                        compareBy<AppInitializeModel.Produit_Model> { produit ->
                             produit
                                 .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
                                 ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit

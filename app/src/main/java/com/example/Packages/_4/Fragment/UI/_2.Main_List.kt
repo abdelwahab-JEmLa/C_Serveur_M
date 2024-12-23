@@ -13,12 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 
 @Composable
 fun Main_List(
     modifier: Modifier = Modifier,
-    produit_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Model>,
+    produit_Main_DataBase: SnapshotStateList<AppInitializeModel.Produit_Model>,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
     uiState: Ui_State_4_Fragment
 ) {
@@ -29,13 +29,13 @@ fun Main_List(
     }
 
     val sorted_Visible_Items = filtered_Items.sortedWith(
-        compareBy<App_Initialize_Model.Produit_Model> { produit ->
-            val position = produit.historique_Commends
+        compareBy<AppInitializeModel.Produit_Model> { produit ->
+            val position = produit.historique_BonS_Commend
                 .maxByOrNull { it.date }
                 ?.position_Grossist_Don_Parent_Grossists_List
             position ?: Int.MAX_VALUE
         }.thenBy { produit ->
-            val position = produit.historique_Commends
+            val position = produit.historique_BonS_Commend
                 .maxByOrNull { it.date }
                 ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
             position ?: Int.MAX_VALUE

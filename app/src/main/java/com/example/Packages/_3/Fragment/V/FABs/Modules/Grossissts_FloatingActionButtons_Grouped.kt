@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -33,7 +33,7 @@ private const val FAB_TAG = "FAB_DEBUG"
 fun Grossissts_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_State: UiState,
-    app_Initialize_Model: App_Initialize_Model,
+    app_Initialize_Model: AppInitializeModel,
 ) {
     // Create a stable coroutine scope that survives recomposition
     val scope = rememberCoroutineScope()
@@ -41,7 +41,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
     // Group products by supplier ID
     val grouped_Produits_Par_Id_Grossist = remember(app_Initialize_Model.produits_Main_DataBase) {
         val groupedProducts = app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
-            produit.historique_Commends
+            produit.historique_BonS_Commend
                 .maxByOrNull { it.date }?.vid ?: -1L
         }
 
@@ -72,7 +72,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
     }
 
     // Handler for supplier click events
-    val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model ->
+    val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: AppInitializeModel.Produit_Model.GrossistBonCommandesModel ->
         scope.launch {
             try {
                 Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
@@ -83,7 +83,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                 // Update filter status for all products
                 app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                    val latestSupplier = product.historique_Commends
+                    val latestSupplier = product.historique_BonS_Commend
                         .maxByOrNull { it.date }
 
                     val totalQuantity = latestSupplier?.colours_Et_Gouts_Commende
@@ -144,7 +144,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                     filteredSuppliers.forEach { (supplierId, products) ->
                         val supplier = products.firstOrNull()
-                            ?.historique_Commends
+                            ?.historique_BonS_Commend
                             ?.maxByOrNull { it.date }
 
                         if (supplier != null) {

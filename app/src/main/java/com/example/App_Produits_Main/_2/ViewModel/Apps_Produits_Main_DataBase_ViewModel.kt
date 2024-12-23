@@ -1,5 +1,6 @@
 package com.example.App_Produits_Main._2.ViewModel
 
+import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -7,39 +8,47 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
-import com.example.App_Produits_Main._1.Model.load_Produits_FireBase
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
+import com.example.App_Produits_Main._2.ViewModel.Init.Produit_Loader
 import com.example.App_Produits_Main._3.Modules.Images_Handler.FireBase_Store_Handler
-import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Initialise_ViewModel_Main
+import com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components.Cree_New_Start
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-// Add TAG constant at the top of the class
-private const val TAG = "CameraPickImageHandler"
 open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
+    var _app_Initialize_Model by mutableStateOf(AppInitializeModel())
+    val app_Initialize_Model: AppInitializeModel get() = this._app_Initialize_Model
 
-
-    var _app_Initialize_Model by mutableStateOf(
-        App_Initialize_Model()
-    )
-
-    val app_Initialize_Model: App_Initialize_Model get() = this._app_Initialize_Model
-
-    // Progress tracking
     var initializationProgress by mutableFloatStateOf(0f)
-
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
 
-    init {
+    private fun initializeData() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                Initialise_ViewModel_Main()
+                initializationProgress = 0f
+
+                val createStart = false // Toggle between new start and loading from Firebase
+                if (createStart) {
+                    // Fixed: Pass the ViewModel instance instead of the coroutine scope
+                    val creator = Cree_New_Start(this@Apps_Produits_Main_DataBase_ViewModel)
+                    creator.pointEntreePrincipal() // Fixed: Use the correct method name
+                    initializationProgress = 1f
+                } else {
+                    val loader = Produit_Loader(this@Apps_Produits_Main_DataBase_ViewModel)
+                    loader.loadAllProducts()
+                    initializationProgress = 1f
+                }
+
                 setupDatabaseListener()
+                initializationComplete = true
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Initialization failed", e)
             } finally {
                 isInitializing = false
             }
@@ -53,13 +62,13 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
                     try {
                         // Store current positions before loading new data
                         val previousPositions = _app_Initialize_Model.produits_Main_DataBase.associate { produit ->
-                            produit.id to produit.historique_Commends.map { grossist ->
+                            produit.id to produit.historique_BonS_Commend.map { grossist ->
                                 grossist.vid to grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                             }
                         }
 
                         // Load new data
-                        _app_Initialize_Model.load_Produits_FireBase()
+                       // _app_Initialize_Model.loadAllProducts()
                         Log.d(TAG, "Starting to check products for updates")
 
                         // Check for image updates and position changes
@@ -72,7 +81,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
 
                             // Check for position changes
                             val previousProductPositions = previousPositions[produit.id] ?: emptyList()
-                            produit.historique_Commends.forEach { grossist ->
+                            produit.historique_BonS_Commend.forEach { grossist ->
                                 val previousPosition = previousProductPositions.find { it.first == grossist.vid }?.second
                                 if (previousPosition != null && previousPosition != grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit) {
                                     Log.d(TAG, "Position changed for product ${produit.id}, supplier ${grossist.vid}: $previousPosition -> ${grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}")

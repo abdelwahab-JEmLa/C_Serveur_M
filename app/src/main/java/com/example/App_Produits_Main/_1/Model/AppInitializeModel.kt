@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class App_Initialize_Model(
+class AppInitializeModel(
     initial_Produits_Main_DataBase: List<Produit_Model> = emptyList()
 ) {
     var produits_Main_DataBase: SnapshotStateList<Produit_Model> =
@@ -31,11 +31,11 @@ class App_Initialize_Model(
         init_it_Image_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,
         init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
-        init_bon_Commend_De_Cette_Cota: Grossist_Bon_Commend_Model? = null,
+        init_bon_Commend_De_Cette_Cota: GrossistBonCommandesModel? = null,
         init_bonS_Vent_De_Cette_Cota: List<Client_Bon_Vent_Model> = emptyList(),
 
-        init_historique_Vents: List<Client_Bon_Vent_Model> = emptyList(),
-        init_historique_Bon_Commend: List<Grossist_Bon_Commend_Model> = emptyList(),
+        init_historique_BonS_Vent: List<Client_Bon_Vent_Model> = emptyList(),
+        init_historique_BonS_Commend: List<GrossistBonCommandesModel> = emptyList(),
         init_mutable_App_Produit_Statues: Mutable_App_Produit_Statues = Mutable_App_Produit_Statues(),
     ) {
         var nom: String by mutableStateOf(init_nom)
@@ -45,26 +45,26 @@ class App_Initialize_Model(
         var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
             init_colours_Et_Gouts.toMutableStateList()
 
-        var bon_Commend_De_Cette_Cota: Grossist_Bon_Commend_Model?
+        var bon_Commend_De_Cette_Cota: GrossistBonCommandesModel?
         by mutableStateOf(init_bon_Commend_De_Cette_Cota)
         var bonS_Vent_De_Cette_Cota: SnapshotStateList<Client_Bon_Vent_Model> =
             init_bonS_Vent_De_Cette_Cota.toMutableStateList()
 
-        var historique_Vents: SnapshotStateList<Client_Bon_Vent_Model> =
-            init_historique_Vents.toMutableStateList()
-        var historique_Commends: SnapshotStateList<Grossist_Bon_Commend_Model> =
-            init_historique_Bon_Commend.toMutableStateList()
+        var historique_bonS_Vents: SnapshotStateList<Client_Bon_Vent_Model> =
+            init_historique_BonS_Vent.toMutableStateList()
+        var historique_BonS_Commend: SnapshotStateList<GrossistBonCommandesModel> =
+            init_historique_BonS_Commend.toMutableStateList()
 
         var mutable_App_Produit_Statues: Mutable_App_Produit_Statues by mutableStateOf(init_mutable_App_Produit_Statues)
 
         class Mutable_App_Produit_Statues(
             var init_dernier_Vent_date_time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
             var init_its_Filtre_Au_Grossists_Buttons: Boolean = false,
-            var init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Bon_Commend_Model? = null
+            var init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: GrossistBonCommandesModel? = null
             ){
             var dernier_Vent_date_time_String: String by mutableStateOf(init_dernier_Vent_date_time_String)
             var its_Filtre_Au_Grossists_Buttons: Boolean by mutableStateOf(init_its_Filtre_Au_Grossists_Buttons)
-            var son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Bon_Commend_Model? by mutableStateOf(init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction)
+            var son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: GrossistBonCommandesModel? by mutableStateOf(init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction)
         }
 
         class Colours_Et_Gouts(
@@ -73,7 +73,7 @@ class App_Initialize_Model(
             var imogi: String = ""
         )
 
-        class Grossist_Bon_Commend_Model(
+        class GrossistBonCommandesModel(
             var vid: Long = 0,
             var supplier_id: Long = 0,
             var nom: String = "",
@@ -113,7 +113,7 @@ class App_Initialize_Model(
             var inceartion_Date: Long = 0,
             init_colours_achete: List<Color_Achat_Model> = emptyList(),
         ) {
-            var colours_achete: SnapshotStateList<Color_Achat_Model> =
+            var colours_Achete: SnapshotStateList<Color_Achat_Model> =
                 init_colours_achete.toMutableStateList()
 
             class Color_Achat_Model(
@@ -136,7 +136,7 @@ class App_Initialize_Model(
                 ref_Produit_Main_DataBase.setValue(produits_Main_DataBase).await()
             }
         } catch (e: Exception) {
-            Log.e("App_Initialize_Model", "Failed to update group in Firebase", e)
+            Log.e("AppInitializeModel", "Failed to update group in Firebase", e)
             throw Exception("Failed to update group in Firebase: ${e.message}")
         }
     }

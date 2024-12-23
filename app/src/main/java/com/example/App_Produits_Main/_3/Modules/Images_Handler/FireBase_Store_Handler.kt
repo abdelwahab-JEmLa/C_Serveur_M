@@ -1,7 +1,7 @@
 package com.example.App_Produits_Main._3.Modules.Images_Handler
 
 import androidx.lifecycle.viewModelScope
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -19,7 +19,7 @@ open class FireBase_Store_Handler : Apps_Produits_Main_DataBase_ViewModel() {
     // Pour suivre les opérations de mise à jour d'image en cours
     private var currentImageUpdateJobs = mutableMapOf<Long, Job>()
 
-    fun startImageUpdate(_app_Initialize_Model: App_Initialize_Model, produitId: Long) {
+    fun startImageUpdate(_app_Initialize_Model: AppInitializeModel, produitId: Long) {
         // Si une mise à jour est déjà en cours pour ce produit, on ne fait rien
         if (currentImageUpdateJobs[produitId]?.isActive == true) {
             return
@@ -53,7 +53,7 @@ open class FireBase_Store_Handler : Apps_Produits_Main_DataBase_ViewModel() {
     private suspend fun updateProductImage(produitId: Long) = withContext(Dispatchers.IO) {
         val fileName = "${produitId}_1.jpg"
         val storageRef = Firebase.storage.reference
-            .child("Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase/$fileName")
+            .child("Images Articles Data Base/AppInitializeModel.Produit_Main_DataBase/$fileName")
 
         val viewModelImagesPath = File("/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne")
         if (!viewModelImagesPath.exists()) {

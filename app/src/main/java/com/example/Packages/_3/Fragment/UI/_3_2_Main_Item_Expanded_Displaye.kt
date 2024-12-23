@@ -22,16 +22,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 
 @Composable
 internal fun Expanded_Item_Displaye(
-    produit: App_Initialize_Model.Produit_Model,
+    produit: AppInitializeModel.Produit_Model,
     initialHeightCard: Dp = 300.dp,
     onEpandToggle: () -> Unit
 ) {
-    val filteredColorFlavors = produit.historique_Commends
+    val filteredColorFlavors = produit.historique_BonS_Commend
         .find { it.vid == 1L }
         ?.colours_Et_Gouts_Commende?.filter { it.quantity_Achete > 0 }
         ?: emptyList()

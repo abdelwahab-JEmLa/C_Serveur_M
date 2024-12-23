@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._3.Fragment.Models.UiState
 import com.example.App_Produits_Main._3.Modules.Add_New_Produit.CameraPickImageHandler
-import com.example.App_Produits_Main._1.Model.App_Initialize_Model
+import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -31,7 +31,7 @@ import kotlin.math.roundToInt
 internal fun GlobalActions_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     fragment_Ui_State: UiState,
-    app_Initialize_Model: App_Initialize_Model,
+    app_Initialize_Model: AppInitializeModel,
 ) {
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
@@ -59,13 +59,13 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
     val existingProduct = app_Initialize_Model.produits_Main_DataBase
         .filter { produit ->
             // Calculate total quantity ordered across all suppliers and colors
-            val totalQuantity = produit.historique_Commends
+            val totalQuantity = produit.historique_BonS_Commend
                 .flatMap { it.colours_Et_Gouts_Commende }
                 .sumOf { it.quantity_Achete }
 
             // Check if the product matches the selected supplier filter
             val supplierMatch = if (fragment_Ui_State.selectedSupplierId != 0L) {
-                produit.historique_Commends.any {
+                produit.historique_BonS_Commend.any {
                     it.supplier_id == fragment_Ui_State.selectedSupplierId
                 }
             } else true
@@ -75,7 +75,7 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
         }
         // Then find the first product that has a valid position in its supplier data
         .firstOrNull { produit ->
-            produit.historique_Commends
+            produit.historique_BonS_Commend
                 .any { supplier ->
                     supplier.supplier_id == fragment_Ui_State.selectedSupplierId &&
                             supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit >= 1 &&

@@ -37,7 +37,7 @@ private const val TAG = "Main_Item"
 @Composable
 internal fun Main_Item(
     uiState: Ui_State_4_Fragment,
-    produit: App_Initialize_Model.Produit_Main_DataBase,
+    produit: App_Initialize_Model.Produit_Model,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -48,12 +48,12 @@ internal fun Main_Item(
     }
 
     // Debug log for demande achat list
-    Log.d(TAG, "Product ${produit.nom} has ${produit.demmende_Achate_De_Cette_Produit.size} demandes")
-    produit.demmende_Achate_De_Cette_Produit.forEach { demande ->
+    Log.d(TAG, "Product ${produit.nom} has ${produit.acheteurs_pour_Cette_Cota.size} demandes")
+    produit.acheteurs_pour_Cette_Cota.forEach { demande ->
         Log.d(TAG, "Demande time: ${demande.time_String}, colors size: ${demande.colours_Et_Gouts_Acheter_Depuit_Client.size}")
     }
 
-    val last_Demend_Achat = produit.demmende_Achate_De_Cette_Produit
+    val last_Demend_Achat = produit.acheteurs_pour_Cette_Cota
         .maxByOrNull { it.time_String }
         ?.also { lastDemand ->
             Log.d(TAG, "Last demand for ${produit.nom} at time: ${lastDemand.time_String}")

@@ -18,24 +18,24 @@ import com.example.App_Produits_Main._1.Model.App_Initialize_Model
 @Composable
 fun Main_List(
     modifier: Modifier = Modifier,
-    produit_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
+    produit_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Model>,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
     uiState: Ui_State_4_Fragment
 ) {
     val filtered_Items = produit_Main_DataBase.filter { produit ->
-        val lastDemand = produit.demmende_Achate_De_Cette_Produit
+        val lastDemand = produit.acheteurs_pour_Cette_Cota
             .maxByOrNull { it.time_String }?.colours_Et_Gouts_Acheter_Depuit_Client?.isEmpty()
         lastDemand != null
     }
 
     val sorted_Visible_Items = filtered_Items.sortedWith(
-        compareBy<App_Initialize_Model.Produit_Main_DataBase> { produit ->
-            val position = produit.grossist_Choisi_Pour_Acheter_CeProduit
+        compareBy<App_Initialize_Model.Produit_Model> { produit ->
+            val position = produit.historique_Bons_Commend
                 .maxByOrNull { it.date }
                 ?.position_Grossist_Don_Parent_Grossists_List
             position ?: Int.MAX_VALUE
         }.thenBy { produit ->
-            val position = produit.grossist_Choisi_Pour_Acheter_CeProduit
+            val position = produit.historique_Bons_Commend
                 .maxByOrNull { it.date }
                 ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
             position ?: Int.MAX_VALUE

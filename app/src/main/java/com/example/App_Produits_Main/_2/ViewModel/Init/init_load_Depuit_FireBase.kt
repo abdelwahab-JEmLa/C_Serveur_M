@@ -29,7 +29,7 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
         with(viewModel._app_Initialize_Model.produits_Main_DataBase) {
             val missingProducts = DEFAULT_PRODUCTS_COUNT - size
             if (missingProducts > 0) {
-                repeat(missingProducts) { add(App_Initialize_Model.Produit_Main_DataBase()) }
+                repeat(missingProducts) { add(App_Initialize_Model.Produit_Model()) }
             }
             forEachIndexed { index, product -> product.id = index.toLong() }
         }
@@ -45,14 +45,14 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
         }
     }
 
-    private suspend fun loadProductDetails(product: App_Initialize_Model.Produit_Main_DataBase) {
+    private suspend fun loadProductDetails(product: App_Initialize_Model.Produit_Model) {
         loadName(product)
         loadColors(product)
         load_Transaction_Vent_Grossist(product)
         load_acheteurs_pour_Cette_Cota(product)
     }
 
-    private suspend fun loadName(product: App_Initialize_Model.Produit_Main_DataBase) {
+    private suspend fun loadName(product: App_Initialize_Model.Produit_Model) {
         val name = database
             .child(product.id.toString())
             .child("nom")
@@ -67,7 +67,7 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
         }
     }
 
-    private suspend fun loadColors(product: App_Initialize_Model.Produit_Main_DataBase) {
+    private suspend fun loadColors(product: App_Initialize_Model.Produit_Model) {
         val colors = database
             .child(product.id.toString())
             .child("colours_Et_Gouts")
@@ -77,11 +77,11 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
         product.colours_Et_Gouts.clear()
 
         colors.children.forEach { colorSnapshot ->
-            colorSnapshot.getValue(App_Initialize_Model.Produit_Main_DataBase.Colours_Et_Gouts::class.java)
+            colorSnapshot.getValue(App_Initialize_Model.Produit_Model.Colours_Et_Gouts::class.java)
                 ?.let { product.colours_Et_Gouts.add(it) }
         }
     }
-    private suspend fun load_Transaction_Vent_Grossist(product: App_Initialize_Model.Produit_Main_DataBase) {
+    private suspend fun load_Transaction_Vent_Grossist(product: App_Initialize_Model.Produit_Model) {
         val snapshot = database
             .child(product.id.toString())
             .child("grossist_Choisi_Pour_Acheter_CeProduit")
@@ -90,7 +90,7 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
             .await()
 
         // Get the grossist transaction data
-        val grossistTransaction = snapshot.getValue(App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction::class.java)
+        val grossistTransaction = snapshot.getValue(App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model::class.java)
 
         // Update the product's grossist transaction
         product.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota = when {
@@ -99,7 +99,7 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
             else -> null  // For other cases, set to null
         }
     }
-    private suspend fun load_acheteurs_pour_Cette_Cota(product: App_Initialize_Model.Produit_Main_DataBase) {
+    private suspend fun load_acheteurs_pour_Cette_Cota(product: App_Initialize_Model.Produit_Model) {
         val snapshot = database
             .child(product.id.toString())
             .child("acheteurs_pour_Cette_Cota")
@@ -108,11 +108,11 @@ class ProductLoader(private val viewModel: Apps_Produits_Main_DataBase_ViewModel
 
 
         snapshot.children.forEach { snapshot ->
-            snapshot.getValue(App_Initialize_Model.Produit_Main_DataBase.Acheteurs_pour_Cette_Cota::class.java)
+            snapshot.getValue(App_Initialize_Model.Produit_Model.Client_Bon_Vent_Model::class.java)
                 ?.let { product.acheteurs_pour_Cette_Cota.add(it) }
         }
     }
-    private fun handleLoadError(product: App_Initialize_Model.Produit_Main_DataBase) {
+    private fun handleLoadError(product: App_Initialize_Model.Produit_Model) {
         product.apply {
             nom = "Produit $id (Erreur)"
             colours_Et_Gouts.clear()

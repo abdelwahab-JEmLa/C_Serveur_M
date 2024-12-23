@@ -34,7 +34,7 @@ import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Ima
 @Composable
 internal fun Produit_Item(
     uiState: UiState,
-    produit: App_Initialize_Model.Produit_Main_DataBase,
+    produit: App_Initialize_Model.Produit_Model,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 
@@ -45,7 +45,7 @@ internal fun Produit_Item(
     }
 
     // Calculate total quantity
-    val totalQuantity = produit.grossist_Choisi_Pour_Acheter_CeProduit
+    val totalQuantity = produit.historique_Bons_Commend
         .find { it.vid == 1L }
         ?.colours_Et_Gouts_Commende
         ?.sumOf { it.quantity_Achete } ?: 0
@@ -125,7 +125,7 @@ internal fun Produit_Item(
                         .wrapContentHeight()
                         .padding(top = 8.dp)
                 ) {
-                    produit.demmende_Achate_De_Cette_Produit
+                    produit.acheteurs_pour_Cette_Cota
                         .sortedBy { it.nom_Acheteur }
                         .forEach { acheteur ->
                             acheteur.colours_Et_Gouts_Acheter_Depuit_Client
@@ -170,7 +170,7 @@ internal fun Produit_Item(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        val colorsList = produit.grossist_Choisi_Pour_Acheter_CeProduit
+                        val colorsList = produit.historique_Bons_Commend
                             .find { it.vid == 1L }
                             ?.colours_Et_Gouts_Commende
                             ?.sortedBy { it.quantity_Achete }

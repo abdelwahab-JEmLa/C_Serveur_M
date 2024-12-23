@@ -53,7 +53,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
                     try {
                         // Store current positions before loading new data
                         val previousPositions = _app_Initialize_Model.produits_Main_DataBase.associate { produit ->
-                            produit.id to produit.grossist_Choisi_Pour_Acheter_CeProduit.map { grossist ->
+                            produit.id to produit.historique_Bons_Commend.map { grossist ->
                                 grossist.vid to grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                             }
                         }
@@ -72,7 +72,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
 
                             // Check for position changes
                             val previousProductPositions = previousPositions[produit.id] ?: emptyList()
-                            produit.grossist_Choisi_Pour_Acheter_CeProduit.forEach { grossist ->
+                            produit.historique_Bons_Commend.forEach { grossist ->
                                 val previousPosition = previousProductPositions.find { it.first == grossist.vid }?.second
                                 if (previousPosition != null && previousPosition != grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit) {
                                     Log.d(TAG, "Position changed for product ${produit.id}, supplier ${grossist.vid}: $previousPosition -> ${grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}")

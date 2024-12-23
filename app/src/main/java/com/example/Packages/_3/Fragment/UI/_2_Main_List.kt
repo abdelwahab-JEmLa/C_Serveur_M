@@ -126,7 +126,7 @@ fun Produits_Main_List(
             ) {
                 items(
                     visibleItems.sortedWith(
-                        compareBy<App_Initialize_Model.Produit_Main_DataBase> { produit ->
+                        compareBy<App_Initialize_Model.Produit_Model> { produit ->
                             produit
                                 .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
                                 ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit

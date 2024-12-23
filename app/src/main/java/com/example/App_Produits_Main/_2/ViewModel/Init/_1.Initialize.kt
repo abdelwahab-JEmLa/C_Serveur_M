@@ -25,7 +25,7 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
         } else {
             // Initialize products database
             ancienData.produitsDatabase.forEach { ancien ->
-                val produit = App_Initialize_Model.Produit_Main_DataBase(
+                val produit = App_Initialize_Model.Produit_Model(
                     id = ancien.idArticle,
                     it_ref_Id_don_FireBase = 1L,
                     it_ref_don_FireBase = "produit_DataBase",
@@ -65,7 +65,7 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                             .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
                             ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit=
                             new_produit_A_Update
-                                .grossist_Choisi_Pour_Acheter_CeProduit
+                                .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
                                 .maxByOrNull { it.date }?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit!!
 
                         new_produit_A_Update.besoin_To_Be_Updated = false
@@ -103,7 +103,7 @@ private fun process_Random_date(): String {
 private fun processColors_Main(
     ancien_Produits_DataBase: Produits_Ancien_DataBase_Main,
     ancien_Data_References: Ancien_Resources_DataBase_Main,
-    new_produit_A_Update: App_Initialize_Model.Produit_Main_DataBase
+    new_produit_A_Update: App_Initialize_Model.Produit_Model
 ) {
     val colorIds = listOf(
         ancien_Produits_DataBase.idcolor1 to 1L,
@@ -115,7 +115,7 @@ private fun processColors_Main(
     colorIds.forEach { (colorId, position) ->
         ancien_Data_References.couleurs_List.find { it.idColore == colorId }?.let { color ->
             new_produit_A_Update.colours_Et_Gouts.add(
-                App_Initialize_Model.Produit_Main_DataBase.Colours_Et_Gouts(
+                App_Initialize_Model.Produit_Model.Colours_Et_Gouts(
                     position_Du_Couleur_Au_Produit = position,
                     nom = color.nameColore,
                     imogi = color.iconColore
@@ -127,7 +127,7 @@ private fun processColors_Main(
 
 private fun processSalesData_Main(
     ancien_Data_References: Ancien_Resources_DataBase_Main,
-    new_produit_A_Update: App_Initialize_Model.Produit_Main_DataBase
+    new_produit_A_Update: App_Initialize_Model.Produit_Model
 ) {
     val salesByClientAndArticle = ancien_Data_References.soldArticles
         .groupBy { it.clientSoldToItId }
@@ -141,7 +141,7 @@ private fun processSalesData_Main(
                 ?.let { client_Data ->
 
                     val newAchate =
-                        App_Initialize_Model.Produit_Main_DataBase.Acheteurs_pour_Cette_Cota(
+                        App_Initialize_Model.Produit_Model.Client_Bon_Vent_Model(
                             vid = (index + 1).toLong(),
                             id_Acheteur = clientId,
                             nom_Acheteur = client_Data.nomClientsSu,
@@ -162,7 +162,7 @@ private fun processSalesData_Main(
                                 it.position_Du_Couleur_Au_Produit == position
                             }?.let { color ->
                                 newAchate.colours_Et_Gouts_Acheter_Depuit_Client.add(
-                                    App_Initialize_Model.Produit_Main_DataBase.Acheteurs_pour_Cette_Cota.Colours_Et_Gouts_Acheter_Depuit_Client(
+                                    App_Initialize_Model.Produit_Model.Client_Bon_Vent_Model.Colours_Et_Gouts_Acheter_Depuit_Client(
                                         vidPosition = position,
                                         nom = color.nom,
                                         quantity_Achete = quantity,
@@ -174,31 +174,31 @@ private fun processSalesData_Main(
                     }
 
                     if (newAchate.colours_Et_Gouts_Acheter_Depuit_Client.isNotEmpty()) {
-                        new_produit_A_Update.demmende_Achate_De_Cette_Produit.add(newAchate)
+                        new_produit_A_Update.acheteurs_pour_Cette_Cota.add(newAchate)
                     }
                 }
         }
     }
 }
 
-private fun process_Random_WholesalerData_Main(new_produit_A_Update: App_Initialize_Model.Produit_Main_DataBase) {
+private fun process_Random_WholesalerData_Main(new_produit_A_Update: App_Initialize_Model.Produit_Model) {
     val sampleWholesalers = listOf(
         createWholesaler_Main(1L, "Wholesaler Alpha", "#FF5733", 1000.0),
         createWholesaler_Main(2L, "Wholesaler Beta", "#33FF57", 1500.0),
         createWholesaler_Main(3L, "Wholesaler Gamma", "#5733FF", 2000.0)
     )
 
-    new_produit_A_Update.grossist_Choisi_Pour_Acheter_CeProduit.clear()
+    new_produit_A_Update.historique_Bons_Commend.clear()
 
     // Add random wholesaler with minimum order
     val selectedWholesaler = sampleWholesalers.random()
     val wholesalerOrder = createWholesalerOrder_Main(selectedWholesaler, new_produit_A_Update)
     new_produit_A_Update.mutable_App_Produit_Statues =
-        App_Initialize_Model.Produit_Main_DataBase.Mutable_App_Produit_Statues(
+        App_Initialize_Model.Produit_Model.Mutable_App_Produit_Statues(
             init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction = wholesalerOrder
         )
     new_produit_A_Update.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota= wholesalerOrder
-    new_produit_A_Update.grossist_Choisi_Pour_Acheter_CeProduit.add(wholesalerOrder)
+    new_produit_A_Update.historique_Bons_Commend.add(wholesalerOrder)
 }
 
 private fun createWholesaler_Main(
@@ -206,8 +206,8 @@ private fun createWholesaler_Main(
     name: String,
     color: String,
     balance: Double
-): App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction {
-    return App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+): App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model {
+    return App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model(
         vid = id,
         supplier_id = id,
         nom = name,
@@ -218,10 +218,10 @@ private fun createWholesaler_Main(
 }
 
 private fun createWholesalerOrder_Main(
-    wholesaler: App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction,
-    product: App_Initialize_Model.Produit_Main_DataBase
-): App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction {
-    return App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+    wholesaler: App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model,
+    product: App_Initialize_Model.Produit_Model
+): App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model {
+    return App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model(
         vid = wholesaler.vid,
         supplier_id = wholesaler.supplier_id,
         nom = wholesaler.nom,
@@ -233,7 +233,7 @@ private fun createWholesalerOrder_Main(
         // Add at least one color with minimum quantity if available
         product.colours_Et_Gouts.firstOrNull()?.let { firstColor ->
             colours_Et_Gouts_Commende.add(
-                App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction.Colours_Et_Gouts_Commende_Au_Supplier(
+                App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model.Colours_Et_Gouts_Commende_Au_Supplier(
                     position_Du_Couleur_Au_Produit = firstColor.position_Du_Couleur_Au_Produit,
                     id_Don_Tout_Couleurs = firstColor.position_Du_Couleur_Au_Produit,
                     nom = firstColor.nom,

@@ -19,7 +19,7 @@ class CameraPickImageHandler(
     }
 
     var tempImageUri: Uri? = null
-    private var pendingProduct: App_Initialize_Model.Produit_Main_DataBase? = null
+    private var pendingProduct: App_Initialize_Model.Produit_Model? = null
 
     private fun createTempImageUri(): Uri {
         val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
@@ -32,7 +32,7 @@ class CameraPickImageHandler(
         }
     }
 
-    fun handleNewProductImageCapture(existingProduct: App_Initialize_Model.Produit_Main_DataBase?): Uri {
+    fun handleNewProductImageCapture(existingProduct: App_Initialize_Model.Produit_Model?): Uri {
         pendingProduct = existingProduct
         return createTempImageUri()
     }
@@ -74,7 +74,7 @@ class CameraPickImageHandler(
                 .child("Images Articles Data Base/App_Initialize_Model.Produit_Main_DataBase/$fileName")
 
             val newProduct = if (pendingProduct != null) {
-                App_Initialize_Model.Produit_Main_DataBase(
+                App_Initialize_Model.Produit_Model(
                     id = newId,
                     it_ref_Id_don_FireBase = newId,
                     it_ref_don_FireBase = fileName,
@@ -83,11 +83,11 @@ class CameraPickImageHandler(
                     init_it_Image_besoin_To_Be_Updated = true,
                     initialNon_Trouve = pendingProduct!!.non_Trouve,
                     init_colours_Et_Gouts = pendingProduct!!.colours_Et_Gouts.toList(),
-                    initialDemmende_Achate_De_Cette_Produit = pendingProduct!!.demmende_Achate_De_Cette_Produit.toList(),
-                    initialGrossist_Choisi_Pour_Acheter_CeProduit = pendingProduct!!.grossist_Choisi_Pour_Acheter_CeProduit.toList()
+                    initialDemmende_Achate_De_Cette_Produit = pendingProduct!!.acheteurs_pour_Cette_Cota.toList(),
+                    init_historique_Bon_Commend = pendingProduct!!.historique_Bons_Commend.toList()
                 )
             } else {
-                App_Initialize_Model.Produit_Main_DataBase(
+                App_Initialize_Model.Produit_Model(
                     id = newId,
                     it_ref_Id_don_FireBase = newId,
                     it_ref_don_FireBase = fileName,

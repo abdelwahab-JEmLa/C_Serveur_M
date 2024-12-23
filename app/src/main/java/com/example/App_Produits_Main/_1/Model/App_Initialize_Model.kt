@@ -13,16 +13,16 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class App_Initialize_Model(
-    initial_Produits_Main_DataBase: List<Produit_Main_DataBase> = emptyList()
+    initial_Produits_Main_DataBase: List<Produit_Model> = emptyList()
 ) {
-    var produits_Main_DataBase: SnapshotStateList<Produit_Main_DataBase> =
+    var produits_Main_DataBase: SnapshotStateList<Produit_Model> =
         initial_Produits_Main_DataBase.toMutableStateList()
 
     val ref_Produits_Main_DataBase = Firebase.database
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
         .child("produit_DataBase")
 
-    class Produit_Main_DataBase(
+    class Produit_Model(
         var id: Long = 0,
         val it_ref_Id_don_FireBase: Long = 0,
         val it_ref_don_FireBase: String = "",
@@ -30,38 +30,41 @@ class App_Initialize_Model(
         init_besoin_To_Be_Updated: Boolean = false,
         init_it_Image_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,
-        init_mutable_App_Produit_Statues: Mutable_App_Produit_Statues = Mutable_App_Produit_Statues(),
-        init_Grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? = null,
-        init_acheteurs_pour_Cette_Cota: List<Acheteurs_pour_Cette_Cota> = emptyList(),
-
         init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
-        initialDemmende_Achate_De_Cette_Produit: List<Acheteurs_pour_Cette_Cota> = emptyList(),
-        initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> = emptyList(),
+        init_bon_Commend_De_Cette_Cota: Grossist_Bon_Commend_Model? = null,
+        init_bonS_Vent_De_Cette_Cota: List<Client_Bon_Vent_Model> = emptyList(),
+
+        init_historique_Vents: List<Client_Bon_Vent_Model> = emptyList(),
+        init_historique_Bon_Commend: List<Grossist_Bon_Commend_Model> = emptyList(),
+        init_mutable_App_Produit_Statues: Mutable_App_Produit_Statues = Mutable_App_Produit_Statues(),
     ) {
         var nom: String by mutableStateOf(init_nom)
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
-        var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)     
+        var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
-        var mutable_App_Produit_Statues: Mutable_App_Produit_Statues by mutableStateOf(init_mutable_App_Produit_Statues)
-        var grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? by mutableStateOf(init_Grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota)
-        var acheteurs_pour_Cette_Cota: SnapshotStateList<Acheteurs_pour_Cette_Cota> =
-            init_acheteurs_pour_Cette_Cota.toMutableStateList()
-
         var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
             init_colours_Et_Gouts.toMutableStateList()
-        var demmende_Achate_De_Cette_Produit: SnapshotStateList<Acheteurs_pour_Cette_Cota> =
-            initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
-        var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> =
-            initialGrossist_Choisi_Pour_Acheter_CeProduit.toMutableStateList()
+
+        var bon_Commend_De_Cette_Cota: Grossist_Bon_Commend_Model?
+        by mutableStateOf(init_bon_Commend_De_Cette_Cota)
+        var bonS_Vent_De_Cette_Cota: SnapshotStateList<Client_Bon_Vent_Model> =
+            init_bonS_Vent_De_Cette_Cota.toMutableStateList()
+
+        var historique_Vents: SnapshotStateList<Client_Bon_Vent_Model> =
+            init_historique_Vents.toMutableStateList()
+        var historique_Bons_Commend: SnapshotStateList<Grossist_Bon_Commend_Model> =
+            init_historique_Bon_Commend.toMutableStateList()
+
+        var mutable_App_Produit_Statues: Mutable_App_Produit_Statues by mutableStateOf(init_mutable_App_Produit_Statues)
 
         class Mutable_App_Produit_Statues(
             var init_dernier_Vent_date_time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
             var init_its_Filtre_Au_Grossists_Buttons: Boolean = false,
-            var init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? = null
+            var init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Bon_Commend_Model? = null
             ){
             var dernier_Vent_date_time_String: String by mutableStateOf(init_dernier_Vent_date_time_String)
             var its_Filtre_Au_Grossists_Buttons: Boolean by mutableStateOf(init_its_Filtre_Au_Grossists_Buttons)
-            var son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? by mutableStateOf(init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction)
+            var son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction: Grossist_Bon_Commend_Model? by mutableStateOf(init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction)
         }
 
         class Colours_Et_Gouts(
@@ -70,7 +73,7 @@ class App_Initialize_Model(
             var imogi: String = ""
         )
 
-        class Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction(
+        class Grossist_Bon_Commend_Model(
             var vid: Long = 0,
             var supplier_id: Long = 0,
             var nom: String = "",
@@ -101,7 +104,7 @@ class App_Initialize_Model(
             )
         }
 
-        class Acheteurs_pour_Cette_Cota(
+        class Client_Bon_Vent_Model(
             var vid: Long = 0,
             var id_Acheteur: Long = 0,
             var nom_Acheteur: String = "",

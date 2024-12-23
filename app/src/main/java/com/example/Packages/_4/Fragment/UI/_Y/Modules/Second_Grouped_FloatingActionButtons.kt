@@ -54,12 +54,12 @@ private const val FAB_TAG = "FAB_DEBUG"
 internal fun Second_Grouped_FloatingActionButtons(
     modifier: Modifier = Modifier,
     uiState: Ui_State_4_Fragment,
-    produit_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Main_DataBase>,
+    produit_Main_DataBase: SnapshotStateList<App_Initialize_Model.Produit_Model>,
 ) {
 
     val grouped_Produits_Par_Id_Acheteur = remember(produit_Main_DataBase) {
         val groupedProducts = produit_Main_DataBase.groupBy { produit ->
-            produit.demmende_Achate_De_Cette_Produit
+            produit.acheteurs_pour_Cette_Cota
                 .maxByOrNull { it.time_String }
                 ?.id_Acheteur ?: -1L
         }
@@ -150,7 +150,7 @@ internal fun Second_Grouped_FloatingActionButtons(
 
                     filteredacheteur.forEach { (acheteurId, products) ->
                         val acheteur = products.firstOrNull()
-                            ?.demmende_Achate_De_Cette_Produit
+                            ?.acheteurs_pour_Cette_Cota
                             ?.maxByOrNull { it.time_String }
 
                         if (acheteur != null) {

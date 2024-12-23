@@ -41,7 +41,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
     // Group products by supplier ID
     val grouped_Produits_Par_Id_Grossist = remember(app_Initialize_Model.produits_Main_DataBase) {
         val groupedProducts = app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
-            produit.grossist_Choisi_Pour_Acheter_CeProduit
+            produit.historique_Bons_Commend
                 .maxByOrNull { it.date }?.vid ?: -1L
         }
 
@@ -72,7 +72,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
     }
 
     // Handler for supplier click events
-    val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: App_Initialize_Model.Produit_Main_DataBase.Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction ->
+    val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model ->
         scope.launch {
             try {
                 Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
@@ -83,7 +83,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                 // Update filter status for all products
                 app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                    val latestSupplier = product.grossist_Choisi_Pour_Acheter_CeProduit
+                    val latestSupplier = product.historique_Bons_Commend
                         .maxByOrNull { it.date }
 
                     val totalQuantity = latestSupplier?.colours_Et_Gouts_Commende
@@ -144,7 +144,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                     filteredSuppliers.forEach { (supplierId, products) ->
                         val supplier = products.firstOrNull()
-                            ?.grossist_Choisi_Pour_Acheter_CeProduit
+                            ?.historique_Bons_Commend
                             ?.maxByOrNull { it.date }
 
                         if (supplier != null) {

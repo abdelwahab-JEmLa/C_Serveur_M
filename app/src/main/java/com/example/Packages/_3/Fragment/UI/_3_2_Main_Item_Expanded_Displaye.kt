@@ -27,11 +27,11 @@ import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Ima
 
 @Composable
 internal fun Expanded_Item_Displaye(
-    produit: App_Initialize_Model.Produit_Main_DataBase,
+    produit: App_Initialize_Model.Produit_Model,
     initialHeightCard: Dp = 300.dp,
     onEpandToggle: () -> Unit
 ) {
-    val filteredColorFlavors = produit.grossist_Choisi_Pour_Acheter_CeProduit
+    val filteredColorFlavors = produit.historique_Bons_Commend
         .find { it.vid == 1L }
         ?.colours_Et_Gouts_Commende?.filter { it.quantity_Achete > 0 }
         ?: emptyList()
@@ -95,7 +95,7 @@ internal fun Expanded_Item_Displaye(
                                 }
                             }
 
-                            produit.demmende_Achate_De_Cette_Produit.forEach { achterur ->
+                            produit.acheteurs_pour_Cette_Cota.forEach { achterur ->
                                 achterur.colours_Et_Gouts_Acheter_Depuit_Client.forEach { couleur ->
                                     Row {
                                         if (couleur.vidPosition == colorFlavor.position_Du_Couleur_Au_Produit) {

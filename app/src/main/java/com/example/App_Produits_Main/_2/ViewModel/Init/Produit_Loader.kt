@@ -40,32 +40,51 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.load_Depuit_FireBase() {
 
                 // Charger les couleurs
                 produit.coloursEtGouts.clear()
-                refProduit.child("colours_Et_Gouts").get().await().children.forEach { snapshot ->
+                refProduit.child("coloursEtGouts").get().await().children.forEach { snapshot ->
                     snapshot.getValue(AppInitializeModel.ProduitModel.ColourEtGout_Model::class.java)
                         ?.let { produit.coloursEtGouts.add(it) }
                 }
 
-                // Charger les transactions grossiste
-                val grossiste = refProduit
-                    .child("grossist_Choisi_Pour_Acheter_CeProduit")
-                    .child("0")
+                // Charger le bon de commande actuel
+                val bonCommande = refProduit
+                    .child("bonCommendDeCetteCota")
                     .get()
                     .await()
                     .getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)
 
-                produit.bonCommendDeCetteCota = when {
-                    grossiste != null -> grossiste
-                    else -> null
-                }
+                produit.bonCommendDeCetteCota = bonCommande
 
-                // Charger les acheteurs
-                refProduit.child("acheteurs_pour_Cette_Cota")
+                // Charger les bons de vente de cette cota
+                produit.bonsVentDeCetteCota.clear()
+                refProduit.child("bonsVentDeCetteCota")
                     .get()
                     .await()
                     .children
                     .forEach { snapshot ->
                         snapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)
-                            ?.let { produit.acheteurs_pour_Cette_Cota.add(it) }
+                            ?.let { produit.bonsVentDeCetteCota.add(it) }
+                    }
+
+                // Charger l'historique des bons de vente
+                produit.historiqueBonsVents.clear()
+                refProduit.child("historiqueBonsVents")
+                    .get()
+                    .await()
+                    .children
+                    .forEach { snapshot ->
+                        snapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)
+                            ?.let { produit.historiqueBonsVents.add(it) }
+                    }
+
+                // Charger l'historique des bons de commande
+                produit.historiqueBonsCommend.clear()
+                refProduit.child("historiqueBonsCommend")
+                    .get()
+                    .await()
+                    .children
+                    .forEach { snapshot ->
+                        snapshot.getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)
+                            ?.let { produit.historiqueBonsCommend.add(it) }
                     }
 
             } catch (e: Exception) {

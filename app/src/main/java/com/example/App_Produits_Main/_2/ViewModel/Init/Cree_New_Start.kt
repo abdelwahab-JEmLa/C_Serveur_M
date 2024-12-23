@@ -33,14 +33,7 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
             // Ajout des détails au produit
             nouveauProduit.apply {
                 nom = ancien.nomArticleFinale
-
-                // Création de la date de vente
-                mutable_App_Produit_Statues.dernier_Vent_date_time_String = Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, 12)
-                    set(Calendar.MINUTE, 5)
-                    set(Calendar.SECOND, 0)
-                }.time.let { dateFormat.format(it) }
-
+             
                 // Ajout des couleurs
                 val couleursIds = listOf(
                     ancien.idcolor1 to 1L,
@@ -139,15 +132,17 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                     date = System.currentTimeMillis().toString()
                 )
 
-                // Ajout des couleurs au grossiste
                 coloursEtGouts.firstOrNull()?.let { couleur ->
                     grossiste.coloursEtGoutsCommendee.add(
                         AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
-                            position_Du_Couleur_Au_Produit = couleur.position_Du_Couleur_Au_Produit,
-                            id_Don_Tout_Couleurs = couleur.position_Du_Couleur_Au_Produit,
-                            nom = couleur.nom,
-                            quantityAchete = 1,
-                            imogi = couleur.imogi
+                            init_coloursEtGouts = listOf(
+                                AppInitializeModel.ProduitModel.ColourEtGout_Model(
+                                    position_Du_Couleur_Au_Produit = couleur.position_Du_Couleur_Au_Produit,
+                                    nom = couleur.nom,
+                                    imogi = couleur.imogi
+                                )
+                            ),
+                            init_quantityAchete = (1..10).random() // Random quantity between 1 and 10
                         )
                     )
                 }

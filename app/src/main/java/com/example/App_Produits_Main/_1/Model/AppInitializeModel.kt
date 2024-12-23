@@ -36,7 +36,6 @@ class AppInitializeModel(
 
         init_historiqueBonsVents: List<ClientBonVent_Model> = emptyList(),
         init_historiqueBonsCommend: List<GrossistBonCommandes> = emptyList(),
-        init_mutable_App_Produit_Statues: StatuesMutableProduit_Model = StatuesMutableProduit_Model(),
     ) {
         var nom: String by mutableStateOf(init_nom)
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
@@ -54,14 +53,6 @@ class AppInitializeModel(
             init_historiqueBonsVents.toMutableStateList()
         var historiqueBonsCommend: SnapshotStateList<GrossistBonCommandes> =
             init_historiqueBonsCommend.toMutableStateList()
-
-        var mutable_App_Produit_Statues: StatuesMutableProduit_Model by mutableStateOf(init_mutable_App_Produit_Statues)
-
-        class StatuesMutableProduit_Model(
-            var init_its_Filtre_Au_Grossists_Buttons: Boolean = false,
-            ){
-            var its_Filtre_Au_Grossists_Buttons: Boolean by mutableStateOf(init_its_Filtre_Au_Grossists_Buttons)
-        }
 
         class ColourEtGout_Model(
             var position_Du_Couleur_Au_Produit: Long = 0,

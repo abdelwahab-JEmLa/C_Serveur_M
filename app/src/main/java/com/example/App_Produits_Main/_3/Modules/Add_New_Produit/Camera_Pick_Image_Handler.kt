@@ -84,7 +84,7 @@ class CameraPickImageHandler(
                     initialNon_Trouve = pendingProduct!!.non_Trouve,
                     init_colours_Et_Gouts = pendingProduct!!.colours_Et_Gouts.toList(),
                     initialDemmende_Achate_De_Cette_Produit = pendingProduct!!.acheteurs_pour_Cette_Cota.toList(),
-                    init_historique_Bon_Commend = pendingProduct!!.historique_Bons_Commend.toList()
+                    init_historique_Bon_Commend = pendingProduct!!.historique_Commends.toList()
                 )
             } else {
                 App_Initialize_Model.Produit_Model(

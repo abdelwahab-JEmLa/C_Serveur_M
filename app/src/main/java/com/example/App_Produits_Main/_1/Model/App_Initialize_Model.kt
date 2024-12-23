@@ -52,7 +52,7 @@ class App_Initialize_Model(
 
         var historique_Vents: SnapshotStateList<Client_Bon_Vent_Model> =
             init_historique_Vents.toMutableStateList()
-        var historique_Bons_Commend: SnapshotStateList<Grossist_Bon_Commend_Model> =
+        var historique_Commends: SnapshotStateList<Grossist_Bon_Commend_Model> =
             init_historique_Bon_Commend.toMutableStateList()
 
         var mutable_App_Produit_Statues: Mutable_App_Produit_Statues by mutableStateOf(init_mutable_App_Produit_Statues)
@@ -111,12 +111,12 @@ class App_Initialize_Model(
             var time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
             var inseartion_Temp: Long = 0,
             var inceartion_Date: Long = 0,
-            initial_Colours_Et_Gouts_Acheter_Depuit_Client: List<Colours_Et_Gouts_Acheter_Depuit_Client> = emptyList(),
+            init_colours_achete: List<Color_Achat_Model> = emptyList(),
         ) {
-            var colours_Et_Gouts_Acheter_Depuit_Client: SnapshotStateList<Colours_Et_Gouts_Acheter_Depuit_Client> =
-                initial_Colours_Et_Gouts_Acheter_Depuit_Client.toMutableStateList()
+            var colours_achete: SnapshotStateList<Color_Achat_Model> =
+                init_colours_achete.toMutableStateList()
 
-            class Colours_Et_Gouts_Acheter_Depuit_Client(
+            class Color_Achat_Model(
                 var vidPosition: Long = 0,
                 var nom: String = "",
                 var quantity_Achete: Int = 0,

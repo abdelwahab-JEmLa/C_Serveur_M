@@ -41,7 +41,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
     // Group products by supplier ID
     val grouped_Produits_Par_Id_Grossist = remember(app_Initialize_Model.produits_Main_DataBase) {
         val groupedProducts = app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
-            produit.historique_Bons_Commend
+            produit.historique_Commends
                 .maxByOrNull { it.date }?.vid ?: -1L
         }
 
@@ -83,7 +83,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                 // Update filter status for all products
                 app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                    val latestSupplier = product.historique_Bons_Commend
+                    val latestSupplier = product.historique_Commends
                         .maxByOrNull { it.date }
 
                     val totalQuantity = latestSupplier?.colours_Et_Gouts_Commende
@@ -144,7 +144,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                     filteredSuppliers.forEach { (supplierId, products) ->
                         val supplier = products.firstOrNull()
-                            ?.historique_Bons_Commend
+                            ?.historique_Commends
                             ?.maxByOrNull { it.date }
 
                         if (supplier != null) {

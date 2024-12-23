@@ -132,7 +132,7 @@ suspend fun App_Initialize_Model.load_Produits_FireBase() {
                             (demand as? Map<String, Any?>)?.let { demandMap ->
                                 val clientColors = (demandMap["colours_Et_Gouts_Acheter_Depuit_Client"] as? List<*>)?.mapNotNull { clientColor ->
                                     (clientColor as? Map<String, Any?>)?.let {
-                                        App_Initialize_Model.Produit_Model.Client_Bon_Vent_Model.Colours_Et_Gouts_Acheter_Depuit_Client(
+                                        App_Initialize_Model.Produit_Model.Client_Bon_Vent_Model.Color_Achat_Model(
                                             vidPosition = (it["vidPosition"] as? Number)?.toLong() ?: 0,
                                             nom = (it["nom"] as? String) ?: "",
                                             quantity_Achete = (it["quantity_Achete"] as? Number)?.toInt() ?: 0,
@@ -149,7 +149,7 @@ suspend fun App_Initialize_Model.load_Produits_FireBase() {
                                         time_String = (demandMap["time_String"] as? String) ?: "",
                                         inseartion_Temp = (demandMap["inseartion_Temp"] as? Number)?.toLong() ?: 0,
                                         inceartion_Date = (demandMap["inceartion_Date"] as? Number)?.toLong() ?: 0,
-                                        initial_Colours_Et_Gouts_Acheter_Depuit_Client = clientColors
+                                        init_colours_achete = clientColors
                                     )
                                 )
                             }
@@ -170,7 +170,7 @@ suspend fun App_Initialize_Model.load_Produits_FireBase() {
                                     }
                                 } ?: emptyList()
 
-                                historique_Bons_Commend.add(
+                                historique_Commends.add(
                                     App_Initialize_Model.Produit_Model.Grossist_Bon_Commend_Model(
                                         vid = (supplierMap["vid"] as? Number)?.toLong() ?: 0,
                                         supplier_id = (supplierMap["supplier_id"] as? Number)?.toLong() ?: 0,
@@ -196,7 +196,7 @@ suspend fun App_Initialize_Model.load_Produits_FireBase() {
 
             // Log statistics for debugging
             Log.d("App_Initialize_Model", "Converted ${convertedProduits.size} products")
-            Log.d("App_Initialize_Model", "Products with suppliers: ${convertedProduits.count { it.historique_Bons_Commend.isNotEmpty() }}")
+            Log.d("App_Initialize_Model", "Products with suppliers: ${convertedProduits.count { it.historique_Commends.isNotEmpty() }}")
             Log.d("App_Initialize_Model", "Products with demands: ${convertedProduits.count { it.acheteurs_pour_Cette_Cota.isNotEmpty() }}")
             Log.d("App_Initialize_Model", "Products with colors: ${convertedProduits.count { it.colours_Et_Gouts.isNotEmpty() }}")
 

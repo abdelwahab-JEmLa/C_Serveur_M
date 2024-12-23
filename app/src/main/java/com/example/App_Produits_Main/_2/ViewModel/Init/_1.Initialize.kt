@@ -44,8 +44,7 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                                 new_produit_A_Update.nom = ancien_DataBase.nomArticleFinale
                                 if (cree_Randoms) {
                                     new_produit_A_Update.mutable_App_Produit_Statues.dernier_Vent_date_time_String =
-                                        process_Random_date()
-                                    
+                                        process_Random_Model_Main()
                                 }
                                 // Process colors
                                 processColors_Main(
@@ -61,12 +60,6 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
                             // Process wholesaler data
                             process_Random_WholesalerData_Main(new_produit_A_Update)
                         }
-                        new_produit_A_Update.mutable_App_Produit_Statues
-                            .son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction
-                            ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit=
-                            new_produit_A_Update
-                                .grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota
-                                .maxByOrNull { it.date }?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit!!
 
                         new_produit_A_Update.besoin_To_Be_Updated = false
 
@@ -90,9 +83,7 @@ internal suspend fun Apps_Produits_Main_DataBase_ViewModel.Initialise_ViewModel_
     }
 }
 
-
-
-private fun process_Random_date(): String {
+private fun process_Random_Model_Main(): String {
     val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
     val calendar = java.util.Calendar.getInstance()
     calendar.set(java.util.Calendar.HOUR_OF_DAY, 12)
@@ -145,7 +136,7 @@ private fun processSalesData_Main(
                             vid = (index + 1).toLong(),
                             id_Acheteur = clientId,
                             nom_Acheteur = client_Data.nomClientsSu,
-                            initial_Colours_Et_Gouts_Acheter_Depuit_Client = emptyList()
+                            init_colours_achete = emptyList()
                         )
 
                     // Process color quantities
@@ -161,8 +152,8 @@ private fun processSalesData_Main(
                             new_produit_A_Update.colours_Et_Gouts.find {
                                 it.position_Du_Couleur_Au_Produit == position
                             }?.let { color ->
-                                newAchate.colours_Et_Gouts_Acheter_Depuit_Client.add(
-                                    App_Initialize_Model.Produit_Model.Client_Bon_Vent_Model.Colours_Et_Gouts_Acheter_Depuit_Client(
+                                newAchate.colours_achete.add(
+                                    App_Initialize_Model.Produit_Model.Client_Bon_Vent_Model.Color_Achat_Model(
                                         vidPosition = position,
                                         nom = color.nom,
                                         quantity_Achete = quantity,
@@ -173,8 +164,8 @@ private fun processSalesData_Main(
                         }
                     }
 
-                    if (newAchate.colours_Et_Gouts_Acheter_Depuit_Client.isNotEmpty()) {
-                        new_produit_A_Update.acheteurs_pour_Cette_Cota.add(newAchate)
+                    if (newAchate.colours_achete.isNotEmpty()) {
+                        new_produit_A_Update.historique_Vents.add(newAchate)
                     }
                 }
         }
@@ -188,7 +179,7 @@ private fun process_Random_WholesalerData_Main(new_produit_A_Update: App_Initial
         createWholesaler_Main(3L, "Wholesaler Gamma", "#5733FF", 2000.0)
     )
 
-    new_produit_A_Update.historique_Bons_Commend.clear()
+    new_produit_A_Update.historique_Commends.clear()
 
     // Add random wholesaler with minimum order
     val selectedWholesaler = sampleWholesalers.random()
@@ -197,8 +188,8 @@ private fun process_Random_WholesalerData_Main(new_produit_A_Update: App_Initial
         App_Initialize_Model.Produit_Model.Mutable_App_Produit_Statues(
             init_Son_Grossist_Pour_Acheter_Ce_Produit_In_This_Transaction = wholesalerOrder
         )
-    new_produit_A_Update.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota= wholesalerOrder
-    new_produit_A_Update.historique_Bons_Commend.add(wholesalerOrder)
+    new_produit_A_Update.bon_Commend_De_Cette_Cota= wholesalerOrder
+    new_produit_A_Update.historique_Commends.add(wholesalerOrder)
 }
 
 private fun createWholesaler_Main(

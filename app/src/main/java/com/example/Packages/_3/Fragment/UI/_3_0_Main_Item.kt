@@ -45,7 +45,7 @@ internal fun Produit_Item(
     }
 
     // Calculate total quantity
-    val totalQuantity = produit.historique_Bons_Commend
+    val totalQuantity = produit.historique_Commends
         .find { it.vid == 1L }
         ?.colours_Et_Gouts_Commende
         ?.sumOf { it.quantity_Achete } ?: 0
@@ -170,7 +170,7 @@ internal fun Produit_Item(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        val colorsList = produit.historique_Bons_Commend
+                        val colorsList = produit.historique_Commends
                             .find { it.vid == 1L }
                             ?.colours_Et_Gouts_Commende
                             ?.sortedBy { it.quantity_Achete }

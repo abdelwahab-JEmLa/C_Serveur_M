@@ -30,12 +30,12 @@ fun Main_List(
 
     val sorted_Visible_Items = filtered_Items.sortedWith(
         compareBy<App_Initialize_Model.Produit_Model> { produit ->
-            val position = produit.historique_Bons_Commend
+            val position = produit.historique_Commends
                 .maxByOrNull { it.date }
                 ?.position_Grossist_Don_Parent_Grossists_List
             position ?: Int.MAX_VALUE
         }.thenBy { produit ->
-            val position = produit.historique_Bons_Commend
+            val position = produit.historique_Commends
                 .maxByOrNull { it.date }
                 ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
             position ?: Int.MAX_VALUE

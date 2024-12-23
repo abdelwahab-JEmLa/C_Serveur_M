@@ -31,7 +31,7 @@ internal fun Expanded_Item_Displaye(
     initialHeightCard: Dp = 300.dp,
     onEpandToggle: () -> Unit
 ) {
-    val filteredColorFlavors = produit.historique_Bons_Commend
+    val filteredColorFlavors = produit.historique_Commends
         .find { it.vid == 1L }
         ?.colours_Et_Gouts_Commende?.filter { it.quantity_Achete > 0 }
         ?: emptyList()

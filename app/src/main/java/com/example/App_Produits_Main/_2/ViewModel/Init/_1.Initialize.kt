@@ -141,7 +141,7 @@ private fun processSalesData_Main(
                 ?.let { client_Data ->
 
                     val newAchate =
-                        App_Initialize_Model.Produit_Main_DataBase.Demmende_Achate_De_Cette_Produit(
+                        App_Initialize_Model.Produit_Main_DataBase.Acheteurs_pour_Cette_Cota(
                             vid = (index + 1).toLong(),
                             id_Acheteur = clientId,
                             nom_Acheteur = client_Data.nomClientsSu,
@@ -162,7 +162,7 @@ private fun processSalesData_Main(
                                 it.position_Du_Couleur_Au_Produit == position
                             }?.let { color ->
                                 newAchate.colours_Et_Gouts_Acheter_Depuit_Client.add(
-                                    App_Initialize_Model.Produit_Main_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter_Depuit_Client(
+                                    App_Initialize_Model.Produit_Main_DataBase.Acheteurs_pour_Cette_Cota.Colours_Et_Gouts_Acheter_Depuit_Client(
                                         vidPosition = position,
                                         nom = color.nom,
                                         quantity_Achete = quantity,

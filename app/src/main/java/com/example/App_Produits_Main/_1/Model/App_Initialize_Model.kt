@@ -8,7 +8,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
-import com.google.firebase.database.getValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -33,9 +32,10 @@ class App_Initialize_Model(
         initialNon_Trouve: Boolean = false,
         init_mutable_App_Produit_Statues: Mutable_App_Produit_Statues = Mutable_App_Produit_Statues(),
         init_Grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? = null,
+        init_acheteurs_pour_Cette_Cota: List<Acheteurs_pour_Cette_Cota> = emptyList(),
 
         init_colours_Et_Gouts: List<Colours_Et_Gouts> = emptyList(),
-        initialDemmende_Achate_De_Cette_Produit: List<Demmende_Achate_De_Cette_Produit> = emptyList(),
+        initialDemmende_Achate_De_Cette_Produit: List<Acheteurs_pour_Cette_Cota> = emptyList(),
         initialGrossist_Choisi_Pour_Acheter_CeProduit: List<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> = emptyList(),
     ) {
         var nom: String by mutableStateOf(init_nom)
@@ -44,10 +44,12 @@ class App_Initialize_Model(
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var mutable_App_Produit_Statues: Mutable_App_Produit_Statues by mutableStateOf(init_mutable_App_Produit_Statues)
         var grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota: Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction? by mutableStateOf(init_Grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota)
+        var acheteurs_pour_Cette_Cota: SnapshotStateList<Acheteurs_pour_Cette_Cota> =
+            init_acheteurs_pour_Cette_Cota.toMutableStateList()
 
         var colours_Et_Gouts: SnapshotStateList<Colours_Et_Gouts> =
             init_colours_Et_Gouts.toMutableStateList()
-        var demmende_Achate_De_Cette_Produit: SnapshotStateList<Demmende_Achate_De_Cette_Produit> =
+        var demmende_Achate_De_Cette_Produit: SnapshotStateList<Acheteurs_pour_Cette_Cota> =
             initialDemmende_Achate_De_Cette_Produit.toMutableStateList()
         var grossist_Choisi_Pour_Acheter_CeProduit: SnapshotStateList<Grossist_Choisi_Pour_Acheter_Ce_Produit_In_This_Transaction> =
             initialGrossist_Choisi_Pour_Acheter_CeProduit.toMutableStateList()
@@ -99,7 +101,7 @@ class App_Initialize_Model(
             )
         }
 
-        class Demmende_Achate_De_Cette_Produit(
+        class Acheteurs_pour_Cette_Cota(
             var vid: Long = 0,
             var id_Acheteur: Long = 0,
             var nom_Acheteur: String = "",

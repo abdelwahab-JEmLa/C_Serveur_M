@@ -1,17 +1,8 @@
 package com.example.App_Produits_Main._1.Model
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
 import com.google.firebase.database.getValue
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 suspend fun App_Initialize_Model.load_Produits_FireBase() {
         try {
@@ -141,7 +132,7 @@ suspend fun App_Initialize_Model.load_Produits_FireBase() {
                             (demand as? Map<String, Any?>)?.let { demandMap ->
                                 val clientColors = (demandMap["colours_Et_Gouts_Acheter_Depuit_Client"] as? List<*>)?.mapNotNull { clientColor ->
                                     (clientColor as? Map<String, Any?>)?.let {
-                                        App_Initialize_Model.Produit_Main_DataBase.Demmende_Achate_De_Cette_Produit.Colours_Et_Gouts_Acheter_Depuit_Client(
+                                        App_Initialize_Model.Produit_Main_DataBase.Acheteurs_pour_Cette_Cota.Colours_Et_Gouts_Acheter_Depuit_Client(
                                             vidPosition = (it["vidPosition"] as? Number)?.toLong() ?: 0,
                                             nom = (it["nom"] as? String) ?: "",
                                             quantity_Achete = (it["quantity_Achete"] as? Number)?.toInt() ?: 0,
@@ -151,7 +142,7 @@ suspend fun App_Initialize_Model.load_Produits_FireBase() {
                                 } ?: emptyList()
 
                                 demmende_Achate_De_Cette_Produit.add(
-                                    App_Initialize_Model.Produit_Main_DataBase.Demmende_Achate_De_Cette_Produit(
+                                    App_Initialize_Model.Produit_Main_DataBase.Acheteurs_pour_Cette_Cota(
                                         vid = (demandMap["vid"] as? Number)?.toLong() ?: 0,
                                         id_Acheteur = (demandMap["id_Acheteur"] as? Number)?.toLong() ?: 0,
                                         nom_Acheteur = (demandMap["nom_Acheteur"] as? String) ?: "",

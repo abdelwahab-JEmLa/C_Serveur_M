@@ -18,7 +18,6 @@ import com.example.Main.StartFragment.StartFragmentDestination
 import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsDestination
 import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsFragment
 import com.example.Packages._3.Fragment.UI.Fragment3_Main_Screen
-import com.example.Packages._4.Fragment.UI.Fragment_4_Main_Screen
 import com.example.c_serveur.AppViewModels
 import kotlinx.serialization.Serializable
 
@@ -46,7 +45,6 @@ fun AppNavHost(
                 Fragment3_Main_Screen(app_Initialize_ViewModel=appViewModels.app_Initialize_ViewModel)
             }
             composable(Fragment_4_Main_Screen_Destination().route) {
-                Fragment_4_Main_Screen(app_Initialize_ViewModel=appViewModels.app_Initialize_ViewModel)
             }
         }
     }

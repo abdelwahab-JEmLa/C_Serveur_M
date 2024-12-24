@@ -1,5 +1,5 @@
 package com.example.Packages._3.Fragment.UI
-
+    /*
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -120,3 +120,4 @@ internal fun Expanded_Item_Displaye(
         }
     }
 }
+                    */

@@ -32,7 +32,7 @@ fun Host_Affiche_Produit_Item(
             .fillMaxWidth()
             .height(80.dp)
             .background(
-                color = if (produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit != null)
+                color = if (produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit != null)
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                 else
                     MaterialTheme.colorScheme.surface,
@@ -42,7 +42,7 @@ fun Host_Affiche_Produit_Item(
                 coroutineScope.launch {
                     // Find the maximum position across all products
                     val maxPosition = app_Initialize_Model.produits_Main_DataBase
-                        .mapNotNull { it.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota }
+                        .mapNotNull { it.bonCommendDeCetteCota }
                         .maxOfOrNull { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
                         ?: 0
 
@@ -50,7 +50,7 @@ fun Host_Affiche_Produit_Item(
                     val newPosition = maxPosition + 1
 
                     // Update the current product's position
-                    produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
+                    produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
 
                     // Update Firebase
                     app_Initialize_Model.update_Produits_FireBase()
@@ -71,7 +71,7 @@ fun Host_Affiche_Produit_Item(
         IconButton(
             onClick = {
                 coroutineScope.launch {
-                    produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota?.let { supplier ->
+                    produit.bonCommendDeCetteCota?.let { supplier ->
                         supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
                     }
                     app_Initialize_Model.update_Produits_FireBase()
@@ -116,7 +116,7 @@ fun Host_Affiche_Produit_Item(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        produit.grossist_Pour_Acheter_Ce_Produit_Dons_Cette_Cota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+        produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
             if (position != 0) {
                 Text(
                     text = position.toString(),

@@ -95,7 +95,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                         latestSupplier?.supplier_id == supplier.supplier_id && totalQuantity > 0
                     }
 
-                    product.mutable_App_Produit_Statues.its_Filtre_Au_Grossists_Buttons = shouldFilter
+                    product.bonCommendDeCetteCota?.auFilterFAB ?: false
                 }
 
                 app_Initialize_Model.update_Produits_FireBase()

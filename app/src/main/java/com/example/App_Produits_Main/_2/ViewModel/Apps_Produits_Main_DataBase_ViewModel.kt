@@ -26,17 +26,15 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
 
-    private fun initializeData() {  //-->
-    //TODO(1): change au init
+    init {
         viewModelScope.launch {
             try {
                 isInitializing = true
                 initializationProgress = 0f
 
-                val createStart = false // Toggle between new start and loading from Firebase
+                val createStart = true
                 if (createStart) {
-                    // Fixed: Pass the ViewModel instance instead of the coroutine scope
-                    cree_New_Start() // Fixed: Use the correct method name
+                    cree_New_Start()
                     initializationProgress = 1f
                 } else {
                     load_Depuit_FireBase()
@@ -67,7 +65,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
                         }
 
                         // Load new data
-                       // _app_Initialize_Model.loadAllProducts()
+                        // _app_Initialize_Model.loadAllProducts()
                         Log.d(TAG, "Starting to check products for updates")
 
                         // Check for image updates and position changes
@@ -75,7 +73,7 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
                             // Handle image updates
                             if (produit.it_Image_besoin_To_Be_Updated) {
                                 Log.d(TAG, "Product ${produit.id} needs image update, initiating update process")
-                                FireBase_Store_Handler().startImageUpdate(_app_Initialize_Model,produit.id)
+                                FireBase_Store_Handler().startImageUpdate(_app_Initialize_Model, produit.id)
                             }
 
                             // Check for position changes
@@ -116,5 +114,4 @@ open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
             }
         }
     }
-
 }

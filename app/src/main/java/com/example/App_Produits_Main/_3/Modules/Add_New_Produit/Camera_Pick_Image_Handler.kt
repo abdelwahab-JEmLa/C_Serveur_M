@@ -83,7 +83,6 @@ class CameraPickImageHandler(
                     init_it_Image_besoin_To_Be_Updated = true,
                     initialNon_Trouve = pendingProduct!!.non_Trouve,
                     init_colours_Et_Gouts = pendingProduct!!.coloursEtGouts.toList(),
-                    initialDemmende_Achate_De_Cette_Produit = pendingProduct!!.acheteurs_pour_Cette_Cota.toList(),
                     init_historiqueBonsCommend = pendingProduct!!.historiqueBonsCommend.toList()
                 )
             } else {

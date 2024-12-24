@@ -135,14 +135,8 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                 coloursEtGouts.firstOrNull()?.let { couleur ->
                     grossiste.coloursEtGoutsCommendee.add(
                         AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
-                            init_coloursEtGouts = listOf(
-                                AppInitializeModel.ProduitModel.ColourEtGout_Model(
-                                    position_Du_Couleur_Au_Produit = couleur.position_Du_Couleur_Au_Produit,
-                                    nom = couleur.nom,
-                                    imogi = couleur.imogi
-                                )
-                            ),
-                            init_quantityAchete = (1..10).random() // Random quantity between 1 and 10
+                            init_statues = couleur,
+                            init_quantityAchete = (10..50).random()
                         )
                     )
                 }

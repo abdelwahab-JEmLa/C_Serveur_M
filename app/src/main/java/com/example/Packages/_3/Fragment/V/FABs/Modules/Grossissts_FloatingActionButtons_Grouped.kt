@@ -57,35 +57,6 @@ fun Grossissts_FloatingActionButtons_Grouped(
         }
     }
 
-    val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: AppInitializeModel.ProduitModel.GrossistBonCommandes ->
-        scope.launch {
-            try {
-                val newSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
-                ui_State.selectedSupplierId = newSupplierId
-
-                app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                    val latestSupplier = product.historiqueBonsCommend
-                        .maxByOrNull { it.date }
-
-                    val totalQuantity = latestSupplier?.coloursEtGoutsCommendee
-                        ?.sumOf { it.quantityAchete } ?: 0
-
-                    val shouldFilter = if (newSupplierId == 0L) {
-                        false
-                    } else {
-                        latestSupplier?.supplier_id == supplier.supplier_id && totalQuantity > 0
-                    }
-
-                    product.bonCommendDeCetteCota?.auFilterFAB ?: false
-                }
-
-                app_Initialize_Model.update_Produits_FireBase()
-            } catch (e: Exception) {
-                // Handle the error silently
-            }
-        }
-    }}
-
     Column(
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -132,7 +103,34 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                 color = supplierColors[supplierId] ?: MaterialTheme.colorScheme.primary,
                                 showLabel = showLabels,
                                 isFiltered = ui_State.selectedSupplierId == supplierId,
-                                onClick = { handleSupplierClick(supplierId, supplier) }
+                                onClick = {
+                                    scope.launch {
+                                        try {
+                                            val newSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
+                                            ui_State.selectedSupplierId = newSupplierId
+
+                                            app_Initialize_Model.produits_Main_DataBase.forEach { product ->
+                                                val latestSupplier = product.historiqueBonsCommend
+                                                    .maxByOrNull { it.date }
+
+                                                val totalQuantity = latestSupplier?.coloursEtGoutsCommendee
+                                                    ?.sumOf { it.quantityAchete } ?: 0
+
+                                                val shouldFilter = if (newSupplierId == 0L) {
+                                                    false
+                                                } else {
+                                                    latestSupplier?.supplier_id == supplier.supplier_id && totalQuantity > 0
+                                                }
+
+                                                product.bonCommendDeCetteCota?.auFilterFAB ?: false
+                                            }
+
+                                            app_Initialize_Model.update_Produits_FireBase()
+                                        } catch (e: Exception) {
+                                            // Handle the error silently
+                                        }
+                                    }
+                                }
                             )
                         }
                     }

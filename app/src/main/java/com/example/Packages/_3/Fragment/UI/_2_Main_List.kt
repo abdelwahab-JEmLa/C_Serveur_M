@@ -1,3 +1,4 @@
+// _2_Main_List.kt
 package com.example.Packages._3.Fragment.UI
 
 import androidx.compose.foundation.background
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -28,31 +30,33 @@ fun Produits_Main_List(
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
 ) {
-    val visibleItems = app_Initialize_Model.produits_Main_DataBase
-        .filter {
-            it.bonCommendDeCetteCota?.auFilterFAB ?: false
+    val visibleItems = remember(app_Initialize_Model.produits_Main_DataBase) {
+        app_Initialize_Model.produits_Main_DataBase.filter { product ->
+            product.bonCommendDeCetteCota?.auFilterFAB ?: false
         }
+    }
 
     when (ui_State.currentMode) {
         UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> {
-            // Partition items into those with and without positions
-            val (itemsWithPosition, itemsWithoutPosition) =
+            val (itemsWithPosition, itemsWithoutPosition) = remember(visibleItems) {
                 visibleItems.partition { produit ->
-                    val position = produit
-                        .bonCommendDeCetteCota
-                    ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-
-                position != null && position > 0
+                    val position = produit.bonCommendDeCetteCota
+                        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                    position != null && position > 0
+                }
             }
 
-            val sortedPositionItems = itemsWithPosition.sortedBy { produit ->
-                produit
-                    .bonCommendDeCetteCota
-                    ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                    ?: Int.MAX_VALUE
+            val sortedPositionItems = remember(itemsWithPosition) {
+                itemsWithPosition.sortedBy { produit ->
+                    produit.bonCommendDeCetteCota
+                        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                        ?: Int.MAX_VALUE
+                }
             }
 
-            val sortedNoPositionItems = itemsWithoutPosition.sortedBy { it.nom }
+            val sortedNoPositionItems = remember(itemsWithoutPosition) {
+                itemsWithoutPosition.sortedBy { it.nom }
+            }
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(5),
@@ -66,7 +70,6 @@ fun Produits_Main_List(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // First display items with positions > 0
                 if (sortedPositionItems.isNotEmpty()) {
                     item(span = { GridItemSpan(5) }) {
                         Text(
@@ -81,14 +84,13 @@ fun Produits_Main_List(
 
                     items(sortedPositionItems) { produit ->
                         Host_Affiche_Produit_Item(
-                            app_Initialize_Model=app_Initialize_Model,
+                            app_Initialize_Model = app_Initialize_Model,
                             uiState = ui_State,
                             produit = produit,
                         )
                     }
                 }
 
-                // Then display items with no position at the bottom
                 if (sortedNoPositionItems.isNotEmpty()) {
                     item(span = { GridItemSpan(5) }) {
                         Text(
@@ -114,6 +116,16 @@ fun Produits_Main_List(
 
         UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs,
         UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> {
+            val sortedItems = remember(visibleItems) {
+                visibleItems.sortedWith(
+                    compareBy<AppInitializeModel.ProduitModel> { produit ->
+                        produit.bonCommendDeCetteCota
+                            ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                            ?: Int.MAX_VALUE
+                    }.thenBy { it.nom }
+                )
+            }
+
             LazyColumn(
                 modifier = modifier
                     .fillMaxWidth()
@@ -124,16 +136,7 @@ fun Produits_Main_List(
                 contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(
-                    visibleItems.sortedWith(
-                        compareBy<AppInitializeModel.ProduitModel> { produit ->
-                            produit
-                                .bonCommendDeCetteCota
-                                ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                                ?: Int.MAX_VALUE
-                        }.thenBy { it.nom }
-                    )
-                ) { produit ->
+                items(sortedItems) { produit ->
                     Produit_Item(
                         uiState = ui_State,
                         produit = produit

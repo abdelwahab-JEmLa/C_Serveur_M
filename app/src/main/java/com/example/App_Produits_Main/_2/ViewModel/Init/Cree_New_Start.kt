@@ -1,170 +1,193 @@
+// Cree_New_Start.kt
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
-import android.util.Log
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
 import com.example.App_Produits_Main._2.ViewModel.Init.Z.Components.get_Ancien_DataBases_Main
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
-    val TAG = "Cree_New_Start"
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
     try {
-        // Démarrage de l'initialisation
-        Log.d(TAG, "Démarrage de l'initialisation")
-            initializationProgress = 0.1f
-            isInitializing = true
+        initializationProgress = 0.1f
+        isInitializing = true
 
-        // Récupération des anciennes données
         val ancienData = get_Ancien_DataBases_Main()
 
-        // Traitement de chaque produit
-        ancienData.produitsDatabase.forEach { ancien ->
-            // Création du produit de base
-            val nouveauProduit = AppInitializeModel.ProduitModel(
-                id = ancien.idArticle,
-                it_ref_Id_don_FireBase = 1L,
-                it_ref_don_FireBase = "produit_DataBase"
-            )
-
-            // Ajout des détails au produit
-            nouveauProduit.apply {
-                nom = ancien.nomArticleFinale
-             
-                // Ajout des couleurs
-                val couleursIds = listOf(
-                    ancien.idcolor1 to 1L,
-                    ancien.idcolor2 to 2L,
-                    ancien.idcolor3 to 3L,
-                    ancien.idcolor4 to 4L
+        ancienData.produitsDatabase.forEachIndexed { index, ancien ->
+            try {
+                val nouveauProduit = AppInitializeModel.ProduitModel(
+                    id = ancien.idArticle,
+                    it_ref_Id_don_FireBase = 1L,
+                    it_ref_don_FireBase = "produit_DataBase"
                 )
 
-                couleursIds.forEach { (colorId, position) ->
-                    ancienData.couleurs_List
-                        .find { it.idColore == colorId }
-                        ?.let { couleur ->
+                nouveauProduit.apply {
+                    nom = ancien.nomArticleFinale
+
+                    val couleursIds = listOf(
+                        ancien.idcolor1 to 1L,
+                        ancien.idcolor2 to 2L,
+                        ancien.idcolor3 to 3L,
+                        ancien.idcolor4 to 4L
+                    )
+
+                    couleursIds.forEach { (colorId, position) ->
+                        val couleurTrouvee = ancienData.couleurs_List
+                            .find { it.idColore == colorId }
+
+                        if (couleurTrouvee != null) {
                             coloursEtGouts.add(
                                 AppInitializeModel.ProduitModel.ColourEtGout_Model(
                                     position_Du_Couleur_Au_Produit = position,
-                                    nom = couleur.nameColore,
-                                    imogi = couleur.iconColore
+                                    nom = couleurTrouvee.nameColore,
+                                    imogi = couleurTrouvee.iconColore
                                 )
                             )
                         }
-                }
-
-                // Ajout des données de vente
-                historiqueBonsVents.clear()
-                bonsVentDeCetteCota.clear()
-
-                // Ventes historiques
-                repeat((1..5).random()) { ventIndex ->
-                    val vente = AppInitializeModel.ProduitModel.ClientBonVent_Model(
-                        vid = ventIndex.toLong(),
-                        id_Acheteur = ventIndex.toLong(),
-                        nom_Acheteur = "Client $ventIndex",
-                        time_String = Calendar.getInstance().apply {
-                            add(Calendar.DAY_OF_MONTH, -(1..30).random())
-                        }.time.let { dateFormat.format(it) },
-                        inseartion_Temp = System.currentTimeMillis(),
-                        inceartion_Date = System.currentTimeMillis()
-                    )
-
-                    // Ajout des couleurs à la vente historique
-                    coloursEtGouts.take((1..3).random()).forEach { couleur ->
-                        vente.colours_Achete.add(
-                            AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
-                                vidPosition = couleur.position_Du_Couleur_Au_Produit,
-                                nom = couleur.nom,
-                                quantity_Achete = (1..10).random(),
-                                imogi = couleur.imogi
-                            )
-                        )
                     }
 
-                    historiqueBonsVents.add(vente)
-                }
-
-                // Ventes actuelles
-                repeat((1..3).random()) { ventIndex ->
-                    val vente = AppInitializeModel.ProduitModel.ClientBonVent_Model(
-                        vid = ventIndex.toLong(),
-                        id_Acheteur = ventIndex.toLong(),
-                        nom_Acheteur = "Client $ventIndex",
-                        time_String = dateFormat.format(Calendar.getInstance().time),
-                        inseartion_Temp = System.currentTimeMillis(),
-                        inceartion_Date = System.currentTimeMillis()
-                    )
-
-                    // Ajout des couleurs à la vente actuelle
-                    coloursEtGouts.take((1..3).random()).forEach { couleur ->
-                        vente.colours_Achete.add(
-                            AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
-                                vidPosition = couleur.position_Du_Couleur_Au_Produit,
-                                nom = couleur.nom,
-                                quantity_Achete = (1..10).random(),
-                                imogi = couleur.imogi
-                            )
-                        )
+                    historiqueBonsVents.clear()
+                    val nombreVentesHistoriques = (1..5).random()
+                    repeat(nombreVentesHistoriques) { ventIndex ->
+                        try {
+                            val vente = generateHistoricalSale(ventIndex, dateFormat)
+                            historiqueBonsVents.add(vente)
+                        } catch (_: Exception) { }
                     }
 
-                    bonsVentDeCetteCota.add(vente)
+                    bonsVentDeCetteCota.clear()
+                    val nombreVentesActuelles = (1..3).random()
+                    repeat(nombreVentesActuelles) { ventIndex ->
+                        try {
+                            val vente = generateCurrentSale(ventIndex, dateFormat)
+                            bonsVentDeCetteCota.add(vente)
+                        } catch (_: Exception) { }
+                    }
+
+                    try {
+                        val grossiste = generateGrossiste()
+                        bonCommendDeCetteCota = grossiste
+                        historiqueBonsCommend.clear()
+                        historiqueBonsCommend.add(grossiste)
+                    } catch (_: Exception) { }
+
+                    besoin_To_Be_Updated = false
                 }
 
-                // Ajout des données grossiste
-                val grossistes = listOf(
-                    Triple(1L, "Grossist Alpha", "#FF5733"),
-                    Triple(2L, "Grossist Beta", "#33FF57"),
-                    Triple(3L, "Grossist Gamma", "#5733FF")
-                )
-                val (grossisteId, grossisteNom, grossisteCouleur) = grossistes.random()
+                _app_Initialize_Model.produits_Main_DataBase.add(nouveauProduit)
+            } catch (_: Exception) { }
 
-                val grossiste = AppInitializeModel.ProduitModel.GrossistBonCommandes(
-                    vid = grossisteId,
-                    supplier_id = grossisteId,
-                    nom = grossisteNom,
-                    init_position_Grossist_Don_Parent_Grossists_List = grossisteId.toInt() - 1,
-                    couleur = grossisteCouleur,
-                    currentCreditBalance = (1000..2000).random().toDouble(),
-                    date = System.currentTimeMillis().toString()
-                )
+            initializationProgress = 0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
+        }
 
-                coloursEtGouts.firstOrNull()?.let { couleur ->
-                    grossiste.coloursEtGoutsCommendee.add(
-                        AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
-                            init_statues = couleur,
-                            init_quantityAchete = (10..50).random()
-                        )
-                    )
-                }
+        val ref_Produit_Main_DataBase = Firebase.database
+            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+            .child("produit_DataBase")
 
-                historiqueBonsCommend.clear()
-                bonCommendDeCetteCota = grossiste
-                historiqueBonsCommend.add(grossiste)
-
-                besoin_To_Be_Updated = false
+        try {
+            withContext(Dispatchers.IO) {
+                ref_Produit_Main_DataBase.setValue(_app_Initialize_Model.produits_Main_DataBase).await()
             }
-
-            _app_Initialize_Model.produits_Main_DataBase.add(nouveauProduit)
+        } catch (e: Exception) {
+            throw e
         }
 
-        // Mise à jour Firebase
-        _app_Initialize_Model.update_Produits_FireBase()
-
-        // Finalisation
-        apply {
-            initializationProgress = 1.0f
-            initializationComplete = true
-        }
-        Log.d(TAG, "Initialisation terminée")
+        initializationProgress = 1.0f
+        initializationComplete = true
 
     } catch (e: Exception) {
-        Log.e(TAG, "Erreur d'initialisation", e)
         throw e
     } finally {
         isInitializing = false
+    }
+}
+
+// Helper functions (unchanged except for log removal)
+private fun AppInitializeModel.ProduitModel.generateHistoricalSale(
+    ventIndex: Int,
+    dateFormat: SimpleDateFormat
+): AppInitializeModel.ProduitModel.ClientBonVent_Model {
+    return AppInitializeModel.ProduitModel.ClientBonVent_Model(
+        vid = ventIndex.toLong(),
+        id_Acheteur = ventIndex.toLong(),
+        nom_Acheteur = "Client $ventIndex",
+        time_String = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_MONTH, -(1..30).random())
+        }.time.let { dateFormat.format(it) },
+        inseartion_Temp = System.currentTimeMillis(),
+        inceartion_Date = System.currentTimeMillis()
+    ).apply {
+        coloursEtGouts.take((1..3).random()).forEach { couleur ->
+            colours_Achete.add(
+                AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
+                    vidPosition = couleur.position_Du_Couleur_Au_Produit,
+                    nom = couleur.nom,
+                    quantity_Achete = (1..10).random(),
+                    imogi = couleur.imogi
+                )
+            )
+        }
+    }
+}
+
+private fun AppInitializeModel.ProduitModel.generateCurrentSale(
+    ventIndex: Int,
+    dateFormat: SimpleDateFormat
+): AppInitializeModel.ProduitModel.ClientBonVent_Model {
+    return AppInitializeModel.ProduitModel.ClientBonVent_Model(
+        vid = ventIndex.toLong(),
+        id_Acheteur = ventIndex.toLong(),
+        nom_Acheteur = "Client $ventIndex",
+        time_String = dateFormat.format(Calendar.getInstance().time),
+        inseartion_Temp = System.currentTimeMillis(),
+        inceartion_Date = System.currentTimeMillis()
+    ).apply {
+        coloursEtGouts.take((1..3).random()).forEach { couleur ->
+            colours_Achete.add(
+                AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
+                    vidPosition = couleur.position_Du_Couleur_Au_Produit,
+                    nom = couleur.nom,
+                    quantity_Achete = (1..10).random(),
+                    imogi = couleur.imogi
+                )
+            )
+        }
+    }
+}
+
+private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeModel.ProduitModel.GrossistBonCommandes {
+    val grossistes = listOf(
+        Triple(1L, "Grossist Alpha", "#FF5733"),
+        Triple(2L, "Grossist Beta", "#33FF57"),
+        Triple(3L, "Grossist Gamma", "#5733FF")
+    )
+    val (grossisteId, grossisteNom, grossisteCouleur) = grossistes.random()
+
+    return AppInitializeModel.ProduitModel.GrossistBonCommandes(
+        vid = grossisteId,
+        supplier_id = grossisteId,
+        nom = grossisteNom,
+        init_position_Grossist_Don_Parent_Grossists_List = grossisteId.toInt() - 1,
+        couleur = grossisteCouleur,
+        currentCreditBalance = (1000..2000).random().toDouble(),
+        date = System.currentTimeMillis().toString()
+    ).apply {
+        coloursEtGouts.firstOrNull()?.let { couleur ->
+            coloursEtGoutsCommendee.add(
+                AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
+                    init_statues = couleur,
+                    init_quantityAchete = (10..50).random()
+                )
+            )
+        }
     }
 }

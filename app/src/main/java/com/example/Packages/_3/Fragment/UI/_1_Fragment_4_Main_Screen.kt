@@ -26,7 +26,7 @@ internal fun Fragment3_Main_Screen(
             // Main content
             Column {
                 Produits_Main_List(
-                    app_Initialize_Model=app_Initialize_ViewModel.app_Initialize_Model,
+                    app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
                     ui_State = p3_ViewModel.uiState,
                     contentPadding = paddingValues
                 )
@@ -36,14 +36,14 @@ internal fun Fragment3_Main_Screen(
             Grossissts_FloatingActionButtons_Grouped(
                 modifier = Modifier,
                 ui_State = p3_ViewModel.uiState,
-                app_Initialize_Model=app_Initialize_ViewModel.app_Initialize_Model,
-                )
+                app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
+            )
 
             GlobalActions_FloatingActionButtons_Grouped(
                 modifier = Modifier,
                 fragment_Ui_State = p3_ViewModel.uiState,
-                app_Initialize_Model=app_Initialize_ViewModel.app_Initialize_Model,
-                )
+                app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
+            )
         }
     }
 }

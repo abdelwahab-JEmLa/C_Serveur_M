@@ -1,6 +1,5 @@
 package com.example.Packages._3.Fragment.V.FABs.Modules
 
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -27,39 +26,26 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-private const val FAB_TAG = "FAB_DEBUG"
-
 @Composable
 fun Grossissts_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_State: UiState,
     app_Initialize_Model: AppInitializeModel,
 ) {
-    // Create a stable coroutine scope that survives recomposition
     val scope = rememberCoroutineScope()
 
-    // Group products by supplier ID
     val grouped_Produits_Par_Id_Grossist = remember(app_Initialize_Model.produits_Main_DataBase) {
-        val groupedProducts = app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
+        app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
             produit.historiqueBonsCommend
                 .maxByOrNull { it.date }?.vid ?: -1L
         }
-
-        Log.d(FAB_TAG, "Grouped products by supplier:")
-        groupedProducts.forEach { (supplierId, products) ->
-            Log.d(FAB_TAG, "Supplier ID: $supplierId, Product Count: ${products.size}")
-        }
-
-        groupedProducts
     }
 
-    // State variables
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
-    // Generate random colors for suppliers
     val supplierColors = remember {
         grouped_Produits_Par_Id_Grossist.keys.associateWith {
             Color(
@@ -71,17 +57,12 @@ fun Grossissts_FloatingActionButtons_Grouped(
         }
     }
 
-    // Handler for supplier click events
     val handleSupplierClick = remember(scope) { { supplierId: Long, supplier: AppInitializeModel.ProduitModel.GrossistBonCommandes ->
         scope.launch {
             try {
-                Log.d(FAB_TAG, "FAB clicked for supplier $supplierId")
-
-                // Toggle selection state
                 val newSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
                 ui_State.selectedSupplierId = newSupplierId
 
-                // Update filter status for all products
                 app_Initialize_Model.produits_Main_DataBase.forEach { product ->
                     val latestSupplier = product.historiqueBonsCommend
                         .maxByOrNull { it.date }
@@ -100,13 +81,11 @@ fun Grossissts_FloatingActionButtons_Grouped(
 
                 app_Initialize_Model.update_Produits_FireBase()
             } catch (e: Exception) {
-                Log.e(FAB_TAG, "Error updating supplier filter", e)
-                // Handle the error appropriately
+                // Handle the error silently
             }
         }
     }}
 
-    // Main layout
     Column(
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -124,7 +103,6 @@ fun Grossissts_FloatingActionButtons_Grouped(
             }
             .zIndex(1f)
     ) {
-        // Supplier buttons section
         AnimatedVisibility(
             visible = showFloatingButtons,
             enter = fadeIn() + expandHorizontally(),
@@ -162,7 +140,6 @@ fun Grossissts_FloatingActionButtons_Grouped(
             }
         }
 
-        // Label toggle button
         FloatingActionButton(
             onClick = { showLabels = !showLabels },
             modifier = Modifier.size(48.dp),
@@ -174,7 +151,6 @@ fun Grossissts_FloatingActionButtons_Grouped(
             )
         }
 
-        // Expand/collapse button
         FloatingActionButton(
             onClick = { showFloatingButtons = !showFloatingButtons },
             modifier = Modifier.size(48.dp),

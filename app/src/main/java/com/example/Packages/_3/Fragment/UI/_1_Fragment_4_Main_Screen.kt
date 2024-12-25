@@ -3,8 +3,10 @@ package com.example.Packages._3.Fragment.UI
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,20 +21,32 @@ internal fun Fragment3_Main_Screen(
     app_Initialize_ViewModel: Apps_Produits_Main_DataBase_ViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel()
 ) {
+    if (!app_Initialize_ViewModel.initializationComplete) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                progress = app_Initialize_ViewModel.initializationProgress
+            )
+        }
+        return
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
-            // Main content
             Column {
-                Produits_Main_List(
-                    app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
-                    ui_State = p3_ViewModel.uiState,
-                    contentPadding = paddingValues
-                )
+                val databaseSize = app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase.size
+
+                if (databaseSize > 0) {
+                    Produits_Main_List(
+                        app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
+                        ui_State = p3_ViewModel.uiState,
+                        contentPadding = paddingValues
+                    )
+                }
             }
 
-            // FABs
             Grossissts_FloatingActionButtons_Grouped(
                 modifier = Modifier,
                 ui_State = p3_ViewModel.uiState,

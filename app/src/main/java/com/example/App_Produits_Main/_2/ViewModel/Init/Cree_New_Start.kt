@@ -1,4 +1,3 @@
-// Cree_New_Start.kt
 package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
 
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
@@ -61,7 +60,9 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                         try {
                             val vente = generateHistoricalSale(ventIndex, dateFormat)
                             historiqueBonsVents.add(vente)
-                        } catch (_: Exception) { }
+                        } catch (e: Exception) {
+                            // Handle exception silently
+                        }
                     }
 
                     bonsVentDeCetteCota.clear()
@@ -70,7 +71,9 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                         try {
                             val vente = generateCurrentSale(ventIndex, dateFormat)
                             bonsVentDeCetteCota.add(vente)
-                        } catch (_: Exception) { }
+                        } catch (e: Exception) {
+                            // Handle exception silently
+                        }
                     }
 
                     try {
@@ -78,13 +81,17 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
                         bonCommendDeCetteCota = grossiste
                         historiqueBonsCommend.clear()
                         historiqueBonsCommend.add(grossiste)
-                    } catch (_: Exception) { }
+                    } catch (e: Exception) {
+                        // Handle exception silently
+                    }
 
                     besoin_To_Be_Updated = false
                 }
 
                 _app_Initialize_Model.produits_Main_DataBase.add(nouveauProduit)
-            } catch (_: Exception) { }
+            } catch (e: Exception) {
+                // Handle exception silently
+            }
 
             initializationProgress = 0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
         }
@@ -95,7 +102,9 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
 
         try {
             withContext(Dispatchers.IO) {
-                ref_Produit_Main_DataBase.setValue(_app_Initialize_Model.produits_Main_DataBase).await()
+                ref_Produit_Main_DataBase.setValue(
+                    _app_Initialize_Model.produits_Main_DataBase
+                ).await()
             }
         } catch (e: Exception) {
             throw e
@@ -111,7 +120,6 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
     }
 }
 
-// Helper functions (unchanged except for log removal)
 private fun AppInitializeModel.ProduitModel.generateHistoricalSale(
     ventIndex: Int,
     dateFormat: SimpleDateFormat

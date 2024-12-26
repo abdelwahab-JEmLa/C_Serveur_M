@@ -32,7 +32,7 @@ fun Produits_Main_List(
 ) {
     val visibleItems = remember(app_Initialize_Model.produits_Main_DataBase) {
         app_Initialize_Model.produits_Main_DataBase.filter { product ->
-            product.bonCommendDeCetteCota?.auFilterFAB ?: false
+            product.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB ?: false
         }
     }
 

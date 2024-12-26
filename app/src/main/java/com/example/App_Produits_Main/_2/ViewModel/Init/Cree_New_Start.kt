@@ -180,14 +180,26 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
     )
     val (grossisteId, grossisteNom, grossisteCouleur) = grossistes.random()
 
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    val currentDate = Calendar.getInstance().time
+    val dateString = dateFormat.format(currentDate)
+
+    // Create GrossistInformations object
+    val grossistInfo = AppInitializeModel.ProduitModel.GrossistBonCommandes.GrossistInformations(
+        id = grossisteId,
+        nom = grossisteNom,
+        couleur = grossisteCouleur
+    )
+
     return AppInitializeModel.ProduitModel.GrossistBonCommandes(
         vid = grossisteId,
-        supplier_id = grossisteId,
-        nom = grossisteNom,
-        init_position_Grossist_Don_Parent_Grossists_List = grossisteId.toInt() - 1,
-        couleur = grossisteCouleur,
+        init_grossistInformations = grossistInfo,
+        date = dateString,
+        date_String_Divise = dateString.split(" ")[0],  // "yyyy-MM-dd"
+        time_String_Divise = dateString.split(" ")[1],  // "HH:mm:ss"
         currentCreditBalance = (1000..2000).random().toDouble(),
-        date = System.currentTimeMillis().toString()
+        init_position_Grossist_Don_Parent_Grossists_List = grossisteId.toInt() - 1,
+        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
     ).apply {
         coloursEtGouts.firstOrNull()?.let { couleur ->
             coloursEtGoutsCommendee.add(

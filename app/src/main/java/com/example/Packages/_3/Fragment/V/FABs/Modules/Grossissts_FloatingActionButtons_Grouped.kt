@@ -1,5 +1,6 @@
 package com.example.Packages._3.Fragment.V.FABs.Modules
 
+import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
@@ -34,28 +35,37 @@ fun Grossissts_FloatingActionButtons_Grouped(
 ) {
     val scope = rememberCoroutineScope()
 
-    val grouped_Produits_Par_Id_Grossist = remember(app_Initialize_Model.produits_Main_DataBase) {
-        app_Initialize_Model.produits_Main_DataBase.groupBy { produit ->
-            produit.historiqueBonsCommend
-                .maxByOrNull { it.date }?.vid ?: -1L
-        }
-    }
+    // Filter out null grossists and group by non-null grossist information
+    val grouped_Produits_Par_grossistInformations = remember(app_Initialize_Model.produits_Main_DataBase) {
+        val grouped = app_Initialize_Model.produits_Main_DataBase
+            .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
+            .groupBy { produit -> produit.bonCommendDeCetteCota?.grossistInformations }
 
+        // Log grouping information
+        Log.d("GrossistGrouping", """
+            -------- Grouping Details --------
+            Total products: ${app_Initialize_Model.produits_Main_DataBase.size}
+            Products with grossists: ${grouped.values.sumOf { it.size }}
+            Number of groups: ${grouped.size}
+            
+            Groups breakdown:
+            ${grouped.entries.joinToString("\n") { (grossist, products) ->
+            """
+                Grossist: ${grossist?.nom ?: "Unknown"}
+                Color: ${grossist?.couleur ?: "N/A"}
+                Products count: ${products.size}
+                Product names: ${products.joinToString(", ") { it.nom }}
+                """.trimIndent()
+        }}
+            --------------------------------
+        """.trimIndent())
+
+        grouped
+    }
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
-
-    val supplierColors = remember {
-        grouped_Produits_Par_Id_Grossist.keys.associateWith {
-            Color(
-                red = Random.nextFloat(),
-                green = Random.nextFloat(),
-                blue = Random.nextFloat(),
-                alpha = 1f
-            )
-        }
-    }
 
     Column(
         horizontalAlignment = Alignment.End,
@@ -88,43 +98,32 @@ fun Grossissts_FloatingActionButtons_Grouped(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
-                    val filteredSuppliers = grouped_Produits_Par_Id_Grossist
-                        .filter { it.key != -1L }
-
-                    filteredSuppliers.forEach { (supplierId, products) ->
-                        val supplier = products.firstOrNull()
-                            ?.historiqueBonsCommend
-                            ?.maxByOrNull { it.date }
-
-                        if (supplier != null) {
+                    grouped_Produits_Par_grossistInformations.forEach { (grossistModel, products) ->
+                        if (products.isNotEmpty() && grossistModel != null) {
                             FabButton(
                                 supplierProductssize = products.size,
-                                label = supplier.nom,
-                                color = supplierColors[supplierId] ?: MaterialTheme.colorScheme.primary,
+                                label = grossistModel.nom,
+                                color = Color(android.graphics.Color.parseColor(grossistModel.couleur)),
                                 showLabel = showLabels,
-                                isFiltered = ui_State.selectedSupplierId == supplierId,
+                                isFiltered = grossistModel.auFilterFAB,
                                 onClick = {
                                     scope.launch {
                                         try {
-                                            val newSupplierId = if (ui_State.selectedSupplierId == supplierId) 0L else supplierId
-                                            ui_State.selectedSupplierId = newSupplierId
-
+                                            // First, reset all filters
                                             app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                                                val latestSupplier = product.historiqueBonsCommend
-                                                    .maxByOrNull { it.date }
-
-                                                val totalQuantity = latestSupplier?.coloursEtGoutsCommendee
-                                                    ?.sumOf { it.quantityAchete } ?: 0
-
-                                                val shouldFilter = if (newSupplierId == 0L) {
-                                                    false
-                                                } else {
-                                                    latestSupplier?.supplier_id == supplier.supplier_id && totalQuantity > 0
+                                                product.bonCommendDeCetteCota?.grossistInformations?.let { info ->
+                                                    info.auFilterFAB = false
                                                 }
-
-                                                product.bonCommendDeCetteCota?.auFilterFAB ?: false
                                             }
 
+                                            // Then, set filter for the selected grossist
+                                            products.forEach { product ->
+                                                product.bonCommendDeCetteCota?.grossistInformations?.let { info ->
+                                                    info.auFilterFAB = true
+                                                }
+                                            }
+
+                                            // Update Firebase
                                             app_Initialize_Model.update_Produits_FireBase()
                                         } catch (e: Exception) {
                                             // Handle the error silently

@@ -55,34 +55,6 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
         }
     }
 
-    // First filter products based on quantity and supplier
-    val existingProduct = app_Initialize_Model.produits_Main_DataBase
-        .filter { produit ->
-            // Calculate total quantity ordered across all suppliers and colors
-            val totalQuantity = produit.historiqueBonsCommend
-                .flatMap { it.coloursEtGoutsCommendee }
-                .sumOf { it.quantityAchete }
-
-            // Check if the product matches the selected supplier filter
-            val supplierMatch = if (fragment_Ui_State.selectedSupplierId != 0L) {
-                produit.historiqueBonsCommend.any {
-                    it.supplier_id == fragment_Ui_State.selectedSupplierId
-                }
-            } else true
-
-            // Return true for products meeting both criteria
-            totalQuantity > 0 && supplierMatch
-        }
-        // Then find the first product that has a valid position in its supplier data
-        .firstOrNull { produit ->
-            produit.historiqueBonsCommend
-                .any { supplier ->
-                    supplier.supplier_id == fragment_Ui_State.selectedSupplierId &&
-                            supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit >= 1 &&
-                            produit.id>2000
-                }
-        }
-
     Column(
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -121,7 +93,13 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
                         color = Color(0xFF4CAF50),
                         showLabel = showLabels,
                         onClick = {
-                            val uri = imageHandler.handleNewProductImageCapture(existingProduct)
+                            val uri = imageHandler.handleNewProductImageCapture(
+                                app_Initialize_Model.produits_Main_DataBase
+                                    .firstOrNull{ produit ->
+                                        produit.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true
+                                                && produit.id>2000
+                                    }
+                            )
                             cameraLauncher.launch(uri)
                         }
                     )

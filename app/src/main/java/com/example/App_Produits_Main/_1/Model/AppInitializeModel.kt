@@ -62,18 +62,18 @@ class AppInitializeModel(
 
                 class GrossistBonCommandes(
                     var vid: Long = 0,
-                    var supplier_id: Long = 0,
-                    var nom: String = "",
+                    init_grossistInformations: GrossistInformations? = null,
                     var date: String = "", //"yyyy-MM-dd HH:mm:ss"
                     var date_String_Divise: String = "", //"yyyy-MM-dd"
                     var time_String_Divise: String = "", //"HH:mm:ss"
-                    var couleur: String = "#FFFFFF",
+
                     var currentCreditBalance: Double = 0.0,
                     init_position_Grossist_Don_Parent_Grossists_List: Int = 0,
                     init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
                     init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
                 ) {
-                    var auFilterFAB: Boolean by mutableStateOf( false)
+                    var grossistInformations: GrossistInformations?
+                            by mutableStateOf(init_grossistInformations)
 
                     var position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int by mutableStateOf(
                         init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
@@ -84,15 +84,23 @@ class AppInitializeModel(
                     var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
                         init_coloursEtGoutsCommendee.toMutableStateList()
 
-                        class ColoursGoutsCommendee(
-                            init_statues: ColourEtGout_Model? = null,
-                            init_quantityAchete: Int = 0
-                        ) {
-                            var statues: ColourEtGout_Model?
-                                    by mutableStateOf(init_statues)
-
-                            var quantityAchete: Int by mutableStateOf(init_quantityAchete)
+                        class GrossistInformations(
+                            var id: Long = 0,
+                            var nom: String = "",
+                            var couleur: String = "#FFFFFF",
+                        )  {
+                            var auFilterFAB: Boolean by mutableStateOf( false)
                         }
+
+                            class ColoursGoutsCommendee(
+                                init_statues: ColourEtGout_Model? = null,
+                                init_quantityAchete: Int = 0
+                            ) {
+                                var statues: ColourEtGout_Model?
+                                        by mutableStateOf(init_statues)
+
+                                var quantityAchete: Int by mutableStateOf(init_quantityAchete)
+                            }
                 }
 
                 class ClientBonVent_Model(

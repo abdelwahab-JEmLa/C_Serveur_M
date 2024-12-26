@@ -14,93 +14,128 @@ suspend fun Apps_Produits_Main_DataBase_ViewModel.load_Depuit_FireBase() {
     val baseRef = Firebase.database.getReference(CHEMIN_BASE)
 
     try {
-        // Préparation des produits
-        _app_Initialize_Model.produits_Main_DataBase.apply {
-            // Ajouter les produits manquants
-            val produitsManquants = NOMBRE_PRODUITS - size
-            if (produitsManquants > 0) {
-                repeat(produitsManquants) { add(AppInitializeModel.ProduitModel()) }
+        // Initial data fetch to check existing products
+        val existingData = baseRef.get().await()
+        val existingProducts = existingData.children.mapNotNull { snapshot ->
+            try {
+                snapshot.getValue(AppInitializeModel.ProduitModel::class.java)
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to parse product from snapshot: ${snapshot.key}", e)
+                null
             }
-            // Attribuer les IDs
-            forEachIndexed { index, produit -> produit.id = index.toLong() }
         }
 
-        // Chargement des données pour chaque produit
-        _app_Initialize_Model.produits_Main_DataBase.forEach { produit ->
+        // Clear and prepare the products list
+        _app_Initialize_Model.produits_Main_DataBase.clear()
+
+        // Initialize products list with existing or new products
+        repeat(NOMBRE_PRODUITS) { index ->
+            val existingProduct = existingProducts.find { it.id == index.toLong() }
+            val product = existingProduct ?: AppInitializeModel.ProduitModel(id = index.toLong())
+
             try {
-                val refProduit = baseRef.child(produit.id.toString())
+                val refProduit = baseRef.child(index.toString())
 
-                // Charger le nom
-                val nom = refProduit.child("nom").get().await().value?.toString()
-                produit.nom = when {
-                    !nom.isNullOrEmpty() -> nom
-                    produit.id == 0L -> ""
-                    else -> "Empty"
+                // Load and validate product name
+                val nomSnapshot = refProduit.child("nom").get().await()
+                if (nomSnapshot.exists()) {
+                    product.nom = nomSnapshot.value?.toString() ?: "Produit $index"
+                } else if (product.nom.isEmpty() && index > 0) {
+                    product.nom = "Produit $index"
                 }
 
-                // Charger les couleurs
-                produit.coloursEtGouts.clear()
-                refProduit.child("coloursEtGouts").get().await().children.forEach { snapshot ->
-                    snapshot.getValue(AppInitializeModel.ProduitModel.ColourEtGout_Model::class.java)
-                        ?.let { produit.coloursEtGouts.add(it) }
+                // Load colors with validation
+                product.coloursEtGouts.clear()
+                refProduit.child("coloursEtGouts").get().await().children.forEach { colorSnapshot ->
+                    try {
+                        colorSnapshot.getValue(AppInitializeModel.ProduitModel.ColourEtGout_Model::class.java)?.let { color ->
+                            if (color.nom.isNotEmpty()) {
+                                product.coloursEtGouts.add(color)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to parse color for product $index", e)
+                    }
                 }
 
-                // Charger le bon de commande actuel
-                val bonCommande = refProduit
-                    .child("bonCommendDeCetteCota")
-                    .get()
-                    .await()
-                    .getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)
-
-                produit.bonCommendDeCetteCota = bonCommande
-
-                // Charger les bons de vente de cette cota
-                produit.bonsVentDeCetteCota.clear()
-                refProduit.child("bonsVentDeCetteCota")
-                    .get()
-                    .await()
-                    .children
-                    .forEach { snapshot ->
-                        snapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)
-                            ?.let { produit.bonsVentDeCetteCota.add(it) }
+                // Load current order with validation
+                try {
+                    val bonCommandeSnapshot = refProduit.child("bonCommendDeCetteCota").get().await()
+                    if (bonCommandeSnapshot.exists()) {
+                        bonCommandeSnapshot.getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommande ->
+                            if (bonCommande.grossistInformations != null) {
+                                product.bonCommendDeCetteCota = bonCommande
+                            }
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Failed to load current order for product $index", e)
+                }
 
-                // Charger l'historique des bons de vente
-                produit.historiqueBonsVents.clear()
-                refProduit.child("historiqueBonsVents")
-                    .get()
-                    .await()
-                    .children
-                    .forEach { snapshot ->
-                        snapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)
-                            ?.let { produit.historiqueBonsVents.add(it) }
+                // Load current sales with validation
+                product.bonsVentDeCetteCota.clear()
+                refProduit.child("bonsVentDeCetteCota").get().await().children.forEach { saleSnapshot ->
+                    try {
+                        saleSnapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)?.let { sale ->
+                            if (sale.nom_Acheteur.isNotEmpty() && sale.colours_Achete.isNotEmpty()) {
+                                product.bonsVentDeCetteCota.add(sale)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to parse current sale for product $index", e)
                     }
+                }
 
-                // Charger l'historique des bons de commande
-                produit.historiqueBonsCommend.clear()
-                refProduit.child("historiqueBonsCommend")
-                    .get()
-                    .await()
-                    .children
-                    .forEach { snapshot ->
-                        snapshot.getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)
-                            ?.let { produit.historiqueBonsCommend.add(it) }
+                // Load sales history with validation
+                product.historiqueBonsVents.clear()
+                refProduit.child("historiqueBonsVents").get().await().children.forEach { historySnapshot ->
+                    try {
+                        historySnapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)?.let { history ->
+                            if (history.nom_Acheteur.isNotEmpty() && history.colours_Achete.isNotEmpty()) {
+                                product.historiqueBonsVents.add(history)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to parse sale history for product $index", e)
                     }
+                }
+
+                // Load order history with validation
+                product.historiqueBonsCommend.clear()
+                refProduit.child("historiqueBonsCommend").get().await().children.forEach { orderSnapshot ->
+                    try {
+                        orderSnapshot.getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)?.let { order ->
+                            if (order.grossistInformations != null) {
+                                product.historiqueBonsCommend.add(order)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to parse order history for product $index", e)
+                    }
+                }
+
+                // Set update flags based on data completeness
+                product.besoin_To_Be_Updated = product.nom.isEmpty() ||
+                        product.coloursEtGouts.isEmpty() ||
+                        (index > 0 && product.historiqueBonsVents.isEmpty() && product.bonsVentDeCetteCota.isEmpty())
+
+                product.it_Image_besoin_To_Be_Updated = product.besoin_To_Be_Updated
 
             } catch (e: Exception) {
-                Log.e(TAG, "Erreur pour produit ${produit.id}", e)
-                // Gestion des erreurs pour ce produit
-                produit.apply {
-                    nom = "Produit ${produit.id} (Erreur)"
+                Log.e(TAG, "Error loading product $index", e)
+                product.apply {
+                    nom = if (index.toLong() == 0L) "" else "Produit $index (Erreur)"
                     coloursEtGouts.clear()
                     besoin_To_Be_Updated = true
                     it_Image_besoin_To_Be_Updated = true
                 }
             }
+
+            _app_Initialize_Model.produits_Main_DataBase.add(product)
         }
 
     } catch (e: Exception) {
-        Log.e(TAG, "Erreur lors du chargement", e)
+        Log.e(TAG, "Critical error during loading", e)
         throw e
     }
 }

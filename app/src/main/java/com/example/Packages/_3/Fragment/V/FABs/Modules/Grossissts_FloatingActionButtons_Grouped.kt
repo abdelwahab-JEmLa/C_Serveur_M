@@ -25,7 +25,6 @@ import com.example.Packages._3.Fragment.Models.UiState
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-import kotlin.random.Random
 
 @Composable
 fun Grossissts_FloatingActionButtons_Grouped(
@@ -35,13 +34,13 @@ fun Grossissts_FloatingActionButtons_Grouped(
 ) {
     val scope = rememberCoroutineScope()
 
-    // Filter out null grossists and group by non-null grossist information
+    // Grouper les produits par grossist en utilisant equals() personnalisé
     val grouped_Produits_Par_grossistInformations = remember(app_Initialize_Model.produits_Main_DataBase) {
         val grouped = app_Initialize_Model.produits_Main_DataBase
             .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
-            .groupBy { produit -> produit.bonCommendDeCetteCota?.grossistInformations }
+            .groupBy { it.bonCommendDeCetteCota?.grossistInformations }
 
-        // Log grouping information
+        // Log des informations de groupage
         Log.d("GrossistGrouping", """
             -------- Grouping Details --------
             Total products: ${app_Initialize_Model.produits_Main_DataBase.size}
@@ -55,13 +54,13 @@ fun Grossissts_FloatingActionButtons_Grouped(
                 Color: ${grossist?.couleur ?: "N/A"}
                 Products count: ${products.size}
                 Product names: ${products.joinToString(", ") { it.nom }}
-                """.trimIndent()
+            """.trimIndent()
         }}
-            --------------------------------
         """.trimIndent())
 
         grouped
     }
+
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -86,8 +85,8 @@ fun Grossissts_FloatingActionButtons_Grouped(
     ) {
         AnimatedVisibility(
             visible = showFloatingButtons,
-            enter = fadeIn() + expandHorizontally(),
-            exit = fadeOut() + shrinkHorizontally()
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
         ) {
             Surface(
                 modifier = Modifier.wrapContentHeight(),
@@ -109,24 +108,44 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                 onClick = {
                                     scope.launch {
                                         try {
-                                            // First, reset all filters
+                                            // Réinitialiser tous les filtres
                                             app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                                                product.bonCommendDeCetteCota?.grossistInformations?.let { info ->
-                                                    info.auFilterFAB = false
-                                                }
+                                                product.auFilterFAB = false
                                             }
 
-                                            // Then, set filter for the selected grossist
+                                            grossistModel.auFilterFAB =! grossistModel.auFilterFAB
+
                                             products.forEach { product ->
-                                                product.bonCommendDeCetteCota?.grossistInformations?.let { info ->
-                                                    info.auFilterFAB = true
+                                                product.bonCommendDeCetteCota?.let { bonCommande ->
+
+                                                    val totalQuantity = bonCommande.coloursEtGoutsCommendee.sumOf { it.quantityAchete }
+                                                    if (totalQuantity > 0) {
+                                                        product.auFilterFAB = true
+                                                    }
                                                 }
                                             }
 
-                                            // Update Firebase
+                                            // Log des produits filtrés
+                                            val filteredProducts = app_Initialize_Model.produits_Main_DataBase
+                                                .filter { it.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true }
+
+                                            Log.d("FilteredProducts", """
+                                                -------- Filtered Products Details --------
+                                                Selected Grossist: ${grossistModel.nom}
+                                                Total filtered products: ${filteredProducts.size}
+                                                
+                                                Filtered products list:
+                                                ${filteredProducts.joinToString("\n") { product ->
+                                                """
+                                                        Product: ${product.nom}
+                                                    """.trimIndent()
+                                            }}
+                                            """.trimIndent())
+
+                                            // Mettre à jour Firebase
                                             app_Initialize_Model.update_Produits_FireBase()
                                         } catch (e: Exception) {
-                                            // Handle the error silently
+                                            Log.e("FilterError", "Error while filtering products", e)
                                         }
                                     }
                                 }

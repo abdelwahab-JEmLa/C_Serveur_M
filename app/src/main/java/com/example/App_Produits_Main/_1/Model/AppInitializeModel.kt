@@ -11,6 +11,7 @@ import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.Objects
 
 class AppInitializeModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
@@ -41,6 +42,8 @@ class AppInitializeModel(
             var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
             var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)
             var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
+            var auFilterFAB: Boolean by mutableStateOf( false)
+
             var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
                 init_colours_Et_Gouts.toMutableStateList()
 
@@ -84,23 +87,35 @@ class AppInitializeModel(
                     var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
                         init_coloursEtGoutsCommendee.toMutableStateList()
 
-                        class GrossistInformations(
-                            var id: Long = 0,
-                            var nom: String = "",
-                            var couleur: String = "#FFFFFF",
-                        )  {
+                        data class GrossistInformations(
+                            val id: Long,
+                            val nom: String,
+                            val couleur: String
+                        ) {
                             var auFilterFAB: Boolean by mutableStateOf( false)
+
+                            override fun equals(other: Any?): Boolean {
+                                if (this === other) return true
+                                if (other !is GrossistInformations) return false
+                                return id == other.id &&
+                                        nom == other.nom &&
+                                        couleur == other.couleur
+                            }
+
+                            override fun hashCode(): Int {
+                                return Objects.hash(id, nom, couleur)
+                            }
                         }
 
-                            class ColoursGoutsCommendee(
+                        class ColoursGoutsCommendee(
                                 init_statues: ColourEtGout_Model? = null,
                                 init_quantityAchete: Int = 0
-                            ) {
+                        ) {
                                 var statues: ColourEtGout_Model?
                                         by mutableStateOf(init_statues)
 
                                 var quantityAchete: Int by mutableStateOf(init_quantityAchete)
-                            }
+                        }
                 }
 
                 class ClientBonVent_Model(

@@ -30,30 +30,32 @@ fun Produits_Main_List(
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
 ) {
+    // Update the filter condition to correctly handle null cases
     val visibleItems = remember(app_Initialize_Model.produits_Main_DataBase) {
         app_Initialize_Model.produits_Main_DataBase.filter { product ->
-            product.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB ?: false
+            product.auFilterFAB
         }
     }
 
     when (ui_State.currentMode) {
         UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> {
+            // Ensure proper partitioning of items based on position
             val (itemsWithPosition, itemsWithoutPosition) = remember(visibleItems) {
                 visibleItems.partition { produit ->
-                    val position = produit.bonCommendDeCetteCota
-                        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                    position != null && position > 0
+                    produit.bonCommendDeCetteCota?.let { bon ->
+                        bon.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit > 0
+                    } ?: false
                 }
             }
 
+            // Sort items with position by their position value
             val sortedPositionItems = remember(itemsWithPosition) {
                 itemsWithPosition.sortedBy { produit ->
-                    produit.bonCommendDeCetteCota
-                        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                        ?: Int.MAX_VALUE
+                    produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: Int.MAX_VALUE
                 }
             }
 
+            // Sort items without position alphabetically
             val sortedNoPositionItems = remember(itemsWithoutPosition) {
                 itemsWithoutPosition.sortedBy { it.nom }
             }
@@ -70,10 +72,11 @@ fun Produits_Main_List(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Only show section if there are items
                 if (sortedPositionItems.isNotEmpty()) {
                     item(span = { GridItemSpan(5) }) {
                         Text(
-                            text = "Products with Position",
+                            text = "Products with Position (${sortedPositionItems.size})",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.surface)
@@ -82,7 +85,10 @@ fun Produits_Main_List(
                         )
                     }
 
-                    items(sortedPositionItems) { produit ->
+                    items(
+                        items = sortedPositionItems,
+                        key = { it.nom }  // Add key for better performance
+                    ) { produit ->
                         Host_Affiche_Produit_Item(
                             app_Initialize_Model = app_Initialize_Model,
                             uiState = ui_State,
@@ -94,7 +100,7 @@ fun Produits_Main_List(
                 if (sortedNoPositionItems.isNotEmpty()) {
                     item(span = { GridItemSpan(5) }) {
                         Text(
-                            text = "Products without Position",
+                            text = "Products without Position (${sortedNoPositionItems.size})",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colorScheme.surface)
@@ -103,11 +109,28 @@ fun Produits_Main_List(
                         )
                     }
 
-                    items(sortedNoPositionItems) { produit ->
+                    items(
+                        items = sortedNoPositionItems,
+                        key = { it.nom }  // Add key for better performance
+                    ) { produit ->
                         Host_Affiche_Produit_Item(
                             app_Initialize_Model = app_Initialize_Model,
                             uiState = ui_State,
                             produit = produit
+                        )
+                    }
+                }
+
+                // Add empty state message if no items are visible
+                if (sortedPositionItems.isEmpty() && sortedNoPositionItems.isEmpty()) {
+                    item(span = { GridItemSpan(5) }) {
+                        Text(
+                            text = "No products available for selected filter",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -119,8 +142,7 @@ fun Produits_Main_List(
             val sortedItems = remember(visibleItems) {
                 visibleItems.sortedWith(
                     compareBy<AppInitializeModel.ProduitModel> { produit ->
-                        produit.bonCommendDeCetteCota
-                            ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                        produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                             ?: Int.MAX_VALUE
                     }.thenBy { it.nom }
                 )
@@ -136,11 +158,27 @@ fun Produits_Main_List(
                 contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(sortedItems) { produit ->
-                    Produit_Item(
-                        uiState = ui_State,
-                        produit = produit
-                    )
+                if (sortedItems.isNotEmpty()) {
+                    items(
+                        items = sortedItems,
+                        key = { it.nom }  // Add key for better performance
+                    ) { produit ->
+                        Produit_Item(
+                            uiState = ui_State,
+                            produit = produit
+                        )
+                    }
+                } else {
+                    item {
+                        Text(
+                            text = "No products available for selected filter",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(32.dp),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         }

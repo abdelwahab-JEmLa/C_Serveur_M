@@ -1,0 +1,110 @@
+{
+  "701": {
+    "checked": false,
+    "id": 701,
+    "label": "Produit_Item #1",
+    "lastChosenSupplier": {
+      "couleur": "#3498DB",
+      "currentCreditBalance": 3668.0108869138294,
+      "id": 2,
+      "nom": "Grossiste 2",
+      "position": 0
+    }
+  },
+  "702": {
+    "checked": false,
+    "id": 702,
+    "label": "Produit_Item #2",
+    "lastChosenSupplier": {
+      "couleur": "#33FFF1",
+      "currentCreditBalance": 586.7115464159278,
+      "id": 3,
+      "nom": "Grossiste 3",
+      "position": 0
+    }
+  },
+  "703": {
+    "checked": true,
+    "id": 703,
+    "label": "Produit_Item #3",
+    "lastChosenSupplier": {
+      "couleur": "#8E44AD",
+      "currentCreditBalance": 5891.587010471042,
+      "id": 1,
+      "nom": "Grossiste 1",
+      "position": 0
+    }
+  },
+  "704": {
+    "checked": false,
+    "id": 704,
+    "label": "Produit_Item #4",
+    "lastChosenSupplier": {
+      "couleur": "#FF5733",
+      "currentCreditBalance": 7613.420772042549,
+      "id": 3,
+      "nom": "Grossiste 3",
+      "position": 0
+    }
+  },
+  "705": {
+    "checked": false,
+    "id": 705,
+    "label": "Produit_Item #5",
+    "lastChosenSupplier": {
+      "couleur": "#33FF57",
+      "currentCreditBalance": 6882.165975579672,
+      "id": 2,
+      "nom": "Grossiste 2",
+      "position": 0
+    }
+  },
+  "706": {
+    "checked": false,
+    "id": 706,
+    "label": "Produit_Item #6",
+    "lastChosenSupplier": {
+      "couleur": "#8E44AD",
+      "currentCreditBalance": 1448.5419358296924,
+      "id": 3,
+      "nom": "Grossiste 3",
+      "position": 0
+    }
+  },
+  "707": {
+    "checked": true,
+    "id": 707,
+    "label": "Produit_Item #7",
+    "lastChosenSupplier": {
+      "couleur": "#F1FF33",
+      "currentCreditBalance": 3759.445102539356,
+      "id": 1,
+      "nom": "Grossiste 1",
+      "position": 0
+    }
+  },
+  "708": {
+    "checked": false,
+    "id": 708,
+    "label": "Produit_Item #8",
+    "lastChosenSupplier": {
+      "couleur": "#3498DB",
+      "currentCreditBalance": 816.3362700395448,
+      "id": 3,
+      "nom": "Grossiste 3",
+      "position": 0
+    }
+  },
+  "709": {
+    "checked": false,
+    "id": 709,
+    "label": "Produit_Item #9",
+    "lastChosenSupplier": {
+      "couleur": "#F1FF33",
+      "currentCreditBalance": 7591.825976513565,
+      "id": 3,
+      "nom": "Grossiste 3",
+      "position": 0
+    }
+  }
+}

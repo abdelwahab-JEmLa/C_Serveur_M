@@ -1,4 +1,4 @@
-package com.example.Packages._3.Fragment.ViewModel._2.Init.Main.Components
+package com.example.Packages._1.Fragment.ViewModel._2.Init.Main.Components
 
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel

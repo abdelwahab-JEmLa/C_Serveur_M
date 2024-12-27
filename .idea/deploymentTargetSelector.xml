@@ -51,6 +51,9 @@
       <SelectionState runConfigName="Preview_Fragment_4_Main_Screen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="coupeaudioai">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "C_Serveur"
 include(":app")
+include(":coupeaudioai")

@@ -28,6 +28,7 @@ kotlinxSerializationJson = "1.6.3"
 firebaseFirestoreKtx = "25.1.1"
 firebaseStorageKtx = "21.0.1"
 firebaseStorage = "21.0.1"
+appcompat = "1.7.0"
 
 [libraries]
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
@@ -66,6 +67,7 @@ osmdroid-wms = { module = "org.osmdroid:osmdroid-wms", version.ref = "osmdroidWm
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

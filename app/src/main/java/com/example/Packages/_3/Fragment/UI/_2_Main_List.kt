@@ -1,6 +1,7 @@
 // _2_Main_List.kt
 package com.example.Packages._3.Fragment.UI
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,13 +32,44 @@ fun Produits_Main_List(
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
 ) {
-    // Update the filter condition to correctly handle null cases
-    val visibleItems = remember(app_Initialize_Model.produits_Main_DataBase) {
-        app_Initialize_Model.produits_Main_DataBase.filter { product ->
-            product.auFilterFAB
-        }
+    // Add debug logging for initial state
+    LaunchedEffect(app_Initialize_Model.produits_Main_DataBase) {
+        Log.d("ProductsList", """
+            Initial State:
+            Total products: ${app_Initialize_Model.produits_Main_DataBase.size}
+            Filtered products: ${app_Initialize_Model.produits_Main_DataBase.count { it.auFilterFAB }}
+        """.trimIndent())
     }
 
+    // Update the filter condition to properly handle all cases
+    val visibleItems = remember(app_Initialize_Model.produits_Main_DataBase) {
+        app_Initialize_Model.produits_Main_DataBase.filter { product ->
+            // Check if any grossist is filtered
+            val anyGrossistFiltered = app_Initialize_Model.produits_Main_DataBase
+                .any { it.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true }
+
+            if (!anyGrossistFiltered) {
+                // If no grossist is filtered, show all products
+                true
+            } else {
+                // If a grossist is filtered, only show products that match the filter
+                product.auFilterFAB && product.bonCommendDeCetteCota?.let { bon ->
+                    // Verify the product has quantity and matches the filtered grossist
+                    bon.grossistInformations?.auFilterFAB == true &&
+                            bon.coloursEtGoutsCommendee.sumOf { it.quantityAchete } > 0
+                } ?: false
+            }
+        }.also { filtered ->
+            // Add debug logging for filtered results
+            Log.d("ProductsList", """
+                Filtered Results:
+                Visible items: ${filtered.size}
+                Items with quantities: ${filtered.count { product ->
+                (product.bonCommendDeCetteCota?.coloursEtGoutsCommendee?.sumOf { it.quantityAchete } ?: 0) > 0
+            }}
+            """.trimIndent())
+        }
+    }
     when (ui_State.currentMode) {
         UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> {
             // Ensure proper partitioning of items based on position

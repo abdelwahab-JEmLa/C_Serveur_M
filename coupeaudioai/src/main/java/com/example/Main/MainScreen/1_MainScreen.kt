@@ -20,16 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.coupeaudioai.AppViewModels
 
 @Composable
-fun MainScreen(modifier: Modifier,
-               appViewModels: AppViewModels,
-) {
-            MainContent(modifier = Modifier,appViewModels)
-}
-
-
-
-@Composable
-private fun MainContent(
+fun MainScreen(
     modifier: Modifier,
     appViewModels: AppViewModels,
 ) {

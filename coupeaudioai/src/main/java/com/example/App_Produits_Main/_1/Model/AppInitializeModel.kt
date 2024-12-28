@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import com.example.App_Produits_Main._1.Model.Extensions.AudioInfo_Model
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
@@ -14,10 +15,28 @@ import kotlinx.coroutines.withContext
 import java.util.Objects
 
 class AppInitializeModel(
-    initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
+    initial_Produits_Main_DataBase: List<ProduitModel> = emptyList(),
+    init_audioInfos: List<AudioInfo_Model> = emptyList()
 ) {
+    private val CHEMIN_BASE_Audios_Model = "_2_3ilm_Char3i/1_Audios_Model"
+    private val baseRef_AudioMarks_Model = Firebase.database.getReference(CHEMIN_BASE_Audios_Model)
+    val AudioMarks_Model_TAG = "Audios_Model"
+
+    suspend fun update_AudiosInfo() {
+        try {
+            withContext(Dispatchers.IO) {
+                baseRef_AudioMarks_Model.setValue(baseRef_AudioMarks_Model).await()
+            }
+        } catch (e: Exception) {
+            Log.e("AudioInfo_Model", "Failed to update audio info in Firebase", e)
+            throw Exception("Failed to update audio info in Firebase: ${e.message}")
+        }
+    }
     var produits_Main_DataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
+
+    var audioInfos: SnapshotStateList<AudioInfo_Model> =
+        init_audioInfos.toMutableStateList()
 
     val ref_Produits_Main_DataBase = Firebase.database
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")

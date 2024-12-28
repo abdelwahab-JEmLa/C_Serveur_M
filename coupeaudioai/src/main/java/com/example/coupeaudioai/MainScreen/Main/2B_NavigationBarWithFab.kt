@@ -29,6 +29,7 @@ import com.example.coupeaudioai.R
 
 @Composable
 
+
 fun NavigationBarWithFab(
     items: List<Screen>,
     currentRoute: String?,

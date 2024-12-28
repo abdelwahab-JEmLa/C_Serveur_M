@@ -14,7 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.App_Produits_Main._2.ViewModel.AppsProduitsMainDataBase_ViewModel
-import com.example.Main.MainScreen.MainScreen
+import com.example.coupeaudioai.MainScreen.Main.MainScreen
 import com.example.coupeaudioai.Modules.Init.PermissionHandler
 import com.example.coupeaudioai.ui.theme.B_ServeurTheme
 

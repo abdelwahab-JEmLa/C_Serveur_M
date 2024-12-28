@@ -1,4 +1,4 @@
-package com.example.Main.MainScreen
+package com.example.coupeaudioai.MainScreen.Main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -28,6 +28,7 @@ import androidx.wear.compose.material.ContentAlpha
 import com.example.coupeaudioai.R
 
 @Composable
+
 fun NavigationBarWithFab(
     items: List<Screen>,
     currentRoute: String?,

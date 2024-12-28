@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI
+package com.example.Packages._1.Fragment.UI._3.ItemMainDifferentsAffichageModes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,8 +28,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-import com.example.Packages._1.Fragment.Models.UiState
 import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Image_By_Id
+import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
 internal fun ItemMain(

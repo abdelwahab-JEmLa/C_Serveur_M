@@ -6,12 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Packages._1.Fragment.Models.UiState
+import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 
 class ViewModel_Fragment : ViewModel() {
-
-    private var _uiState by mutableStateOf(
+    var _uiState by mutableStateOf(
         UiState(
             initialLastUpdateTime = System.currentTimeMillis().toString(),
         )
@@ -26,11 +25,11 @@ class ViewModel_Fragment : ViewModel() {
 
     init {
         viewModelScope.launch {
-                try {
-                    isInitializing = true
-                } finally {
-                    isInitializing = false
-                }
+            try {
+                isInitializing = true
+            } finally {
+                isInitializing = false
+            }
         }
     }
 }

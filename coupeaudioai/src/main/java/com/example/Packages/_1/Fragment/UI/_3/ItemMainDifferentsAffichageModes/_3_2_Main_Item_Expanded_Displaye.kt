@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI
+package com.example.Packages._1.Fragment.UI._3.ItemMainDifferentsAffichageModes
     /*
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background

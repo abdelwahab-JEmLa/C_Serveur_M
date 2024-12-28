@@ -17,7 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-import com.example.Packages._1.Fragment.Models.UiState
+import com.example.Packages._1.Fragment.UI._3.ItemMainDifferentsAffichageModes.ItemMain
+import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
 internal fun List_Main(

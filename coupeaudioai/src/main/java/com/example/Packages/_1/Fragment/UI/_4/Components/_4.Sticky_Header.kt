@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
-import com.example.App_Produits_Main._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppInitializeModel
 import kotlinx.coroutines.delay
 
 @Composable

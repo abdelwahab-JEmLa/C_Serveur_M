@@ -44,7 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.App_Produits_Main._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.App_Produits_Main._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Packages._1.Fragment.UI._3.ItemMainDifferentsAffichageModes.ItemMain
 import com.example.Packages._1.Fragment.UI._4.Components.Sticky_Header
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
@@ -28,8 +28,8 @@ internal fun List_Main(
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
 ) {
-    val visibleItems = remember(app_Initialize_Model.audioInfos) {
-        app_Initialize_Model.audioInfos.flatMap { audioDatas ->
+    val visibleItems = remember(app_Initialize_Model.audioDatasModel) {
+        app_Initialize_Model.audioDatasModel.flatMap { audioDatas ->
             // Map each AudioMarks_Model to include its parent Audio_DatasModel for the header
             audioDatas.audioMarks.map { audioMark ->
                 audioMark to audioDatas

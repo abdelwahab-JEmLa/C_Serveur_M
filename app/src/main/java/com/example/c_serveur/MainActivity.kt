@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
+import com.example.Apps_Head._2.ViewModel.AppsProduitsMainDataBase_ViewModel
 import com.example.Main.MainScreen.MainScreen
 import com.example.Main.StartFragment.StartFragmentViewModel
 import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsViewModel
 import com.example.Packages.Z.Archives.P3.E.ViewModel.ViewModelFragment
-import com.example.App_Produits_Main._2.ViewModel.AppsProduitsMainDataBase_ViewModel
-import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.c_serveur.Modules.Z.Archives.AppDatabase
+import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
 import com.example.clientjetpack.ViewModel.InitializeViewModel
 

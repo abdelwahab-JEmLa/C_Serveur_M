@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import com.example.App_Produits_Main._2.ViewModel.AppInitialize_ViewModel
+import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.coupeaudioai.MainScreen.Main.MainScreen
 import com.example.coupeaudioai.Modules.Init.PermissionHandler
 import com.example.coupeaudioai.ui.theme.B_ServeurTheme

@@ -27,9 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.App_Produits_Main._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._1.Fragment.Models.UiState
-import com.example.App_Produits_Main._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 
 @Composable
 internal fun Produit_Item(

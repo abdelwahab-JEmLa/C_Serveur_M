@@ -22,8 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Packages._1.Fragment.Models.UiState
-import com.example.App_Produits_Main._1.Model.AppInitializeModel
 
 @Composable
 fun Produits_Main_List(

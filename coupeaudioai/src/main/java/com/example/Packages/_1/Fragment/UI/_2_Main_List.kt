@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import com.example.Packages._1.Fragment.UI._3.ItemMainDifferentsAffichageModes.ItemMain
+import com.example.Packages._1.Fragment.UI._4.Components.Sticky_Header
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
@@ -27,39 +28,18 @@ internal fun List_Main(
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
 ) {
-
-    // Update the filter condition to properly handle all cases
-    val visibleItems = remember(app_Initialize_Model.produits_Main_DataBase) {
-        app_Initialize_Model.produits_Main_DataBase.filter { product ->
-            // Check if any grossist is filtered
-            val anyGrossistFiltered = app_Initialize_Model.produits_Main_DataBase
-                .any { it.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true }
-
-            if (!anyGrossistFiltered) {
-                // If no grossist is filtered, show all products
-                true
-            } else {
-                // If a grossist is filtered, only show products that match the filter
-                product.auFilterFAB && product.bonCommendDeCetteCota?.let { bon ->
-                    // Verify the product has quantity and matches the filtered grossist
-                    bon.grossistInformations?.auFilterFAB == true &&
-                            bon.coloursEtGoutsCommendee.sumOf { it.quantityAchete } > 0
-                } ?: false
+    val visibleItems = remember(app_Initialize_Model.audioInfos) {
+        app_Initialize_Model.audioInfos.flatMap { audioDatas ->
+            // Map each AudioMarks_Model to include its parent Audio_DatasModel for the header
+            audioDatas.audioMarks.map { audioMark ->
+                audioMark to audioDatas
             }
         }
     }
+
     when (ui_State.currentMode) {
         UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs,
         UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> {
-            val sortedItems = remember(visibleItems) {
-                visibleItems.sortedWith(
-                    compareBy<AppInitializeModel.ProduitModel> { produit ->
-                        produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                            ?: Int.MAX_VALUE
-                    }.thenBy { it.nom }
-                )
-            }
-
             LazyColumn(
                 modifier = modifier
                     .fillMaxWidth()
@@ -70,20 +50,30 @@ internal fun List_Main(
                 contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                if (sortedItems.isNotEmpty()) {
-                    items(
-                        items = sortedItems,
-                        key = { it.nom }  // Add key for better performance
-                    ) { produit ->
-                        ItemMain(
-                            uiState = ui_State,
-                            produit = produit
-                        )
+                if (visibleItems.isNotEmpty()) {
+                    // Group items by their parent Audio_DatasModel
+                    val groupedItems = visibleItems.groupBy { it.second }
+
+                    groupedItems.forEach { (audioDatas, marks) ->
+                        item(key = "header-${audioDatas.vid}") {
+                            Sticky_Header(
+                                app_Initialize_Model = audioDatas
+                            )
+                        }
+
+                        items(
+                            items = marks,
+                            key = { it.first.id }
+                        ) { (audioMark, _) ->
+                            ItemMain(
+                                item = audioMark
+                            )
+                        }
                     }
                 } else {
                     item {
                         Text(
-                            text = "No products available for selected filter",
+                            text = "No items available for selected filter",
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(32.dp),
@@ -95,6 +85,5 @@ internal fun List_Main(
             }
         }
         UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> {}
-
     }
 }

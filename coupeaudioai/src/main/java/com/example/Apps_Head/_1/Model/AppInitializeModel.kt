@@ -17,8 +17,9 @@ class AppInitializeModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList(),
     init_audioInfos: List<Audio_DatasModel> = emptyList()
 ) {
-    private val CHEMIN_BASE_Audios_Model = "_2_3ilm_Char3i/1_Audios_Model"
-    val baseRef_AudioMarks_Model = Firebase.database.getReference(CHEMIN_BASE_Audios_Model)
+    private val Audios_Model_FireBaseCHEMINBASE = "_2_3ilm_Char3i/1_Audios_Model"
+    val baseRef_AudioMarks_Model = Firebase.database.getReference(Audios_Model_FireBaseCHEMINBASE)
+    val audios_Model_LocalAppStorageCheminBase = "/storage/emulated/0/_1_Abdelwahab_App_Storage/$Audios_Model_FireBaseCHEMINBASE/"
     val baseTAG_Audios_Model = "Audios_Model"
 
     suspend fun update_AudiosInfo() {
@@ -43,12 +44,12 @@ class AppInitializeModel(
 
     class Audio_DatasModel(
         var vid: Long = 0,
-        init_fileInfos: FileInfos_Model? = null,
+        init_fileInfos: FichieInfos_Model? = null,
         init_audioMarks: List<AudioMarks_Model> = emptyList(),
     ) {
-        var fileInfos: FileInfos_Model? by mutableStateOf(init_fileInfos)
+        var fileInfos: FichieInfos_Model? by mutableStateOf(init_fileInfos)
 
-        class FileInfos_Model(
+        class FichieInfos_Model(
             var nom: String = "",
             var path: String = ""
         )
@@ -59,13 +60,8 @@ class AppInitializeModel(
         class AudioMarks_Model(
             var id: Long = 0,
             var tag: String = "",
-            var positionTime: Int = 0,
+            var positionTime: Int = 0,   //HHmmSS
         )
-
-        private val ref_AudioInfo_Model = Firebase.database
-            .getReference("_2_3ilm_Char3i")
-            .child("1_AudioInfo_Model")
-
     }
 
         class ProduitModel(

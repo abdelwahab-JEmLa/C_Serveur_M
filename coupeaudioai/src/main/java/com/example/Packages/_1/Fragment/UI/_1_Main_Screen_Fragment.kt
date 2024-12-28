@@ -3,6 +3,7 @@ package com.example.Packages._1.Fragment.UI
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
@@ -10,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.Packages._1.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
@@ -35,6 +37,8 @@ internal fun Main_Screen_Fragment(
         return
     }
 
+    val audioPlayerManager = rememberAudioPlayerManager()
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
@@ -46,9 +50,15 @@ internal fun Main_Screen_Fragment(
                     List_Main(
                         app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
                         ui_State = viewModel.uiState,
-                        contentPadding = paddingValues
+                        contentPadding = paddingValues,
+                        audioPlayerManager = audioPlayerManager // Pass the manager to List_Main
                     )
                 }
+
+                MediaPlayerControls(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    playerManager = audioPlayerManager
+                )
             }
 
             Grossissts_FloatingActionButtons_Grouped(

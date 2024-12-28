@@ -21,9 +21,11 @@ suspend fun AppInitialize_ViewModel.cree_New_Start() {
         repeat(NOMBRE_AUDIOS) { audioIndex ->
             val nouvelAudio = AppInitializeModel.Audio_DatasModel(
                 vid = (audioIndex + 1).toLong(),
-                init_fileInfos = AppInitializeModel.Audio_DatasModel.FileInfos_Model(
+                init_fileInfos = AppInitializeModel.Audio_DatasModel.FichieInfos_Model(
                     nom = "Audio ${audioIndex + 1}",
-                    path = "/storage/audio_${audioIndex + 1}.mp3"
+                    path = _app_Initialize_Model.audios_Model_LocalAppStorageCheminBase +
+                            audioIndex + 1 +
+                            ".mp3"
                 )
             )
 

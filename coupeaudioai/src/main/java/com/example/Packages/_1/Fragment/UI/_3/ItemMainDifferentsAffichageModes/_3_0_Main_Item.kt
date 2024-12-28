@@ -1,6 +1,7 @@
 package com.example.Packages._1.Fragment.UI._3.ItemMainDifferentsAffichageModes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,14 +20,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
+import com.example.Packages._1.Fragment.UI.AudioPlayerManager
 
+
+// Updated ItemMain.kt
 @Composable
 internal fun ItemMain(
     item: AppInitializeModel.Audio_DatasModel.AudioMarks_Model,
+    audioPath: String,
+    audioPlayerManager: AudioPlayerManager
 ) {
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable {
+                // Convert seconds to milliseconds for ExoPlayer
+                val positionMs = item.positionTime * 1000
+                audioPlayerManager.playAudioFromPosition(audioPath, positionMs)
+            }
     ) {
         Glide_Display_Image_By_Id(
             produit_Id = 0,

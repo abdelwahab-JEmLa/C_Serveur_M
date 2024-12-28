@@ -27,6 +27,7 @@ internal fun List_Main(
     app_Initialize_Model: AppInitializeModel,
     ui_State: UiState,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
+    audioPlayerManager: AudioPlayerManager,
 ) {
     val visibleItems = remember(app_Initialize_Model.audioDatasModel) {
         app_Initialize_Model.audioDatasModel.flatMap { audioDatas ->
@@ -64,9 +65,11 @@ internal fun List_Main(
                         items(
                             items = marks,
                             key = { it.first.id }
-                        ) { (audioMark, _) ->
+                        ) { (audioMark, audioDatas) ->
                             ItemMain(
-                                item = audioMark
+                                item = audioMark,
+                                audioPath = audioDatas.fileInfos?.path ?: "",
+                                audioPlayerManager = audioPlayerManager
                             )
                         }
                     }

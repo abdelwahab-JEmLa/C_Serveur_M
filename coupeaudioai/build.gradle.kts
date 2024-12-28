@@ -123,5 +123,8 @@ dependencies {
     implementation (libs.firebase.database.ktx)
     implementation (libs.compose)
     implementation (libs.glide.transformations)
+
+    implementation ("androidx.media3:media3-exoplayer:1.5.1")
+    implementation ("androidx.media3:media3-ui:1.5.1")
 }
 apply(plugin = "com.google.gms.google-services")

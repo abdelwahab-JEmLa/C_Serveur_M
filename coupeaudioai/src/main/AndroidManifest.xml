@@ -33,7 +33,7 @@ xmlns:tools="http://schemas.android.com/tools">
 <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 
 <application
-    android:name=".Modules.MyApplication"
+    android:name=".Modules.Init.MyApplication"
     android:allowBackup="true"
     android:dataExtractionRules="@xml/data_extraction_rules"
     android:fullBackupContent="@xml/backup_rules"

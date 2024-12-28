@@ -15,12 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.App_Produits_Main._2.ViewModel.AppsProduitsMainDataBase_ViewModel
 import com.example.Main.MainScreen.MainScreen
-import com.example.Main.StartFragment.StartFragmentViewModel
-import com.example.coupeaudioai.Modules.PermissionHandler
+import com.example.coupeaudioai.Modules.Init.PermissionHandler
 import com.example.coupeaudioai.ui.theme.B_ServeurTheme
 
 data class AppViewModels(
-    val startFragmentViewModel: StartFragmentViewModel,
     val app_Initialize_ViewModel: AppsProduitsMainDataBase_ViewModel,
     )
 
@@ -42,17 +40,13 @@ class ViewModelFactory(
 class MainActivity : ComponentActivity() {
     private val permissionHandler by lazy { PermissionHandler(this) }
     private val viewModelFactory by lazy { ViewModelFactory(applicationContext) }
-    private val startFragmentViewModel: StartFragmentViewModel by viewModels { viewModelFactory }
     private val app_Initialize_ViewModel: AppsProduitsMainDataBase_ViewModel by viewModels { viewModelFactory }
-
-
-
     private val appViewModels by lazy {
         AppViewModels(
-            startFragmentViewModel = startFragmentViewModel,
             app_Initialize_ViewModel=app_Initialize_ViewModel
             )
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

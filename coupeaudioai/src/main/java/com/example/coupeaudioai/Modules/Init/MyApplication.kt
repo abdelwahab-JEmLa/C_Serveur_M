@@ -1,4 +1,4 @@
-package com.example.coupeaudioai.Modules
+package com.example.coupeaudioai.Modules.Init
 
 import android.app.Application
 import com.google.firebase.FirebaseApp

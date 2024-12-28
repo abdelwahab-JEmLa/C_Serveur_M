@@ -1,4 +1,4 @@
-package com.example.coupeaudioai.Modules
+package com.example.coupeaudioai.Modules.Init
 
 import android.Manifest
 import android.app.AlertDialog

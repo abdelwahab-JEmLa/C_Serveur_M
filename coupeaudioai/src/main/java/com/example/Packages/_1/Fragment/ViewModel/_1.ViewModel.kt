@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class ViewModel_Fragment : ViewModel() {
 
-    var _uiState by mutableStateOf(
+    private var _uiState by mutableStateOf(
         UiState(
             initialLastUpdateTime = System.currentTimeMillis().toString(),
         )

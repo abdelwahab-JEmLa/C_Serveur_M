@@ -13,12 +13,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages._1.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
-import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
+import com.example.App_Produits_Main._2.ViewModel.AppsProduitsMainDataBase_ViewModel
 
 @Composable
 internal fun Fragment3_Main_Screen(
     modifier: Modifier = Modifier,
-    app_Initialize_ViewModel: Apps_Produits_Main_DataBase_ViewModel = viewModel(),
+    app_Initialize_ViewModel: AppsProduitsMainDataBase_ViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel()
 ) {
     if (!app_Initialize_ViewModel.initializationComplete) {

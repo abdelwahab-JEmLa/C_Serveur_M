@@ -18,7 +18,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-open class Apps_Produits_Main_DataBase_ViewModel : ViewModel() {
+open class AppsProduitsMainDataBase_ViewModel : ViewModel() {
     var _app_Initialize_Model by mutableStateOf(AppInitializeModel())
     val app_Initialize_Model: AppInitializeModel get() = this._app_Initialize_Model
 

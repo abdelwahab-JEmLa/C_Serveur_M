@@ -45,7 +45,7 @@ private const val IMAGE_QUALITY = 3
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-internal fun Glide_Display_Image_By_Id(
+fun Glide_Display_Image_By_Id(
     modifier: Modifier = Modifier,
     produit_Id: Long,
     produit_Image_Need_Update: Boolean = false,

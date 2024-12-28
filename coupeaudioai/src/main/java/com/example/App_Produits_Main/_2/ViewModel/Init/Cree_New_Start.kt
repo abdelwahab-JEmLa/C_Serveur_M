@@ -1,7 +1,7 @@
 package com.example.Packages._1.Fragment.ViewModel._2.Init.Main.Components
 
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-import com.example.App_Produits_Main._2.ViewModel.Apps_Produits_Main_DataBase_ViewModel
+import com.example.App_Produits_Main._2.ViewModel.AppsProduitsMainDataBase_ViewModel
 import com.example.App_Produits_Main._2.ViewModel.Init.Z.Components.get_Ancien_DataBases_Main
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-suspend fun Apps_Produits_Main_DataBase_ViewModel.cree_New_Start() {
+suspend fun AppsProduitsMainDataBase_ViewModel.cree_New_Start() {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
     try {

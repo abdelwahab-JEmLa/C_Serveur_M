@@ -2,12 +2,12 @@ package com.example.App_Produits_Main._2.ViewModel.Init
 
 import android.util.Log
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-import com.example.App_Produits_Main._2.ViewModel.AppsProduitsMainDataBase_ViewModel
+import com.example.App_Produits_Main._2.ViewModel.AppInitialize_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
-suspend fun AppsProduitsMainDataBase_ViewModel.load_Depuit_FireBase() {
+suspend fun AppInitialize_ViewModel.load_Produits_FireBase() {
     val TAG = "Produit_Loader"
     val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
     val NOMBRE_PRODUITS = 20

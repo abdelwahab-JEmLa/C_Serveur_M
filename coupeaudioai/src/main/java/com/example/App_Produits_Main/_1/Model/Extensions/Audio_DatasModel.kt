@@ -8,13 +8,11 @@ import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
-class AudioInfo_Model(
+class Audio_DatasModel(
     var vid: Long = 0,
     init_fileInfos: FileInfos_Model? = null,
     init_audioMarks: List<AudioMarks_Model> = emptyList(),
 ) {
-
-
     var fileInfos: FileInfos_Model? by mutableStateOf(init_fileInfos)
 
     class FileInfos_Model(
@@ -34,6 +32,5 @@ class AudioInfo_Model(
     private val ref_AudioInfo_Model = Firebase.database
         .getReference("_2_3ilm_Char3i")
         .child("1_AudioInfo_Model")
-
 
 }

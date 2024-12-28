@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import com.example.App_Produits_Main._2.ViewModel.AppsProduitsMainDataBase_ViewModel
+import com.example.App_Produits_Main._2.ViewModel.AppInitialize_ViewModel
 import com.example.coupeaudioai.MainScreen.Main.MainScreen
 import com.example.coupeaudioai.Modules.Init.PermissionHandler
 import com.example.coupeaudioai.ui.theme.B_ServeurTheme
 
 data class AppViewModels(
-    val app_Initialize_ViewModel: AppsProduitsMainDataBase_ViewModel,
+    val app_Initialize_ViewModel: AppInitialize_ViewModel,
     )
 
 // ViewModelFactory.kt
@@ -30,8 +30,8 @@ class ViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
         return when {
-            modelClass.isAssignableFrom(AppsProduitsMainDataBase_ViewModel::class.java) ->
-                AppsProduitsMainDataBase_ViewModel() as T
+            modelClass.isAssignableFrom(AppInitialize_ViewModel::class.java) ->
+                AppInitialize_ViewModel() as T
             else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
         }
     }
@@ -40,7 +40,7 @@ class ViewModelFactory(
 class MainActivity : ComponentActivity() {
     private val permissionHandler by lazy { PermissionHandler(this) }
     private val viewModelFactory by lazy { ViewModelFactory(applicationContext) }
-    private val app_Initialize_ViewModel: AppsProduitsMainDataBase_ViewModel by viewModels { viewModelFactory }
+    private val app_Initialize_ViewModel: AppInitialize_ViewModel by viewModels { viewModelFactory }
     private val appViewModels by lazy {
         AppViewModels(
             app_Initialize_ViewModel=app_Initialize_ViewModel

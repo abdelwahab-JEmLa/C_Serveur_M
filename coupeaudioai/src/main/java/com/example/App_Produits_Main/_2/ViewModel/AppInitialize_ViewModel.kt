@@ -9,7 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.App_Produits_Main._1.Model.AppInitializeModel
-import com.example.App_Produits_Main._2.ViewModel.Init.load_Depuit_FireBase
+import com.example.App_Produits_Main._2.ViewModel.Extensions._1.Init.load_FireBase
+import com.example.App_Produits_Main._2.ViewModel.Init.load_Produits_FireBase
 import com.example.App_Produits_Main._3.Modules.Images_Handler.FireBase_Store_Handler
 import com.example.Packages._1.Fragment.ViewModel._2.Init.Main.Components.cree_New_Start
 import com.google.firebase.database.DataSnapshot
@@ -18,7 +19,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-open class AppsProduitsMainDataBase_ViewModel : ViewModel() {
+open class AppInitialize_ViewModel : ViewModel() {
     var _app_Initialize_Model by mutableStateOf(AppInitializeModel())
     val app_Initialize_Model: AppInitializeModel get() = this._app_Initialize_Model
 
@@ -37,7 +38,8 @@ open class AppsProduitsMainDataBase_ViewModel : ViewModel() {
                     cree_New_Start()
                     initializationProgress = 1f
                 } else {
-                    load_Depuit_FireBase()
+                    load_Produits_FireBase()
+                    load_FireBase()
                     initializationProgress = 1f
                 }
 

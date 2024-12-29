@@ -7,12 +7,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.Firebase
+import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Objects
 
+@IgnoreExtraProperties
 class AppInitializeModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
 ) {
@@ -23,6 +25,7 @@ class AppInitializeModel(
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
         .child("produit_DataBase")
 
+        @IgnoreExtraProperties
         class ProduitModel(
             var id: Long = 0,
             val it_ref_Id_don_FireBase: Long = 0,
@@ -38,6 +41,7 @@ class AppInitializeModel(
             init_historiqueBonsVents: List<ClientBonVent_Model> = emptyList(),
             init_historiqueBonsCommend: List<GrossistBonCommandes> = emptyList(),
         ) {
+
             var nom: String by mutableStateOf(init_nom)
             var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
             var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)
@@ -118,6 +122,7 @@ class AppInitializeModel(
                         }
                 }
 
+                @IgnoreExtraProperties
                 class ClientBonVent_Model(
                     var vid: Long = 0,
                     var id_Acheteur: Long = 0,
@@ -154,4 +159,5 @@ class AppInitializeModel(
             throw Exception("Failed to update group in Firebase: ${e.message}")
         }
     }
+
 }

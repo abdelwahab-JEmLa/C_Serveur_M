@@ -1,5 +1,6 @@
 package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +24,8 @@ import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.DisplayListMode.EmptyStateMessage
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
-import java.util.UUID
+
+private const val TAG = "ListMain_DisplayGridMode"
 
 @Composable
 internal fun ListMain_DisplayGridMode(
@@ -32,22 +36,39 @@ internal fun ListMain_DisplayGridMode(
     contentPadding: PaddingValues,
     ui_State: UiState
 ) {
-    val (itemsWithPosition, itemsWithoutPosition) = remember(visibleItems) {
-        visibleItems.partition { produit ->
-            val position = produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-            position != null && position > 0
+    val partitionedItems by remember(visibleItems) {
+        derivedStateOf {
+            Log.d(TAG, "Recalculating partitions for ${visibleItems.size} items")
+
+            visibleItems.partition { produit ->
+                val position = produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                val hasPosition = position != null && position > 0
+                Log.d(TAG, "Product ${produit.id} (${produit.nom}) has position: $hasPosition ($position)")
+                hasPosition
+            }
         }
     }
 
-    val sortedPositionItems = remember(itemsWithPosition) {
-        itemsWithPosition.sortedBy { produit ->
-            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                ?: Int.MAX_VALUE
+    val (itemsWithPosition, itemsWithoutPosition) = partitionedItems
+
+    val sortedPositionItems by remember(itemsWithPosition) {
+        derivedStateOf {
+            itemsWithPosition.sortedBy { produit ->
+                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                    ?: Int.MAX_VALUE
+            }.also { sorted ->
+                Log.d(TAG, "Sorted items with position: ${sorted.map { "${it.nom}:${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}" }}")
+            }
         }
     }
 
-    val sortedNoPositionItems = remember(itemsWithoutPosition) {
-        itemsWithoutPosition.sortedBy { it.nom }
+    val sortedNoPositionItems by remember(itemsWithoutPosition) {
+        derivedStateOf {
+            itemsWithoutPosition.sortedBy { it.nom }
+                .also { sorted ->
+                    Log.d(TAG, "Sorted items without position: ${sorted.map { it.nom }}")
+                }
+        }
     }
 
     LazyVerticalGrid(
@@ -71,10 +92,10 @@ internal fun ListMain_DisplayGridMode(
 
             items(
                 items = sortedPositionItems,
-                key = { "${it.nom}_${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}_${UUID.randomUUID()}" }
+                key = { "${it.id}_${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}" }
             ) { produit ->
                 ItemMain_Grid(
-                    appInitializeViewModel=appInitializeViewModel,
+                    appInitializeViewModel = appInitializeViewModel,
                     appInitializeModel = appInitializeModel,
                     produit = produit,
                 )
@@ -90,7 +111,7 @@ internal fun ListMain_DisplayGridMode(
 
             items(
                 items = sortedNoPositionItems,
-                key = { "${it.nom}_no_position_${UUID.randomUUID()}" }
+                key = { "np_${it.id}" }
             ) { produit ->
                 ItemMain_Grid(
                     appInitializeModel = appInitializeModel,

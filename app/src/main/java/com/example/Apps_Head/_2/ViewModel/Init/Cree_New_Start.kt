@@ -1,5 +1,6 @@
 package com.example.Apps_Head._2.ViewModel.Init
 
+import android.util.Log
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.Apps_Head._2.ViewModel.Init.Z.Components.get_Ancien_DataBases_Main
@@ -76,13 +77,20 @@ suspend fun AppInitialize_ViewModel.cree_New_Start() {
                         }
                     }
 
-                    try {
-                        val grossiste = generateGrossiste()
-                        bonCommendDeCetteCota = grossiste
+                    // Only generate grossiste for the first 30 products
+                    if (index < 30) {
+                        try {
+                            val grossiste = generateGrossiste()
+                            bonCommendDeCetteCota = grossiste
+                            historiqueBonsCommend.clear()
+                            historiqueBonsCommend.add(grossiste)
+                        } catch (e: Exception) {
+                            // Handle exception silently
+                        }
+                    } else {
+                        // For products after index 30, initialize empty lists
+                        bonCommendDeCetteCota = null
                         historiqueBonsCommend.clear()
-                        historiqueBonsCommend.add(grossiste)
-                    } catch (e: Exception) {
-                        // Handle exception silently
                     }
 
                     besoin_To_Be_Updated = false
@@ -190,6 +198,10 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
         couleur = grossisteCouleur
     )
 
+    // Generate a random position between 1 and 10 to ensure products are distributed
+    val randomPosition = (1..10).random()
+    Log.d("GenerateGrossiste", "Generated position $randomPosition for product with grossiste $grossisteId")
+
     return AppInitializeModel.ProduitModel.GrossistBonCommandes(
         vid = grossisteId,
         init_grossistInformations = grossistInfo,
@@ -198,8 +210,7 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
         time_String_Divise = dateString.split(" ")[1],
         currentCreditBalance = (1000..2000).random().toDouble(),
         init_position_Grossist_Don_Parent_Grossists_List = grossisteId.toInt() - 1,
-        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
-        //(0..4).random() // Random position between 0 and 4
+        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = randomPosition
     ).apply {
         coloursEtGouts.firstOrNull()?.let { couleur ->
             coloursEtGoutsCommendee.add(

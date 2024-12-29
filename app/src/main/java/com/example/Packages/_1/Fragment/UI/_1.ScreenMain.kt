@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Apps_Head._2.ViewModel.AppsProduitsMainDataBase_ViewModel
+import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.Packages._1.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
@@ -19,7 +19,7 @@ import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
 @Composable
 internal fun Fragment3_Main_Screen(
     modifier: Modifier = Modifier,
-    app_Initialize_ViewModel: AppsProduitsMainDataBase_ViewModel = viewModel(),
+    app_Initialize_ViewModel: AppInitialize_ViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel()
 ) {
     if (!app_Initialize_ViewModel.initializationComplete) {

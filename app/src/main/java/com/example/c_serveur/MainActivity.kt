@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import com.example.Apps_Head._2.ViewModel.AppsProduitsMainDataBase_ViewModel
+import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.Main.MainScreen.MainScreen
 import com.example.Main.StartFragment.StartFragmentViewModel
 import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsViewModel
@@ -28,7 +28,7 @@ data class AppViewModels(
     val startFragmentViewModel: StartFragmentViewModel,
     val clientProductsDisplayerStatsViewModel: ClientProductsDisplayerStatsViewModel,
     val grossistProductsDiviseurViewModelsFragment: ViewModelFragment,
-    val app_Initialize_ViewModel: AppsProduitsMainDataBase_ViewModel,
+    val app_Initialize_ViewModel: AppInitialize_ViewModel,
     )
 
 // ViewModelFactory.kt
@@ -60,8 +60,8 @@ class ViewModelFactory(
                     context.applicationContext,
                     database,
                 ) as T
-            modelClass.isAssignableFrom(AppsProduitsMainDataBase_ViewModel::class.java) ->
-                AppsProduitsMainDataBase_ViewModel() as T
+            modelClass.isAssignableFrom(AppInitialize_ViewModel::class.java) ->
+                AppInitialize_ViewModel() as T
             else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
         }
     }
@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
     private val startFragmentViewModel: StartFragmentViewModel by viewModels { viewModelFactory }
     private val clientProductsDisplayerStatsViewModel: ClientProductsDisplayerStatsViewModel by viewModels { viewModelFactory }
     private val grossistProductsDiviseurViewModelsFragment: ViewModelFragment by viewModels { viewModelFactory }
-    private val app_Initialize_ViewModel: AppsProduitsMainDataBase_ViewModel by viewModels { viewModelFactory }
+    private val app_Initialize_ViewModel: AppInitialize_ViewModel by viewModels { viewModelFactory }
 
 
 

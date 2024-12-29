@@ -2,7 +2,7 @@ package com.example.Apps_Head._3.Modules.Images_Handler
 
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Apps_Head._2.ViewModel.AppsProduitsMainDataBase_ViewModel
+import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,7 +15,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 
-open class FireBase_Store_Handler : AppsProduitsMainDataBase_ViewModel() {
+open class FireBase_Store_Handler : AppInitialize_ViewModel() {
     // Pour suivre les opérations de mise à jour d'image en cours
     private var currentImageUpdateJobs = mutableMapOf<Long, Job>()
 

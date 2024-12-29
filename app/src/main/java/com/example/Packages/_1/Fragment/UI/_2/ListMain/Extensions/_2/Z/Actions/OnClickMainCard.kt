@@ -28,8 +28,7 @@ fun OnClickMainCard(
 
             // Use setValue() with completion listener instead of direct await
             app_Initialize_Model.ref_Produits_Main_DataBase
-                .child(produit.id.toString())
-                .setValue(produit)
+                .setValue(app_Initialize_Model.produits_Main_DataBase)
                 .addOnSuccessListener {
                     // Handle success
                 }

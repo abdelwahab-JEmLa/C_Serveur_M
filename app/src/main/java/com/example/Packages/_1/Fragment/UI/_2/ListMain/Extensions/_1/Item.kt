@@ -32,9 +32,10 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
-internal fun ItemDisplayGridMode(
+internal fun Item(
     uiState: UiState,
     produit: AppInitializeModel.ProduitModel,
+
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 

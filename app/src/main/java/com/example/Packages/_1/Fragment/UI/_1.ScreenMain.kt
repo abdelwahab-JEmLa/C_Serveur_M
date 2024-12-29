@@ -20,14 +20,14 @@ import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
 @Composable
 internal fun ScreenMain(
     modifier: Modifier = Modifier,
-    app_Initialize_ViewModel: AppInitialize_ViewModel = viewModel(),
+    appInitializeViewModel: AppInitialize_ViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel()
 ) {
-    if (!app_Initialize_ViewModel.initializationComplete) {
+    if (!appInitializeViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
                 progress = {
-                    app_Initialize_ViewModel.initializationProgress
+                    appInitializeViewModel.initializationProgress
                 },
                 modifier = Modifier.align(Alignment.Center),
                 trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
@@ -41,11 +41,12 @@ internal fun ScreenMain(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                val databaseSize = app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase.size
+                val databaseSize = appInitializeViewModel.app_Initialize_Model.produits_Main_DataBase.size
 
                 if (databaseSize > 0) {
                     ListMain(
-                        app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
+                        appInitializeViewModel=appInitializeViewModel,
+                        app_Initialize_Model = appInitializeViewModel.app_Initialize_Model,
                         ui_State = p3_ViewModel.uiState,
                         contentPadding = paddingValues
                     )
@@ -55,13 +56,13 @@ internal fun ScreenMain(
             Grossissts_FloatingActionButtons_Grouped(
                 modifier = Modifier,
                 ui_State = p3_ViewModel.uiState,
-                app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
+                app_Initialize_Model = appInitializeViewModel.app_Initialize_Model,
             )
 
             GlobalActions_FloatingActionButtons_Grouped(
                 modifier = Modifier,
                 fragment_Ui_State = p3_ViewModel.uiState,
-                app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
+                app_Initialize_Model = appInitializeViewModel.app_Initialize_Model,
             )
         }
     }

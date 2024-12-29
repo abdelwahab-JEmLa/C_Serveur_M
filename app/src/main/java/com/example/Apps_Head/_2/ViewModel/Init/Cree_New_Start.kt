@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.ViewModel._2.Init.Main.Components
+package com.example.Apps_Head._2.ViewModel.Init
 
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
@@ -198,7 +198,8 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
         time_String_Divise = dateString.split(" ")[1],
         currentCreditBalance = (1000..2000).random().toDouble(),
         init_position_Grossist_Don_Parent_Grossists_List = grossisteId.toInt() - 1,
-        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = (0..4).random() // Random position between 0 and 4
+        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
+        //(0..4).random() // Random position between 0 and 4
     ).apply {
         coloursEtGouts.firstOrNull()?.let { couleur ->
             coloursEtGoutsCommendee.add(

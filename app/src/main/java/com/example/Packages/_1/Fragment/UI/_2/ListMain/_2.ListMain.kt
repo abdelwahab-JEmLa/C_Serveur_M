@@ -6,12 +6,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode.ListMain_DisplayGridMode
 import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.DisplayListMode.ListMain_DisplayListMode
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
 fun ListMain(
+    appInitializeViewModel: AppInitialize_ViewModel,
     modifier: Modifier = Modifier,
     app_Initialize_Model: AppInitializeModel,
     ui_State: UiState,
@@ -37,6 +39,7 @@ fun ListMain(
     when (ui_State.currentMode) {
         UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> {
             ListMain_DisplayGridMode(
+                appInitializeViewModel=appInitializeViewModel,
                 visibleItems = visibleItems,
                 modifier = modifier,
                 contentPadding = contentPadding,

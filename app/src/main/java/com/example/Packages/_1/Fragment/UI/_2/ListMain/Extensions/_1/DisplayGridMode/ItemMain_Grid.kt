@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions.OnClickMainCard
 import kotlinx.coroutines.launch
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
 internal fun ItemMain_Grid(
     appInitializeModel: AppInitializeModel,
     produit: AppInitializeModel.ProduitModel,
+    appInitializeViewModel: AppInitialize_ViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
     // Added hasPosition check for better clarity
@@ -48,7 +50,7 @@ internal fun ItemMain_Grid(
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable { OnClickMainCard(appInitializeModel, produit) }
+            .clickable { appInitializeViewModel.OnClickMainCard(produit) }
 
         ,
         contentAlignment = Alignment.Center
@@ -68,7 +70,7 @@ internal fun ItemMain_Grid(
                     produit.bonCommendDeCetteCota?.let { supplier ->
                         supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
                     }
-                    appInitializeModel.update_Produits_FireBase()
+                    appInitializeViewModel._app_Initialize_Model.update_Produits_FireBase()
                 }
             },
             modifier = Modifier

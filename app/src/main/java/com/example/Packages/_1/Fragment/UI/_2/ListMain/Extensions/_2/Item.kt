@@ -24,13 +24,11 @@ import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.Z.Actions.OnClickMainCard
-import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun ItemDisplayListMode(
+internal fun Item(
     app_Initialize_Model: AppInitializeModel,
-    uiState: UiState,
     produit: AppInitializeModel.ProduitModel,
 ) {
     val coroutineScope = rememberCoroutineScope()

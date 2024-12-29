@@ -16,12 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.ItemDisplayGridMode
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
 @Composable
 fun DisplayListMode(
+    app_Initialize_Model: AppInitializeModel,
     visibleItems: List<AppInitializeModel.ProduitModel>,
     modifier: Modifier,
     contentPadding: PaddingValues,
@@ -51,8 +51,8 @@ fun DisplayListMode(
                 items = sortedItems,
                 key = { "${it.nom}_${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}_${UUID.randomUUID()}" }
             ) { produit ->
-                ItemDisplayGridMode(
-                    uiState = ui_State,
+                Item(
+                    app_Initialize_Model=app_Initialize_Model,
                     produit = produit
                 )
             }

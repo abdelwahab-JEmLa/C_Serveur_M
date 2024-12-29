@@ -48,6 +48,7 @@ fun ListMain(
         UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs,
         UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> {
             DisplayListMode(
+                app_Initialize_Model=app_Initialize_Model,
                 visibleItems = visibleItems,
                 modifier = modifier,
                 contentPadding = contentPadding,

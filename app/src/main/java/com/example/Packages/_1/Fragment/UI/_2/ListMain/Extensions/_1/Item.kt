@@ -35,7 +35,6 @@ import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 internal fun Item(
     uiState: UiState,
     produit: AppInitializeModel.ProduitModel,
-
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 

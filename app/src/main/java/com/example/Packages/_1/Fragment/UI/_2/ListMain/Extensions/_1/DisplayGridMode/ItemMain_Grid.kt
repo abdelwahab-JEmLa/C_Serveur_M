@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.Z.Actions.OnClickMainCard
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode.Z.Actions.OnClickMainCard
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun Item(
-    app_Initialize_Model: AppInitializeModel,
+internal fun ItemMain_Grid(
+    appInitializeModel: AppInitializeModel,
     produit: AppInitializeModel.ProduitModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -44,7 +44,7 @@ internal fun Item(
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable { OnClickMainCard(app_Initialize_Model, produit) },
+            .clickable { OnClickMainCard(appInitializeModel, produit) },
         contentAlignment = Alignment.Center
     ) {
         Glide_Display_Image_By_Id(
@@ -62,7 +62,7 @@ internal fun Item(
                     produit.bonCommendDeCetteCota?.let { supplier ->
                         supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
                     }
-                    app_Initialize_Model.update_Produits_FireBase()
+                    appInitializeModel.update_Produits_FireBase()
                 }
             },
             modifier = Modifier

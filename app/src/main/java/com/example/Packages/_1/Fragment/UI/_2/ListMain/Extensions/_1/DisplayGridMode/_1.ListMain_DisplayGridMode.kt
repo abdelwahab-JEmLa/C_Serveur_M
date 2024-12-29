@@ -18,12 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.EmptyStateMessage
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode.EmptyStateMessage
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
 @Composable
-internal fun ListMain(
+internal fun ListMain_DisplayGridMode(
     appInitializeModel: AppInitializeModel,
     visibleItems: List<AppInitializeModel.ProduitModel>,
     modifier: Modifier,
@@ -73,9 +73,8 @@ internal fun ListMain(
                 items = sortedPositionItems,
                 key = { "${it.nom}_${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}_${UUID.randomUUID()}" }
             ) { produit ->
-                Item(
+                ItemMain_Grid(
                     appInitializeModel = appInitializeModel,
-                    uiState = ui_State,
                     produit = produit,
                 )
             }
@@ -93,9 +92,8 @@ internal fun ListMain(
                 items = sortedNoPositionItems,
                 key = { "${it.nom}_no_position_${UUID.randomUUID()}" }
             ) { produit ->
-                Item(
+                ItemMain_Grid(
                     appInitializeModel=appInitializeModel,
-                    uiState = ui_State,
                     produit = produit
                 )
             }

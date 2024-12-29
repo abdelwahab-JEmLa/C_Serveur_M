@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
 @Composable
-fun DisplayListMode(
+fun ListMain_DisplayListMode(
     app_Initialize_Model: AppInitializeModel,
     visibleItems: List<AppInitializeModel.ProduitModel>,
     modifier: Modifier,
@@ -51,9 +51,10 @@ fun DisplayListMode(
                 items = sortedItems,
                 key = { "${it.nom}_${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}_${UUID.randomUUID()}" }
             ) { produit ->
-                Item(
-                    app_Initialize_Model=app_Initialize_Model,
-                    produit = produit
+                ItemMain_Column(
+                    produit = produit,
+                    appInitializeModel=app_Initialize_Model,
+                    uiState = ui_State
                 )
             }
         } else {

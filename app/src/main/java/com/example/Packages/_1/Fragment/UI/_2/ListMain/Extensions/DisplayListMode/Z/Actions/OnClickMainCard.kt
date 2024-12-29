@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.Z.Actions
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode.Z.Actions
 
 import android.util.Log
 import com.example.Apps_Head._1.Model.AppInitializeModel

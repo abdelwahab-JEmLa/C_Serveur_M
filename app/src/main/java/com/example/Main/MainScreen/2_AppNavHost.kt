@@ -17,7 +17,7 @@ import com.example.Main.StartFragment.StartFragment
 import com.example.Main.StartFragment.StartFragmentDestination
 import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsDestination
 import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsFragment
-import com.example.Packages._1.Fragment.UI.Fragment3_Main_Screen
+import com.example.Packages._1.Fragment.UI.ScreenMain
 import com.example.c_serveur.AppViewModels
 import kotlinx.serialization.Serializable
 
@@ -42,7 +42,7 @@ fun AppNavHost(
                 ClientProductsDisplayerStatsFragment(appViewModels.clientProductsDisplayerStatsViewModel)
             }
             composable(Fragment3_Main_ScreenDestination().route) {
-                Fragment3_Main_Screen(app_Initialize_ViewModel=appViewModels.app_Initialize_ViewModel)
+                ScreenMain(app_Initialize_ViewModel=appViewModels.app_Initialize_ViewModel)
             }
             composable(Fragment_4_Main_Screen_Destination().route) {
             }
@@ -53,7 +53,7 @@ fun AppNavHost(
  * Object used for a type safe destination to a Home screen
  */
 @Serializable
-data class Fragment3_Main_ScreenDestination(val route: String = "Fragment3_Main_Screen") : java.io.Serializable
+data class Fragment3_Main_ScreenDestination(val route: String = "ScreenMain") : java.io.Serializable
 
 @Serializable
 data class Fragment_4_Main_Screen_Destination(val route: String = "Fragment_4_Main_Screen") : java.io.Serializable
@@ -77,9 +77,9 @@ sealed class Screen(
         color = Color(0xFF2196F3)
     )
     data object Fragment3_Main_Screen : Screen(
-        route = "Fragment3_Main_Screen",
+        route = "ScreenMain",
         icon = Icons.Default.Tab,
-        title = "Fragment3_Main_Screen",
+        title = "ScreenMain",
         color = Color(0xFFFF5722)
     )
     data object Fragment_4_Main_Screen : Screen(

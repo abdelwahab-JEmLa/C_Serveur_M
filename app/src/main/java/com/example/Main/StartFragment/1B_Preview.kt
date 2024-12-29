@@ -10,7 +10,7 @@ import com.example.serveurecherielhanaaebeljemla.Models.UiStat
 
 
 /**
- * PreviewParameter Provider for Fragment3_Main_Screen Preview
+ * PreviewParameter Provider for ScreenMain Preview
  * Provides sample data for the preview
  */
 class ClientBonsByDayStatePreviewParameterProvider :

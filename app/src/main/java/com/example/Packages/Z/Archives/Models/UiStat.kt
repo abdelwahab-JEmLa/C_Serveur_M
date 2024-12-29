@@ -7,7 +7,7 @@ import com.example.Packages.Z.Archives.Models.ProductsCategoriesDataBase
 import com.example.Packages.Z.Archives.Models.Produits_DataBase
 
 /**
- * UI State that represents Fragment3_Main_Screen
+ * UI State that represents ScreenMain
  **/
 data class UiStat(
     val appSettingsSaverModel: List<AppSettingsSaverModel> = emptyList(),

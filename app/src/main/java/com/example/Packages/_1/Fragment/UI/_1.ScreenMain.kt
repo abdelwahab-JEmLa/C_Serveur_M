@@ -12,12 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
+import com.example.Packages._1.Fragment.UI._2.ListMain.ListMain
 import com.example.Packages._1.Fragment.V.FABs.Modules.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.V.FABs.Modules.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
 
 @Composable
-internal fun Fragment3_Main_Screen(
+internal fun ScreenMain(
     modifier: Modifier = Modifier,
     app_Initialize_ViewModel: AppInitialize_ViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel()
@@ -43,7 +44,7 @@ internal fun Fragment3_Main_Screen(
                 val databaseSize = app_Initialize_ViewModel.app_Initialize_Model.produits_Main_DataBase.size
 
                 if (databaseSize > 0) {
-                    Produits_Main_List(
+                    ListMain(
                         app_Initialize_Model = app_Initialize_ViewModel.app_Initialize_Model,
                         ui_State = p3_ViewModel.uiState,
                         contentPadding = paddingValues
@@ -69,5 +70,5 @@ internal fun Fragment3_Main_Screen(
 @Preview
 @Composable
 private fun Preview_Fragment_4_Main_Screen() {
-    Fragment3_Main_Screen(modifier = Modifier.fillMaxSize())
+    ScreenMain(modifier = Modifier.fillMaxSize())
 }

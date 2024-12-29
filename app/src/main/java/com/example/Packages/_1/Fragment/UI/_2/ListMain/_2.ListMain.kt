@@ -6,9 +6,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Packages._1.Fragment.Models.UiState
-import com.example.Packages._1.Fragment.UI._2.ListMain.Functions.DisplayGridMode
-import com.example.Packages._1.Fragment.UI._2.ListMain.Functions.DisplayListMode
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayGridMode
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode
+import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
 fun ListMain(

@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Functions
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Packages._1.Fragment.Models.UiState
 import com.example.Packages._1.Fragment.UI._3.ItemMain.Produit_Item
+import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
 @Composable

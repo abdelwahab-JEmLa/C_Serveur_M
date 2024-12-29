@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
-import com.example.Packages._1.Fragment.Models.UiState
+import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
 internal fun Produit_Item(

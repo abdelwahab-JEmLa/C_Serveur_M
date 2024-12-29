@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.V.FABs.Modules
+package com.example.Packages._1.Fragment.UI._5.FloatingActionButton
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Add_New_Produit.CameraPickImageHandler
-import com.example.Packages._1.Fragment.Models.UiState
+import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

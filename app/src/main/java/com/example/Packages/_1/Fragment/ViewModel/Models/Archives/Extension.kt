@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.Models.Archives
+package com.example.Packages._1.Fragment.ViewModel.Models.Archives
 
 import com.example.Packages._1.Fragment.Z.Archives.Model.Archives.Ui_Mutable_State
 import okhttp3.internal.concurrent.TaskRunner.Companion.logger

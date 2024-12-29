@@ -18,10 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode.EmptyStateMessage
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.DisplayListMode.EmptyStateMessage
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
+// ListMain_DisplayGridMode.kt changes:
 @Composable
 internal fun ListMain_DisplayGridMode(
     appInitializeModel: AppInitializeModel,
@@ -30,11 +31,11 @@ internal fun ListMain_DisplayGridMode(
     contentPadding: PaddingValues,
     ui_State: UiState
 ) {
+    // Updated partition logic to properly handle null and 0 positions
     val (itemsWithPosition, itemsWithoutPosition) = remember(visibleItems) {
         visibleItems.partition { produit ->
-            produit.bonCommendDeCetteCota?.let { bon ->
-                bon.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit > 0
-            } ?: false
+            val position = produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+            position != null && position > 0
         }
     }
 
@@ -44,6 +45,7 @@ internal fun ListMain_DisplayGridMode(
                 ?: Int.MAX_VALUE
         }
     }
+
 
     val sortedNoPositionItems = remember(itemsWithoutPosition) {
         itemsWithoutPosition.sortedBy { it.nom }

@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.DisplayListMode
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode.Z.Actions.OnClickMainCard
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions.OnClickMainCard
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.DisplayListMode
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

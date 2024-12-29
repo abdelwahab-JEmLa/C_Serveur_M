@@ -23,22 +23,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.DisplayListMode.Z.Actions.OnClickMainCard
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions.OnClickMainCard
 import kotlinx.coroutines.launch
 
+// ItemMain_Grid.kt changes:
 @Composable
 internal fun ItemMain_Grid(
     appInitializeModel: AppInitializeModel,
     produit: AppInitializeModel.ProduitModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    // Added hasPosition check for better clarity
+    val hasPosition = produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit != null &&
+            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit != 0
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
             .background(
-                color = if (produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit != null)
+                color = if (hasPosition)
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                 else
                     MaterialTheme.colorScheme.surface,

@@ -48,7 +48,9 @@ internal fun ItemMain_Grid(
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable { OnClickMainCard(appInitializeModel, produit) },
+            .clickable { OnClickMainCard(appInitializeModel, produit) }
+
+        ,
         contentAlignment = Alignment.Center
     ) {
         Glide_Display_Image_By_Id(

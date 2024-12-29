@@ -22,7 +22,6 @@ import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.DisplayList
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
-// ListMain_DisplayGridMode.kt changes:
 @Composable
 internal fun ListMain_DisplayGridMode(
     appInitializeModel: AppInitializeModel,
@@ -31,7 +30,6 @@ internal fun ListMain_DisplayGridMode(
     contentPadding: PaddingValues,
     ui_State: UiState
 ) {
-    // Updated partition logic to properly handle null and 0 positions
     val (itemsWithPosition, itemsWithoutPosition) = remember(visibleItems) {
         visibleItems.partition { produit ->
             val position = produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
@@ -45,7 +43,6 @@ internal fun ListMain_DisplayGridMode(
                 ?: Int.MAX_VALUE
         }
     }
-
 
     val sortedNoPositionItems = remember(itemsWithoutPosition) {
         itemsWithoutPosition.sortedBy { it.nom }
@@ -63,7 +60,6 @@ internal fun ListMain_DisplayGridMode(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Section for items with position
         if (sortedPositionItems.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 SectionHeader(
@@ -82,7 +78,6 @@ internal fun ListMain_DisplayGridMode(
             }
         }
 
-        // Section for items without position
         if (sortedNoPositionItems.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 SectionHeader(
@@ -95,13 +90,12 @@ internal fun ListMain_DisplayGridMode(
                 key = { "${it.nom}_no_position_${UUID.randomUUID()}" }
             ) { produit ->
                 ItemMain_Grid(
-                    appInitializeModel=appInitializeModel,
+                    appInitializeModel = appInitializeModel,
                     produit = produit
                 )
             }
         }
 
-        // Empty state message
         if (sortedPositionItems.isEmpty() && sortedNoPositionItems.isEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 EmptyStateMessage()

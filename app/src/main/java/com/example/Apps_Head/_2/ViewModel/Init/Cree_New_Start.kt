@@ -184,7 +184,6 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
     val currentDate = Calendar.getInstance().time
     val dateString = dateFormat.format(currentDate)
 
-    // Create GrossistInformations object
     val grossistInfo = AppInitializeModel.ProduitModel.GrossistBonCommandes.GrossistInformations(
         id = grossisteId,
         nom = grossisteNom,
@@ -195,11 +194,11 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
         vid = grossisteId,
         init_grossistInformations = grossistInfo,
         date = dateString,
-        date_String_Divise = dateString.split(" ")[0],  // "yyyy-MM-dd"
-        time_String_Divise = dateString.split(" ")[1],  // "HH:mm:ss"
+        date_String_Divise = dateString.split(" ")[0],
+        time_String_Divise = dateString.split(" ")[1],
         currentCreditBalance = (1000..2000).random().toDouble(),
         init_position_Grossist_Don_Parent_Grossists_List = grossisteId.toInt() - 1,
-        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
+        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = (0..4).random() // Random position between 0 and 4
     ).apply {
         coloursEtGouts.firstOrNull()?.let { couleur ->
             coloursEtGoutsCommendee.add(

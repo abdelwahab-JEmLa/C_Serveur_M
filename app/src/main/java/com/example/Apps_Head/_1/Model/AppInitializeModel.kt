@@ -150,14 +150,14 @@ class AppInitializeModel(
                 .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
                 .child("produit_DataBase")
 
-            // Use supervisorScope to prevent cancellation from propagating
             withContext(Dispatchers.IO) {
                 ref_Produit_Main_DataBase.setValue(produits_Main_DataBase).await()
             }
         } catch (e: Exception) {
-            Log.e("AppInitializeModel", "Failed to update group in Firebase", e)
-            throw Exception("Failed to update group in Firebase: ${e.message}")
+            Log.e("AppInitializeModel", "Failed to update Firebase", e)
+            throw Exception("Failed to update Firebase: ${e.message}")
         }
     }
+
 
 }

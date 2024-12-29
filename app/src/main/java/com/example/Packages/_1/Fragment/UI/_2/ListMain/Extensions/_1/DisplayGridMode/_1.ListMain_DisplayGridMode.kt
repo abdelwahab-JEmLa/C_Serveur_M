@@ -36,41 +36,50 @@ internal fun ListMain_DisplayGridMode(
     contentPadding: PaddingValues,
     ui_State: UiState
 ) {
+    // Partition items based on position
     val partitionedItems by remember(visibleItems) {
         derivedStateOf {
-            Log.d(TAG, "Recalculating partitions for ${visibleItems.size} items")
+            Log.d(TAG, "Partitioning ${visibleItems.size} items")
 
             visibleItems.partition { produit ->
-                val position = produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                val hasPosition = position != null && position > 0
-                Log.d(TAG, "Product ${produit.id} (${produit.nom}) has position: $hasPosition ($position)")
-                hasPosition
+                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+                    position > 0
+                } ?: false
+            }.also { (withPos, withoutPos) ->
+                Log.d(TAG, "Partitioned: ${withPos.size} with position, ${withoutPos.size} without position")
             }
         }
     }
 
     val (itemsWithPosition, itemsWithoutPosition) = partitionedItems
 
+    // Sort items with position
     val sortedPositionItems by remember(itemsWithPosition) {
         derivedStateOf {
             itemsWithPosition.sortedBy { produit ->
-                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                    ?: Int.MAX_VALUE
+                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: Int.MAX_VALUE
             }.also { sorted ->
-                Log.d(TAG, "Sorted items with position: ${sorted.map { "${it.nom}:${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}" }}")
+                Log.d(TAG, "Sorted items with position: ${sorted.size} items")
+                sorted.forEach { produit ->
+                    Log.d(TAG, "Position item: ${produit.nom} - Position: ${produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}")
+                }
             }
         }
     }
 
+    // Sort items without position
     val sortedNoPositionItems by remember(itemsWithoutPosition) {
         derivedStateOf {
-            itemsWithoutPosition.sortedBy { it.nom }
-                .also { sorted ->
-                    Log.d(TAG, "Sorted items without position: ${sorted.map { it.nom }}")
+            itemsWithoutPosition.sortedBy { it.nom }.also { sorted ->
+                Log.d(TAG, "Sorted items without position: ${sorted.size} items")
+                sorted.forEach { produit ->
+                    Log.d(TAG, "No position item: ${produit.nom}")
                 }
+            }
         }
     }
 
+    // Main Grid Layout
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
@@ -83,8 +92,12 @@ internal fun ListMain_DisplayGridMode(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        // Display items with position
         if (sortedPositionItems.isNotEmpty()) {
-            item(span = { GridItemSpan(5) }) {
+            item(
+                span = { GridItemSpan(5) },
+                key = "header_with_position"
+            ) {
                 SectionHeader(
                     text = "Products with Position (${sortedPositionItems.size})"
                 )
@@ -92,18 +105,34 @@ internal fun ListMain_DisplayGridMode(
 
             items(
                 items = sortedPositionItems,
-                key = { "${it.id}_${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}" }
+                key = { produit ->
+                    // Create a unique key combining multiple identifiers
+                    buildString {
+                        append("pos_")
+                        append(produit.id)
+                        append("_")
+                        append(produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0)
+                        append("_")
+                        append(System.identityHashCode(produit))
+                    }.also { key ->
+                        Log.d(TAG, "Generated key for position item: $key")
+                    }
+                }
             ) { produit ->
                 ItemMain_Grid(
                     appInitializeViewModel = appInitializeViewModel,
                     appInitializeModel = appInitializeModel,
-                    produit = produit,
+                    produit = produit
                 )
             }
         }
 
+        // Display items without position
         if (sortedNoPositionItems.isNotEmpty()) {
-            item(span = { GridItemSpan(5) }) {
+            item(
+                span = { GridItemSpan(5) },
+                key = "header_without_position"
+            ) {
                 SectionHeader(
                     text = "Products without Position (${sortedNoPositionItems.size})"
                 )
@@ -111,18 +140,32 @@ internal fun ListMain_DisplayGridMode(
 
             items(
                 items = sortedNoPositionItems,
-                key = { "np_${it.id}" }
+                key = { produit ->
+                    // Create a unique key for items without position
+                    buildString {
+                        append("nopos_")
+                        append(produit.id)
+                        append("_")
+                        append(System.identityHashCode(produit))
+                    }.also { key ->
+                        Log.d(TAG, "Generated key for no-position item: $key")
+                    }
+                }
             ) { produit ->
                 ItemMain_Grid(
+                    appInitializeViewModel = appInitializeViewModel,
                     appInitializeModel = appInitializeModel,
-                    produit = produit,
-                    appInitializeViewModel = appInitializeViewModel
+                    produit = produit
                 )
             }
         }
 
+        // Display empty state if no items
         if (sortedPositionItems.isEmpty() && sortedNoPositionItems.isEmpty()) {
-            item(span = { GridItemSpan(5) }) {
+            item(
+                span = { GridItemSpan(5) },
+                key = "empty_state"
+            ) {
                 EmptyStateMessage()
             }
         }

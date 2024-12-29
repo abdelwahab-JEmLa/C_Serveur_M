@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,8 +25,11 @@ internal fun Fragment3_Main_Screen(
     if (!app_Initialize_ViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
+                progress = {
+                    app_Initialize_ViewModel.initializationProgress
+                },
                 modifier = Modifier.align(Alignment.Center),
-                progress = app_Initialize_ViewModel.initializationProgress
+                trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
             )
         }
         return

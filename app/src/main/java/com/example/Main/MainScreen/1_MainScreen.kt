@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,34 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.c_serveur.AppViewModels
 
 @Composable
-fun MainScreen(modifier: Modifier,
-               appViewModels: AppViewModels,
-) {
-    val headViewModel by appViewModels.initializeViewModel.state.collectAsState()
-
-    when {
-        headViewModel.isLoading -> {
-            LoadingScreen()
-        }
-
-        headViewModel.isInitialized -> {
-            MainContent(modifier = Modifier,appViewModels)
-        }
-    }
-}
-
-@Composable
-private fun LoadingScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
-private fun MainContent(
+fun MainScreen(
     modifier: Modifier,
     appViewModels: AppViewModels,
 ) {

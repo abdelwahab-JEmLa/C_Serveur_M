@@ -1,5 +1,3 @@
-@file:JvmName("ItemKt")
-
 package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2
 
 import androidx.compose.foundation.background
@@ -30,7 +28,7 @@ import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun Item(
+internal fun ItemDisplayListMode(
     app_Initialize_Model: AppInitializeModel,
     uiState: UiState,
     produit: AppInitializeModel.ProduitModel,
@@ -51,7 +49,6 @@ internal fun Item(
             .clickable { OnClickMainCard(coroutineScope, app_Initialize_Model, produit) },
         contentAlignment = Alignment.Center
     ) {
-        // Rest of the composable implementation remains the same...
         Glide_Display_Image_By_Id(
             produit_Id = produit.id,
             produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,

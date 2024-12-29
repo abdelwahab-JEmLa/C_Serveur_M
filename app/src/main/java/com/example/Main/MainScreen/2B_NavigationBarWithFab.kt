@@ -93,7 +93,7 @@ fun NavigationBarWithFab(
                     imageVector = if (isFabVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                     contentDescription = "Toggle FAB",
                     modifier = Modifier.align(Alignment.Center),
-                    tint = Color.White // Vous pouvez ajuster la couleur de l'icône pour qu'elle soit bien visible sur votre image
+                    tint = Color.White
                 )
             }
         }

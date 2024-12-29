@@ -15,51 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
 import com.example.Main.MainScreen.MainScreen
-import com.example.Main.StartFragment.StartFragmentViewModel
-import com.example.Packages.Z.Archives.P1.ClientProductsDisplayerStatsViewModel
-import com.example.Packages.Z.Archives.P3.E.ViewModel.ViewModelFragment
-import com.example.c_serveur.Modules.Z.Archives.AppDatabase
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
-import com.example.clientjetpack.ViewModel.InitializeViewModel
 
 data class AppViewModels(
-    val initializeViewModel: InitializeViewModel,
-    val startFragmentViewModel: StartFragmentViewModel,
-    val clientProductsDisplayerStatsViewModel: ClientProductsDisplayerStatsViewModel,
-    val grossistProductsDiviseurViewModelsFragment: ViewModelFragment,
     val app_Initialize_ViewModel: AppInitialize_ViewModel,
     )
 
 // ViewModelFactory.kt
 class ViewModelFactory(
     private val context: Context,
-    private val database: AppDatabase,
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
         return when {
-            modelClass.isAssignableFrom(InitializeViewModel::class.java) ->
-                InitializeViewModel(
-                    context.applicationContext,
-                    database,
-                ) as T
-            modelClass.isAssignableFrom(StartFragmentViewModel::class.java) ->
-                StartFragmentViewModel(
-                    context.applicationContext,
-                    database,
-                ) as T
-            modelClass.isAssignableFrom(ClientProductsDisplayerStatsViewModel::class.java) ->
-                ClientProductsDisplayerStatsViewModel(
-                    context.applicationContext,
-                    database,
-                ) as T
-            modelClass.isAssignableFrom(ViewModelFragment::class.java) ->
-                ViewModelFragment(
-                    context.applicationContext,
-                    database,
-                ) as T
             modelClass.isAssignableFrom(AppInitialize_ViewModel::class.java) ->
                 AppInitialize_ViewModel() as T
             else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
@@ -68,26 +38,15 @@ class ViewModelFactory(
 }
 
 class MainActivity : ComponentActivity() {
-    private val database by lazy {
-        AppDatabase.DatabaseModule.getDatabase(applicationContext)
-    }
     private val permissionHandler by lazy { PermissionHandler(this) }
-    private val viewModelFactory by lazy { ViewModelFactory(applicationContext, database) }
-    private val initializeViewModel: InitializeViewModel by viewModels { viewModelFactory }
-    private val startFragmentViewModel: StartFragmentViewModel by viewModels { viewModelFactory }
-    private val clientProductsDisplayerStatsViewModel: ClientProductsDisplayerStatsViewModel by viewModels { viewModelFactory }
-    private val grossistProductsDiviseurViewModelsFragment: ViewModelFragment by viewModels { viewModelFactory }
+    private val viewModelFactory by lazy { ViewModelFactory(applicationContext, ) }
     private val app_Initialize_ViewModel: AppInitialize_ViewModel by viewModels { viewModelFactory }
 
 
 
     private val appViewModels by lazy {
         AppViewModels(
-            initializeViewModel = initializeViewModel,
-            startFragmentViewModel = startFragmentViewModel,
-            clientProductsDisplayerStatsViewModel = clientProductsDisplayerStatsViewModel,
-            grossistProductsDiviseurViewModelsFragment = grossistProductsDiviseurViewModelsFragment,
-            app_Initialize_ViewModel=app_Initialize_ViewModel
+           app_Initialize_ViewModel=app_Initialize_ViewModel
             )
     }
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -32,7 +32,7 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
-internal fun Item(
+internal fun ItemDisplayGridMode(
     uiState: UiState,
     produit: AppInitializeModel.ProduitModel,
 ) {
@@ -60,7 +60,7 @@ internal fun Item(
                     Modifier.height(heightCard)
             )
     ) {
-        // Dans le composant Item, modifier l'appel de Glide_Display_Image_By_Id :
+        // Dans le composant ItemDisplayListMode, modifier l'appel de Glide_Display_Image_By_Id :
         Glide_Display_Image_By_Id(
             produit_Id = produit.id,
             produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,

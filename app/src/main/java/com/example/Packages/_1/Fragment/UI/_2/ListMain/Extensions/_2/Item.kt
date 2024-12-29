@@ -1,4 +1,6 @@
-package com.example.Packages._1.Fragment.UI._3.ItemMain
+@file:JvmName("ItemKt")
+
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,11 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.Z.Actions.OnClickMainCard
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 
 @Composable
-fun Host_Affiche_Produit_Item(
+internal fun Item(
     app_Initialize_Model: AppInitializeModel,
     uiState: UiState,
     produit: AppInitializeModel.ProduitModel,
@@ -45,24 +48,7 @@ fun Host_Affiche_Produit_Item(
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable {
-                coroutineScope.launch {
-                    // Find the maximum position across all products
-                    val maxPosition = app_Initialize_Model.produits_Main_DataBase
-                        .mapNotNull { it.bonCommendDeCetteCota }
-                        .maxOfOrNull { it.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
-                        ?: 0
-
-                    // Create new position as max + 1
-                    val newPosition = maxPosition + 1
-
-                    // Update the current product's position
-                    produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
-
-                    // Update Firebase
-                    app_Initialize_Model.update_Produits_FireBase()
-                }
-            },
+            .clickable { OnClickMainCard(coroutineScope, app_Initialize_Model, produit) },
         contentAlignment = Alignment.Center
     ) {
         // Rest of the composable implementation remains the same...
@@ -142,3 +128,4 @@ fun Host_Affiche_Produit_Item(
         }
     }
 }
+

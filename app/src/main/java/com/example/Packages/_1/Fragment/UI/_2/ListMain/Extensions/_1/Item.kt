@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._3.ItemMain
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,7 +32,7 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
-internal fun Produit_Item(
+internal fun Item(
     uiState: UiState,
     produit: AppInitializeModel.ProduitModel,
 ) {
@@ -60,7 +60,7 @@ internal fun Produit_Item(
                     Modifier.height(heightCard)
             )
     ) {
-        // Dans le composant Produit_Item, modifier l'appel de Glide_Display_Image_By_Id :
+        // Dans le composant Item, modifier l'appel de Glide_Display_Image_By_Id :
         Glide_Display_Image_By_Id(
             produit_Id = produit.id,
             produit_Image_Need_Update = produit.it_Image_besoin_To_Be_Updated,

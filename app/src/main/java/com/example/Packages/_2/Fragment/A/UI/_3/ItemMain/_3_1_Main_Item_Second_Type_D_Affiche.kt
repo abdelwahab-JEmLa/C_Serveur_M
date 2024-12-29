@@ -20,7 +20,7 @@ import com.example.App_Produits_Main._1.Model.AppInitializeModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun Host_Affiche_Produit_Item(
+fun Item(
     app_Initialize_Model: AppInitializeModel,
     uiState: UiState,
     produit: AppInitializeModel.ProduitModel,

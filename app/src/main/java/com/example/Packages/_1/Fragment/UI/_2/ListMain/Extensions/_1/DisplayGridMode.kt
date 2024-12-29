@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Packages._1.Fragment.UI._3.ItemMain.Host_Affiche_Produit_Item
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.EmptyStateMessage
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.Item
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
@@ -73,7 +74,7 @@ fun DisplayGridMode(
                 items = sortedPositionItems,
                 key = { "${it.nom}_${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}_${UUID.randomUUID()}" }
             ) { produit ->
-                Host_Affiche_Produit_Item(
+                Item(
                     app_Initialize_Model = app_Initialize_Model,
                     uiState = ui_State,
                     produit = produit,
@@ -93,7 +94,7 @@ fun DisplayGridMode(
                 items = sortedNoPositionItems,
                 key = { "${it.nom}_no_position_${UUID.randomUUID()}" }
             ) { produit ->
-                Host_Affiche_Produit_Item(
+                Item(
                     app_Initialize_Model = app_Initialize_Model,
                     uiState = ui_State,
                     produit = produit

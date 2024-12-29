@@ -10,9 +10,11 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.util.Objects
+import kotlin.coroutines.resumeWithException
 
 @IgnoreExtraProperties
 class AppInitializeModel(
@@ -144,20 +146,30 @@ class AppInitializeModel(
                 }
             }
 
-    suspend fun update_Produits_FireBase() {
-        try {
-            val ref_Produit_Main_DataBase = Firebase.database
-                .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-                .child("produit_DataBase")
 
-            withContext(Dispatchers.IO) {
-                ref_Produit_Main_DataBase.setValue(produits_Main_DataBase).await()
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun update_Produits_FireBase() {
+        withContext(Dispatchers.IO) {
+            try {
+                val ref_Produit_Main_DataBase = Firebase.database
+                    .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+                    .child("produit_DataBase")
+
+                // Use suspendCancellableCoroutine for better cancellation handling
+                suspendCancellableCoroutine<Unit> { continuation ->
+                    ref_Produit_Main_DataBase.setValue(produits_Main_DataBase)
+                        .addOnSuccessListener {
+                            continuation.resume(Unit) {}
+                        }
+                        .addOnFailureListener { exception ->
+                            continuation.resumeWithException(exception)
+                        }
+                }
+            } catch (e: Exception) {
+                Log.e("AppInitializeModel", "Failed to update Firebase", e)
+                throw Exception("Failed to update Firebase: ${e.message}")
             }
-        } catch (e: Exception) {
-            Log.e("AppInitializeModel", "Failed to update Firebase", e)
-            throw Exception("Failed to update Firebase: ${e.message}")
         }
     }
-
 
 }

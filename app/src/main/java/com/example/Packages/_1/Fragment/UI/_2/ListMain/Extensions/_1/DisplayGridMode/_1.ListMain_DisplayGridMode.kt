@@ -45,8 +45,6 @@ internal fun ListMain_DisplayGridMode(
                 produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
                     position > 0
                 } ?: false
-            }.also { (withPos, withoutPos) ->
-                Log.d(TAG, "Partitioned: ${withPos.size} with position, ${withoutPos.size} without position")
             }
         }
     }
@@ -58,11 +56,6 @@ internal fun ListMain_DisplayGridMode(
         derivedStateOf {
             itemsWithPosition.sortedBy { produit ->
                 produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: Int.MAX_VALUE
-            }.also { sorted ->
-                Log.d(TAG, "Sorted items with position: ${sorted.size} items")
-                sorted.forEach { produit ->
-                    Log.d(TAG, "Position item: ${produit.nom} - Position: ${produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}")
-                }
             }
         }
     }
@@ -70,16 +63,10 @@ internal fun ListMain_DisplayGridMode(
     // Sort items without position
     val sortedNoPositionItems by remember(itemsWithoutPosition) {
         derivedStateOf {
-            itemsWithoutPosition.sortedBy { it.nom }.also { sorted ->
-                Log.d(TAG, "Sorted items without position: ${sorted.size} items")
-                sorted.forEach { produit ->
-                    Log.d(TAG, "No position item: ${produit.nom}")
-                }
-            }
+            itemsWithoutPosition.sortedBy { it.nom }
         }
     }
 
-    // Main Grid Layout
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
@@ -96,7 +83,6 @@ internal fun ListMain_DisplayGridMode(
         if (sortedPositionItems.isNotEmpty()) {
             item(
                 span = { GridItemSpan(5) },
-                key = "header_with_position"
             ) {
                 SectionHeader(
                     text = "Products with Position (${sortedPositionItems.size})"
@@ -105,19 +91,7 @@ internal fun ListMain_DisplayGridMode(
 
             items(
                 items = sortedPositionItems,
-                key = { produit ->
-                    // Create a unique key combining multiple identifiers
-                    buildString {
-                        append("pos_")
-                        append(produit.id)
-                        append("_")
-                        append(produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0)
-                        append("_")
-                        append(System.identityHashCode(produit))
-                    }.also { key ->
-                        Log.d(TAG, "Generated key for position item: $key")
-                    }
-                }
+
             ) { produit ->
                 ItemMain_Grid(
                     appInitializeViewModel = appInitializeViewModel,
@@ -131,7 +105,6 @@ internal fun ListMain_DisplayGridMode(
         if (sortedNoPositionItems.isNotEmpty()) {
             item(
                 span = { GridItemSpan(5) },
-                key = "header_without_position"
             ) {
                 SectionHeader(
                     text = "Products without Position (${sortedNoPositionItems.size})"
@@ -140,17 +113,7 @@ internal fun ListMain_DisplayGridMode(
 
             items(
                 items = sortedNoPositionItems,
-                key = { produit ->
-                    // Create a unique key for items without position
-                    buildString {
-                        append("nopos_")
-                        append(produit.id)
-                        append("_")
-                        append(System.identityHashCode(produit))
-                    }.also { key ->
-                        Log.d(TAG, "Generated key for no-position item: $key")
-                    }
-                }
+
             ) { produit ->
                 ItemMain_Grid(
                     appInitializeViewModel = appInitializeViewModel,
@@ -161,10 +124,9 @@ internal fun ListMain_DisplayGridMode(
         }
 
         // Display empty state if no items
-        if (sortedPositionItems.isEmpty() && sortedNoPositionItems.isEmpty()) {
+        if (visibleItems.isEmpty()) {
             item(
                 span = { GridItemSpan(5) },
-                key = "empty_state"
             ) {
                 EmptyStateMessage()
             }

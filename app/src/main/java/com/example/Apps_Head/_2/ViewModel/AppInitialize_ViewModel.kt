@@ -15,8 +15,10 @@ import com.example.Apps_Head._3.Modules.Images_Handler.FireBase_Store_Handler
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 open class AppInitialize_ViewModel : ViewModel() {
     var _app_Initialize_Model by mutableStateOf(AppInitializeModel())
@@ -111,6 +113,29 @@ open class AppInitialize_ViewModel : ViewModel() {
                 Log.d(TAG, "Successfully updated position for product $productId, supplier $supplierId")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to update position in Firebase: ${e.message}", e)
+            }
+        }
+    }
+    fun updateProductPosition(productId: Long, newPosition: Int) {
+        viewModelScope.launch {
+            try {
+                // Find the product and update its position
+                val product = _app_Initialize_Model.produits_Main_DataBase.find { it.id == productId }
+                product?.bonCommendDeCetteCota?.let { supplier ->
+                    supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
+
+                    // Update Firebase using a more robust approach
+                    try {
+                        withContext(Dispatchers.IO) {
+                            _app_Initialize_Model.update_Produits_FireBase()
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to update Firebase", e)
+                        // Handle the error appropriately - maybe set a state to show an error message
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating product position", e)
             }
         }
     }

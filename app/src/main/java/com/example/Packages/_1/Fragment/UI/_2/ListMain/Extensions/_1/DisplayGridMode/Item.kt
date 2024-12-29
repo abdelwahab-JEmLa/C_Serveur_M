@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1
+package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,11 +23,11 @@ import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
 @Composable
-fun DisplayGridMode(
+internal fun ListMain(
+    app_Initialize_Model: AppInitializeModel,
     visibleItems: List<AppInitializeModel.ProduitModel>,
     modifier: Modifier,
     contentPadding: PaddingValues,
-    app_Initialize_Model: AppInitializeModel,
     ui_State: UiState
 ) {
     val (itemsWithPosition, itemsWithoutPosition) = remember(visibleItems) {

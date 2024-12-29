@@ -40,7 +40,7 @@ fun ListMain(
                 visibleItems = visibleItems,
                 modifier = modifier,
                 contentPadding = contentPadding,
-                app_Initialize_Model = app_Initialize_Model,
+                appInitializeModel = app_Initialize_Model,
                 ui_State = ui_State
             )
         }

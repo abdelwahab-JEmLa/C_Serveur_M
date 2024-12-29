@@ -29,10 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppInitializeModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
+import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.Z.Actions.OnClickMainCard
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
 internal fun Item(
+    appInitializeModel: AppInitializeModel,
     uiState: UiState,
     produit: AppInitializeModel.ProduitModel,
 ) {
@@ -59,7 +61,8 @@ internal fun Item(
                 else
                     Modifier.height(heightCard)
             )
-    ) {
+            .clickable { OnClickMainCard(appInitializeModel, produit) },
+        ) {
         // Dans le composant ItemDisplayListMode, modifier l'appel de Glide_Display_Image_By_Id :
         Glide_Display_Image_By_Id(
             produit_Id = produit.id,

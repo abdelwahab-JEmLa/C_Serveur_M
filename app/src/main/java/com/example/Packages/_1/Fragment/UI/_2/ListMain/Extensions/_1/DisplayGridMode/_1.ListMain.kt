@@ -24,7 +24,7 @@ import java.util.UUID
 
 @Composable
 internal fun ListMain(
-    app_Initialize_Model: AppInitializeModel,
+    appInitializeModel: AppInitializeModel,
     visibleItems: List<AppInitializeModel.ProduitModel>,
     modifier: Modifier,
     contentPadding: PaddingValues,
@@ -74,6 +74,7 @@ internal fun ListMain(
                 key = { "${it.nom}_${it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}_${UUID.randomUUID()}" }
             ) { produit ->
                 Item(
+                    appInitializeModel = appInitializeModel,
                     uiState = ui_State,
                     produit = produit,
                 )
@@ -93,6 +94,7 @@ internal fun ListMain(
                 key = { "${it.nom}_no_position_${UUID.randomUUID()}" }
             ) { produit ->
                 Item(
+                    appInitializeModel=appInitializeModel,
                     uiState = ui_State,
                     produit = produit
                 )

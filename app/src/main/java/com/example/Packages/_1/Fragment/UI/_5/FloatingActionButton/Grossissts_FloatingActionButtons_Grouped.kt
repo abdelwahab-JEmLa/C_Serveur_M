@@ -142,12 +142,12 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                 scope.launch {
                                     try {
                                         // Reset all filters first
-                                        grouped_Produits_Par_grossistInformations.forEach { (grossist, _) ->
+                                        grouped_Produits_Par_grossistInformations.map { (grossist, _) ->
                                             grossist.auFilterFAB = grossist.id == grossistModel.id
                                         }
 
                                         // Update product visibility
-                                        headViewModel._appsHead.produits_Main_DataBase.forEach { product ->
+                                        headViewModel._appsHead.produits_Main_DataBase.map { product ->
                                             product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
                                                 bon.grossistInformations?.id == grossistModel.id
                                                         && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }

@@ -45,7 +45,7 @@ internal fun ScreenMain(
 
                 if (databaseSize > 0) {
                     ListMain(
-                        appInitializeViewModel=appInitializeViewModel,
+                        initViewModel=appInitializeViewModel,
                         app_Initialize_Model = appInitializeViewModel.appsHead,
                         ui_State = p3_ViewModel.uiState,
                         contentPadding = paddingValues

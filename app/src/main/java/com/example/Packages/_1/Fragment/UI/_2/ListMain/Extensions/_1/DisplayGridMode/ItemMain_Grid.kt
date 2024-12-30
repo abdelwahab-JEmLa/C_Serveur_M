@@ -30,8 +30,7 @@ import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions.OnCl
 
 @Composable
 internal fun ItemMain_Grid(
-    appInitializeViewModel: InitViewModel,
-    appInitializeModel: AppsHeadModel,
+    initViewModel: InitViewModel,
     produit: AppsHeadModel.ProduitModel,
 ) {
     // Calculate if the product has a valid position
@@ -54,7 +53,7 @@ internal fun ItemMain_Grid(
                 shape = RoundedCornerShape(4.dp)
             )
             .clickable {
-                appInitializeViewModel.OnClickMainCard(produit)
+                initViewModel.OnClickMainCard(produit)
             },
         contentAlignment = Alignment.Center
     ) {
@@ -72,7 +71,7 @@ internal fun ItemMain_Grid(
         if (hasPosition) {
             IconButton(
                 onClick = {
-                    appInitializeViewModel.updateProductPosition(produit.id, 0)
+                    initViewModel.updateProductPosition(produit.id, 0)
                 },
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -156,4 +155,15 @@ internal fun ItemMain_Grid(
             }
         }
     }
+}
+@Composable
+fun EmptyStateMessage() {
+    Text(
+        text = "No products available for selected filter",
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(32.dp),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
 }

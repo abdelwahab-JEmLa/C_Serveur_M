@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions
+package com.example.Packages._1.Fragment.UI.Actions
 
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel

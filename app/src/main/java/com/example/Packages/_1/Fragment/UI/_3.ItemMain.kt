@@ -1,6 +1,5 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode
+package com.example.Packages._1.Fragment.UI
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,16 +24,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions.onClickItemIcon_1
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions.onClickMainCard
 
 @Composable
-internal fun ItemMain_Grid(
-    initViewModel: InitViewModel,
+fun ItemMain(
     itemMain: AppsHeadModel.ProduitModel,
-) {
+    onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
+    onCLickOnMain: (AppsHeadModel.ProduitModel) -> Unit,
+
+    ) {
     // Calculate if the product has a valid position
     val hasPosition = remember(itemMain.bonCommendDeCetteCota) {
         itemMain.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { pos ->
@@ -54,29 +52,7 @@ internal fun ItemMain_Grid(
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable {
-                Log.d("onClickMainCard", "Starting position update for product ${itemMain.id}")
-
-                // Find the maximum position among existing products
-                val maxPosition = initViewModel._appsHead.produits_Main_DataBase
-                    .mapNotNull { it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
-                    .filter { it >= 0 }
-                    .maxOrNull() ?: -1
-
-                Log.d("onClickMainCard", "Current max position: $maxPosition")
-
-                // Calculate new position
-                val newPosition = maxPosition + 1
-
-                // Create or update bonCommendDeCetteCota if necessary
-                if (itemMain.bonCommendDeCetteCota == null) {
-                    itemMain.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
-                }
-
-                itemMain.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
-
-                initViewModel.onClickMainCard(itemMain)
-            },
+            .clickable {onCLickOnMain(itemMain)},
         contentAlignment = Alignment.Center
     ) {
         // Product Image
@@ -92,11 +68,7 @@ internal fun ItemMain_Grid(
         // Delete Position Button
         if (hasPosition) {
             IconButton(
-                onClick = {
-                    itemMain.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
-
-                    initViewModel.onClickItemIcon_1(itemMain)
-                },
+                onClick = { onClickDelete(itemMain) },
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(4.dp)

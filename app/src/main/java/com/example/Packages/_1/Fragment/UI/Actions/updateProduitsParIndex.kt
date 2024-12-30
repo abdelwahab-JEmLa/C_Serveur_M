@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions
+package com.example.Packages._1.Fragment.UI.Actions
 
 import android.content.ContentValues.TAG
 import android.util.Log

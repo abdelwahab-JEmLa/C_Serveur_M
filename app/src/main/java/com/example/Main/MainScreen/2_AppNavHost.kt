@@ -30,7 +30,7 @@ fun AppNavHost(
         ) {
 
             composable(Fragment3_Main_ScreenDestination().route) {
-                ScreenMain(appInitializeViewModel=appViewModels.app_Initialize_ViewModel)
+                ScreenMain(initViewModel=appViewModels.app_Initialize_ViewModel, onClickDelete = {})
             }
             composable(Fragment_4_Main_Screen_Destination().route) {
             }

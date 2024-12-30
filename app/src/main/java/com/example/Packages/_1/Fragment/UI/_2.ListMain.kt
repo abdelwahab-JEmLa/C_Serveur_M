@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI._2.ListMain
+package com.example.Packages._1.Fragment.UI
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -20,22 +20,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode.ItemMain_Grid
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 private const val TAG = "ListMain_DisplayGridMode"
 
 @Composable
 internal fun ListMain(
-    initViewModel: InitViewModel,
+    visibleItems: List<AppsHeadModel.ProduitModel>,
     ui_State: UiState,
-    modifier: Modifier=Modifier,
-    contentPadding: PaddingValues
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues, onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
+    onCLickOnMain: (AppsHeadModel.ProduitModel) -> Unit
 ) {
-    val visibleItems =
-        initViewModel._appsHead.produits_Main_DataBase.filter { it.isVisible }
-
     // Partition items based on position
     val partitionedItems by remember(visibleItems) {
         derivedStateOf {
@@ -89,15 +86,7 @@ internal fun ListMain(
                 )
             }
 
-            items(
-                items = sortedPositionItems,
-
-                ) { produit ->
-                ItemMain_Grid(
-                    initViewModel = initViewModel,
-                    itemMain = produit
-                )
-            }
+            items(items = sortedPositionItems,) { ItemMain(it, onClickDelete, onCLickOnMain) }
         }
 
         // Display items without position
@@ -112,11 +101,11 @@ internal fun ListMain(
 
             items(
                 items = sortedNoPositionItems,
-
                 ) { produit ->
-                ItemMain_Grid(
-                    initViewModel = initViewModel,
-                    itemMain = produit
+                ItemMain(
+                    itemMain = produit,
+                    onClickDelete=onClickDelete,
+                    onCLickOnMain
                 )
             }
         }

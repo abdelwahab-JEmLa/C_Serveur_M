@@ -1,6 +1,6 @@
 package com.example.Packages._1.Fragment.UI._5.FloatingActionButton
 
-import android.util.Log
+import  android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -60,33 +60,38 @@ fun Grossissts_FloatingActionButtons_Grouped(
     val scope = rememberCoroutineScope()
 
     // Optimized grouping logic with null safety
-    val grouped_Produits_Par_grossistInformations = remember(app_Initialize_Model.produits_Main_DataBase) {
-        app_Initialize_Model.produits_Main_DataBase
-            .mapNotNull { produit ->
-                produit.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
-                    grossist to produit
+    val grouped_Produits_Par_grossistInformations =
+        remember(app_Initialize_Model.produits_Main_DataBase) {
+            app_Initialize_Model.produits_Main_DataBase
+                .mapNotNull { produit ->
+                    produit.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
+                        grossist to produit
+                    }
                 }
-            }
-            .groupBy({ it.first }, { it.second })
-            .also { grouped ->
-                Log.d("GrossistGrouping", """
+                .groupBy({ it.first }, { it.second })
+                .also { grouped ->
+                    Log.d(
+                        "GrossistGrouping", """
                     -------- Grouping Details --------
                     Total products: ${app_Initialize_Model.produits_Main_DataBase.size}
                     Products with grossists: ${grouped.values.sumOf { it.size }}
                     Number of groups: ${grouped.size}
                     
                     Groups breakdown:
-                    ${grouped.entries.joinToString("\n") { (grossist, products) ->
-                    """
+                    ${
+                            grouped.entries.joinToString("\n") { (grossist, products) ->
+                                """
                         Grossist: ${grossist.nom}
                         Color: ${grossist.couleur}
                         Products count: ${products.size}
                         Product names: ${products.joinToString(", ") { it.nom }}
                     """.trimIndent()
-                }}
-                """.trimIndent())
-            }
-    }
+                            }
+                        }
+                """.trimIndent()
+                    )
+                }
+        }
 
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
@@ -124,43 +129,41 @@ fun Grossissts_FloatingActionButtons_Grouped(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
-                    grouped_Produits_Par_grossistInformations.forEach { (grossistModel, products) ->
+                    grouped_Produits_Par_grossistInformations.forEach { (ceGrossist, products) ->
                         FabButton(
                             supplierProductssize = products.size,
-                            label = grossistModel.nom,
-                            color = Color(android.graphics.Color.parseColor(grossistModel.couleur)),
+                            label = ceGrossist.nom,
+                            color = Color(android.graphics.Color.parseColor(ceGrossist.couleur)),
                             showLabel = showLabels,
-                            isFiltered = grossistModel.auFilterFAB,
+                            isFiltered = ceGrossist.auFilterFAB,
                             onClick = {
                                 scope.launch {
                                     try {
-                                        grossistModel.auFilterFAB = true
-                                        
-                                        headViewModel._appsHead.produits_Main_DataBase.forEach { 
-                                            it.isVisible = false
+                                        // Update filter states for all grossists atomically
+                                        grouped_Produits_Par_grossistInformations.forEach { (allGrossist, _) ->
+                                            allGrossist.auFilterFAB = allGrossist.id == ceGrossist.id
                                         }
 
-
-                                        // Filter products based on the selected grossist and update visibility
-                                        headViewModel._appsHead.produits_Main_DataBase.forEach { product ->
-                                            product.bonCommendDeCetteCota?.let { bonCommande ->
-                                                if (bonCommande.grossistInformations?.id == grossistModel.id) {
-
-                                                    val hasOrders = bonCommande.coloursEtGoutsCommendee
-                                                        .any { it.quantityAchete > 0 }
-
-                                                    product.isVisible = hasOrders
-                                                }
+                                        headViewModel._appsHead.produits_Main_DataBase.map { product ->
+                                            product.apply {
+                                                isVisible =
+                                                        product.bonCommendDeCetteCota?.grossistInformations?.id == ceGrossist.id
+                                                        && product.bonCommendDeCetteCota?.coloursEtGoutsCommendee?.any { it.quantityAchete > 0 }
+                                                        ?:  false
                                             }
                                         }
 
-                                        // Update Firebase
-                                        headViewModel._appsHead.ref_Produits_Main_DataBase.setValue(
-                                            headViewModel._appsHead.produits_Main_DataBase
-                                        )
-
+                                        try {
+                                            headViewModel._appsHead.ref_Produits_Main_DataBase.setValue(
+                                                headViewModel._appsHead.produits_Main_DataBase
+                                            )
+                                        } catch (e: Exception) {
+                                            Log.e("FilterError", "Failed to update Firebase", e)
+                                            throw e
+                                        }
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
+
                                     }
                                 }
                             }
@@ -193,6 +196,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
         }
     }
 }
+
 @Composable
 private fun FabButton(
     label: String,

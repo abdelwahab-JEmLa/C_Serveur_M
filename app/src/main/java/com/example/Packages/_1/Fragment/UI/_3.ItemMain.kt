@@ -29,7 +29,7 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 @Composable
 fun ItemMain(
     itemMain: AppsHeadModel.ProduitModel,
-    onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
+    onClickDelete: (() -> Unit)? =null,
     onCLickOnMain: (() -> Unit)? =null,
 
     ) {
@@ -72,7 +72,11 @@ fun ItemMain(
         // Delete Position Button
         if (hasPosition) {
             IconButton(
-                onClick = { onClickDelete(itemMain) },
+                onClick = {
+                    if (onClickDelete != null) {
+                        onClickDelete()
+                    }
+                },
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(4.dp)

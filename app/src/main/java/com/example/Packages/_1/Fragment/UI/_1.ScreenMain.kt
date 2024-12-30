@@ -15,8 +15,6 @@ import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
 
 @Composable
 internal fun ScreenMain(
@@ -24,8 +22,7 @@ internal fun ScreenMain(
     initViewModel: InitViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel(),
 ) {
-    val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
-    val baseRef = Firebase.database.getReference(CHEMIN_BASE)
+
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -53,12 +50,6 @@ internal fun ScreenMain(
                         visibleItems = visibleItems,
                         ui_State = p3_ViewModel.uiState,
                         contentPadding = paddingValues,
-                        onClickDelete = { itemClicke ->
-                            visibleItems.find { it.id == itemClicke.id }?.let { item ->
-                                item.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
-                            }
-                            baseRef.setValue(itemClicke)
-                        },
                     )
                 }
             }

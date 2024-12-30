@@ -33,7 +33,6 @@ internal fun ListMain(
     ui_State: UiState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
 ) {
     // Partition items based on position
     val partitionedItems by remember(visibleItems) {
@@ -87,33 +86,39 @@ internal fun ListMain(
                     text = "Products with Position (${sortedPositionItems.size})"
                 )
             }
-
             items(items = sortedPositionItems,)
             {item->
                 ItemMain(
                     item,
-                    onClickDelete,
-                ) {
-                    // Find the maximum position among existing products
-                    val maxPosition = visibleItems.mapNotNull {visibleItem->
-                        visibleItem.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                    }.filter { it >= 0 }.maxOrNull() ?: -1
+                    onClickDelete= { visibleItems.find { it.id == item.id }?.let { item ->
+                            item.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
+                        }
+                        Firebase.database
+                            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
+                            .setValue(item)
+                    },
+                   onCLickOnMain =  {
+                        // Find the maximum position among existing products
+                        val maxPosition = visibleItems.mapNotNull {visibleItem->
+                            visibleItem.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                        }.filter { it >= 0 }.maxOrNull() ?: -1
 
-                    Log.d("onClickMainCard", "Current max position: $maxPosition")
+                        Log.d("onClickMainCard", "Current max position: $maxPosition")
 
-                    // Create or update bonCommendDeCetteCota if necessary
-                    if (item.bonCommendDeCetteCota == null) {
-                        item.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+                        // Create or update bonCommendDeCetteCota if necessary
+                        if (item.bonCommendDeCetteCota == null) {
+                            item.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+                        }
+
+                        item.bonCommendDeCetteCota
+                            ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                            maxPosition + 1
+
+                        Firebase.database
+                            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
+                            .setValue(item)
                     }
-
-                    item.bonCommendDeCetteCota
-                        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
-                        maxPosition + 1
-
-                    Firebase.database
-                        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
-                        .setValue(item)
-                }
+                )
             }
         }
 
@@ -132,7 +137,6 @@ internal fun ListMain(
                 ) { item ->
                 ItemMain(
                     itemMain = item,
-                    onClickDelete =onClickDelete,
                 )
             }
         }
@@ -147,7 +151,6 @@ internal fun ListMain(
         }
     }
 }
-
 
 @Composable
 private fun SectionHeader(text: String) {

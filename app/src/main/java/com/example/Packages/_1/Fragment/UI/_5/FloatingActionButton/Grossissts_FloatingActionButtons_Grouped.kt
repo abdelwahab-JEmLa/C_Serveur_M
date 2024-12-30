@@ -129,25 +129,25 @@ fun Grossissts_FloatingActionButtons_Grouped(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
-                    grouped_Produits_Par_grossistInformations.forEach { (ceGrossist, products) ->
+                    grouped_Produits_Par_grossistInformations.forEach { (grossistModel, products) ->
                         FabButton(
                             supplierProductssize = products.size,
-                            label = ceGrossist.nom,
-                            color = Color(android.graphics.Color.parseColor(ceGrossist.couleur)),
+                            label = grossistModel.nom,
+                            color = Color(android.graphics.Color.parseColor(grossistModel.couleur)),
                             showLabel = showLabels,
-                            isFiltered = ceGrossist.auFilterFAB,
+                            isFiltered = grossistModel.auFilterFAB,
                             onClick = {
                                 scope.launch {
                                     try {
                                         // Update filter states for all grossists atomically
                                         grouped_Produits_Par_grossistInformations.forEach { (allGrossist, _) ->
-                                            allGrossist.auFilterFAB = allGrossist.id == ceGrossist.id
+                                            allGrossist.auFilterFAB = allGrossist.id == grossistModel.id
                                         }
 
                                         headViewModel._appsHead.produits_Main_DataBase.map { product ->
                                             product.apply {
                                                 isVisible =
-                                                        product.bonCommendDeCetteCota?.grossistInformations?.id == ceGrossist.id
+                                                        product.bonCommendDeCetteCota?.grossistInformations?.id == grossistModel.id
                                                         && product.bonCommendDeCetteCota?.coloursEtGoutsCommendee?.any { it.quantityAchete > 0 }
                                                         ?:  false
                                             }

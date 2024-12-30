@@ -30,7 +30,7 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 fun ItemMain(
     itemMain: AppsHeadModel.ProduitModel,
     onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
-    onCLickOnMain: () -> Unit,
+    onCLickOnMain: (() -> Unit)? =null,
 
     ) {
     // Calculate if the product has a valid position
@@ -52,7 +52,11 @@ fun ItemMain(
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable {onCLickOnMain()},
+            .clickable {
+                if (onCLickOnMain != null) {
+                    onCLickOnMain()
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         // Product Image

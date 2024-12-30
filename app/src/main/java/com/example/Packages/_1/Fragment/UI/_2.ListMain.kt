@@ -93,8 +93,27 @@ internal fun ListMain(
                 ItemMain(
                     item,
                     onClickDelete,
-                    onClickOnMain(visibleItems, item)
-                )
+                ) {
+                    // Find the maximum position among existing products
+                    val maxPosition = visibleItems.mapNotNull {visibleItem->
+                        visibleItem.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                    }.filter { it >= 0 }.maxOrNull() ?: -1
+
+                    Log.d("onClickMainCard", "Current max position: $maxPosition")
+
+                    // Create or update bonCommendDeCetteCota if necessary
+                    if (item.bonCommendDeCetteCota == null) {
+                        item.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+                    }
+
+                    item.bonCommendDeCetteCota
+                        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                        maxPosition + 1
+
+                    Firebase.database
+                        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
+                        .setValue(item)
+                }
             }
         }
 
@@ -113,8 +132,7 @@ internal fun ListMain(
                 ) { item ->
                 ItemMain(
                     itemMain = item,
-                    onClickDelete=onClickDelete,
-                    onClickOnMain(visibleItems, item)
+                    onClickDelete =onClickDelete,
                 )
             }
         }
@@ -130,36 +148,6 @@ internal fun ListMain(
     }
 }
 
-@Composable
-private fun onClickOnMain(
-    visibleItems: List<AppsHeadModel.ProduitModel>,
-    item: AppsHeadModel.ProduitModel
-): () -> Unit = {
-    // Find the maximum position among existing products
-    val maxPosition = visibleItems.mapNotNull {
-        it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-    }
-        .filter { it >= 0 }
-        .maxOrNull() ?: -1
-
-    Log.d("onClickMainCard", "Current max position: $maxPosition")
-
-    // Calculate new position
-    val newPosition = maxPosition + 1
-
-    // Create or update bonCommendDeCetteCota if necessary
-    if (item.bonCommendDeCetteCota == null) {
-        item.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
-    }
-
-    item.bonCommendDeCetteCota
-        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
-        newPosition
-
-    Firebase.database
-        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
-        .setValue(item)
-}
 
 @Composable
 private fun SectionHeader(text: String) {

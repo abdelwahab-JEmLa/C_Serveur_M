@@ -47,7 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Add_New_Produit.CameraPickImageHandler
 import com.example.Packages._1.Fragment.C.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
@@ -57,7 +57,7 @@ import kotlin.math.roundToInt
 internal fun GlobalActions_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     fragment_Ui_State: UiState,
-    app_Initialize_Model: AppInitializeModel,
+    app_Initialize_Model: AppsHeadModel,
 ) {
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }

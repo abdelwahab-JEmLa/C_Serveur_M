@@ -17,7 +17,7 @@ import java.util.Objects
 import kotlin.coroutines.resumeWithException
 
 @IgnoreExtraProperties
-class AppInitializeModel(
+class AppsHeadModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
 ) {
     var produits_Main_DataBase: SnapshotStateList<ProduitModel> =
@@ -39,6 +39,7 @@ class AppInitializeModel(
             init_colours_Et_Gouts: List<ColourEtGout_Model> = emptyList(),
             init_bonCommendDeCetteCota: GrossistBonCommandes? = null,
             init_bonS_Vent_De_Cette_Cota: List<ClientBonVent_Model> = emptyList(),
+            initialIsVisible: Boolean = true  ,
 
             init_historiqueBonsVents: List<ClientBonVent_Model> = emptyList(),
             init_historiqueBonsCommend: List<GrossistBonCommandes> = emptyList(),
@@ -48,8 +49,7 @@ class AppInitializeModel(
             var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
             var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)
             var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
-            var auFilterFAB: Boolean by mutableStateOf( false)
-
+            var isVisible: Boolean by mutableStateOf(initialIsVisible)  // Add new property
             var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
                 init_colours_Et_Gouts.toMutableStateList()
 
@@ -166,7 +166,7 @@ class AppInitializeModel(
                         }
                 }
             } catch (e: Exception) {
-                Log.e("AppInitializeModel", "Failed to update Firebase", e)
+                Log.e("AppsHeadModel", "Failed to update Firebase", e)
                 throw Exception("Failed to update Firebase: ${e.message}")
             }
         }

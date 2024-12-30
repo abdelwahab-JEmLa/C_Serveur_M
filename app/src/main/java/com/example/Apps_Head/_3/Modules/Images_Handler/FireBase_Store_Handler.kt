@@ -1,8 +1,8 @@
 package com.example.Apps_Head._3.Modules.Images_Handler
 
 import androidx.lifecycle.viewModelScope
-import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,11 +15,11 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 
-open class FireBase_Store_Handler : AppInitialize_ViewModel() {
+open class FireBase_Store_Handler : InitViewModel() {
     // Pour suivre les opérations de mise à jour d'image en cours
     private var currentImageUpdateJobs = mutableMapOf<Long, Job>()
 
-    fun startImageUpdate(_app_Initialize_Model: AppInitializeModel, produitId: Long) {
+    fun startImageUpdate(_app_Initialize_Model: AppsHeadModel, produitId: Long) {
         // Si une mise à jour est déjà en cours pour ce produit, on ne fait rien
         if (currentImageUpdateJobs[produitId]?.isActive == true) {
             return
@@ -53,7 +53,7 @@ open class FireBase_Store_Handler : AppInitialize_ViewModel() {
     private suspend fun updateProductImage(produitId: Long) = withContext(Dispatchers.IO) {
         val fileName = "${produitId}_1.jpg"
         val storageRef = Firebase.storage.reference
-            .child("Images Articles Data Base/AppInitializeModel.Produit_Main_DataBase/$fileName")
+            .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
 
         val viewModelImagesPath = File("/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne")
         if (!viewModelImagesPath.exists()) {
@@ -77,7 +77,7 @@ open class FireBase_Store_Handler : AppInitialize_ViewModel() {
         currentImageUpdateJobs.clear()
 
         // Supprime le listener de la base de données
-        _app_Initialize_Model.ref_Produits_Main_DataBase.removeEventListener(object : ValueEventListener {
+        _appsHead.ref_Produits_Main_DataBase.removeEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {}
             override fun onCancelled(error: DatabaseError) {}
         })

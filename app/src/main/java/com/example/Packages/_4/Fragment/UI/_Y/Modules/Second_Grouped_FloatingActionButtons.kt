@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
-import com.example.App_Produits_Main._1.Model.AppInitializeModel
+import com.example.App_Produits_Main._1.Model.AppsHeadModel
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -54,7 +54,7 @@ private const val FAB_TAG = "FAB_DEBUG"
 internal fun Second_Grouped_FloatingActionButtons(
     modifier: Modifier = Modifier,
     uiState: Ui_State_4_Fragment,
-    produit_Main_DataBase: SnapshotStateList<AppInitializeModel.ProduitModel>,
+    produit_Main_DataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
 ) {
 
     val grouped_Produits_Par_Id_Acheteur = remember(produit_Main_DataBase) {

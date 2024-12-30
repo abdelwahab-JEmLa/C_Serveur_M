@@ -23,16 +23,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions.Z.Actions.OnClickMainCard
 
 @Composable
 internal fun ItemMain_Grid(
-    appInitializeViewModel: AppInitialize_ViewModel,
-    appInitializeModel: AppInitializeModel,
-    produit: AppInitializeModel.ProduitModel,
+    appInitializeViewModel: InitViewModel,
+    appInitializeModel: AppsHeadModel,
+    produit: AppsHeadModel.ProduitModel,
 ) {
     // Calculate if the product has a valid position
     val hasPosition = remember(produit.bonCommendDeCetteCota) {

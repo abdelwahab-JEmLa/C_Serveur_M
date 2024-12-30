@@ -20,8 +20,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._2.DisplayListMode.EmptyStateMessage
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
@@ -29,9 +29,9 @@ private const val TAG = "ListMain_DisplayGridMode"
 
 @Composable
 internal fun ListMain_DisplayGridMode(
-    appInitializeViewModel: AppInitialize_ViewModel,
-    appInitializeModel: AppInitializeModel,
-    visibleItems: List<AppInitializeModel.ProduitModel>,
+    appInitializeViewModel: InitViewModel,
+    appInitializeModel: AppsHeadModel,
+    visibleItems: List<AppsHeadModel.ProduitModel>,
     modifier: Modifier,
     contentPadding: PaddingValues,
     ui_State: UiState

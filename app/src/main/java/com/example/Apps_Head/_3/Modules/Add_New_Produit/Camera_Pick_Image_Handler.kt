@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.core.content.FileProvider
-import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
@@ -12,14 +12,14 @@ import java.io.File
 
 class CameraPickImageHandler(
     private val context: Context,
-    private val appInitializeModel: AppInitializeModel
+    private val appInitializeModel: AppsHeadModel
 ) {
     companion object {
         private const val TAG = "CameraPickImageHandler"
     }
 
     var tempImageUri: Uri? = null
-    private var pendingProduct: AppInitializeModel.ProduitModel? = null
+    private var pendingProduct: AppsHeadModel.ProduitModel? = null
 
     private fun createTempImageUri(): Uri {
         val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
@@ -32,7 +32,7 @@ class CameraPickImageHandler(
         }
     }
 
-    fun handleNewProductImageCapture(existingProduct: AppInitializeModel.ProduitModel?): Uri {
+    fun handleNewProductImageCapture(existingProduct: AppsHeadModel.ProduitModel?): Uri {
         pendingProduct = existingProduct
         return createTempImageUri()
     }
@@ -71,10 +71,10 @@ class CameraPickImageHandler(
             val newId = findNextAvailableId().toLong()
             val fileName = "${newId}_1.jpg"
             val storageRef = Firebase.storage.reference
-                .child("Images Articles Data Base/AppInitializeModel.Produit_Main_DataBase/$fileName")
+                .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
 
             val newProduct = if (pendingProduct != null) {
-                AppInitializeModel.ProduitModel(
+                AppsHeadModel.ProduitModel(
                     id = newId,
                     it_ref_Id_don_FireBase = newId,
                     it_ref_don_FireBase = fileName,
@@ -86,7 +86,7 @@ class CameraPickImageHandler(
                     init_historiqueBonsCommend = pendingProduct!!.historiqueBonsCommend.toList()
                 )
             } else {
-                AppInitializeModel.ProduitModel(
+                AppsHeadModel.ProduitModel(
                     id = newId,
                     it_ref_Id_don_FireBase = newId,
                     it_ref_don_FireBase = fileName,

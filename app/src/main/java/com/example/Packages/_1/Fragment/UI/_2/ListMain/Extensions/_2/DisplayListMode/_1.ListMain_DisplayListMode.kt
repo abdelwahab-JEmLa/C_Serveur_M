@@ -15,21 +15,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import java.util.UUID
 
 @Composable
 fun ListMain_DisplayListMode(
-    app_Initialize_Model: AppInitializeModel,
-    visibleItems: List<AppInitializeModel.ProduitModel>,
+    app_Initialize_Model: AppsHeadModel,
+    visibleItems: List<AppsHeadModel.ProduitModel>,
     modifier: Modifier,
     contentPadding: PaddingValues,
     ui_State: UiState
 ) {
     val sortedItems = remember(visibleItems) {
         visibleItems.sortedWith(
-            compareBy<AppInitializeModel.ProduitModel> { produit ->
+            compareBy<AppsHeadModel.ProduitModel> { produit ->
                 produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                     ?: Int.MAX_VALUE
             }.thenBy { it.nom }

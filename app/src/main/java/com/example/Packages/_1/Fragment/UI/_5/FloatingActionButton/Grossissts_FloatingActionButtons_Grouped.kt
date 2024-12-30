@@ -44,16 +44,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun Grossissts_FloatingActionButtons_Grouped(
+    headViewModel: InitViewModel,
     modifier: Modifier = Modifier,
     ui_State: UiState,
-    app_Initialize_Model: AppInitializeModel,
+    app_Initialize_Model: AppsHeadModel,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -132,45 +134,31 @@ fun Grossissts_FloatingActionButtons_Grouped(
                             onClick = {
                                 scope.launch {
                                     try {
-                                        // Reset all filters first
-                                        app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                                            product.auFilterFAB = false
-                                            product.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB = false
+                                        grossistModel.auFilterFAB = true
+                                        
+                                        headViewModel._appsHead.produits_Main_DataBase.forEach { 
+                                            it.isVisible = false
                                         }
 
-                                        // Set selected grossist filter
-                                        grossistModel.auFilterFAB = true
 
-                                        // Filter products for selected grossist
-                                        products.forEach { product ->
+                                        // Filter products based on the selected grossist and update visibility
+                                        headViewModel._appsHead.produits_Main_DataBase.forEach { product ->
                                             product.bonCommendDeCetteCota?.let { bonCommande ->
-                                                val totalQuantity = bonCommande.coloursEtGoutsCommendee.sumOf { it.quantityAchete }
-                                                if (totalQuantity > 0) {
-                                                    product.auFilterFAB = true
+                                                if (bonCommande.grossistInformations?.id == grossistModel.id) {
+
+                                                    val hasOrders = bonCommande.coloursEtGoutsCommendee
+                                                        .any { it.quantityAchete > 0 }
+
+                                                    product.isVisible = hasOrders
                                                 }
                                             }
                                         }
 
-                                        // Log filtered products
-                                        val filteredProducts = app_Initialize_Model.produits_Main_DataBase
-                                            .filter { it.auFilterFAB }
-
-                                        Log.d("FilteredProducts", """
-                                            -------- Filtered Products Details --------
-                                            Selected Grossist: ${grossistModel.nom}
-                                            Total filtered products: ${filteredProducts.size}
-                                            
-                                            Filtered products list:
-                                            ${filteredProducts.joinToString("\n") { product ->
-                                            """
-                                                Product: ${product.nom}
-                                                Total Quantity: ${product.bonCommendDeCetteCota?.coloursEtGoutsCommendee?.sumOf { it.quantityAchete } ?: 0}
-                                            """.trimIndent()
-                                        }}
-                                        """.trimIndent())
-
                                         // Update Firebase
-                                        app_Initialize_Model.update_Produits_FireBase()
+                                        headViewModel._appsHead.ref_Produits_Main_DataBase.setValue(
+                                            headViewModel._appsHead.produits_Main_DataBase
+                                        )
+
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
                                     }

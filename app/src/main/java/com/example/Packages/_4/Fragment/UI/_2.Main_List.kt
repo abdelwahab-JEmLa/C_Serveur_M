@@ -4,7 +4,7 @@ package com.example.Packages._4.Fragment.UI
 @Composable
 fun Main_List(
     modifier: Modifier = Modifier,
-    produit_Main_DataBase: SnapshotStateList<AppInitializeModel.ProduitModel>,
+    produit_Main_DataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
     uiState: Ui_State_4_Fragment
 ) {
@@ -15,7 +15,7 @@ fun Main_List(
     }
 
     val sorted_Visible_Items = filtered_Items.sortedWith(
-        compareBy<AppInitializeModel.ProduitModel> { produit ->
+        compareBy<AppsHeadModel.ProduitModel> { produit ->
             val position = produit.historiqueBonsCommend
                 .maxByOrNull { it.date }
                 ?.position_Grossist_Don_Parent_Grossists_List

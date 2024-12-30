@@ -44,7 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Packages._1.Fragment.C.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -53,7 +53,7 @@ import kotlin.math.roundToInt
 fun Grossissts_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     ui_State: UiState,
-    app_Initialize_Model: AppInitializeModel,
+    app_Initialize_Model: AppsHeadModel,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -134,7 +134,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                     try {
                                         // Reset all filters first
                                         app_Initialize_Model.produits_Main_DataBase.forEach { product ->
-                                            product.auFilterFAB = false
+                                            product.isVisible = false
                                             product.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB = false
                                         }
 
@@ -146,14 +146,14 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                             product.bonCommendDeCetteCota?.let { bonCommande ->
                                                 val totalQuantity = bonCommande.coloursEtGoutsCommendee.sumOf { it.quantityAchete }
                                                 if (totalQuantity > 0) {
-                                                    product.auFilterFAB = true
+                                                    product.isVisible = true
                                                 }
                                             }
                                         }
 
                                         // Log filtered products
                                         val filteredProducts = app_Initialize_Model.produits_Main_DataBase
-                                            .filter { it.auFilterFAB }
+                                            .filter { it.isVisible }
 
                                         Log.d("FilteredProducts", """
                                             -------- Filtered Products Details --------

@@ -1,13 +1,13 @@
 package com.example.Apps_Head._2.ViewModel.Init
 
 import android.util.Log
-import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
-suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
+suspend fun InitViewModel.load_Depuit_FireBase() {
     val TAG = "Produit_Loader"
     val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
     val NOMBRE_PRODUITS = 20
@@ -18,7 +18,7 @@ suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
         val existingData = baseRef.get().await()
         val existingProducts = existingData.children.mapNotNull { snapshot ->
             try {
-                snapshot.getValue(AppInitializeModel.ProduitModel::class.java)
+                snapshot.getValue(AppsHeadModel.ProduitModel::class.java)
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to parse product from snapshot: ${snapshot.key}", e)
                 null
@@ -26,12 +26,12 @@ suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
         }
 
         // Clear and prepare the products list
-        _app_Initialize_Model.produits_Main_DataBase.clear()
+        _appsHead.produits_Main_DataBase.clear()
 
         // Initialize products list with existing or new products
         repeat(NOMBRE_PRODUITS) { index ->
             val existingProduct = existingProducts.find { it.id == index.toLong() }
-            val product = existingProduct ?: AppInitializeModel.ProduitModel(id = index.toLong())
+            val product = existingProduct ?: AppsHeadModel.ProduitModel(id = index.toLong())
 
             try {
                 val refProduit = baseRef.child(index.toString())
@@ -48,7 +48,7 @@ suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
                 product.coloursEtGouts.clear()
                 refProduit.child("coloursEtGouts").get().await().children.forEach { colorSnapshot ->
                     try {
-                        colorSnapshot.getValue(AppInitializeModel.ProduitModel.ColourEtGout_Model::class.java)?.let { color ->
+                        colorSnapshot.getValue(AppsHeadModel.ProduitModel.ColourEtGout_Model::class.java)?.let { color ->
                             if (color.nom.isNotEmpty()) {
                                 product.coloursEtGouts.add(color)
                             }
@@ -62,7 +62,7 @@ suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
                 try {
                     val bonCommandeSnapshot = refProduit.child("bonCommendDeCetteCota").get().await()
                     if (bonCommandeSnapshot.exists()) {
-                        bonCommandeSnapshot.getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommande ->
+                        bonCommandeSnapshot.getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommande ->
                             if (bonCommande.grossistInformations != null) {
                                 product.bonCommendDeCetteCota = bonCommande
                             }
@@ -76,7 +76,7 @@ suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
                 product.bonsVentDeCetteCota.clear()
                 refProduit.child("bonsVentDeCetteCota").get().await().children.forEach { saleSnapshot ->
                     try {
-                        saleSnapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)?.let { sale ->
+                        saleSnapshot.getValue(AppsHeadModel.ProduitModel.ClientBonVent_Model::class.java)?.let { sale ->
                             if (sale.nom_Acheteur.isNotEmpty() && sale.colours_Achete.isNotEmpty()) {
                                 product.bonsVentDeCetteCota.add(sale)
                             }
@@ -90,7 +90,7 @@ suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
                 product.historiqueBonsVents.clear()
                 refProduit.child("historiqueBonsVents").get().await().children.forEach { historySnapshot ->
                     try {
-                        historySnapshot.getValue(AppInitializeModel.ProduitModel.ClientBonVent_Model::class.java)?.let { history ->
+                        historySnapshot.getValue(AppsHeadModel.ProduitModel.ClientBonVent_Model::class.java)?.let { history ->
                             if (history.nom_Acheteur.isNotEmpty() && history.colours_Achete.isNotEmpty()) {
                                 product.historiqueBonsVents.add(history)
                             }
@@ -104,7 +104,7 @@ suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
                 product.historiqueBonsCommend.clear()
                 refProduit.child("historiqueBonsCommend").get().await().children.forEach { orderSnapshot ->
                     try {
-                        orderSnapshot.getValue(AppInitializeModel.ProduitModel.GrossistBonCommandes::class.java)?.let { order ->
+                        orderSnapshot.getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes::class.java)?.let { order ->
                             if (order.grossistInformations != null) {
                                 product.historiqueBonsCommend.add(order)
                             }
@@ -131,7 +131,7 @@ suspend fun AppInitialize_ViewModel.load_Depuit_FireBase() {
                 }
             }
 
-            _app_Initialize_Model.produits_Main_DataBase.add(product)
+            _appsHead.produits_Main_DataBase.add(product)
         }
 
     } catch (e: Exception) {

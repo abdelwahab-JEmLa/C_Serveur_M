@@ -1,9 +1,9 @@
 package com.example.Apps_Head._2.ViewModel.Init
 
 import android.util.Log
-import com.example.Apps_Head._1.Model.AppInitializeModel
-import com.example.Apps_Head._2.ViewModel.AppInitialize_ViewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.Init.Z.Components.get_Ancien_DataBases_Main
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-suspend fun AppInitialize_ViewModel.cree_New_Start() {
+suspend fun InitViewModel.cree_New_Start() {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
     try {
@@ -24,7 +24,7 @@ suspend fun AppInitialize_ViewModel.cree_New_Start() {
 
         ancienData.produitsDatabase.forEachIndexed { index, ancien ->
             try {
-                val nouveauProduit = AppInitializeModel.ProduitModel(
+                val nouveauProduit = AppsHeadModel.ProduitModel(
                     id = ancien.idArticle,
                     it_ref_Id_don_FireBase = 1L,
                     it_ref_don_FireBase = "produit_DataBase"
@@ -46,7 +46,7 @@ suspend fun AppInitialize_ViewModel.cree_New_Start() {
 
                         if (couleurTrouvee != null) {
                             coloursEtGouts.add(
-                                AppInitializeModel.ProduitModel.ColourEtGout_Model(
+                                AppsHeadModel.ProduitModel.ColourEtGout_Model(
                                     position_Du_Couleur_Au_Produit = position,
                                     nom = couleurTrouvee.nameColore,
                                     imogi = couleurTrouvee.iconColore
@@ -96,7 +96,7 @@ suspend fun AppInitialize_ViewModel.cree_New_Start() {
                     besoin_To_Be_Updated = false
                 }
 
-                _app_Initialize_Model.produits_Main_DataBase.add(nouveauProduit)
+                _appsHead.produits_Main_DataBase.add(nouveauProduit)
             } catch (e: Exception) {
                 // Handle exception silently
             }
@@ -111,7 +111,7 @@ suspend fun AppInitialize_ViewModel.cree_New_Start() {
         try {
             withContext(Dispatchers.IO) {
                 ref_Produit_Main_DataBase.setValue(
-                    _app_Initialize_Model.produits_Main_DataBase
+                    _appsHead.produits_Main_DataBase
                 ).await()
             }
         } catch (e: Exception) {
@@ -128,11 +128,11 @@ suspend fun AppInitialize_ViewModel.cree_New_Start() {
     }
 }
 
-private fun AppInitializeModel.ProduitModel.generateHistoricalSale(
+private fun AppsHeadModel.ProduitModel.generateHistoricalSale(
     ventIndex: Int,
     dateFormat: SimpleDateFormat
-): AppInitializeModel.ProduitModel.ClientBonVent_Model {
-    return AppInitializeModel.ProduitModel.ClientBonVent_Model(
+): AppsHeadModel.ProduitModel.ClientBonVent_Model {
+    return AppsHeadModel.ProduitModel.ClientBonVent_Model(
         vid = ventIndex.toLong(),
         id_Acheteur = ventIndex.toLong(),
         nom_Acheteur = "Client $ventIndex",
@@ -144,7 +144,7 @@ private fun AppInitializeModel.ProduitModel.generateHistoricalSale(
     ).apply {
         coloursEtGouts.take((1..3).random()).forEach { couleur ->
             colours_Achete.add(
-                AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
+                AppsHeadModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
                     vidPosition = couleur.position_Du_Couleur_Au_Produit,
                     nom = couleur.nom,
                     quantity_Achete = (1..10).random(),
@@ -155,11 +155,11 @@ private fun AppInitializeModel.ProduitModel.generateHistoricalSale(
     }
 }
 
-private fun AppInitializeModel.ProduitModel.generateCurrentSale(
+private fun AppsHeadModel.ProduitModel.generateCurrentSale(
     ventIndex: Int,
     dateFormat: SimpleDateFormat
-): AppInitializeModel.ProduitModel.ClientBonVent_Model {
-    return AppInitializeModel.ProduitModel.ClientBonVent_Model(
+): AppsHeadModel.ProduitModel.ClientBonVent_Model {
+    return AppsHeadModel.ProduitModel.ClientBonVent_Model(
         vid = ventIndex.toLong(),
         id_Acheteur = ventIndex.toLong(),
         nom_Acheteur = "Client $ventIndex",
@@ -169,7 +169,7 @@ private fun AppInitializeModel.ProduitModel.generateCurrentSale(
     ).apply {
         coloursEtGouts.take((1..3).random()).forEach { couleur ->
             colours_Achete.add(
-                AppInitializeModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
+                AppsHeadModel.ProduitModel.ClientBonVent_Model.Color_Achat_Model(
                     vidPosition = couleur.position_Du_Couleur_Au_Produit,
                     nom = couleur.nom,
                     quantity_Achete = (1..10).random(),
@@ -180,7 +180,7 @@ private fun AppInitializeModel.ProduitModel.generateCurrentSale(
     }
 }
 
-private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeModel.ProduitModel.GrossistBonCommandes {
+private fun AppsHeadModel.ProduitModel.generateGrossiste(): AppsHeadModel.ProduitModel.GrossistBonCommandes {
     val grossistes = listOf(
         Triple(1L, "Grossist Alpha", "#FF5733"),
         Triple(2L, "Grossist Beta", "#33FF57"),
@@ -192,7 +192,7 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
     val currentDate = Calendar.getInstance().time
     val dateString = dateFormat.format(currentDate)
 
-    val grossistInfo = AppInitializeModel.ProduitModel.GrossistBonCommandes.GrossistInformations(
+    val grossistInfo = AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations(
         id = grossisteId,
         nom = grossisteNom,
         couleur = grossisteCouleur
@@ -202,7 +202,7 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
     val randomPosition = (1..10).random()
     Log.d("GenerateGrossiste", "Generated position $randomPosition for product with grossiste $grossisteId")
 
-    return AppInitializeModel.ProduitModel.GrossistBonCommandes(
+    return AppsHeadModel.ProduitModel.GrossistBonCommandes(
         vid = grossisteId,
         init_grossistInformations = grossistInfo,
         date = dateString,
@@ -214,7 +214,7 @@ private fun AppInitializeModel.ProduitModel.generateGrossiste(): AppInitializeMo
     ).apply {
         coloursEtGouts.firstOrNull()?.let { couleur ->
             coloursEtGoutsCommendee.add(
-                AppInitializeModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
+                AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                     init_statues = couleur,
                     init_quantityAchete = (10..50).random()
                 )

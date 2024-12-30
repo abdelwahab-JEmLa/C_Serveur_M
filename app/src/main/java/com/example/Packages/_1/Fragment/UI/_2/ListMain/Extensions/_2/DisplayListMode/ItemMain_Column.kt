@@ -27,15 +27,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
 @Composable
 internal fun ItemMain_Column(
-    appInitializeModel: AppInitializeModel,
+    appInitializeModel: AppsHeadModel,
     uiState: UiState,
-    produit: AppInitializeModel.ProduitModel,
+    produit: AppsHeadModel.ProduitModel,
 ) {
     var isExpanded by remember { mutableStateOf(false) }
 

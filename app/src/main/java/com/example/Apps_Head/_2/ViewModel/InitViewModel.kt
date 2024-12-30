@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Apps_Head._1.Model.AppInitializeModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.Init.cree_New_Start
 import com.example.Apps_Head._2.ViewModel.Init.load_Depuit_FireBase
 import com.example.Apps_Head._3.Modules.Images_Handler.FireBase_Store_Handler
@@ -20,13 +20,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-open class AppInitialize_ViewModel : ViewModel() {
-    var _app_Initialize_Model by mutableStateOf(AppInitializeModel())
-    val app_Initialize_Model: AppInitializeModel get() = this._app_Initialize_Model
+open class InitViewModel : ViewModel() {
+    var _appsHead by mutableStateOf(AppsHeadModel())
+    val appsHead: AppsHeadModel get() = this._appsHead
 
     var initializationProgress by mutableFloatStateOf(0f)
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
+
+
 
     init {
         viewModelScope.launch {
@@ -55,12 +57,12 @@ open class AppInitialize_ViewModel : ViewModel() {
     }
 
     private fun setupDatabaseListener() {
-        _app_Initialize_Model.ref_Produits_Main_DataBase.addValueEventListener(object : ValueEventListener {
+        _appsHead.ref_Produits_Main_DataBase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 viewModelScope.launch {
                     try {
                         // Store current positions before loading new data
-                        val previousPositions = _app_Initialize_Model.produits_Main_DataBase.associate { produit ->
+                        val previousPositions = _appsHead.produits_Main_DataBase.associate { produit ->
                             produit.id to produit.historiqueBonsCommend.map { grossist ->
                                 grossist.vid to grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
                             }
@@ -71,11 +73,11 @@ open class AppInitialize_ViewModel : ViewModel() {
                         Log.d(TAG, "Starting to check products for updates")
 
                         // Check for image updates and position changes
-                        _app_Initialize_Model.produits_Main_DataBase.forEach { produit ->
+                        _appsHead.produits_Main_DataBase.forEach { produit ->
                             // Handle image updates
                             if (produit.it_Image_besoin_To_Be_Updated) {
                                 Log.d(TAG, "Product ${produit.id} needs image update, initiating update process")
-                                FireBase_Store_Handler().startImageUpdate(_app_Initialize_Model, produit.id)
+                                FireBase_Store_Handler().startImageUpdate(_appsHead, produit.id)
                             }
 
                             // Check for position changes
@@ -104,7 +106,7 @@ open class AppInitialize_ViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 // Update the position in Firebase
-                val productRef = _app_Initialize_Model.ref_Produits_Main_DataBase.child(productId.toString())
+                val productRef = _appsHead.ref_Produits_Main_DataBase.child(productId.toString())
                     .child("grossist_Choisi_Pour_Acheter_CeProduit")
                     .child(supplierId.toString())
                     .child("position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit")
@@ -116,18 +118,19 @@ open class AppInitialize_ViewModel : ViewModel() {
             }
         }
     }
+
     fun updateProductPosition(productId: Long, newPosition: Int) {
         viewModelScope.launch {
             try {
                 // Find the product and update its position
-                val product = _app_Initialize_Model.produits_Main_DataBase.find { it.id == productId }
+                val product = _appsHead.produits_Main_DataBase.find { it.id == productId }
                 product?.bonCommendDeCetteCota?.let { supplier ->
                     supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
 
                     // Update Firebase using a more robust approach
                     try {
                         withContext(Dispatchers.IO) {
-                            _app_Initialize_Model.update_Produits_FireBase()
+                            _appsHead.update_Produits_FireBase()
                         }
                     } catch (e: Exception) {
                         Log.e(TAG, "Failed to update Firebase", e)
@@ -136,6 +139,41 @@ open class AppInitialize_ViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error updating product position", e)
+            }
+        }
+    }
+    fun updateFilteredProducts(products: List<AppsHeadModel.ProduitModel>) {
+        viewModelScope.launch {
+            try {
+
+
+                // Optionally update Firebase if needed
+                withContext(Dispatchers.IO) {
+                    _appsHead.update_Produits_FireBase()
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating filtered products", e)
+            }
+        }
+    }
+
+    fun resetFilters() {
+        viewModelScope.launch {
+            try {
+                // Reset all filter flags
+                _appsHead.produits_Main_DataBase.forEach { product ->
+                    product.isVisible = false
+                    product.isVisible = true
+                    product.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB = false
+                }
+
+
+                // Update Firebase
+                withContext(Dispatchers.IO) {
+                    _appsHead.update_Produits_FireBase()
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error resetting filters", e)
             }
         }
     }

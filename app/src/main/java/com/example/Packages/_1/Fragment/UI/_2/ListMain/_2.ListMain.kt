@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode.EmptyStateMessage
 import com.example.Packages._1.Fragment.UI._2.ListMain.Extensions._1.DisplayGridMode.ItemMain_Grid
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 
@@ -142,5 +141,16 @@ private fun SectionHeader(text: String) {
             .background(MaterialTheme.colorScheme.surface)
             .padding(16.dp),
         style = MaterialTheme.typography.titleMedium
+    )
+}
+@Composable
+fun EmptyStateMessage() {
+    Text(
+        text = "No products available for selected filter",
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(32.dp),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }

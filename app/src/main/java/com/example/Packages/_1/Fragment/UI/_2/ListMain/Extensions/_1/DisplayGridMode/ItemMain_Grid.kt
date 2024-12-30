@@ -156,14 +156,3 @@ internal fun ItemMain_Grid(
         }
     }
 }
-@Composable
-fun EmptyStateMessage() {
-    Text(
-        text = "No products available for selected filter",
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(32.dp),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
-}

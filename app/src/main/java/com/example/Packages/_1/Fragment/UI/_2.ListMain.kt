@@ -90,14 +90,7 @@ internal fun ListMain(
             {item->
                 ItemMain(
                     item,
-                    onClickDelete= { visibleItems.find { it.id == item.id }?.let { item ->
-                            item.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
-                        }
-                        Firebase.database
-                            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
-                            .setValue(item)
-                    },
-                   onCLickOnMain =  {
+                    onCLickOnMain =  {
                         // Find the maximum position among existing products
                         val maxPosition = visibleItems.mapNotNull {visibleItem->
                             visibleItem.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
@@ -114,6 +107,13 @@ internal fun ListMain(
                             ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
                             maxPosition + 1
 
+                        Firebase.database
+                            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
+                            .setValue(item)
+                    },
+                    onClickDelete= { visibleItems.find { it.id == item.id }?.let { item ->
+                            item.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
+                        }
                         Firebase.database
                             .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
                             .setValue(item)
@@ -137,6 +137,28 @@ internal fun ListMain(
                 ) { item ->
                 ItemMain(
                     itemMain = item,
+                    onCLickOnMain =  {
+                        // Find the maximum position among existing products
+                        val maxPosition = visibleItems.mapNotNull {visibleItem->
+                            visibleItem.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                        }.filter { it >= 0 }.maxOrNull() ?: -1
+
+                        Log.d("onClickMainCard", "Current max position: $maxPosition")
+
+                        // Create or update bonCommendDeCetteCota if necessary
+                        if (item.bonCommendDeCetteCota == null) {
+                            item.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+                        }
+
+                        item.bonCommendDeCetteCota
+                            ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                            maxPosition + 1
+
+                        Firebase.database
+                            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
+                            .setValue(item)
+                    },
+                    onClickDelete= {}
                 )
             }
         }

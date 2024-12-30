@@ -95,7 +95,7 @@ internal fun ListMain(
                 ) { produit ->
                 ItemMain_Grid(
                     initViewModel = initViewModel,
-                    produit = produit
+                    itemMain = produit
                 )
             }
         }
@@ -116,7 +116,7 @@ internal fun ListMain(
                 ) { produit ->
                 ItemMain_Grid(
                     initViewModel = initViewModel,
-                    produit = produit
+                    itemMain = produit
                 )
             }
         }

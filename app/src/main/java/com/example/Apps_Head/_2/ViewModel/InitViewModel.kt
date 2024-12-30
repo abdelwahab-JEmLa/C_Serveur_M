@@ -9,16 +9,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._2.ViewModel.Init.cree_New_Start
-import com.example.Apps_Head._2.ViewModel.Init.load_Depuit_FireBase
 import com.example.Apps_Head._3.Modules.Images_Handler.FireBase_Store_Handler
+import com.example.Apps_Head._4.Init.cree_New_Start
+import com.example.Apps_Head._4.Init.load_Depuit_FireBase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 open class InitViewModel : ViewModel() {
     var _appsHead by mutableStateOf(AppsHeadModel())
@@ -119,62 +117,6 @@ open class InitViewModel : ViewModel() {
         }
     }
 
-    fun updateProductPosition(productId: Long, newPosition: Int) {
-        viewModelScope.launch {
-            try {
-                // Find the product and update its position
-                val product = _appsHead.produits_Main_DataBase.find { it.id == productId }
-                product?.bonCommendDeCetteCota?.let { supplier ->
-                    supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
-
-                    // Update Firebase using a more robust approach
-                    try {
-                        withContext(Dispatchers.IO) {
-                            _appsHead.update_Produits_FireBase()
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Failed to update Firebase", e)
-                        // Handle the error appropriately - maybe set a state to show an error message
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error updating product position", e)
-            }
-        }
-    }
-    fun updateFilteredProducts(products: List<AppsHeadModel.ProduitModel>) {
-        viewModelScope.launch {
-            try {
 
 
-                // Optionally update Firebase if needed
-                withContext(Dispatchers.IO) {
-                    _appsHead.update_Produits_FireBase()
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error updating filtered products", e)
-            }
-        }
-    }
-
-    fun resetFilters() {
-        viewModelScope.launch {
-            try {
-                // Reset all filter flags
-                _appsHead.produits_Main_DataBase.forEach { product ->
-                    product.isVisible = false
-                    product.isVisible = true
-                    product.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB = false
-                }
-
-
-                // Update Firebase
-                withContext(Dispatchers.IO) {
-                    _appsHead.update_Produits_FireBase()
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error resetting filters", e)
-            }
-        }
-    }
 }

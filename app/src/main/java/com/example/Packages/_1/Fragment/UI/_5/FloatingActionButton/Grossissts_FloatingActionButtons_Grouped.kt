@@ -47,7 +47,9 @@ import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 @Composable
@@ -139,31 +141,30 @@ fun Grossissts_FloatingActionButtons_Grouped(
                             onClick = {
                                 scope.launch {
                                     try {
-                                        // Update filter states for all grossists atomically
-                                        grouped_Produits_Par_grossistInformations.forEach { (allGrossist, _) ->
-                                            allGrossist.auFilterFAB = allGrossist.id == grossistModel.id
+                                        // Reset all filters first
+                                        grouped_Produits_Par_grossistInformations.forEach { (grossist, _) ->
+                                            grossist.auFilterFAB = grossist.id == grossistModel.id
                                         }
 
-                                        headViewModel._appsHead.produits_Main_DataBase.map { product ->
-                                            product.apply {
-                                                isVisible =
-                                                        product.bonCommendDeCetteCota?.grossistInformations?.id == grossistModel.id
-                                                        && product.bonCommendDeCetteCota?.coloursEtGoutsCommendee?.any { it.quantityAchete > 0 }
-                                                        ?:  false
-                                            }
+                                        // Update product visibility
+                                        headViewModel._appsHead.produits_Main_DataBase.forEach { product ->
+                                            product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
+                                                bon.grossistInformations?.id == grossistModel.id
+                                                        && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
+                                            } ?: false
                                         }
 
-                                        try {
+                                        // Update Firebase safely
+                                        withContext(Dispatchers.IO) {
                                             headViewModel._appsHead.ref_Produits_Main_DataBase.setValue(
                                                 headViewModel._appsHead.produits_Main_DataBase
-                                            )
-                                        } catch (e: Exception) {
-                                            Log.e("FilterError", "Failed to update Firebase", e)
-                                            throw e
+                                            ).addOnFailureListener { e ->
+                                                Log.e("FilterError", "Failed to update Firebase", e)
+                                            }
                                         }
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
-
+                                        // Consider adding user feedback here
                                     }
                                 }
                             }

@@ -52,7 +52,7 @@ fun ItemMain(
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable {onCLickOnMain(itemMain)},
+            .clickable {onCLickOnMain()},
         contentAlignment = Alignment.Center
     ) {
         // Product Image

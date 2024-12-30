@@ -59,9 +59,6 @@ internal fun ScreenMain(
                             }
                             baseRef.setValue(itemClicke)
                         },
-                        onCLickOnMain = {
-
-                        }
                     )
                 }
             }

@@ -32,9 +32,9 @@ internal fun ListMain(
     visibleItems: List<AppsHeadModel.ProduitModel>,
     ui_State: UiState,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues, onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
+    contentPadding: PaddingValues,
+    onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
 ) {
-
     // Partition items based on position
     val partitionedItems by remember(visibleItems) {
         derivedStateOf {

@@ -198,8 +198,13 @@ private fun AppsHeadModel.ProduitModel.generateGrossiste(): AppsHeadModel.Produi
         couleur = grossisteCouleur
     )
 
-    // Generate a random position between 1 and 10 to ensure products are distributed
-    val randomPosition = (1..10).random()
+    // Generate position with 40% chance of being 0, otherwise random between 1 and 10
+    val randomPosition = if (Math.random() < 0.4) {
+        0
+    } else {
+        (1..10).random()
+    }
+
     Log.d("GenerateGrossiste", "Generated position $randomPosition for product with grossiste $grossisteId")
 
     return AppsHeadModel.ProduitModel.GrossistBonCommandes(

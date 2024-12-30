@@ -30,7 +30,7 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 fun ItemMain(
     itemMain: AppsHeadModel.ProduitModel,
     onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
-    onCLickOnMain: (AppsHeadModel.ProduitModel) -> Unit,
+    onCLickOnMain: () -> Unit,
 
     ) {
     // Calculate if the product has a valid position

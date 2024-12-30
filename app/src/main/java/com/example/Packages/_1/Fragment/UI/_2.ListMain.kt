@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 
 private const val TAG = "ListMain_DisplayGridMode"
 
@@ -31,8 +33,8 @@ internal fun ListMain(
     ui_State: UiState,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues, onClickDelete: (AppsHeadModel.ProduitModel) -> Unit,
-    onCLickOnMain: (AppsHeadModel.ProduitModel) -> Unit
 ) {
+
     // Partition items based on position
     val partitionedItems by remember(visibleItems) {
         derivedStateOf {
@@ -86,7 +88,14 @@ internal fun ListMain(
                 )
             }
 
-            items(items = sortedPositionItems,) { ItemMain(it, onClickDelete, onCLickOnMain) }
+            items(items = sortedPositionItems,)
+            {item->
+                ItemMain(
+                    item,
+                    onClickDelete,
+                    onClickOnMain(visibleItems, item)
+                )
+            }
         }
 
         // Display items without position
@@ -101,11 +110,11 @@ internal fun ListMain(
 
             items(
                 items = sortedNoPositionItems,
-                ) { produit ->
+                ) { item ->
                 ItemMain(
-                    itemMain = produit,
+                    itemMain = item,
                     onClickDelete=onClickDelete,
-                    onCLickOnMain
+                    onClickOnMain(visibleItems, item)
                 )
             }
         }
@@ -119,6 +128,37 @@ internal fun ListMain(
             }
         }
     }
+}
+
+@Composable
+private fun onClickOnMain(
+    visibleItems: List<AppsHeadModel.ProduitModel>,
+    item: AppsHeadModel.ProduitModel
+): () -> Unit = {
+    // Find the maximum position among existing products
+    val maxPosition = visibleItems.mapNotNull {
+        it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+    }
+        .filter { it >= 0 }
+        .maxOrNull() ?: -1
+
+    Log.d("onClickMainCard", "Current max position: $maxPosition")
+
+    // Calculate new position
+    val newPosition = maxPosition + 1
+
+    // Create or update bonCommendDeCetteCota if necessary
+    if (item.bonCommendDeCetteCota == null) {
+        item.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+    }
+
+    item.bonCommendDeCetteCota
+        ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+        newPosition
+
+    Firebase.database
+        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
+        .setValue(item)
 }
 
 @Composable

@@ -28,8 +28,6 @@ internal fun ListMain(
     contentPadding: PaddingValues,
     onClick: (AppsHeadModel.ProduitModel, Int) -> Unit,
 ) {
-
-
     // Séparation des produits en deux catégories using derived state
     val produitsPositionnes by remember(currentItems) {
         derivedStateOf {
@@ -52,7 +50,6 @@ internal fun ListMain(
             }.sortedBy { it.nom }
         }
     }
-
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),

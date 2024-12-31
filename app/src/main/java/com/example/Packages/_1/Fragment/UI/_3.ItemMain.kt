@@ -29,8 +29,8 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 @Composable
 fun ItemMain(
     itemMain: AppsHeadModel.ProduitModel,
-    onClickDelete: () -> Unit ,
-    onCLickOnMain: () -> Unit ,
+    onClickDelete: () -> Unit,
+    onCLickOnMain: () -> Unit,
     ) {
     // Calculate if the product has a valid position
     val hasPosition = remember(itemMain.bonCommendDeCetteCota) {

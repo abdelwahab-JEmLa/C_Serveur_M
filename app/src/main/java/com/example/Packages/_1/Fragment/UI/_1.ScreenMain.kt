@@ -33,6 +33,7 @@ internal fun ScreenMain(
     val dbRef = remember {
         Firebase.database.getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
     }
+
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -47,9 +48,9 @@ internal fun ScreenMain(
     }
 
     val visibleItems = initViewModel._appsHead.produits_Main_DataBase.filter { it.isVisible }
-    // Use mutableStateOf to trigger recomposition when items change
+
     var currentItems by remember(visibleItems) { mutableStateOf(visibleItems) }
-    // Fonction de mise à jour de la position d'un produit
+
     val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {
         { produit, nouvellePosition ->
             if (produit.bonCommendDeCetteCota == null) {

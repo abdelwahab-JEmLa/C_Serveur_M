@@ -26,7 +26,7 @@ internal fun ListMain(
     currentItems: List<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onClick: (AppsHeadModel.ProduitModel, Int) -> Unit,
+    onClickUpdatePosition: (AppsHeadModel.ProduitModel, Int) -> Unit,
 ) {
     // Séparation des produits en deux catégories using derived state
     val produitsPositionnes by remember(currentItems) {
@@ -93,10 +93,10 @@ internal fun ListMain(
                         val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        onClick(produit, maxPosition + 1)
+                        onClickUpdatePosition(produit, maxPosition + 1)
                     },
                     onClickDelete = {
-                        onClick(produit, 0)
+                        onClickUpdatePosition(produit, 0)
                     }
                 )
             }
@@ -120,10 +120,10 @@ internal fun ListMain(
                         val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        onClick(produit, maxPosition + 1)
+                        onClickUpdatePosition(produit, maxPosition + 1)
                     },
                     onClickDelete = {
-                        onClick(produit, 0)
+                        onClickUpdatePosition(produit, 0)
                     }
                 )
             }

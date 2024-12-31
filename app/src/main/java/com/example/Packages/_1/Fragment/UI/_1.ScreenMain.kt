@@ -51,23 +51,6 @@ internal fun ScreenMain(
 
     var currentItems by remember(visibleItems) { mutableStateOf(visibleItems) }
 
-    val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {
-        { produit, nouvellePosition ->
-            if (produit.bonCommendDeCetteCota == null) {
-                produit.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
-            }
-            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = nouvellePosition
-
-            // Update local state immediately
-            currentItems = currentItems.map {
-                if (it.id == produit.id) produit else it
-            }
-
-            // Then update Firebase
-            dbRef.child(produit.id.toString()).setValue(produit)
-        }
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
@@ -79,7 +62,21 @@ internal fun ScreenMain(
                     ListMain(
                         currentItems = currentItems,
                         contentPadding = paddingValues,
-                        onClick =updateProductPosition
+                        onClickUpdatePosition = { produit, nouvellePosition ->
+                            if (produit.bonCommendDeCetteCota == null) {
+                                produit.bonCommendDeCetteCota =
+                                    AppsHeadModel.ProduitModel.GrossistBonCommandes()
+                            }
+                            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                                nouvellePosition
+
+                            // Update local state immediately
+                            currentItems = currentItems.map {
+                                if (it.id == produit.id) produit else it
+                            }
+
+                            dbRef.child(produit.id.toString()).setValue(produit)
+                        }
                     )
                 }
             }

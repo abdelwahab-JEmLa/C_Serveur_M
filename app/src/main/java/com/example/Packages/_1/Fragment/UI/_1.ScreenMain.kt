@@ -29,10 +29,8 @@ internal fun ScreenMain(
     initViewModel: InitViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel(),
 ) {
-    // Référence à la base de données
-    val dbRef = remember {
+    val dbRef =
         Firebase.database.getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
-    }
 
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -46,7 +44,6 @@ internal fun ScreenMain(
         }
         return
     }
-
     val visibleItems = initViewModel._appsHead.produits_Main_DataBase.filter { it.isVisible }
 
     var currentItems by remember(visibleItems) { mutableStateOf(visibleItems) }

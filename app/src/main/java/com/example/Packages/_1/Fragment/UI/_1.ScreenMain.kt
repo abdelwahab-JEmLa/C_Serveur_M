@@ -7,14 +7,21 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 
 @Composable
 internal fun ScreenMain(
@@ -22,7 +29,10 @@ internal fun ScreenMain(
     initViewModel: InitViewModel = viewModel(),
     p3_ViewModel: F3_ViewModel = viewModel(),
 ) {
-
+    // Référence à la base de données
+    val dbRef = remember {
+        Firebase.database.getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
+    }
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -37,6 +47,25 @@ internal fun ScreenMain(
     }
 
     val visibleItems = initViewModel._appsHead.produits_Main_DataBase.filter { it.isVisible }
+    // Use mutableStateOf to trigger recomposition when items change
+    var currentItems by remember(visibleItems) { mutableStateOf(visibleItems) }
+    // Fonction de mise à jour de la position d'un produit
+    val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {
+        { produit, nouvellePosition ->
+            if (produit.bonCommendDeCetteCota == null) {
+                produit.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+            }
+            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = nouvellePosition
+
+            // Update local state immediately
+            currentItems = currentItems.map {
+                if (it.id == produit.id) produit else it
+            }
+
+            // Then update Firebase
+            dbRef.child(produit.id.toString()).setValue(produit)
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -47,8 +76,9 @@ internal fun ScreenMain(
 
                 if (databaseSize > 0) {
                     ListMain(
-                        items = visibleItems,
+                        currentItems = currentItems,
                         contentPadding = paddingValues,
+                        onClick =updateProductPosition
                     )
                 }
             }

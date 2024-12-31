@@ -15,29 +15,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
 
 @Composable
 internal fun ListMain(
-    items: List<AppsHeadModel.ProduitModel>,
+    currentItems: List<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    onClick: (AppsHeadModel.ProduitModel, Int) -> Unit,
 ) {
-    // Référence à la base de données
-    val dbRef = remember {
-        Firebase.database.getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
-    }
 
-    // Use mutableStateOf to trigger recomposition when items change
-    var currentItems by remember(items) { mutableStateOf(items) }
 
     // Séparation des produits en deux catégories using derived state
     val produitsPositionnes by remember(currentItems) {
@@ -62,23 +53,6 @@ internal fun ListMain(
         }
     }
 
-    // Fonction de mise à jour de la position d'un produit
-    val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {
-        { produit, nouvellePosition ->
-            if (produit.bonCommendDeCetteCota == null) {
-                produit.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
-            }
-            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = nouvellePosition
-
-            // Update local state immediately
-            currentItems = currentItems.map {
-                if (it.id == produit.id) produit else it
-            }
-
-            // Then update Firebase
-            dbRef.child(produit.id.toString()).setValue(produit)
-        }
-    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -122,10 +96,10 @@ internal fun ListMain(
                         val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        updateProductPosition(produit, maxPosition + 1)
+                        onClick(produit, maxPosition + 1)
                     },
                     onClickDelete = {
-                        updateProductPosition(produit, 0)
+                        onClick(produit, 0)
                     }
                 )
             }
@@ -149,10 +123,10 @@ internal fun ListMain(
                         val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        updateProductPosition(produit, maxPosition + 1)
+                        onClick(produit, maxPosition + 1)
                     },
                     onClickDelete = {
-                        updateProductPosition(produit, 0)
+                        onClick(produit, 0)
                     }
                 )
             }

@@ -47,7 +47,7 @@ internal fun ScreenMain(
 
                 if (databaseSize > 0) {
                     ListMain(
-                        visibleItems = visibleItems,
+                        items = visibleItems,
                         ui_State = p3_ViewModel.uiState,
                         contentPadding = paddingValues,
                     )

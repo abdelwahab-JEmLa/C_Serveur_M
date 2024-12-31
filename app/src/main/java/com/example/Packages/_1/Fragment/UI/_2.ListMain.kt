@@ -13,7 +13,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -32,24 +36,47 @@ internal fun ListMain(
         Firebase.database.getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
     }
 
-    // Séparation des produits en deux catégories
-    val (produitsPositionnes, produitsNonPositionnes) = remember(items) {
-        items.partition { produit ->
-            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
-                position > 0
-            } ?: false
+    // Use mutableStateOf to trigger recomposition when items change
+    var currentItems by remember(items) { mutableStateOf(items) }
+
+    // Séparation des produits en deux catégories using derived state
+    val produitsPositionnes by remember(currentItems) {
+        derivedStateOf {
+            currentItems.filter { produit ->
+                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+                    position > 0
+                } ?: false
+            }.sortedBy {
+                it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+            }
+        }
+    }
+
+    val produitsNonPositionnes by remember(currentItems) {
+        derivedStateOf {
+            currentItems.filter { produit ->
+                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+                    position <= 0
+                } ?: true
+            }.sortedBy { it.nom }
         }
     }
 
     // Fonction de mise à jour de la position d'un produit
-    val updateProductPosition = { produit: AppsHeadModel.ProduitModel, nouvellePosition: Int ->
-        produit.apply {
-            bonCommendDeCetteCota = bonCommendDeCetteCota ?: AppsHeadModel.ProduitModel.GrossistBonCommandes()
-            bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = nouvellePosition
-        }
-        items.find { it.id == produit.id }?.let { item ->
-            item.bonCommendDeCetteCota = produit.bonCommendDeCetteCota
-            dbRef.setValue(item)
+    val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {
+        { produit, nouvellePosition ->
+            if (produit.bonCommendDeCetteCota == null) {
+                produit.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+            }
+            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = nouvellePosition
+
+            // Update local state immediately
+            currentItems = currentItems.map {
+                if (it.id == produit.id) produit else it
+            }
+
+            // Then update Firebase
+            dbRef.child(produit.id.toString()).setValue(produit)
         }
     }
 
@@ -66,7 +93,7 @@ internal fun ListMain(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Gestion de la liste vide
-        if (items.isEmpty()) {
+        if (currentItems.isEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Text(
                     text = "Aucun produit disponible",
@@ -86,17 +113,16 @@ internal fun ListMain(
             }
 
             items(
-                items = produitsPositionnes.sortedBy {
-                    it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                }
+                items = produitsPositionnes,
+                key = { it.id }
             ) { produit ->
                 ItemMain(
                     itemMain = produit,
                     onCLickOnMain = {
-                        val nouvellePosition = produitsPositionnes.maxOf {
+                        val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
-                        } + 1
-                        updateProductPosition(produit, nouvellePosition)
+                        } ?: 0
+                        updateProductPosition(produit, maxPosition + 1)
                     },
                     onClickDelete = {
                         updateProductPosition(produit, 0)
@@ -114,15 +140,16 @@ internal fun ListMain(
             }
 
             items(
-                items = produitsNonPositionnes.sortedBy { it.nom }
+                items = produitsNonPositionnes,
+                key = { it.id }
             ) { produit ->
                 ItemMain(
                     itemMain = produit,
                     onCLickOnMain = {
-                        val nouvellePosition = produitsPositionnes.maxOf {
+                        val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
-                        } + 1
-                        updateProductPosition(produit, nouvellePosition)
+                        } ?: 0
+                        updateProductPosition(produit, maxPosition + 1)
                     },
                     onClickDelete = {
                         updateProductPosition(produit, 0)

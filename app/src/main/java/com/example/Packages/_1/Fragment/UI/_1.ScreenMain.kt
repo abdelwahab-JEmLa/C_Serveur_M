@@ -57,7 +57,7 @@ internal fun ScreenMain(
 
                 if (databaseSize > 0) {
                     ListMain(
-                        currentItems = currentItems,
+                        itemsFiltre = currentItems,
                         contentPadding = paddingValues,
                         onClickUpdatePosition = { produit, nouvellePosition ->
                             if (produit.bonCommendDeCetteCota == null) {
@@ -86,7 +86,7 @@ internal fun ScreenMain(
             )
 
             GlobalActions_FloatingActionButtons_Grouped(
-                modifier = modifier,  // Correction 4: Utilisation du modifier passé en paramètre
+                modifier = modifier,
                 fragment_Ui_State = p3_ViewModel.uiState,
                 app_Initialize_Model = initViewModel.appsHead
             )

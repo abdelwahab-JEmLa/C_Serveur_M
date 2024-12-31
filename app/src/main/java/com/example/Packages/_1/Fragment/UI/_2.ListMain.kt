@@ -23,15 +23,15 @@ import com.example.Apps_Head._1.Model.AppsHeadModel
 
 @Composable
 internal fun ListMain(
-    currentItems: List<AppsHeadModel.ProduitModel>,
+    itemsFiltre: List<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     onClickUpdatePosition: (AppsHeadModel.ProduitModel, Int) -> Unit,
 ) {
     // Séparation des produits en deux catégories using derived state
-    val produitsPositionnes by remember(currentItems) {
+    val produitsPositionnes by remember(itemsFiltre) {
         derivedStateOf {
-            currentItems.filter { produit ->
+            itemsFiltre.filter { produit ->
                 produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
                     position > 0
                 } ?: false
@@ -41,9 +41,9 @@ internal fun ListMain(
         }
     }
 
-    val produitsNonPositionnes by remember(currentItems) {
+    val produitsNonPositionnes by remember(itemsFiltre) {
         derivedStateOf {
-            currentItems.filter { produit ->
+            itemsFiltre.filter { produit ->
                 produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
                     position <= 0
                 } ?: true
@@ -64,7 +64,7 @@ internal fun ListMain(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Gestion de la liste vide
-        if (currentItems.isEmpty()) {
+        if (itemsFiltre.isEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Text(
                     text = "Aucun produit disponible",

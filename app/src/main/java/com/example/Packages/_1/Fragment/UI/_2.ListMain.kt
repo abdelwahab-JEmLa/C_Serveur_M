@@ -25,12 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
-internal fun ListMain(
+fun ListMain(
     visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
+    viewModelScope: CoroutineScope
 ) {
     var itemsFiltre by remember(visibleItems) { mutableStateOf(visibleItems) }
 
@@ -39,19 +42,26 @@ internal fun ListMain(
             if (produit.bonCommendDeCetteCota == null) {
                 produit.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
             }
-            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = nouvellePosition
+
+            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                nouvellePosition
+
+            // Mark product for update
+            produit.besoin_To_Be_Updated = true
 
             // Update local state immediately
             itemsFiltre = itemsFiltre.map {
                 if (it.id == produit.id) produit else it
             }.toMutableStateList()
 
-            itemsFiltre.updateProduitsFireBase()
-
+            // Update Firebase
+            viewModelScope.launch {
+                itemsFiltre.updateProduitsFireBase()
+            }
         }
     }
 
-    // Séparation des produits en deux catégories using derived state
+    // Separate products into positioned and unpositioned using derived state
     val produitsPositionnes by remember(itemsFiltre) {
         derivedStateOf {
             itemsFiltre.filter { produit ->
@@ -86,7 +96,7 @@ internal fun ListMain(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Gestion de la liste vide
+        // Handle empty list
         if (itemsFiltre.isEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Text(
@@ -98,7 +108,7 @@ internal fun ListMain(
             return@LazyVerticalGrid
         }
 
-        // Section des produits positionnés
+        // Positioned products section
         if (produitsPositionnes.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 SectionHeader(
@@ -116,8 +126,7 @@ internal fun ListMain(
                         val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        updateProductPosition(produit, maxPosition+1)
-
+                        updateProductPosition(produit, maxPosition + 1)
                     },
                     onClickDelete = {
                         updateProductPosition(produit, 0)
@@ -126,7 +135,7 @@ internal fun ListMain(
             }
         }
 
-        // Section des produits non positionnés
+        // Unpositioned products section
         if (produitsNonPositionnes.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 SectionHeader(
@@ -144,8 +153,7 @@ internal fun ListMain(
                         val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        updateProductPosition(produit, maxPosition+1)
-
+                        updateProductPosition(produit, maxPosition + 1)
                     },
                     onClickDelete = {
                         updateProductPosition(produit, 0)
@@ -167,3 +175,4 @@ private fun SectionHeader(text: String) {
         style = MaterialTheme.typography.titleMedium
     )
 }
+

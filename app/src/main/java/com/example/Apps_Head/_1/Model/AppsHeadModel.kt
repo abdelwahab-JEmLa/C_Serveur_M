@@ -8,6 +8,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
@@ -30,9 +31,8 @@ class AppsHeadModel(
             produits_Main_DataBase = value.toMutableStateList()
         }
 
-    val ref_Produits_Main_DataBase = Firebase.database
-        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-        .child("produit_DataBase")
+    val ref_Produits_Main_DataBase: DatabaseReference = Firebase.database
+        .getReference("produits")
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -58,7 +58,8 @@ class AppsHeadModel(
 
         @get:Exclude
         @set:Exclude
-        var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> = init_colours_Et_Gouts.toMutableStateList()
+        var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
+            init_colours_Et_Gouts.toMutableStateList()
 
         var coloursEtGoutsList: List<ColourEtGout_Model>
             get() = coloursEtGouts
@@ -104,7 +105,6 @@ class AppsHeadModel(
         companion object {
             fun fromSnapshot(snapshot: DataSnapshot, DEBUG_LIMIT: Int): ProduitModel? {
                 return try {
-                    // Only log for products within DEBUG_LIMIT
                     val productId = snapshot.key?.toIntOrNull() ?: -1
                     val shouldLog = productId <= DEBUG_LIMIT
 
@@ -126,6 +126,17 @@ class AppsHeadModel(
                                     Log.d("ProduitModel", "Loaded ${it.size} colours")
                                 }
                             }
+
+                            // Parse bonCommendDeCetteCota separately using its own fromSnapshot method
+                            snapshot.child("bonCommendDeCetteCota").let { bonCommendSnapshot ->
+                                if (bonCommendSnapshot.exists()) {
+                                    bonCommendDeCetteCota = GrossistBonCommandes.fromSnapshot(bonCommendSnapshot)
+                                    if (shouldLog) {
+                                        Log.d("ProduitModel", "Loaded bonCommendDeCetteCota")
+                                    }
+                                }
+                            }
+
                             snapshot.child("bonsVentDeCetteCotaList").getValue(bonsVentType)?.let {
                                 bonsVentDeCetteCota = it.toMutableStateList()
                                 if (shouldLog) {
@@ -145,20 +156,19 @@ class AppsHeadModel(
                                 }
                             }
                         } catch (e: Exception) {
-                            // Always log errors regardless of DEBUG_LIMIT
                             Log.e("ProduitModel", "Error parsing lists: ${e.message}")
                             e.printStackTrace()
                         }
                     }
                     model
                 } catch (e: Exception) {
-                    // Always log errors regardless of DEBUG_LIMIT
                     Log.e("ProduitModel", "Error parsing snapshot: ${e.message}")
                     e.printStackTrace()
                     null
                 }
             }
         }
+
         @IgnoreExtraProperties
         class ColourEtGout_Model(
             var position_Du_Couleur_Au_Produit: Long = 0,
@@ -200,13 +210,11 @@ class AppsHeadModel(
             companion object {
                 fun fromSnapshot(snapshot: DataSnapshot): GrossistBonCommandes? {
                     return try {
-                        Log.d("GrossistBonCommandes", "Starting to parse bon commande: ${snapshot.key}")
                         val model = snapshot.getValue(GrossistBonCommandes::class.java)
                         model?.apply {
                             val coloursType = object : GenericTypeIndicator<List<ColoursGoutsCommendee>>() {}
                             snapshot.child("coloursEtGoutsCommendeeList").getValue(coloursType)?.let {
                                 coloursEtGoutsCommendee = it.toMutableStateList()
-                                Log.d("GrossistBonCommandes", "Loaded ${it.size} colours commandées")
                             }
                         }
                         model
@@ -274,13 +282,11 @@ class AppsHeadModel(
             companion object {
                 fun fromSnapshot(snapshot: DataSnapshot): ClientBonVent_Model? {
                     return try {
-                        Log.d("ClientBonVent", "Starting to parse bon vent: ${snapshot.key}")
                         val model = snapshot.getValue(ClientBonVent_Model::class.java)
                         model?.apply {
                             val colorsType = object : GenericTypeIndicator<List<Color_Achat_Model>>() {}
                             snapshot.child("coloursAcheteList").getValue(colorsType)?.let {
                                 colours_Achete = it.toMutableStateList()
-                                Log.d("ClientBonVent", "Loaded ${it.size} colours achetées")
                             }
                         }
                         model
@@ -303,22 +309,48 @@ class AppsHeadModel(
     }
 
     companion object {
-        fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
+        suspend fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
-                Log.d("ListMain", "Starting Firebase update with ${this.size} products")
                 val ref = FirebaseDatabase.getInstance()
-                    .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
+                    .getReference("produits")
 
-                val productsMap = this.associateBy { it.id.toString() }
-                ref.setValue(productsMap).addOnSuccessListener {
-                    Log.d("ListMain", "Successfully updated Firebase with ${productsMap.size} products")
-                }.addOnFailureListener { e ->
-                    Log.e("ListMain", "Failed to update Firebase", e)
+                val updatedProducts = this.filter { it.besoin_To_Be_Updated }
+
+                updatedProducts.forEach { product ->
+                    try {
+                        ref.child(product.id.toString()).setValue(product)
+                        product.besoin_To_Be_Updated = false
+                        Log.d("Firebase", "Successfully updated product ${product.id}")
+                    } catch (e: Exception) {
+                        Log.e("Firebase", "Failed to update product ${product.id}", e)
+                    }
                 }
             } catch (e: Exception) {
-                Log.e("ListMain", "Critical error updating Firebase", e)
+                Log.e("Firebase", "Error updating products", e)
                 throw e
             }
         }
+           /*
+        fun setupDatabaseListener(ref: DatabaseReference, onUpdate: (List<ProduitModel>) -> Unit) {
+            ref.addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    try {
+                        val products = mutableListOf<ProduitModel>()
+                        snapshot.children.forEach { productSnapshot ->
+                            ProduitModel.fromSnapshot(productSnapshot)?.let {
+                                products.add(it)
+                            }
+                        }
+                        onUpdate(products)
+                    } catch (e: Exception) {
+                        Log.e("Firebase", "Error in database listener", e)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("Firebase", "Database error: ${error.message}")
+                }
+            })
+        }  */
     }
 }

@@ -153,7 +153,6 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                                         && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
                                             } ?: false
                                         }
-
                                         // Update Firebase safely
                                         withContext(Dispatchers.IO) {
                                             headViewModel._appsHead.ref_Produits_Main_DataBase.setValue(

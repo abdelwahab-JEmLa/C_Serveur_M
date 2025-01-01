@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.tasks.await
@@ -101,7 +102,7 @@ class CameraPickImageHandler(
                 storageRef.putBytes(bytes).await()
             }
 
-            appInitializeModel.update_Produits_FireBase()
+            appInitializeModel.produits_Main_DataBase.updateProduitsFireBase()
             Log.d(TAG, "Successfully created new product with ID: $newId")
             pendingProduct = null
 

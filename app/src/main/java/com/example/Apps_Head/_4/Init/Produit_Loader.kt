@@ -1,5 +1,6 @@
 package com.example.Apps_Head._4.Init
 
+
 import android.util.Log
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
@@ -10,7 +11,7 @@ import kotlinx.coroutines.tasks.await
 suspend fun InitViewModel.load_Depuit_FireBase() {
     val TAG = "Produit_Loader"
     val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
-    val NOMBRE_PRODUITS = 20
+    val NOMBRE_PRODUITS = 300
     val baseRef = Firebase.database.getReference(CHEMIN_BASE)
 
     try {
@@ -34,10 +35,11 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
             val product = existingProduct ?: AppsHeadModel.ProduitModel(id = index.toLong())
 
             try {
-                val refProduit = baseRef.child(index.toString())
+                // Get the snapshot for this specific product
+                val productSnapshot = existingData.child(index.toString())
 
                 // Load and validate product name
-                val nomSnapshot = refProduit.child("nom").get().await()
+                val nomSnapshot = productSnapshot.child("nom")
                 if (nomSnapshot.exists()) {
                     product.nom = nomSnapshot.value?.toString() ?: "Produit $index"
                 } else if (product.nom.isEmpty() && index > 0) {
@@ -46,7 +48,7 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
 
                 // Load colors with validation
                 product.coloursEtGouts.clear()
-                refProduit.child("coloursEtGouts").get().await().children.forEach { colorSnapshot ->
+                productSnapshot.child("coloursEtGouts").children.forEach { colorSnapshot ->
                     try {
                         colorSnapshot.getValue(AppsHeadModel.ProduitModel.ColourEtGout_Model::class.java)?.let { color ->
                             if (color.nom.isNotEmpty()) {
@@ -60,7 +62,7 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
 
                 // Load current order with validation
                 try {
-                    val bonCommandeSnapshot = refProduit.child("bonCommendDeCetteCota").get().await()
+                    val bonCommandeSnapshot = productSnapshot.child("bonCommendDeCetteCota")
                     if (bonCommandeSnapshot.exists()) {
                         bonCommandeSnapshot.getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommande ->
                             if (bonCommande.grossistInformations != null) {
@@ -74,7 +76,7 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
 
                 // Load current sales with validation
                 product.bonsVentDeCetteCota.clear()
-                refProduit.child("bonsVentDeCetteCota").get().await().children.forEach { saleSnapshot ->
+                productSnapshot.child("bonsVentDeCetteCota").children.forEach { saleSnapshot ->
                     try {
                         saleSnapshot.getValue(AppsHeadModel.ProduitModel.ClientBonVent_Model::class.java)?.let { sale ->
                             if (sale.nom_Acheteur.isNotEmpty() && sale.colours_Achete.isNotEmpty()) {
@@ -88,7 +90,7 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
 
                 // Load sales history with validation
                 product.historiqueBonsVents.clear()
-                refProduit.child("historiqueBonsVents").get().await().children.forEach { historySnapshot ->
+                productSnapshot.child("historiqueBonsVents").children.forEach { historySnapshot ->
                     try {
                         historySnapshot.getValue(AppsHeadModel.ProduitModel.ClientBonVent_Model::class.java)?.let { history ->
                             if (history.nom_Acheteur.isNotEmpty() && history.colours_Achete.isNotEmpty()) {
@@ -102,7 +104,7 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
 
                 // Load order history with validation
                 product.historiqueBonsCommend.clear()
-                refProduit.child("historiqueBonsCommend").get().await().children.forEach { orderSnapshot ->
+                productSnapshot.child("historiqueBonsCommend").children.forEach { orderSnapshot ->
                     try {
                         orderSnapshot.getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes::class.java)?.let { order ->
                             if (order.grossistInformations != null) {

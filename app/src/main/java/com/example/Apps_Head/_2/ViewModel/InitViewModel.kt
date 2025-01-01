@@ -34,7 +34,8 @@ open class InitViewModel : ViewModel() {
                 isInitializing = true
                 initializationProgress = 0f
 
-                val createStart = true
+                val createStart = false
+
                 if (createStart) {
                     cree_New_Start()
                     initializationProgress = 1f
@@ -43,7 +44,6 @@ open class InitViewModel : ViewModel() {
                     initializationProgress = 1f
                 }
 
-                setupDatabaseListener()
                 initializationComplete = true
 
             } catch (e: Exception) {

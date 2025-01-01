@@ -2,6 +2,7 @@ package com.example.Apps_Head._3.Modules.Images_Handler
 
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -39,7 +40,7 @@ open class FireBase_Store_Handler : InitViewModel() {
                 }
 
                 // Met à jour Firebase
-                _app_Initialize_Model.update_Produits_FireBase()
+                _app_Initialize_Model.produits_Main_DataBase.updateProduitsFireBase()
 
                 // Nettoie le job terminé
                 currentImageUpdateJobs.remove(produitId)

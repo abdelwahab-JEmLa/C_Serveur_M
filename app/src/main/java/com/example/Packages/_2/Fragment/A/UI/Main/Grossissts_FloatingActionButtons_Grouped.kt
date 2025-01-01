@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Packages._1.Fragment.C.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -170,7 +171,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                         """.trimIndent())
 
                                         // Update Firebase
-                                        app_Initialize_Model.update_Produits_FireBase()
+                                        app_Initialize_Model.produits_Main_DataBase.updateProduitsFireBase()
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
                                     }

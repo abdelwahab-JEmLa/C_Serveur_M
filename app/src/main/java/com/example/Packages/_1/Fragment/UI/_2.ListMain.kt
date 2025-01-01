@@ -15,19 +15,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 
 @Composable
 internal fun ListMain(
-    itemsFiltre: List<AppsHeadModel.ProduitModel>,
+    visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onClickUpdatePosition: (AppsHeadModel.ProduitModel, Int) -> Unit,
 ) {
+    var itemsFiltre by remember(visibleItems) { mutableStateOf(visibleItems) }
+
+    val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {
+        { produit, nouvellePosition ->
+            if (produit.bonCommendDeCetteCota == null) {
+                produit.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+            }
+            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = nouvellePosition
+
+            // Update local state immediately
+            itemsFiltre = itemsFiltre.map {
+                if (it.id == produit.id) produit else it
+            }.toMutableStateList()
+
+            itemsFiltre.updateProduitsFireBase()
+
+        }
+    }
+
     // Séparation des produits en deux catégories using derived state
     val produitsPositionnes by remember(itemsFiltre) {
         derivedStateOf {
@@ -89,14 +112,15 @@ internal fun ListMain(
             ) { produit ->
                 ItemMain(
                     itemMain = produit,
-                    onCLickOnMain = {
+                    onCLickOnMain ={
                         val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        onClickUpdatePosition(produit, maxPosition + 1)
+                        updateProductPosition(produit, maxPosition+1)
+
                     },
                     onClickDelete = {
-                        onClickUpdatePosition(produit, 0)
+                        updateProductPosition(produit, 0)
                     }
                 )
             }
@@ -116,14 +140,15 @@ internal fun ListMain(
             ) { produit ->
                 ItemMain(
                     itemMain = produit,
-                    onCLickOnMain = {
+                    onCLickOnMain ={
                         val maxPosition = produitsPositionnes.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        onClickUpdatePosition(produit, maxPosition + 1)
+                        updateProductPosition(produit, maxPosition+1)
+
                     },
                     onClickDelete = {
-                        onClickUpdatePosition(produit, 0)
+                        updateProductPosition(produit, 0)
                     }
                 )
             }

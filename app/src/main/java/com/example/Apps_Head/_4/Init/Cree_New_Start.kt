@@ -2,13 +2,9 @@ package com.example.Apps_Head._4.Init
 
 import android.util.Log
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Apps_Head._4.Init.Z.Components.get_Ancien_DataBases_Main
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -93,7 +89,7 @@ suspend fun InitViewModel.cree_New_Start() {
                         historiqueBonsCommend.clear()
                     }
 
-                    besoin_To_Be_Updated = false
+                    besoin_To_Be_Updated = true
                 }
 
                 _appsHead.produits_Main_DataBase.add(nouveauProduit)
@@ -104,19 +100,7 @@ suspend fun InitViewModel.cree_New_Start() {
             initializationProgress = 0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
         }
 
-        val ref_Produit_Main_DataBase = Firebase.database
-            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-            .child("produit_DataBase")
-
-        try {
-            withContext(Dispatchers.IO) {
-                ref_Produit_Main_DataBase.setValue(
-                    _appsHead.produits_Main_DataBase
-                ).await()
-            }
-        } catch (e: Exception) {
-            throw e
-        }
+        _appsHead.produits_Main_DataBase.updateProduitsFireBase()
 
         initializationProgress = 1.0f
         initializationComplete = true

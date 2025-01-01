@@ -8,9 +8,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.Exclude
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
@@ -30,9 +28,9 @@ class AppsHeadModel(
         set(value) {
             produits_Main_DataBase = value.toMutableStateList()
         }
+    val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
+    val ref_Produits_Main_DataBase = Firebase.database.getReference(CHEMIN_BASE)
 
-    val ref_Produits_Main_DataBase: DatabaseReference = Firebase.database
-        .getReference("produits")
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -211,12 +209,47 @@ class AppsHeadModel(
                 fun fromSnapshot(snapshot: DataSnapshot): GrossistBonCommandes? {
                     return try {
                         val model = snapshot.getValue(GrossistBonCommandes::class.java)
+
                         model?.apply {
-                            val coloursType = object : GenericTypeIndicator<List<ColoursGoutsCommendee>>() {}
-                            snapshot.child("coloursEtGoutsCommendeeList").getValue(coloursType)?.let {
-                                coloursEtGoutsCommendee = it.toMutableStateList()
+                            // Load GrossistInformations
+                            snapshot.child("grossistInformations").let { grossistSnap ->
+                                if (grossistSnap.exists()) {
+                                    grossistInformations = grossistSnap.getValue(GrossistInformations::class.java)
+                                }
                             }
+
+                            // Load position values
+                            position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                                snapshot.child("position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit")
+                                    .getValue(Int::class.java) ?: 0
+
+                            position_Grossist_Don_Parent_Grossists_List =
+                                snapshot.child("position_Grossist_Don_Parent_Grossists_List")
+                                    .getValue(Int::class.java) ?: 0
+
+                            // Load colors and orders list
+                            val coloursType = object : GenericTypeIndicator<List<ColoursGoutsCommendee>>() {}
+                            snapshot.child("coloursEtGoutsCommendeeList").getValue(coloursType)?.let { colors ->
+                                coloursEtGoutsCommendee = colors.toMutableStateList()
+                            }
+
+                            // Load other primitive fields if needed
+                            vid = snapshot.child("vid").getValue(Long::class.java) ?: 0
+                            date = snapshot.child("date").getValue(String::class.java) ?: ""
+                            date_String_Divise = snapshot.child("date_String_Divise").getValue(String::class.java) ?: ""
+                            time_String_Divise = snapshot.child("time_String_Divise").getValue(String::class.java) ?: ""
+                            currentCreditBalance = snapshot.child("currentCreditBalance").getValue(Double::class.java) ?: 0.0
+
+                            Log.d("GrossistBonCommandes", """
+                        Loaded GrossistBonCommandes:
+                        - VID: $vid
+                        - Grossist Info: ${grossistInformations?.nom}
+                        - Colors Count: ${coloursEtGoutsCommendee.size}
+                        - Position in List: $position_Grossist_Don_Parent_Grossists_List
+                        - Product Position: $position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+                    """.trimIndent())
                         }
+
                         model
                     } catch (e: Exception) {
                         Log.e("GrossistBonCommandes", "Error parsing snapshot: ${e.message}")
@@ -311,14 +344,14 @@ class AppsHeadModel(
     companion object {
         suspend fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
-                val ref = FirebaseDatabase.getInstance()
-                    .getReference("produits")
+                val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
+                val baseRef = Firebase.database.getReference(CHEMIN_BASE)
 
                 val updatedProducts = this.filter { it.besoin_To_Be_Updated }
 
                 updatedProducts.forEach { product ->
                     try {
-                        ref.child(product.id.toString()).setValue(product)
+                        baseRef.child(product.id.toString()).setValue(product)
                         product.besoin_To_Be_Updated = false
                         Log.d("Firebase", "Successfully updated product ${product.id}")
                     } catch (e: Exception) {

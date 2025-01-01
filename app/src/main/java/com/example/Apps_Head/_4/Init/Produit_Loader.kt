@@ -11,7 +11,7 @@ private const val TAG = "ProduitModel"
 
 suspend fun InitViewModel.load_Depuit_FireBase() {
     val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
-    val NOMBRE_PRODUITS = 300
+    val NOMBRE_PRODUITS = 50
     val DEBUG_LIMIT = 7
     val baseRef = Firebase.database.getReference(CHEMIN_BASE)
 
@@ -30,7 +30,7 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
 
         repeat(NOMBRE_PRODUITS) { index ->
             try {
-                val productId = index+1
+                val productId = index + 1
                 val startTime = System.currentTimeMillis()
 
                 val productSnapshot = baseRef.child(productId.toString()).get().await()
@@ -40,55 +40,73 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
                     return@repeat
                 }
 
-                val product = AppsHeadModel.ProduitModel.fromSnapshot(productSnapshot)
+                val product = AppsHeadModel.ProduitModel.fromSnapshot(productSnapshot, DEBUG_LIMIT)
 
                 if (product != null) {
                     val loadTime = System.currentTimeMillis() - startTime
 
                     if (index < DEBUG_LIMIT) {
-                        Log.d(TAG, """
+                        Log.d(
+                            TAG, """
                             ✅ Successfully loaded product $index:
                             - Name: ${product.nom}
                             - ID: ${product.id}
                             - Colors count: ${product.coloursEtGouts.size}
                             - Load time: ${loadTime}ms
-                        """.trimIndent())
+                        """.trimIndent()
+                        )
                     }
 
                     _appsHead.produits_Main_DataBase.add(product)
 
                     if (index < DEBUG_LIMIT) {
-                        Log.d(TAG, "📝 Current database size: ${_appsHead.produits_Main_DataBase.size}")
+                        Log.d(
+                            TAG,
+                            "📝 Current database size: ${_appsHead.produits_Main_DataBase.size}"
+                        )
                     }
                 } else {
-                    Log.e(TAG, "❌ Failed to parse product $index from snapshot: ${productSnapshot.value}")
+                    if (index < DEBUG_LIMIT) {
+                        Log.e(
+                            TAG,
+                            "❌ Failed to parse product $index from snapshot: ${productSnapshot.value}"
+                        )
+                    }
                 }
 
             } catch (e: Exception) {
-                Log.e(TAG, """
+                if (index < DEBUG_LIMIT) {
+                    Log.e(
+                        TAG, """
                     ❌ Error loading product $index
                     - Error type: ${e.javaClass.simpleName}
                     - Message: ${e.message}
                     - Stack trace: ${e.stackTraceToString()}
-                """.trimIndent())
+                """.trimIndent()
+                    )
+                }
             }
         }
 
         // Log final state
-        Log.d(TAG, """
+        Log.d(
+            TAG, """
             🏁 Loading complete
             - Total products loaded: ${_appsHead.produits_Main_DataBase.size}
             - Expected products: $NOMBRE_PRODUITS
             - Success rate: ${(_appsHead.produits_Main_DataBase.size.toFloat() / NOMBRE_PRODUITS * 100).toInt()}%
-        """.trimIndent())
+        """.trimIndent()
+        )
 
     } catch (e: Exception) {
-        Log.e(TAG, """
+        Log.e(
+            TAG, """
             💥 Critical error during loading
             - Error type: ${e.javaClass.simpleName}
             - Message: ${e.message}
             - Stack trace: ${e.stackTraceToString()}
-        """.trimIndent())
+        """.trimIndent()
+        )
         throw e
     }
 }

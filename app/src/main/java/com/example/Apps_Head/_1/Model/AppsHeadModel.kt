@@ -102,9 +102,16 @@ class AppsHeadModel(
             }
 
         companion object {
-            fun fromSnapshot(snapshot: DataSnapshot): ProduitModel? {
+            fun fromSnapshot(snapshot: DataSnapshot, DEBUG_LIMIT: Int): ProduitModel? {
                 return try {
-                    Log.d("ProduitModel", "Starting to parse snapshot: ${snapshot.key}")
+                    // Only log for products within DEBUG_LIMIT
+                    val productId = snapshot.key?.toIntOrNull() ?: -1
+                    val shouldLog = productId <= DEBUG_LIMIT
+
+                    if (shouldLog) {
+                        Log.d("ProduitModel", "Starting to parse snapshot: ${snapshot.key}")
+                    }
+
                     val model = snapshot.getValue(ProduitModel::class.java)
                     model?.apply {
                         val coloursType = object : GenericTypeIndicator<List<ColourEtGout_Model>>() {}
@@ -115,34 +122,43 @@ class AppsHeadModel(
                         try {
                             snapshot.child("coloursEtGoutsList").getValue(coloursType)?.let {
                                 coloursEtGouts = it.toMutableStateList()
-                                Log.d("ProduitModel", "Loaded ${it.size} colours")
+                                if (shouldLog) {
+                                    Log.d("ProduitModel", "Loaded ${it.size} colours")
+                                }
                             }
                             snapshot.child("bonsVentDeCetteCotaList").getValue(bonsVentType)?.let {
                                 bonsVentDeCetteCota = it.toMutableStateList()
-                                Log.d("ProduitModel", "Loaded ${it.size} bons vents")
+                                if (shouldLog) {
+                                    Log.d("ProduitModel", "Loaded ${it.size} bons vents")
+                                }
                             }
                             snapshot.child("historiqueBonsVentsList").getValue(historiqueVentType)?.let {
                                 historiqueBonsVents = it.toMutableStateList()
-                                Log.d("ProduitModel", "Loaded ${it.size} historique vents")
+                                if (shouldLog) {
+                                    Log.d("ProduitModel", "Loaded ${it.size} historique vents")
+                                }
                             }
                             snapshot.child("historiqueBonsCommendList").getValue(historiqueCommendType)?.let {
                                 historiqueBonsCommend = it.toMutableStateList()
-                                Log.d("ProduitModel", "Loaded ${it.size} historique commends")
+                                if (shouldLog) {
+                                    Log.d("ProduitModel", "Loaded ${it.size} historique commends")
+                                }
                             }
                         } catch (e: Exception) {
+                            // Always log errors regardless of DEBUG_LIMIT
                             Log.e("ProduitModel", "Error parsing lists: ${e.message}")
                             e.printStackTrace()
                         }
                     }
                     model
                 } catch (e: Exception) {
+                    // Always log errors regardless of DEBUG_LIMIT
                     Log.e("ProduitModel", "Error parsing snapshot: ${e.message}")
                     e.printStackTrace()
                     null
                 }
             }
         }
-
         @IgnoreExtraProperties
         class ColourEtGout_Model(
             var position_Du_Couleur_Au_Produit: Long = 0,

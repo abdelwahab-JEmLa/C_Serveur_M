@@ -41,7 +41,8 @@ internal fun ScreenMain(
     }
 
     // Create an immutable snapshot of the database list
-    val currentItems by remember(initViewModel._appsHead.produits_Main_DataBase) {
+    val currentItems by
+    remember(initViewModel._appsHead.produits_Main_DataBase) {
         mutableStateOf(initViewModel._appsHead.produits_Main_DataBase)
     }
 

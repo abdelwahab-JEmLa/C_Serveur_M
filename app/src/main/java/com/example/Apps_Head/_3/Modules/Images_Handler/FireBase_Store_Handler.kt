@@ -1,25 +1,12 @@
 package com.example.Apps_Head._3.Modules.Images_Handler
 
-import androidx.lifecycle.viewModelScope
-import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.storage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.io.File
 
 open class FireBase_Store_Handler : InitViewModel() {
     // Pour suivre les opérations de mise à jour d'image en cours
     private var currentImageUpdateJobs = mutableMapOf<Long, Job>()
-
+          /*
     fun startImageUpdate(_app_Initialize_Model: AppsHeadModel, produitId: Long) {
         // Si une mise à jour est déjà en cours pour ce produit, on ne fait rien
         if (currentImageUpdateJobs[produitId]?.isActive == true) {
@@ -82,5 +69,5 @@ open class FireBase_Store_Handler : InitViewModel() {
             override fun onDataChange(snapshot: DataSnapshot) {}
             override fun onCancelled(error: DatabaseError) {}
         })
-    }
+    }  */
 }

@@ -9,7 +9,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._3.Modules.Images_Handler.FireBase_Store_Handler
 import com.example.Apps_Head._4.Init.cree_New_Start
 import com.example.Apps_Head._4.Init.load_Depuit_FireBase
 import com.google.firebase.database.DataSnapshot
@@ -73,7 +72,7 @@ open class InitViewModel : ViewModel() {
                             // Handle image updates
                             if (produit.it_Image_besoin_To_Be_Updated) {
                                 Log.d(TAG, "Product ${produit.id} needs image update, initiating update process")
-                                FireBase_Store_Handler().startImageUpdate(_appsHead, produit.id)
+                              //  FireBase_Store_Handler().startImageUpdate(_appsHead, produit.id)
                             }
 
                             // Check for position changes

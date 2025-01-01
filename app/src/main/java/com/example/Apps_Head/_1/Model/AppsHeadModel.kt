@@ -112,12 +112,11 @@ class AppsHeadModel(
             }
 
             class ColoursGoutsCommendee(
-                init_statues: ColourEtGout_Model? = null,
+                val id: Long,
+                val nom: String,
+                val couleur: String,
                 init_quantityAchete: Int = 0
             ) {
-                var statues: ColourEtGout_Model?
-                        by mutableStateOf(init_statues)
-
                 var quantityAchete: Int by mutableStateOf(init_quantityAchete)
             }
         }

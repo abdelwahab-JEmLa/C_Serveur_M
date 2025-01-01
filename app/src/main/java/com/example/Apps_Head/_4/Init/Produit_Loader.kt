@@ -65,7 +65,18 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
                     if (bonCommandeSnapshot.exists()) {
                         bonCommandeSnapshot.getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommande ->
                             if (bonCommande.grossistInformations != null) {
-                                product.bonCommendDeCetteCota = bonCommande
+                                product.bonCommendDeCetteCota
+                                    ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                                    bonCommande
+                                        .position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+
+                                bonCommandeSnapshot.child("grossistInformations") .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)?.let { grossistInformations ->
+                                    product.bonCommendDeCetteCota?.grossistInformations = grossistInformations
+                                }
+                                bonCommandeSnapshot.child("coloursEtGoutsCommendee").getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee::class.java)?.let {
+                                    product.bonCommendDeCetteCota?.coloursEtGoutsCommendee?.add(it)
+                                }
+
                             }
                         }
                     }

@@ -26,15 +26,13 @@ open class InitViewModel : ViewModel() {
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
 
-
-
     init {
         viewModelScope.launch {
             try {
                 isInitializing = true
                 initializationProgress = 0f
 
-                val createStart = false
+                val createStart = true
 
                 if (createStart) {
                     cree_New_Start()

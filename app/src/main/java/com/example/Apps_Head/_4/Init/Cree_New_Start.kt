@@ -220,7 +220,9 @@ private fun AppsHeadModel.ProduitModel.generateGrossiste(): AppsHeadModel.Produi
         coloursEtGouts.firstOrNull()?.let { couleur ->
             coloursEtGoutsCommendee.add(
                 AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
-                    init_statues = couleur,
+                    id= couleur.position_Du_Couleur_Au_Produit,
+                    nom= couleur.nom,
+                    couleur= couleur.nom,
                     init_quantityAchete = (10..50).random()
                 )
             )

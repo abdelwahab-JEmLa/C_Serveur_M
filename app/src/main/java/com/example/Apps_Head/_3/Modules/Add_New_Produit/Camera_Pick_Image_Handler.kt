@@ -101,7 +101,7 @@ class CameraPickImageHandler(
                 storageRef.putBytes(bytes).await()
             }
 
-            appInitializeModel.update_Produits_FireBase()
+            appInitializeModel.updateProduitsFireBase()
             Log.d(TAG, "Successfully created new product with ID: $newId")
             pendingProduct = null
 

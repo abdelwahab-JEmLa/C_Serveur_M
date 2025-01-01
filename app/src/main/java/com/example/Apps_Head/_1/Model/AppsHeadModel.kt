@@ -7,14 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.Firebase
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
 import java.util.Objects
-import kotlin.coroutines.resumeWithException
 
 @IgnoreExtraProperties
 class AppsHeadModel(
@@ -27,147 +23,141 @@ class AppsHeadModel(
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
         .child("produit_DataBase")
 
-        @IgnoreExtraProperties
-        class ProduitModel(
-            var id: Long = 0,
-            val it_ref_Id_don_FireBase: Long = 0,
-            val it_ref_don_FireBase: String = "",
-            init_nom: String = "",
-            init_besoin_To_Be_Updated: Boolean = false,
-            init_it_Image_besoin_To_Be_Updated: Boolean = false,
-            initialNon_Trouve: Boolean = false,
-            init_colours_Et_Gouts: List<ColourEtGout_Model> = emptyList(),
-            init_bonCommendDeCetteCota: GrossistBonCommandes? = null,
-            init_bonS_Vent_De_Cette_Cota: List<ClientBonVent_Model> = emptyList(),
-            initialIsVisible: Boolean = true  ,
+    @IgnoreExtraProperties
+    class ProduitModel(
+        var id: Long = 0,
+        val it_ref_Id_don_FireBase: Long = 0,
+        val it_ref_don_FireBase: String = "",
+        init_nom: String = "",
+        init_besoin_To_Be_Updated: Boolean = false,
+        init_it_Image_besoin_To_Be_Updated: Boolean = false,
+        initialNon_Trouve: Boolean = false,
+        init_colours_Et_Gouts: List<ColourEtGout_Model> = emptyList(),
+        init_bonCommendDeCetteCota: GrossistBonCommandes? = null,
+        init_bonS_Vent_De_Cette_Cota: List<ClientBonVent_Model> = emptyList(),
+        initialIsVisible: Boolean = true,
 
-            init_historiqueBonsVents: List<ClientBonVent_Model> = emptyList(),
-            init_historiqueBonsCommend: List<GrossistBonCommandes> = emptyList(),
+        init_historiqueBonsVents: List<ClientBonVent_Model> = emptyList(),
+        init_historiqueBonsCommend: List<GrossistBonCommandes> = emptyList(),
+    ) {
+
+        var nom: String by mutableStateOf(init_nom)
+        var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
+        var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(
+            init_it_Image_besoin_To_Be_Updated
+        )
+        var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
+        var isVisible: Boolean by mutableStateOf(initialIsVisible)  // Add new property
+        var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
+            init_colours_Et_Gouts.toMutableStateList()
+
+        var bonCommendDeCetteCota: GrossistBonCommandes?
+                by mutableStateOf(init_bonCommendDeCetteCota)
+        var bonsVentDeCetteCota: SnapshotStateList<ClientBonVent_Model> =
+            init_bonS_Vent_De_Cette_Cota.toMutableStateList()
+
+        var historiqueBonsVents: SnapshotStateList<ClientBonVent_Model> =
+            init_historiqueBonsVents.toMutableStateList()
+        var historiqueBonsCommend: SnapshotStateList<GrossistBonCommandes> =
+            init_historiqueBonsCommend.toMutableStateList()
+
+        class ColourEtGout_Model(
+            var position_Du_Couleur_Au_Produit: Long = 0,
+            var nom: String = "",
+            var imogi: String = ""
+        )
+
+        class GrossistBonCommandes(
+            var vid: Long = 0,
+            init_grossistInformations: GrossistInformations? = null,
+            var date: String = "", //"yyyy-MM-dd HH:mm:ss"
+            var date_String_Divise: String = "", //"yyyy-MM-dd"
+            var time_String_Divise: String = "", //"HH:mm:ss"
+
+            var currentCreditBalance: Double = 0.0,
+            init_position_Grossist_Don_Parent_Grossists_List: Int = 0,
+            init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
+            init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
         ) {
+            var grossistInformations: GrossistInformations?
+                    by mutableStateOf(init_grossistInformations)
 
-            var nom: String by mutableStateOf(init_nom)
-            var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
-            var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)
-            var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
-            var isVisible: Boolean by mutableStateOf(initialIsVisible)  // Add new property
-            var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
-                init_colours_Et_Gouts.toMutableStateList()
+            var position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int by mutableStateOf(
+                init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+            )
+            var position_Grossist_Don_Parent_Grossists_List: Int by mutableStateOf(
+                init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+            )
+            var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
+                init_coloursEtGoutsCommendee.toMutableStateList()
 
-            var bonCommendDeCetteCota: GrossistBonCommandes?
-            by mutableStateOf(init_bonCommendDeCetteCota)
-            var bonsVentDeCetteCota: SnapshotStateList<ClientBonVent_Model> =
-                init_bonS_Vent_De_Cette_Cota.toMutableStateList()
+            data class GrossistInformations(
+                val id: Long,
+                val nom: String,
+                val couleur: String
+            ) {
+                var auFilterFAB: Boolean by mutableStateOf(false)
 
-            var historiqueBonsVents: SnapshotStateList<ClientBonVent_Model> =
-                init_historiqueBonsVents.toMutableStateList()
-            var historiqueBonsCommend: SnapshotStateList<GrossistBonCommandes> =
-                init_historiqueBonsCommend.toMutableStateList()
-
-                class ColourEtGout_Model(
-                    var position_Du_Couleur_Au_Produit: Long = 0,
-                    var nom: String = "",
-                    var imogi: String = ""
-                )
-
-                class GrossistBonCommandes(
-                    var vid: Long = 0,
-                    init_grossistInformations: GrossistInformations? = null,
-                    var date: String = "", //"yyyy-MM-dd HH:mm:ss"
-                    var date_String_Divise: String = "", //"yyyy-MM-dd"
-                    var time_String_Divise: String = "", //"HH:mm:ss"
-
-                    var currentCreditBalance: Double = 0.0,
-                    init_position_Grossist_Don_Parent_Grossists_List: Int = 0,
-                    init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
-                    init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
-                ) {
-                    var grossistInformations: GrossistInformations?
-                            by mutableStateOf(init_grossistInformations)
-
-                    var position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int by mutableStateOf(
-                        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                    )
-                    var position_Grossist_Don_Parent_Grossists_List: Int by mutableStateOf(
-                        init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                    )
-                    var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
-                        init_coloursEtGoutsCommendee.toMutableStateList()
-
-                        data class GrossistInformations(
-                            val id: Long,
-                            val nom: String,
-                            val couleur: String
-                        ) {
-                            var auFilterFAB: Boolean by mutableStateOf( false)
-
-                            override fun equals(other: Any?): Boolean {
-                                if (this === other) return true
-                                if (other !is GrossistInformations) return false
-                                return id == other.id &&
-                                        nom == other.nom &&
-                                        couleur == other.couleur
-                            }
-
-                            override fun hashCode(): Int {
-                                return Objects.hash(id, nom, couleur)
-                            }
-                        }
-
-                        class ColoursGoutsCommendee(
-                                init_statues: ColourEtGout_Model? = null,
-                                init_quantityAchete: Int = 0
-                        ) {
-                                var statues: ColourEtGout_Model?
-                                        by mutableStateOf(init_statues)
-
-                                var quantityAchete: Int by mutableStateOf(init_quantityAchete)
-                        }
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) return true
+                    if (other !is GrossistInformations) return false
+                    return id == other.id &&
+                            nom == other.nom &&
+                            couleur == other.couleur
                 }
 
-                @IgnoreExtraProperties
-                class ClientBonVent_Model(
-                    var vid: Long = 0,
-                    var id_Acheteur: Long = 0,
-                    var nom_Acheteur: String = "",
-                    var time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
-                    var inseartion_Temp: Long = 0,
-                    var inceartion_Date: Long = 0,
-                    init_colours_achete: List<Color_Achat_Model> = emptyList(),
-                ) {
-                    var colours_Achete: SnapshotStateList<Color_Achat_Model> =
-                        init_colours_achete.toMutableStateList()
-
-                        class Color_Achat_Model(
-                            var vidPosition: Long = 0,
-                            var nom: String = "",
-                            var quantity_Achete: Int = 0,
-                            var imogi: String = ""
-                        )
+                override fun hashCode(): Int {
+                    return Objects.hash(id, nom, couleur)
                 }
             }
 
+            class ColoursGoutsCommendee(
+                init_statues: ColourEtGout_Model? = null,
+                init_quantityAchete: Int = 0
+            ) {
+                var statues: ColourEtGout_Model?
+                        by mutableStateOf(init_statues)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun update_Produits_FireBase() {
-        withContext(Dispatchers.IO) {
+                var quantityAchete: Int by mutableStateOf(init_quantityAchete)
+            }
+        }
+
+        @IgnoreExtraProperties
+        class ClientBonVent_Model(
+            var vid: Long = 0,
+            var id_Acheteur: Long = 0,
+            var nom_Acheteur: String = "",
+            var time_String: String = "", //"yyyy-MM-dd HH:mm:ss"
+            var inseartion_Temp: Long = 0,
+            var inceartion_Date: Long = 0,
+            init_colours_achete: List<Color_Achat_Model> = emptyList(),
+        ) {
+            var colours_Achete: SnapshotStateList<Color_Achat_Model> =
+                init_colours_achete.toMutableStateList()
+
+            class Color_Achat_Model(
+                var vidPosition: Long = 0,
+                var nom: String = "",
+                var quantity_Achete: Int = 0,
+                var imogi: String = ""
+            )
+        }
+    }
+
+    companion object {
+        fun List<ProduitModel>.updateProduitsFireBase() {
             try {
-                val ref_Produit_Main_DataBase = Firebase.database
-                    .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-                    .child("produit_DataBase")
+                val ref = FirebaseDatabase.getInstance()
+                    .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase")
 
-                // Use suspendCancellableCoroutine for better cancellation handling
-                suspendCancellableCoroutine<Unit> { continuation ->
-                    ref_Produit_Main_DataBase.setValue(produits_Main_DataBase)
-                        .addOnSuccessListener {
-                            continuation.resume(Unit) {}
-                        }
-                        .addOnFailureListener { exception ->
-                            continuation.resumeWithException(exception)
-                        }
-                }
+                // Create a map where the key is the product ID and the value is the product
+                val productsMap = this@updateProduitsFireBase.associateBy { it.id.toString() }
+
+                // Update Firebase and await the result
+                ref.setValue(productsMap)
             } catch (e: Exception) {
-                Log.e("AppsHeadModel", "Failed to update Firebase", e)
-                throw Exception("Failed to update Firebase: ${e.message}")
+                Log.e("ListMain", "Failed to update Firebase", e)
+                throw e
             }
         }
     }

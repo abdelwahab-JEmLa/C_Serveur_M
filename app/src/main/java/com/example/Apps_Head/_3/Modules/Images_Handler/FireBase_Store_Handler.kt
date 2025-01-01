@@ -39,7 +39,7 @@ open class FireBase_Store_Handler : InitViewModel() {
                 }
 
                 // Met à jour Firebase
-                _app_Initialize_Model.update_Produits_FireBase()
+                _app_Initialize_Model.updateProduitsFireBase()
 
                 // Nettoie le job terminé
                 currentImageUpdateJobs.remove(produitId)

@@ -53,7 +53,7 @@ fun ItemDisplayListMode(
                     produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
 
                     // Update Firebase
-                    app_Initialize_Model.update_Produits_FireBase()
+                    app_Initialize_Model.updateProduitsFireBase()
                 }
             },
         contentAlignment = Alignment.Center
@@ -74,7 +74,7 @@ fun ItemDisplayListMode(
                     produit.bonCommendDeCetteCota?.let { supplier ->
                         supplier.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = 0
                     }
-                    app_Initialize_Model.update_Produits_FireBase()
+                    app_Initialize_Model.updateProduitsFireBase()
                 }
             },
             modifier = Modifier

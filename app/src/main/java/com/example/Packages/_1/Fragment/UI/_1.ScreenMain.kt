@@ -7,6 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.Grossissts_FloatingActionButtons_Grouped
@@ -44,9 +44,14 @@ internal fun ScreenMain(
         }
         return
     }
-    val visibleItems = initViewModel._appsHead.produits_Main_DataBase.filter { it.isVisible }
 
-    var currentItems by remember(visibleItems) { mutableStateOf(visibleItems) }
+    var currentItems by remember(initViewModel._appsHead.produits_Main_DataBase) { mutableStateOf(initViewModel._appsHead.produits_Main_DataBase) }
+
+    // Utilisation de derivedStateOf
+    val visibleItems by remember(currentItems) {
+        derivedStateOf { currentItems
+            .filter { it.isVisible } }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -57,23 +62,8 @@ internal fun ScreenMain(
 
                 if (databaseSize > 0) {
                     ListMain(
-                        itemsFiltre = currentItems,
+                        visibleItems = visibleItems,
                         contentPadding = paddingValues,
-                        onClickUpdatePosition = { produit, nouvellePosition ->
-                            if (produit.bonCommendDeCetteCota == null) {
-                                produit.bonCommendDeCetteCota =
-                                    AppsHeadModel.ProduitModel.GrossistBonCommandes()
-                            }
-                            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
-                                nouvellePosition
-
-                            // Update local state immediately
-                            currentItems = currentItems.map {
-                                if (it.id == produit.id) produit else it
-                            }
-
-                            dbRef.child(produit.id.toString()).setValue(produit)
-                        }
                     )
                 }
             }
@@ -82,7 +72,7 @@ internal fun ScreenMain(
                 headViewModel = initViewModel,
                 modifier = modifier,  // Correction 4: Utilisation du modifier passé en paramètre
                 ui_State = p3_ViewModel.uiState,
-                app_Initialize_Model = initViewModel.appsHead
+                app_Initialize_Model = initViewModel.appsHead,
             )
 
             GlobalActions_FloatingActionButtons_Grouped(

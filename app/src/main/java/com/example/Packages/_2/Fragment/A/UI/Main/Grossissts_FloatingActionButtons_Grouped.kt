@@ -170,7 +170,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                         """.trimIndent())
 
                                         // Update Firebase
-                                        app_Initialize_Model.update_Produits_FireBase()
+                                        app_Initialize_Model.updateProduitsFireBase()
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
                                     }

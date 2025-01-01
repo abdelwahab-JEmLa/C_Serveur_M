@@ -73,7 +73,6 @@ class AppsHeadModel(
             var date: String = "", //"yyyy-MM-dd HH:mm:ss"
             var date_String_Divise: String = "", //"yyyy-MM-dd"
             var time_String_Divise: String = "", //"HH:mm:ss"
-
             var currentCreditBalance: Double = 0.0,
             init_position_Grossist_Don_Parent_Grossists_List: Int = 0,
             init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
@@ -112,9 +111,9 @@ class AppsHeadModel(
             }
 
             class ColoursGoutsCommendee(
-                val id: Long,
-                val nom: String,
-                val couleur: String,
+                val id: Long = 0,
+                val nom: String = "",
+                val couleur: String = "",
                 init_quantityAchete: Int = 0
             ) {
                 var quantityAchete: Int by mutableStateOf(init_quantityAchete)

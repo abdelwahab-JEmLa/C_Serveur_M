@@ -11,139 +11,118 @@ suspend fun InitViewModel.load_Depuit_FireBase() {
     val TAG = "Produit_Loader"
     val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
     val NOMBRE_PRODUITS = 300
+    val DEBUG_LIMIT = 7
     val baseRef = Firebase.database.getReference(CHEMIN_BASE)
 
     try {
-        // Initial data fetch to check existing products
         val existingData = baseRef.get().await()
-        val existingProducts = existingData.children.mapNotNull { snapshot ->
-            try {
-                snapshot.getValue(AppsHeadModel.ProduitModel::class.java)
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to parse product from snapshot: ${snapshot.key}", e)
-                null
-            }
-        }
 
-        // Clear and prepare the products list
-        _appsHead.produits_Main_DataBase.clear()
-
-        // Initialize products list with existing or new products
         repeat(NOMBRE_PRODUITS) { index ->
-            val existingProduct = existingProducts.find { it.id == index.toLong() }
-            val product = existingProduct ?: AppsHeadModel.ProduitModel(id = index.toLong())
-
             try {
-                // Get the snapshot for this specific product
                 val productSnapshot = existingData.child(index.toString())
+                val product = AppsHeadModel.ProduitModel(id = index.toLong())
+                val shouldLog = index < DEBUG_LIMIT
 
-                // Load and validate product name
-                val nomSnapshot = productSnapshot.child("nom")
-                if (nomSnapshot.exists()) {
-                    product.nom = nomSnapshot.value?.toString() ?: "Produit $index"
-                } else if (product.nom.isEmpty() && index > 0) {
-                    product.nom = "Produit $index"
-                }
-
-                // Load colors with validation
+                // Load coloursEtGouts
+                if (shouldLog) Log.d(TAG, "Product $index - Loading coloursEtGouts")
                 product.coloursEtGouts.clear()
                 productSnapshot.child("coloursEtGouts").children.forEach { colorSnapshot ->
                     try {
                         colorSnapshot.getValue(AppsHeadModel.ProduitModel.ColourEtGout_Model::class.java)?.let { color ->
                             if (color.nom.isNotEmpty()) {
                                 product.coloursEtGouts.add(color)
+                                if (shouldLog) Log.d(TAG, "Product $index - Added color: ${color.nom}")
                             }
                         }
                     } catch (e: Exception) {
-                        Log.w(TAG, "Failed to parse color for product $index", e)
+                        if (shouldLog) Log.w(TAG, "Failed to parse color for product $index", e)
                     }
                 }
 
-                // Load current order with validation
-                try {
-                    val bonCommandeSnapshot = productSnapshot.child("bonCommendDeCetteCota")
-                    if (bonCommandeSnapshot.exists()) {
-                        bonCommandeSnapshot.getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommande ->
-                            if (bonCommande.grossistInformations != null) {
-                                product.bonCommendDeCetteCota
-                                    ?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
-                                    bonCommande
-                                        .position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-
-                                bonCommandeSnapshot.child("grossistInformations") .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)?.let { grossistInformations ->
-                                    product.bonCommendDeCetteCota?.grossistInformations = grossistInformations
-                                }
-                                bonCommandeSnapshot.child("coloursEtGoutsCommendee").getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee::class.java)?.let {
-                                    product.bonCommendDeCetteCota?.coloursEtGoutsCommendee?.add(it)
-                                }
-
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    Log.w(TAG, "Failed to load current order for product $index", e)
-                }
-
-                // Load current sales with validation
+                // Load bonsVentDeCetteCota
+                if (shouldLog) Log.d(TAG, "Product $index - Loading bonsVentDeCetteCota")
                 product.bonsVentDeCetteCota.clear()
                 productSnapshot.child("bonsVentDeCetteCota").children.forEach { saleSnapshot ->
                     try {
                         saleSnapshot.getValue(AppsHeadModel.ProduitModel.ClientBonVent_Model::class.java)?.let { sale ->
                             if (sale.nom_Acheteur.isNotEmpty() && sale.colours_Achete.isNotEmpty()) {
                                 product.bonsVentDeCetteCota.add(sale)
+                                if (shouldLog) Log.d(TAG, "Product $index - Added current sale for: ${sale.nom_Acheteur}")
                             }
                         }
                     } catch (e: Exception) {
-                        Log.w(TAG, "Failed to parse current sale for product $index", e)
+                        if (shouldLog) Log.w(TAG, "Failed to parse current sale for product $index", e)
                     }
                 }
 
-                // Load sales history with validation
+                // Load historiqueBonsVents
+                if (shouldLog) Log.d(TAG, "Product $index - Loading historiqueBonsVents")
                 product.historiqueBonsVents.clear()
                 productSnapshot.child("historiqueBonsVents").children.forEach { historySnapshot ->
                     try {
                         historySnapshot.getValue(AppsHeadModel.ProduitModel.ClientBonVent_Model::class.java)?.let { history ->
                             if (history.nom_Acheteur.isNotEmpty() && history.colours_Achete.isNotEmpty()) {
                                 product.historiqueBonsVents.add(history)
+                                if (shouldLog) Log.d(TAG, "Product $index - Added sale history for: ${history.nom_Acheteur}")
                             }
                         }
                     } catch (e: Exception) {
-                        Log.w(TAG, "Failed to parse sale history for product $index", e)
+                        if (shouldLog) Log.w(TAG, "Failed to parse sale history for product $index", e)
                     }
                 }
 
-                // Load order history with validation
+                // Load historiqueBonsCommend
+                if (shouldLog) Log.d(TAG, "Product $index - Loading historiqueBonsCommend")
                 product.historiqueBonsCommend.clear()
                 productSnapshot.child("historiqueBonsCommend").children.forEach { orderSnapshot ->
                     try {
                         orderSnapshot.getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes::class.java)?.let { order ->
                             if (order.grossistInformations != null) {
                                 product.historiqueBonsCommend.add(order)
+                                if (shouldLog) Log.d(TAG, "Product $index - Added order history for grossist: ${order.grossistInformations?.nom}")
                             }
                         }
                     } catch (e: Exception) {
-                        Log.w(TAG, "Failed to parse order history for product $index", e)
+                        if (shouldLog) Log.w(TAG, "Failed to parse order history for product $index", e)
                     }
                 }
 
-                // Set update flags based on data completeness
-                product.besoin_To_Be_Updated = product.nom.isEmpty() ||
-                        product.coloursEtGouts.isEmpty() ||
-                        (index > 0 && product.historiqueBonsVents.isEmpty() && product.bonsVentDeCetteCota.isEmpty())
+                // Load bonCommendDeCetteCota (existing code)
+                if (shouldLog) Log.d(TAG, "Product $index - Before loading bon commande:")
+                if (shouldLog) Log.d(TAG, "- Current bonCommendDeCetteCota: ${product.bonCommendDeCetteCota}")
 
-                product.it_Image_besoin_To_Be_Updated = product.besoin_To_Be_Updated
+                try {
+                    val bonCommandeSnapshot = productSnapshot.child("bonCommendDeCetteCota")
+                    if (bonCommandeSnapshot.exists()) {
+                        if (shouldLog) Log.d(TAG, "Product $index - Bon commande snapshot exists")
+
+                        bonCommandeSnapshot.getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommande ->
+                            if (shouldLog) Log.d(TAG, "Product $index - Parsed bon commande: $bonCommande")
+
+                            if (bonCommande.grossistInformations != null) {
+                                if (shouldLog) Log.d(TAG, "Product $index - Grossist info exists")
+                                product.bonCommendDeCetteCota = bonCommande
+
+                                if (shouldLog) {
+                                    Log.d(TAG, "Product $index - After update:")
+                                    Log.d(TAG, "- Updated bonCommendDeCetteCota: ${product.bonCommendDeCetteCota}")
+                                    Log.d(TAG, "- Grossist info: ${product.bonCommendDeCetteCota?.grossistInformations}")
+                                    Log.d(TAG, "- Colors ordered: ${product.bonCommendDeCetteCota?.coloursEtGoutsCommendee}")
+                                }
+                            }
+                        }
+                    } else {
+                        if (shouldLog) Log.d(TAG, "Product $index - No bon commande snapshot found")
+                    }
+                } catch (e: Exception) {
+                    if (shouldLog) Log.e(TAG, "Product $index - Error loading bon commande", e)
+                }
+
+                _appsHead.produits_Main_DataBase.add(product)
 
             } catch (e: Exception) {
-                Log.e(TAG, "Error loading product $index", e)
-                product.apply {
-                    nom = if (index.toLong() == 0L) "" else "Produit $index (Erreur)"
-                    coloursEtGouts.clear()
-                    besoin_To_Be_Updated = true
-                    it_Image_besoin_To_Be_Updated = true
-                }
+                if (index < DEBUG_LIMIT) Log.e(TAG, "Error loading product $index", e)
             }
-
-            _appsHead.produits_Main_DataBase.add(product)
         }
 
     } catch (e: Exception) {

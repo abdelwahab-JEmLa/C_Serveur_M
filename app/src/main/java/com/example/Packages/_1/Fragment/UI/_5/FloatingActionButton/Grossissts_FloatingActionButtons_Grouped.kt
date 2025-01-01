@@ -78,7 +78,6 @@ fun Grossissts_FloatingActionButtons_Grouped(
                     Total products: ${app_Initialize_Model.produits_Main_DataBase.size}
                     Products with grossists: ${grouped.values.sumOf { it.size }}
                     Number of groups: ${grouped.size}
-                    
                     Groups breakdown:
                     ${
                             grouped.entries.joinToString("\n") { (grossist, products) ->

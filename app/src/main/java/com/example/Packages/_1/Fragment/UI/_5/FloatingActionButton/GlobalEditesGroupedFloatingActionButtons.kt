@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-internal fun GlobalActions_FloatingActionButtons_Grouped(
+internal fun GlobalEditesGroupedFloatingActionButtons(
     modifier: Modifier = Modifier,
     fragment_Ui_State: UiState,
     app_Initialize_Model: AppsHeadModel,

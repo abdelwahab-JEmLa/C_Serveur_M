@@ -51,7 +51,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun Grossissts_FloatingActionButtons_Grouped(
+fun GrossisstsGroupedFABs(
     onClickFAB: (SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
     produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,

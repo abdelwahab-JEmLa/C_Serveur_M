@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.A.UI.Main
+package com.example.Packages._2.Fragment.UI._5.FloatingActionButton
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,15 +50,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Add_New_Produit.CameraPickImageHandler
-import com.example.Packages._1.Fragment.C.ViewModel.Models.UiState
+import com.example.Packages._2.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-internal fun GlobalActions_FloatingActionButtons_Grouped(
+internal fun GlobalEditesGroupedFloatingActionButtons(
     modifier: Modifier = Modifier,
     fragment_Ui_State: UiState,
     app_Initialize_Model: AppsHeadModel,
+    produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
 ) {
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }

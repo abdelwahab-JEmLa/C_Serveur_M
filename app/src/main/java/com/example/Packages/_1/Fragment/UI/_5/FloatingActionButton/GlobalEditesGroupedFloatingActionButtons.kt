@@ -50,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Add_New_Produit.CameraPickImageHandler
-import com.example.Packages._1.Fragment.ViewModel.Models.UiState
+import com.example.Packages._2.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.A.UI.Main
+package com.example.Packages._2.Fragment.UI._5.FloatingActionButton
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,46 +47,49 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
-import com.example.Packages._1.Fragment.C.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun Grossissts_FloatingActionButtons_Grouped(
+fun GrossisstsGroupedFABs(
+    onClickFAB: (SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
+    produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
-    ui_State: UiState,
-    app_Initialize_Model: AppsHeadModel,
 ) {
     val scope = rememberCoroutineScope()
 
     // Optimized grouping logic with null safety
-    val grouped_Produits_Par_grossistInformations = remember(app_Initialize_Model.produitsMainDataBase) {
-        app_Initialize_Model.produitsMainDataBase
-            .mapNotNull { produit ->
-                produit.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
-                    grossist to produit
+    val grouped_Produits_Par_grossistInformations =
+        remember(produitsMainDataBase) {
+            produitsMainDataBase
+                .mapNotNull { produit ->
+                    produit.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
+                        grossist to produit
+                    }
                 }
-            }
-            .groupBy({ it.first }, { it.second })
-            .also { grouped ->
-                Log.d("GrossistGrouping", """
+                .groupBy({ it.first }, { it.second })
+                .also { grouped ->
+                    Log.d(
+                        "GrossistGrouping", """
                     -------- Grouping Details --------
-                    Total products: ${app_Initialize_Model.produitsMainDataBase.size}
+                    Total products: ${produitsMainDataBase.size}
                     Products with grossists: ${grouped.values.sumOf { it.size }}
                     Number of groups: ${grouped.size}
-                    
                     Groups breakdown:
-                    ${grouped.entries.joinToString("\n") { (grossist, products) ->
-                    """
+                    ${
+                            grouped.entries.joinToString("\n") { (grossist, products) ->
+                                """
                         Grossist: ${grossist.nom}
                         Color: ${grossist.couleur}
                         Products count: ${products.size}
                         Product names: ${products.joinToString(", ") { it.nom }}
                     """.trimIndent()
-                }}
-                """.trimIndent())
-            }
-    }
+                            }
+                        }
+                """.trimIndent()
+                    )
+                }
+        }
 
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
@@ -134,46 +138,25 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                 scope.launch {
                                     try {
                                         // Reset all filters first
-                                        app_Initialize_Model.produitsMainDataBase.forEach { product ->
-                                            product.isVisible = false
-                                            product.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB = false
+                                        grouped_Produits_Par_grossistInformations.map { (grossist, _) ->
+                                            grossist.auFilterFAB = grossist.id == grossistModel.id
                                         }
 
-                                        // Set selected grossist filter
-                                        grossistModel.auFilterFAB = true
-
-                                        // Filter products for selected grossist
-                                        products.forEach { product ->
-                                            product.bonCommendDeCetteCota?.let { bonCommande ->
-                                                val totalQuantity = bonCommande.coloursEtGoutsCommendee.sumOf { it.quantityAchete }
-                                                if (totalQuantity > 0) {
-                                                    product.isVisible = true
-                                                }
-                                            }
+                                        // Update product visibility
+                                        produitsMainDataBase.map { product ->
+                                            product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
+                                                bon.grossistInformations?.id == grossistModel.id
+                                                        && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
+                                            } ?: false
                                         }
 
-                                        // Log filtered products
-                                        val filteredProducts = app_Initialize_Model.produitsMainDataBase
-                                            .filter { it.isVisible }
+                                        onClickFAB(produitsMainDataBase)
 
-                                        Log.d("FilteredProducts", """
-                                            -------- Filtered Products Details --------
-                                            Selected Grossist: ${grossistModel.nom}
-                                            Total filtered products: ${filteredProducts.size}
-                                            
-                                            Filtered products list:
-                                            ${filteredProducts.joinToString("\n") { product ->
-                                            """
-                                                Product: ${product.nom}
-                                                Total Quantity: ${product.bonCommendDeCetteCota?.coloursEtGoutsCommendee?.sumOf { it.quantityAchete } ?: 0}
-                                            """.trimIndent()
-                                        }}
-                                        """.trimIndent())
+                                        produitsMainDataBase.updateProduitsFireBase()
 
-                                        // Update Firebase
-                                        app_Initialize_Model.produitsMainDataBase.updateProduitsFireBase()
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
+                                        // Consider adding user feedback here
                                     }
                                 }
                             }
@@ -206,6 +189,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
         }
     }
 }
+
 @Composable
 private fun FabButton(
     label: String,

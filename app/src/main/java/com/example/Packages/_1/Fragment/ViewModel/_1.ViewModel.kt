@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Packages._1.Fragment.ViewModel.Models.UiState
+import com.example.Packages._2.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 
 class Frag_ViewModel : ViewModel() {

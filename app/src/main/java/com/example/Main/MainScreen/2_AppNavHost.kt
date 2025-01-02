@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.Packages._1.Fragment.UI.ScreenMain
 import com.example.c_serveur.AppViewModels
 import kotlinx.serialization.Serializable
 
@@ -21,20 +20,20 @@ fun AppNavHost(
     appViewModels: AppViewModels,
     navController: NavHostController,
 ) {
-
     Box(modifier = modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = Screen.Fragment3_Main_Screen.route,
+            startDestination = Screen.FragmentMainScreen2.route,
             modifier = Modifier.fillMaxSize()
         ) {
 
-            composable(Fragment3_Main_ScreenDestination().route) {
-                ScreenMain(initViewModel=appViewModels.app_Initialize_ViewModel)
+            composable(FragmentMainScreenDestination1().route) {
+                com.example.Packages._1.Fragment.UI.ScreenMain(initViewModel=appViewModels.initViewModel)
+            }
+            composable(FragmentMainScreenDestination2().route) {
+                com.example.Packages._2.Fragment.UI.ScreenMain(initViewModel=appViewModels.initViewModel)
             }
 
-            composable(Fragment_4_Main_Screen_Destination().route) {
-            }
         }
     }
 }
@@ -42,10 +41,9 @@ fun AppNavHost(
  * Object used for a type safe destination to a Home screen
  */
 @Serializable
-data class Fragment3_Main_ScreenDestination(val route: String = "ScreenMain") : java.io.Serializable
-
+data class FragmentMainScreenDestination1(val route: String = "FragmentMainScreenDestination1") : java.io.Serializable
 @Serializable
-data class Fragment_4_Main_Screen_Destination(val route: String = "Fragment_4_Main_Screen") : java.io.Serializable
+data class FragmentMainScreenDestination2(val route: String = "FragmentMainScreenDestination2") : java.io.Serializable
 
 sealed class Screen(
     val route: String,
@@ -53,25 +51,26 @@ sealed class Screen(
     val title: String,
     val color: Color
 ) {
-    data object Fragment3_Main_Screen : Screen(
-        route = "ScreenMain",
+    data object FragmentMainScreen1 : Screen(
+        route = "FragmentMainScreenDestination1",
         icon = Icons.Default.Tab,
-        title = "ScreenMain",
+        title = "FragmentMainScreenDestination1",
         color = Color(0xFFFF5722)
     )
-    data object Fragment_4_Main_Screen : Screen(
-        route = "Fragment_4_Main_Screen",
+    data object FragmentMainScreen2 : Screen(
+        route = "FragmentMainScreenDestination2",
         icon = Icons.Default.Tab,
-        title = "Fragment_4_Main_Screen",
+        title = "FragmentMainScreenDestination2",
         color = Color(0xFFFF5722)
     )
+
 }
 
 // Update NavigationItems to include the new screen
 object NavigationItems {
     fun getItems() = listOf(
-        Screen.Fragment3_Main_Screen,
-        Screen.Fragment_4_Main_Screen
+        Screen.FragmentMainScreen1,
+        Screen.FragmentMainScreen2,
     )
 }
 

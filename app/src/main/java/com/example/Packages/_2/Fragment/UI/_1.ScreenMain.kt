@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.UI
+package com.example.Packages._2.Fragment.UI
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -50,7 +50,7 @@ internal fun ScreenMain(
     var produitsMainDataBase by
     remember(initViewModel._appsHeadModel.produitsMainDataBase) {
         // Log the first 7 products
-        initViewModel._appsHeadModel.produitsMainDataBase.take(com.example.Packages._2.Fragment.UI.DEBUG_LIMIT).forEach { product ->
+        initViewModel._appsHeadModel.produitsMainDataBase.take(DEBUG_LIMIT).forEach { product ->
             Log.d(TAG, """
                 Product ${product.id}:
                 Name: ${product.nom}
@@ -76,10 +76,10 @@ internal fun ScreenMain(
                 val databaseSize = initViewModel.appsHead.produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    com.example.Packages._2.Fragment.UI.ListMain(
+                    ListMain(
                         visibleItems = visibleItems,
                         contentPadding = paddingValues,
-                        viewModelScope = initViewModel.viewModelScope
+                        viewModelScope=initViewModel.viewModelScope
                     )
                 }
             }
@@ -103,5 +103,5 @@ internal fun ScreenMain(
 @Preview
 @Composable
 private fun Preview_Fragment_4_Main_Screen() {
-    com.example.Packages._2.Fragment.UI.ScreenMain(modifier = Modifier.fillMaxSize())
+    ScreenMain(modifier = Modifier.fillMaxSize())
 }

@@ -19,7 +19,7 @@ import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
 
 data class AppViewModels(
-    val app_Initialize_ViewModel: InitViewModel,
+    val initViewModel: InitViewModel,
     )
 
 // ViewModelFactory.kt
@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
 
     private val appViewModels by lazy {
         AppViewModels(
-           app_Initialize_ViewModel=app_Initialize_ViewModel
+           initViewModel=app_Initialize_ViewModel
             )
     }
     override fun onCreate(savedInstanceState: Bundle?) {

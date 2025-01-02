@@ -1,4 +1,4 @@
-package com.example.Packages._1.Fragment.C.ViewModel.Models
+package com.example.Packages._2.Fragment.ViewModel.Models
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

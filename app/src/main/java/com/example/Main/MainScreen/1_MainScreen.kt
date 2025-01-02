@@ -45,7 +45,7 @@ fun MainScreen(
             }
 
             AnimatedVisibility(
-                visible = false,
+                visible = true,
                 modifier = Modifier.align(Alignment.BottomCenter)
             ) {
                 NavigationBarWithFab(

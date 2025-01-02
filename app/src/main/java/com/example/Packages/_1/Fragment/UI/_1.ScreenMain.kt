@@ -21,17 +21,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.Grossissts_FloatingActionButtons_Grouped
-import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
+import com.example.Packages._1.Fragment.ViewModel.Frag_ViewModel
 
-private const val TAG = "ScreenMain"
 internal const val DEBUG_LIMIT = 7
 
 @Composable
 internal fun ScreenMain(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
-    p3_ViewModel: F3_ViewModel = viewModel(),
+    frag_ViewModel: Frag_ViewModel = viewModel(),
 ) {
+    val TAG = "ScreenMain"
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -87,13 +87,13 @@ internal fun ScreenMain(
                 appsHeadModel = initViewModel.appsHead,
                 headViewModel = initViewModel,
                 modifier = modifier,
-                ui_State = p3_ViewModel.uiState,
+                ui_State = frag_ViewModel.uiState,
             )
 
             GlobalActions_FloatingActionButtons_Grouped(
                 app_Initialize_Model = initViewModel.appsHead,
                 modifier = modifier,
-                fragment_Ui_State = p3_ViewModel.uiState
+                fragment_Ui_State = frag_ViewModel.uiState
             )
         }
     }

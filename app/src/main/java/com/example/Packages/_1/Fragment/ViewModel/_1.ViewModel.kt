@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 
-class F3_ViewModel : ViewModel() {
+class Frag_ViewModel : ViewModel() {
 
     var _uiState by mutableStateOf(
         UiState(

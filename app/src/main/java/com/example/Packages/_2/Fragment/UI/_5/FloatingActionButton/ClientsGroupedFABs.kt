@@ -51,45 +51,49 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun GrossisstsGroupedFABs(
+fun ClientsGroupedFABs(
     onClickFAB: (SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
     produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
 
-    // Optimized grouping logic with null safety
-    val grouped_Produits_Par_grossistInformations =
-        remember(produitsMainDataBase) {
-            produitsMainDataBase
-                .mapNotNull { produit ->
-                    produit.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
-                        grossist to produit
+    // Group products by client information and count products per client
+    val groupedProduitsParClient = remember(produitsMainDataBase) {
+        produitsMainDataBase.flatMap { produit ->
+            produit.bonsVentDeCetteCota.mapNotNull { bonVent ->
+                bonVent.clientInformations?.let { client ->
+                    // Only include clients who have actually purchased products
+                    if (bonVent.colours_Achete.any { it.quantity_Achete > 0 }) {
+                        client to produit
+                    } else null
+                }
+            }
+        }.groupBy(
+            { it.first }, // Group by client
+            { it.second }  // Keep the products
+        ).also { grouped ->
+            Log.d(
+                "Grouping",
+                """
+                -------- Client Grouping Details --------
+                Total products: ${produitsMainDataBase.size}
+                Active clients: ${grouped.size}
+                Client breakdown:
+                ${
+                    grouped.entries.joinToString("\n") { (client, products) ->
+                        """
+                        Client: ${client.nom}
+                        Color: ${client.couleur}
+                        Products count: ${products.size}
+                        Products: ${products.joinToString(", ") { it.nom }}
+                        """.trimIndent()
                     }
                 }
-                .groupBy({ it.first }, { it.second })
-                .also { grouped ->
-                    Log.d(
-                        "GrossistGrouping", """
-                    -------- Grouping Details --------
-                    Total products: ${produitsMainDataBase.size}
-                    Products with grossists: ${grouped.values.sumOf { it.size }}
-                    Number of groups: ${grouped.size}
-                    Groups breakdown:
-                    ${
-                            grouped.entries.joinToString("\n") { (grossist, products) ->
-                                """
-                        Grossist: ${grossist.nom}
-                        Color: ${grossist.couleur}
-                        Products count: ${products.size}
-                        Product names: ${products.joinToString(", ") { it.nom }}
-                    """.trimIndent()
-                            }
-                        }
                 """.trimIndent()
-                    )
-                }
+            )
         }
+    }
 
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
@@ -127,36 +131,35 @@ fun GrossisstsGroupedFABs(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
-                    grouped_Produits_Par_grossistInformations.forEach { (grossistModel, products) ->
+                    groupedProduitsParClient.forEach { (client, products) ->
                         FabButton(
-                            supplierProductssize = products.size,
-                            label = grossistModel.nom,
-                            color = Color(android.graphics.Color.parseColor(grossistModel.couleur)),
+                            productsSize = products.size,
+                            label = client.nom,
+                            color = Color(android.graphics.Color.parseColor(client.couleur)),
                             showLabel = showLabels,
-                            isFiltered = grossistModel.auFilterFAB,
+                            isFiltered = client.auFilterFAB,
                             onClick = {
                                 scope.launch {
                                     try {
                                         // Reset all filters first
-                                        grouped_Produits_Par_grossistInformations.map { (grossist, _) ->
-                                            grossist.auFilterFAB = grossist.id == grossistModel.id
+                                        groupedProduitsParClient.keys.forEach { c ->
+                                            c.auFilterFAB = c.id == client.id
                                         }
 
-                                        // Update product visibility
-                                        produitsMainDataBase.map { product ->
-                                            product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
-                                                bon.grossistInformations?.id == grossistModel.id
-                                                        && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
-                                            } ?: false
+                                        // Update product visibility based on client selection
+                                        produitsMainDataBase.forEach { product ->
+                                            product.isVisible = product.bonsVentDeCetteCota
+                                                .any { bonVent ->
+                                                    bonVent.clientInformations?.id == client.id &&
+                                                            bonVent.colours_Achete.any { it.quantity_Achete > 0 }
+                                                }
                                         }
 
                                         onClickFAB(produitsMainDataBase)
-
                                         produitsMainDataBase.updateProduitsFireBase()
 
                                     } catch (e: Exception) {
-                                        Log.e("FilterError", "Error while filtering products", e)
-                                        // Consider adding user feedback here
+                                        Log.e("FilterError", "Error filtering products", e)
                                     }
                                 }
                             }
@@ -166,6 +169,7 @@ fun GrossisstsGroupedFABs(
             }
         }
 
+        // Label toggle FAB
         FloatingActionButton(
             onClick = { showLabels = !showLabels },
             modifier = Modifier.size(48.dp),
@@ -177,6 +181,7 @@ fun GrossisstsGroupedFABs(
             )
         }
 
+        // Expand/collapse FAB
         FloatingActionButton(
             onClick = { showFloatingButtons = !showFloatingButtons },
             modifier = Modifier.size(48.dp),
@@ -197,7 +202,7 @@ private fun FabButton(
     showLabel: Boolean,
     isFiltered: Boolean = false,
     onClick: () -> Unit,
-    supplierProductssize: Int
+    productsSize: Int
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -217,7 +222,7 @@ private fun FabButton(
                     MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
             ) {
                 Text(
-                    text = "$label ($supplierProductssize)",
+                    text = "$label ($productsSize)",
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
@@ -233,7 +238,7 @@ private fun FabButton(
             containerColor = color
         ) {
             Text(
-                text = supplierProductssize.toString(),
+                text = productsSize.toString(),
                 style = MaterialTheme.typography.bodyMedium,
                 color = Color.White
             )

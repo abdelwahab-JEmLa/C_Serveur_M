@@ -36,9 +36,9 @@ class AppsHeadModel(
         initialNon_Trouve: Boolean = false,
         init_colours_Et_Gouts: List<ColourEtGout_Model> = emptyList(),
         init_bonCommendDeCetteCota: GrossistBonCommandes? = null,
-        init_bonS_Vent_De_Cette_Cota: List<ClientBonVent_Model> = emptyList(),
+        initBonsVentDeCetteCota: List<ClientBonVentModel> = emptyList(),
         init_visible: Boolean = true,
-        init_historiqueBonsVents: List<ClientBonVent_Model> = emptyList(),
+        init_historiqueBonsVents: List<ClientBonVentModel> = emptyList(),
         init_historiqueBonsCommend: List<GrossistBonCommandes> = emptyList(),
     ) {
         var nom: String by mutableStateOf(init_nom)
@@ -47,7 +47,6 @@ class AppsHeadModel(
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var isVisible: Boolean by mutableStateOf(init_visible)
 
-        @get:Exclude
         var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
             init_colours_Et_Gouts.toMutableStateList()
 
@@ -60,20 +59,20 @@ class AppsHeadModel(
         var bonCommendDeCetteCota: GrossistBonCommandes? by mutableStateOf(init_bonCommendDeCetteCota)
 
         @get:Exclude
-        var bonsVentDeCetteCota: SnapshotStateList<ClientBonVent_Model> =
-            init_bonS_Vent_De_Cette_Cota.toMutableStateList()
+        var bonsVentDeCetteCota: SnapshotStateList<ClientBonVentModel> =
+            initBonsVentDeCetteCota.toMutableStateList()
 
-        var bonsVentDeCetteCotaList: List<ClientBonVent_Model>
+        var bonsVentDeCetteCotaList: List<ClientBonVentModel>
             get() = bonsVentDeCetteCota
             set(value) {
                 bonsVentDeCetteCota = value.toMutableStateList()
             }
 
         @get:Exclude
-        var historiqueBonsVents: SnapshotStateList<ClientBonVent_Model> =
+        var historiqueBonsVents: SnapshotStateList<ClientBonVentModel> =
             init_historiqueBonsVents.toMutableStateList()
 
-        var historiqueBonsVentsList: List<ClientBonVent_Model>
+        var historiqueBonsVentsList: List<ClientBonVentModel>
             get() = historiqueBonsVents
             set(value) {
                 historiqueBonsVents = value.toMutableStateList()
@@ -159,27 +158,45 @@ class AppsHeadModel(
         }
 
         @IgnoreExtraProperties
-        class ClientBonVent_Model(
-            var vid: Long = 0,
-            var id_Acheteur: Long = 0,
-            var nom_Acheteur: String = "",
-            var time_String: String = "",
-            var inseartion_Temp: Long = 0,
-            var inceartion_Date: Long = 0,
-            init_colours_achete: List<Color_Achat_Model> = emptyList(),
+        class ClientBonVentModel(
+            init_clientInformations: ClientInformations? = null,
+            init_colours_achete: List<ColorAchatModel> = emptyList(),
         ) {
+            var clientInformations: ClientInformations? by mutableStateOf(init_clientInformations)
+
             @get:Exclude
-            var colours_Achete: SnapshotStateList<Color_Achat_Model> =
+            var colours_Achete: SnapshotStateList<ColorAchatModel> =
                 init_colours_achete.toMutableStateList()
 
-            var coloursAcheteList: List<Color_Achat_Model>
+            var coloursAcheteList: List<ColorAchatModel>
                 get() = colours_Achete
                 set(value) {
                     colours_Achete = value.toMutableStateList()
                 }
 
             @IgnoreExtraProperties
-            class Color_Achat_Model(
+            data class ClientInformations(
+                val id: Long = 0,
+                val nom: String = "",
+                val couleur: String = ""
+            ) {
+                var auFilterFAB: Boolean by mutableStateOf(false)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) return true
+                    if (other !is ClientInformations) return false
+                    return id == other.id &&
+                            nom == other.nom &&
+                            couleur == other.couleur
+                }
+
+                override fun hashCode(): Int {
+                    return Objects.hash(id, nom, couleur)
+                }
+            }
+
+            @IgnoreExtraProperties
+            class ColorAchatModel(
                 var vidPosition: Long = 0,
                 var nom: String = "",
                 var quantity_Achete: Int = 0,

@@ -20,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
+import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.ClientsGroupedFABs
 import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.GlobalEditesGroupedFloatingActionButtons
-import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.GrossisstsGroupedFABs
 import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 
 internal const val DEBUG_LIMIT = 7
@@ -76,7 +76,7 @@ internal fun ScreenMain(
                 val databaseSize = initViewModel.appsHead.produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    com.example.Packages._2.Fragment.UI.ListMain(
+                    ListMain(
                         visibleItems = visibleItems,
                         contentPadding = paddingValues,
                         viewModelScope = initViewModel.viewModelScope
@@ -84,7 +84,7 @@ internal fun ScreenMain(
                 }
             }
 
-            GrossisstsGroupedFABs(
+            ClientsGroupedFABs(
                 onClickFAB = {produitsMainDataBase=it},
                 produitsMainDataBase=produitsMainDataBase,
                 modifier = modifier

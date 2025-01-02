@@ -1,6 +1,5 @@
 package com.example.Packages._2.Fragment.UI
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,8 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
+import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.ClientsGroupedFABs
 import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.GlobalEditesGroupedFloatingActionButtons
-import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.GrossisstsGroupedFABs
 import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 
 internal const val DEBUG_LIMIT = 7
@@ -48,19 +47,7 @@ internal fun ScreenMain(
 
     // Create an immutable snapshot of the database list
     var produitsMainDataBase by
-    remember(initViewModel._appsHeadModel.produitsMainDataBase) {
-        // Log the first 7 products
-        initViewModel._appsHeadModel.produitsMainDataBase.take(DEBUG_LIMIT).forEach { product ->
-            Log.d(TAG, """
-                Product ${product.id}:
-                Name: ${product.nom}
-                Colors/Flavors: ${product.coloursEtGouts.size}
-                Visible: ${product.isVisible}
-                Needs Update: ${product.besoin_To_Be_Updated}
-                """.trimIndent()
-            )
-        }
-
+    remember(initViewModel._appsHeadModel.produitsMainDataBase) { // Log the first 7 products initViewModel._appsHeadModel.produitsMainDataBase.take(DEBUG_LIMIT).forEach { product -> Log.d(TAG, """ Product ${product.id}:Name: ${product.nom}""".trimIndent()) }
         mutableStateOf(initViewModel._appsHeadModel.produitsMainDataBase)
     }
 
@@ -68,6 +55,7 @@ internal fun ScreenMain(
     val visibleItems by remember(produitsMainDataBase) {
         derivedStateOf { produitsMainDataBase.filter { it.isVisible }.toMutableStateList() }
     }
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
@@ -84,7 +72,7 @@ internal fun ScreenMain(
                 }
             }
 
-            GrossisstsGroupedFABs(
+            ClientsGroupedFABs(
                 onClickFAB = {produitsMainDataBase=it},
                 produitsMainDataBase=produitsMainDataBase,
                 modifier = modifier

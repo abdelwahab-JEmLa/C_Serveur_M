@@ -59,8 +59,8 @@ object LoadFromFirebaseHandler {
         ).apply {
             if (shouldLog) Log.d(TAG, "Parsing product ID: $productId")
             parseList<ProduitModel.ColourEtGout_Model>("coloursEtGoutsList", snapshot) { coloursEtGoutsList = it }
-            parseList<ProduitModel.ClientBonVent_Model>("bonsVentDeCetteCotaList", snapshot) { bonsVentDeCetteCotaList = it }
-            parseList<ProduitModel.ClientBonVent_Model>("historiqueBonsVentsList", snapshot) { historiqueBonsVentsList = it }
+            parseList<ProduitModel.ClientBonVentModel>("bonsVentDeCetteCotaList", snapshot) { bonsVentDeCetteCotaList = it }
+            parseList<ProduitModel.ClientBonVentModel>("historiqueBonsVentsList", snapshot) { historiqueBonsVentsList = it }
             parseList<ProduitModel.GrossistBonCommandes>("historiqueBonsCommendList", snapshot) { historiqueBonsCommendList = it }
 
             snapshot.child("bonCommendDeCetteCota").let { bonCommendSnapshot ->

@@ -7,9 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.Firebase
-import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.Exclude
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
 import java.util.Objects
@@ -19,18 +17,18 @@ class AppsHeadModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
 ) {
     @get:Exclude
-    @set:Exclude
     var produits_Main_DataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
 
+    // Property for Firebase serialization
     var produitsMainDataBaseList: List<ProduitModel>
         get() = produits_Main_DataBase
         set(value) {
             produits_Main_DataBase = value.toMutableStateList()
         }
+
     val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
     val ref_Produits_Main_DataBase = Firebase.database.getReference(CHEMIN_BASE)
-
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -55,7 +53,6 @@ class AppsHeadModel(
         var isVisible: Boolean by mutableStateOf(init_visible)
 
         @get:Exclude
-        @set:Exclude
         var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
             init_colours_Et_Gouts.toMutableStateList()
 
@@ -68,7 +65,6 @@ class AppsHeadModel(
         var bonCommendDeCetteCota: GrossistBonCommandes? by mutableStateOf(init_bonCommendDeCetteCota)
 
         @get:Exclude
-        @set:Exclude
         var bonsVentDeCetteCota: SnapshotStateList<ClientBonVent_Model> =
             init_bonS_Vent_De_Cette_Cota.toMutableStateList()
 
@@ -79,7 +75,6 @@ class AppsHeadModel(
             }
 
         @get:Exclude
-        @set:Exclude
         var historiqueBonsVents: SnapshotStateList<ClientBonVent_Model> =
             init_historiqueBonsVents.toMutableStateList()
 
@@ -90,7 +85,6 @@ class AppsHeadModel(
             }
 
         @get:Exclude
-        @set:Exclude
         var historiqueBonsCommend: SnapshotStateList<GrossistBonCommandes> =
             init_historiqueBonsCommend.toMutableStateList()
 
@@ -99,73 +93,6 @@ class AppsHeadModel(
             set(value) {
                 historiqueBonsCommend = value.toMutableStateList()
             }
-
-        companion object {
-            fun fromSnapshot(snapshot: DataSnapshot, DEBUG_LIMIT: Int): ProduitModel? {
-                return try {
-                    val productId = snapshot.key?.toIntOrNull() ?: -1
-                    val shouldLog = productId <= DEBUG_LIMIT
-
-                    if (shouldLog) {
-                        Log.d("ProduitModel", "Starting to parse snapshot: ${snapshot.key}")
-                    }
-
-                    val model = snapshot.getValue(ProduitModel::class.java)
-                    model?.apply {
-                        val coloursType = object : GenericTypeIndicator<List<ColourEtGout_Model>>() {}
-                        val bonsVentType = object : GenericTypeIndicator<List<ClientBonVent_Model>>() {}
-                        val historiqueVentType = object : GenericTypeIndicator<List<ClientBonVent_Model>>() {}
-                        val historiqueCommendType = object : GenericTypeIndicator<List<GrossistBonCommandes>>() {}
-
-                        try {
-                            snapshot.child("coloursEtGoutsList").getValue(coloursType)?.let {
-                                coloursEtGouts = it.toMutableStateList()
-                                if (shouldLog) {
-                                    Log.d("ProduitModel", "Loaded ${it.size} colours")
-                                }
-                            }
-
-                            // Parse bonCommendDeCetteCota separately using its own fromSnapshot method
-                            snapshot.child("bonCommendDeCetteCota").let { bonCommendSnapshot ->
-                                if (bonCommendSnapshot.exists()) {
-                                    bonCommendDeCetteCota = GrossistBonCommandes.fromSnapshot(bonCommendSnapshot)
-                                    if (shouldLog) {
-                                        Log.d("ProduitModel", "Loaded bonCommendDeCetteCota")
-                                    }
-                                }
-                            }
-
-                            snapshot.child("bonsVentDeCetteCotaList").getValue(bonsVentType)?.let {
-                                bonsVentDeCetteCota = it.toMutableStateList()
-                                if (shouldLog) {
-                                    Log.d("ProduitModel", "Loaded ${it.size} bons vents")
-                                }
-                            }
-                            snapshot.child("historiqueBonsVentsList").getValue(historiqueVentType)?.let {
-                                historiqueBonsVents = it.toMutableStateList()
-                                if (shouldLog) {
-                                    Log.d("ProduitModel", "Loaded ${it.size} historique vents")
-                                }
-                            }
-                            snapshot.child("historiqueBonsCommendList").getValue(historiqueCommendType)?.let {
-                                historiqueBonsCommend = it.toMutableStateList()
-                                if (shouldLog) {
-                                    Log.d("ProduitModel", "Loaded ${it.size} historique commends")
-                                }
-                            }
-                        } catch (e: Exception) {
-                            Log.e("ProduitModel", "Error parsing lists: ${e.message}")
-                            e.printStackTrace()
-                        }
-                    }
-                    model
-                } catch (e: Exception) {
-                    Log.e("ProduitModel", "Error parsing snapshot: ${e.message}")
-                    e.printStackTrace()
-                    null
-                }
-            }
-        }
 
         @IgnoreExtraProperties
         class ColourEtGout_Model(
@@ -195,7 +122,6 @@ class AppsHeadModel(
             )
 
             @get:Exclude
-            @set:Exclude
             var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
                 init_coloursEtGoutsCommendee.toMutableStateList()
 
@@ -204,60 +130,6 @@ class AppsHeadModel(
                 set(value) {
                     coloursEtGoutsCommendee = value.toMutableStateList()
                 }
-
-            companion object {
-                fun fromSnapshot(snapshot: DataSnapshot): GrossistBonCommandes? {
-                    return try {
-                        val model = snapshot.getValue(GrossistBonCommandes::class.java)
-
-                        model?.apply {
-                            // Load GrossistInformations
-                            snapshot.child("grossistInformations").let { grossistSnap ->
-                                if (grossistSnap.exists()) {
-                                    grossistInformations = grossistSnap.getValue(GrossistInformations::class.java)
-                                }
-                            }
-
-                            // Load position values
-                            position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
-                                snapshot.child("position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit")
-                                    .getValue(Int::class.java) ?: 0
-
-                            position_Grossist_Don_Parent_Grossists_List =
-                                snapshot.child("position_Grossist_Don_Parent_Grossists_List")
-                                    .getValue(Int::class.java) ?: 0
-
-                            // Load colors and orders list
-                            val coloursType = object : GenericTypeIndicator<List<ColoursGoutsCommendee>>() {}
-                            snapshot.child("coloursEtGoutsCommendeeList").getValue(coloursType)?.let { colors ->
-                                coloursEtGoutsCommendee = colors.toMutableStateList()
-                            }
-
-                            // Load other primitive fields if needed
-                            vid = snapshot.child("vid").getValue(Long::class.java) ?: 0
-                            date = snapshot.child("date").getValue(String::class.java) ?: ""
-                            date_String_Divise = snapshot.child("date_String_Divise").getValue(String::class.java) ?: ""
-                            time_String_Divise = snapshot.child("time_String_Divise").getValue(String::class.java) ?: ""
-                            currentCreditBalance = snapshot.child("currentCreditBalance").getValue(Double::class.java) ?: 0.0
-
-                            Log.d("GrossistBonCommandes", """
-                        Loaded GrossistBonCommandes:
-                        - VID: $vid
-                        - Grossist Info: ${grossistInformations?.nom}
-                        - Colors Count: ${coloursEtGoutsCommendee.size}
-                        - Position in List: $position_Grossist_Don_Parent_Grossists_List
-                        - Product Position: $position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                    """.trimIndent())
-                        }
-
-                        model
-                    } catch (e: Exception) {
-                        Log.e("GrossistBonCommandes", "Error parsing snapshot: ${e.message}")
-                        e.printStackTrace()
-                        null
-                    }
-                }
-            }
 
             @IgnoreExtraProperties
             data class GrossistInformations(
@@ -302,7 +174,6 @@ class AppsHeadModel(
             init_colours_achete: List<Color_Achat_Model> = emptyList(),
         ) {
             @get:Exclude
-            @set:Exclude
             var colours_Achete: SnapshotStateList<Color_Achat_Model> =
                 init_colours_achete.toMutableStateList()
 
@@ -311,25 +182,6 @@ class AppsHeadModel(
                 set(value) {
                     colours_Achete = value.toMutableStateList()
                 }
-
-            companion object {
-                fun fromSnapshot(snapshot: DataSnapshot): ClientBonVent_Model? {
-                    return try {
-                        val model = snapshot.getValue(ClientBonVent_Model::class.java)
-                        model?.apply {
-                            val colorsType = object : GenericTypeIndicator<List<Color_Achat_Model>>() {}
-                            snapshot.child("coloursAcheteList").getValue(colorsType)?.let {
-                                colours_Achete = it.toMutableStateList()
-                            }
-                        }
-                        model
-                    } catch (e: Exception) {
-                        Log.e("ClientBonVent", "Error parsing snapshot: ${e.message}")
-                        e.printStackTrace()
-                        null
-                    }
-                }
-            }
 
             @IgnoreExtraProperties
             class Color_Achat_Model(
@@ -342,7 +194,7 @@ class AppsHeadModel(
     }
 
     companion object {
-         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
+        fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
                 val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
                 val baseRef = Firebase.database.getReference(CHEMIN_BASE)
@@ -363,27 +215,5 @@ class AppsHeadModel(
                 throw e
             }
         }
-           /*
-        fun setupDatabaseListener(ref: DatabaseReference, onUpdate: (List<ProduitModel>) -> Unit) {
-            ref.addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    try {
-                        val products = mutableListOf<ProduitModel>()
-                        snapshot.children.forEach { productSnapshot ->
-                            ProduitModel.fromSnapshot(productSnapshot)?.let {
-                                products.add(it)
-                            }
-                        }
-                        onUpdate(products)
-                    } catch (e: Exception) {
-                        Log.e("Firebase", "Error in database listener", e)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("Firebase", "Database error: ${error.message}")
-                }
-            })
-        }  */
     }
 }

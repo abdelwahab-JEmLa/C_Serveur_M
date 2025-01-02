@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._4.Init.cree_New_Start
-import com.example.Apps_Head._4.Init.load_Depuit_FireBase
+import com.example.Apps_Head._4.Init.loadFromFirebaseHandler
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -31,13 +31,17 @@ open class InitViewModel : ViewModel() {
                 isInitializing = true
                 initializationProgress = 0f
 
-                val createStart = false
+                val createStart = 0
 
-                if (createStart) {
+                if (createStart==1) {
                     cree_New_Start()
                     initializationProgress = 1f
                 } else {
-                    load_Depuit_FireBase()
+                    loadFromFirebaseHandler.loadFromFirebase {
+                        if (it != null) {
+                            _appsHead.produits_Main_DataBase=it
+                        }
+                    }
                     initializationProgress = 1f
                 }
 

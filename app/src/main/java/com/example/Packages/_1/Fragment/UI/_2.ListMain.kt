@@ -164,15 +164,4 @@ fun ListMain(
     }
 }
 
-@Composable
-private fun SectionHeader(text: String) {
-    Text(
-        text = text,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp),
-        style = MaterialTheme.typography.titleMedium
-    )
-}
 

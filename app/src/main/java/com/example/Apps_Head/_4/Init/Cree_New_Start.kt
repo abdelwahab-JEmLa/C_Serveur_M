@@ -5,6 +5,8 @@ import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Apps_Head._4.Init.Z.Components.get_Ancien_DataBases_Main
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -100,6 +102,11 @@ suspend fun InitViewModel.cree_New_Start() {
 
             initializationProgress = 0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
         }
+
+        val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
+        val ref_Produits_Main_DataBase = Firebase.database.getReference(CHEMIN_BASE)
+
+        ref_Produits_Main_DataBase.removeValue()
 
         _appsHead.produits_Main_DataBase.updateProduitsFireBase()
 

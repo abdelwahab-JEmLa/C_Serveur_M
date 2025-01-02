@@ -342,7 +342,7 @@ class AppsHeadModel(
     }
 
     companion object {
-        suspend fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
+         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
                 val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
                 val baseRef = Firebase.database.getReference(CHEMIN_BASE)

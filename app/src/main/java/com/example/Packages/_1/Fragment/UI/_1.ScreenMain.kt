@@ -71,7 +71,7 @@ internal fun ScreenMain(
                 headViewModel = initViewModel,
                 modifier = modifier,
                 ui_State = p3_ViewModel.uiState,
-                app_Initialize_Model = initViewModel.appsHead,
+                appsHeadModel = initViewModel.appsHead,
             )
 
             GlobalActions_FloatingActionButtons_Grouped(

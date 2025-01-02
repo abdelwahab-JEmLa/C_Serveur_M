@@ -1,6 +1,6 @@
 package com.example.Packages._1.Fragment.UI._5.FloatingActionButton
 
-import  android.util.Log
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -45,11 +45,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.ViewModel.Models.UiState
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
 
 @Composable
@@ -57,14 +56,14 @@ fun Grossissts_FloatingActionButtons_Grouped(
     headViewModel: InitViewModel,
     modifier: Modifier = Modifier,
     ui_State: UiState,
-    app_Initialize_Model: AppsHeadModel,
+    appsHeadModel: AppsHeadModel,
 ) {
     val scope = rememberCoroutineScope()
 
     // Optimized grouping logic with null safety
     val grouped_Produits_Par_grossistInformations =
-        remember(app_Initialize_Model.produits_Main_DataBase) {
-            app_Initialize_Model.produits_Main_DataBase
+        remember(appsHeadModel.produits_Main_DataBase) {
+            appsHeadModel.produits_Main_DataBase
                 .mapNotNull { produit ->
                     produit.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
                         grossist to produit
@@ -75,7 +74,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                     Log.d(
                         "GrossistGrouping", """
                     -------- Grouping Details --------
-                    Total products: ${app_Initialize_Model.produits_Main_DataBase.size}
+                    Total products: ${appsHeadModel.produits_Main_DataBase.size}
                     Products with grossists: ${grouped.values.sumOf { it.size }}
                     Number of groups: ${grouped.size}
                     Groups breakdown:
@@ -152,14 +151,9 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                                         && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
                                             } ?: false
                                         }
-                                        // Update Firebase safely
-                                        withContext(Dispatchers.IO) {
-                                            headViewModel._appsHead.ref_Produits_Main_DataBase.setValue(
-                                                headViewModel._appsHead.produits_Main_DataBase
-                                            ).addOnFailureListener { e ->
-                                                Log.e("FilterError", "Failed to update Firebase", e)
-                                            }
-                                        }
+
+                                        headViewModel._appsHead.produits_Main_DataBase.updateProduitsFireBase()
+
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
                                         // Consider adding user feedback here

@@ -1,6 +1,5 @@
 package com.example.Packages._2.Fragment.UI._5.FloatingActionButton
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -17,8 +16,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.filled.Close
@@ -31,7 +28,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,53 +48,14 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ClientsGroupedFABs(
-    onClickFAB: (SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
+    onClientSelected: (AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations, List<AppsHeadModel.ProduitModel>) -> Unit,
     produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
-
-    // Group products by client information and count products per client
-    val groupedProduitsParClient = remember(produitsMainDataBase) {
-        produitsMainDataBase.flatMap { produit ->
-            produit.bonsVentDeCetteCota.mapNotNull { bonVent ->
-                bonVent.clientInformations?.let { client ->
-                    // Only include clients who have actually purchased products
-                    if (bonVent.colours_Achete.any { it.quantity_Achete > 0 }) {
-                        client to produit
-                    } else null
-                }
-            }
-        }.groupBy(
-            { it.first }, // Group by client
-            { it.second }  // Keep the products
-        ).also { grouped ->
-            Log.d(
-                "Grouping",
-                """
-                -------- Client Grouping Details --------
-                Total products: ${produitsMainDataBase.size}
-                Active clients: ${grouped.size}
-                Client breakdown:
-                ${
-                    grouped.entries.joinToString("\n") { (client, products) ->
-                        """
-                        Client: ${client.nom}
-                        Color: ${client.couleur}
-                        Products count: ${products.size}
-                        Products: ${products.joinToString(", ") { it.nom }}
-                        """.trimIndent()
-                    }
-                }
-                """.trimIndent()
-            )
-        }
-    }
-
     var showLabels by remember { mutableStateOf(true) }
-    var showFloatingButtons by remember { mutableStateOf(false) }
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
+    var showButtons by remember { mutableStateOf(true) }
+    var offset by remember { mutableStateOf(IntOffset(0, 0)) }
 
     Column(
         horizontalAlignment = Alignment.End,
@@ -107,141 +64,118 @@ fun ClientsGroupedFABs(
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(16.dp)
-            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+            .offset { offset }
             .pointerInput(Unit) {
                 detectDragGestures { change, dragAmount ->
                     change.consume()
-                    offsetX += dragAmount.x
-                    offsetY += dragAmount.y
+                    offset += IntOffset(dragAmount.x.roundToInt(), dragAmount.y.roundToInt())
                 }
             }
             .zIndex(1f)
     ) {
+        // Client buttons section
         AnimatedVisibility(
-            visible = showFloatingButtons,
+            visible = showButtons,
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically()
         ) {
-            Surface(
-                modifier = Modifier.wrapContentHeight(),
-                color = Color.Transparent
+            val groupedClients = remember(produitsMainDataBase) {
+                produitsMainDataBase
+                    .flatMap { produit ->
+                        produit.bonsVentDeCetteCota.mapNotNull { bonVent ->
+                            bonVent.clientInformations?.takeIf {
+                                bonVent.colours_Achete.any { color -> color.quantity_Achete > 0 }
+                            }?.to(produit)
+                        }
+                    }
+                    .groupBy({ it.first }, { it.second })
+            }
+
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.verticalScroll(rememberScrollState())
-                ) {
-                    groupedProduitsParClient.forEach { (client, products) ->
-                        FabButton(
-                            productsSize = products.size,
-                            label = client.nom,
-                            color = Color(android.graphics.Color.parseColor(client.couleur)),
-                            showLabel = showLabels,
-                            isFiltered = client.auFilterFAB,
+                groupedClients.forEach { (client, products) ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        // Client label
+                        AnimatedVisibility(
+                            visible = showLabels,
+                            enter = fadeIn() + expandHorizontally(),
+                            exit = fadeOut() + shrinkHorizontally()
+                        ) {
+                            Surface(
+                                modifier = Modifier.padding(end = 8.dp),
+                                shape = MaterialTheme.shapes.medium,
+                                color = if (client.auFilterFAB)
+                                    MaterialTheme.colorScheme.error.copy(alpha = 0.6f)
+                                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+                            ) {
+                                Text(
+                                    text = "${client.nom} (${products.size})",
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = if (client.auFilterFAB) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        // Client FAB
+                        FloatingActionButton(
                             onClick = {
                                 scope.launch {
-                                    try {
-                                        // Reset all filters first
-                                        groupedProduitsParClient.keys.forEach { c ->
-                                            c.auFilterFAB = c.id == client.id
-                                        }
-
-                                        // Update product visibility based on client selection
-                                        produitsMainDataBase.forEach { product ->
-                                            product.isVisible = product.bonsVentDeCetteCota
-                                                .any { bonVent ->
-                                                    bonVent.clientInformations?.id == client.id &&
-                                                            bonVent.colours_Achete.any { it.quantity_Achete > 0 }
-                                                }
-                                        }
-
-                                        onClickFAB(produitsMainDataBase)
-                                        produitsMainDataBase.updateProduitsFireBase()
-
-                                    } catch (e: Exception) {
-                                        Log.e("FilterError", "Error filtering products", e)
+                                    groupedClients.keys.forEach { it.auFilterFAB = it.id == client.id }
+                                    produitsMainDataBase.forEach { product ->
+                                        product.isVisible = product.bonsVentDeCetteCota
+                                            .any { it.clientInformations?.id == client.id }
                                     }
+                                    produitsMainDataBase.updateProduitsFireBase()
+                                    onClientSelected(client, products)
                                 }
-                            }
-                        )
+                            },
+                            modifier = Modifier.size(48.dp),
+                            containerColor = Color(android.graphics.Color.parseColor(client.couleur))
+                        ) {
+                            Text(
+                                text = products.size.toString(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
             }
         }
 
-        // Label toggle FAB
-        FloatingActionButton(
-            onClick = { showLabels = !showLabels },
-            modifier = Modifier.size(48.dp),
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+        // Control FABs
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(
-                imageVector = if (showLabels) Icons.Default.Close else Icons.AutoMirrored.Filled.Label,
-                contentDescription = if (showLabels) "Hide Labels" else "Show Labels"
-            )
-        }
-
-        // Expand/collapse FAB
-        FloatingActionButton(
-            onClick = { showFloatingButtons = !showFloatingButtons },
-            modifier = Modifier.size(48.dp),
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ) {
-            Icon(
-                imageVector = if (showFloatingButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                contentDescription = if (showFloatingButtons) "Collapse" else "Expand"
-            )
-        }
-    }
-}
-
-@Composable
-private fun FabButton(
-    label: String,
-    color: Color,
-    showLabel: Boolean,
-    isFiltered: Boolean = false,
-    onClick: () -> Unit,
-    productsSize: Int
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
-    ) {
-        AnimatedVisibility(
-            visible = showLabel,
-            enter = fadeIn() + expandHorizontally(),
-            exit = fadeOut() + shrinkHorizontally()
-        ) {
-            Surface(
-                modifier = Modifier.padding(end = 8.dp),
-                shape = MaterialTheme.shapes.medium,
-                color = if (isFiltered)
-                    MaterialTheme.colorScheme.error.copy(alpha = 0.6f)
-                else
-                    MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+            FloatingActionButton(
+                onClick = { showLabels = !showLabels },
+                modifier = Modifier.size(48.dp),
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             ) {
-                Text(
-                    text = "$label ($productsSize)",
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = if (isFiltered) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                Icon(
+                    imageVector = if (showLabels) Icons.Default.Close else Icons.AutoMirrored.Filled.Label,
+                    contentDescription = if (showLabels) "Hide Labels" else "Show Labels"
                 )
             }
-        }
 
-        FloatingActionButton(
-            onClick = onClick,
-            modifier = Modifier.size(48.dp),
-            containerColor = color
-        ) {
-            Text(
-                text = productsSize.toString(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.White
-            )
+            FloatingActionButton(
+                onClick = { showButtons = !showButtons },
+                modifier = Modifier.size(48.dp),
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ) {
+                Icon(
+                    imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    contentDescription = if (showButtons) "Collapse" else "Expand"
+                )
+            }
         }
     }
 }

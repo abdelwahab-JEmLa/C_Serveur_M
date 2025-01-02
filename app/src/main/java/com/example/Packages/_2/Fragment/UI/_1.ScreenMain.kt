@@ -7,17 +7,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.ClientsGroupedFABs
 import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.GlobalEditesGroupedFloatingActionButtons
@@ -31,60 +27,52 @@ internal fun ScreenMain(
     initViewModel: InitViewModel = viewModel(),
     frag_ViewModel: Frag_ViewModel = viewModel(),
 ) {
-    val TAG = "ScreenMain"
     if (!initViewModel.initializationComplete) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator(
-                progress = {
-                    initViewModel.initializationProgress
-                },
-                modifier = Modifier.align(Alignment.Center),
-                trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
-            )
-        }
+        LoadingScreen()
         return
     }
 
-    // Create an immutable snapshot of the database list
-    var produitsMainDataBase by
-    remember(initViewModel._appsHeadModel.produitsMainDataBase) { // Log the first 7 products initViewModel._appsHeadModel.produitsMainDataBase.take(DEBUG_LIMIT).forEach { product -> Log.d(TAG, """ Product ${product.id}:Name: ${product.nom}""".trimIndent()) }
-        mutableStateOf(initViewModel._appsHeadModel.produitsMainDataBase)
+    val selectedClientData = remember {
+        mutableStateOf(emptyMap<AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations, List<AppsHeadModel.ProduitModel>>())
     }
 
-    // With this:
-    val visibleItems by remember(produitsMainDataBase) {
-        derivedStateOf { produitsMainDataBase.filter { it.isVisible }.toMutableStateList() }
-    }
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { paddingValues ->
+    Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                val databaseSize = initViewModel.appsHead.produitsMainDataBase.size
-
-                if (databaseSize > 0) {
+                if (initViewModel.appsHead.produitsMainDataBase.isNotEmpty()) {
                     ListMain(
-                        visibleItems = visibleItems,
+                        visibleClientEtCesProduit = selectedClientData.value,
                         contentPadding = paddingValues,
-                        viewModelScope=initViewModel.viewModelScope
                     )
                 }
             }
 
             ClientsGroupedFABs(
-                onClickFAB = {produitsMainDataBase=it},
-                produitsMainDataBase=produitsMainDataBase,
+                onClientSelected = { client, products ->
+                    selectedClientData.value = mapOf(client to products)
+                },
+                produitsMainDataBase = initViewModel.appsHead.produitsMainDataBase,
                 modifier = modifier
             )
 
             GlobalEditesGroupedFloatingActionButtons(
-                produitsMainDataBase=produitsMainDataBase,
+                produitsMainDataBase = initViewModel.appsHead.produitsMainDataBase,
                 app_Initialize_Model = initViewModel.appsHead,
                 modifier = modifier,
                 fragment_Ui_State = frag_ViewModel.uiState
             )
         }
+    }
+}
+
+@Composable
+private fun LoadingScreen() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+            progress = { 0f },
+            modifier = Modifier.align(Alignment.Center),
+            trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
+        )
     }
 }
 

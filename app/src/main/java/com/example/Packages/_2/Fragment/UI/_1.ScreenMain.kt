@@ -102,6 +102,6 @@ internal fun ScreenMain(
 
 @Preview
 @Composable
-private fun Preview_Fragment_4_Main_Screen() {
+private fun PreviewFragmentMainScreen() {
     ScreenMain(modifier = Modifier.fillMaxSize())
 }

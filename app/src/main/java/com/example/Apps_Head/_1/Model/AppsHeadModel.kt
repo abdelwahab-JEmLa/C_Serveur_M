@@ -33,8 +33,6 @@ class AppsHeadModel(
     @IgnoreExtraProperties
     class ProduitModel(
         var id: Long = 0,
-        val it_ref_Id_don_FireBase: Long = 0,
-        val it_ref_don_FireBase: String = "",
         init_nom: String = "",
         init_besoin_To_Be_Updated: Boolean = false,
         init_it_Image_besoin_To_Be_Updated: Boolean = false,

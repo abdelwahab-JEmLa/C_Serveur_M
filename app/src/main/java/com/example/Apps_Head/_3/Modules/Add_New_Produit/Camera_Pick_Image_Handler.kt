@@ -77,8 +77,6 @@ class CameraPickImageHandler(
             val newProduct = if (pendingProduct != null) {
                 AppsHeadModel.ProduitModel(
                     id = newId,
-                    it_ref_Id_don_FireBase = newId,
-                    it_ref_don_FireBase = fileName,
                     init_nom = pendingProduct!!.nom,
                     init_besoin_To_Be_Updated = true,
                     init_it_Image_besoin_To_Be_Updated = true,
@@ -89,8 +87,6 @@ class CameraPickImageHandler(
             } else {
                 AppsHeadModel.ProduitModel(
                     id = newId,
-                    it_ref_Id_don_FireBase = newId,
-                    it_ref_don_FireBase = fileName,
                     init_besoin_To_Be_Updated = true
                 )
             }

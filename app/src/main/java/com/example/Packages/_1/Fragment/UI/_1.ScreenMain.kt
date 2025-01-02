@@ -53,7 +53,6 @@ internal fun ScreenMain(
             Log.d(TAG, """
                 Product ${product.id}:
                 Name: ${product.nom}
-                Reference: ${product.it_ref_don_FireBase}
                 Colors/Flavors: ${product.coloursEtGouts.size}
                 Visible: ${product.isVisible}
                 Needs Update: ${product.besoin_To_Be_Updated}

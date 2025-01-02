@@ -54,8 +54,6 @@ object LoadFromFirebaseHandler {
 
         return ProduitModel(
             id = productId,
-            it_ref_Id_don_FireBase = (productMap["it_ref_Id_don_FireBase"] as? Number)?.toLong() ?: 0,
-            it_ref_don_FireBase = (productMap["it_ref_don_FireBase"] as? String) ?: "",
             init_nom = (productMap["nom"] as? String) ?: "",
             init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean) ?: false,
             init_it_Image_besoin_To_Be_Updated = (productMap["it_Image_besoin_To_Be_Updated"] as? Boolean) ?: false,

@@ -34,7 +34,7 @@ class InitViewModel : ViewModel() {
                 isInitializing = true
                 initializationProgress = 0f
 
-                val createStart = 1
+                val createStart = 0
 
                 if (createStart == 1) {
                     cree_New_Start()

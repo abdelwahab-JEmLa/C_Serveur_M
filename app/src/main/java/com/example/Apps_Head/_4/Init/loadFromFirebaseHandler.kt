@@ -12,7 +12,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 
 object loadFromFirebaseHandler {
-    private const val TAG = "LoadFromFirebaseHandler"
+     const val TAG = "LoadFromFirebaseHandler"
     private const val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
     private const val DEBUG_LIMIT = 7
     private val databaseRef = Firebase.database.getReference(CHEMIN_BASE)
@@ -54,9 +54,24 @@ object loadFromFirebaseHandler {
                 Log.d(TAG, "Parsing snapshot for product ID: $productId")
             }
 
-            // Get base product data
-            snapshot.getValue(ProduitModel::class.java)?.apply {
-                id = productId // Ensure ID is set correctly
+            // Get the data as a Map first
+            val productMap = snapshot.value as? Map<*, *>
+            if (productMap == null) {
+                Log.e(TAG, "Product data is null for ID: $productId")
+                return null
+            }
+
+            // Create a new ProduitModel with base properties
+            ProduitModel(
+                id = productId,
+                it_ref_Id_don_FireBase = (productMap["it_ref_Id_don_FireBase"] as? Number)?.toLong() ?: 0,
+                it_ref_don_FireBase = (productMap["it_ref_don_FireBase"] as? String) ?: "",
+                init_nom = (productMap["nom"] as? String) ?: "",
+                init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean) ?: false,
+                init_it_Image_besoin_To_Be_Updated = (productMap["it_Image_besoin_To_Be_Updated"] as? Boolean) ?: false,
+                initialNon_Trouve = (productMap["non_Trouve"] as? Boolean) ?: false,
+                init_visible = (productMap["isVisible"] as? Boolean) ?: true
+            ).apply {
                 parseCollections(snapshot, shouldLog)
             }
         } catch (e: Exception) {
@@ -73,9 +88,10 @@ object loadFromFirebaseHandler {
             parseHistoriques(snapshot, shouldLog)
         } catch (e: Exception) {
             Log.e(TAG, "Error parsing collections for product ${this.id}", e)
-            throw e // Propagate error to handle in parseSnapshot
+            throw e
         }
     }
+
 
     private fun ProduitModel.parseColoursEtGouts(snapshot: DataSnapshot, shouldLog: Boolean) {
         val coloursType = object : GenericTypeIndicator<List<ProduitModel.ColourEtGout_Model>>() {}

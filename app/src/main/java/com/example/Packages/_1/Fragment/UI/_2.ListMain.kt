@@ -35,6 +35,7 @@ fun ListMain(
     contentPadding: PaddingValues,
     viewModelScope: CoroutineScope
 ) {
+
     var itemsFiltre by remember(visibleItems) { mutableStateOf(visibleItems) }
 
     val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {

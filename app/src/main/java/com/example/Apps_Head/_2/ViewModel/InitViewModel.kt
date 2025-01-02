@@ -11,11 +11,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._4.Init.cree_New_Start
 import com.example.Apps_Head._4.Init.loadFromFirebaseHandler
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 open class InitViewModel : ViewModel() {
     var _appsHead by mutableStateOf(AppsHeadModel())
@@ -31,17 +29,30 @@ open class InitViewModel : ViewModel() {
                 isInitializing = true
                 initializationProgress = 0f
 
-                val createStart = 0
+                val createStart = 0 // Changed to test Firebase loading
 
-                if (createStart==1) {
+                if (createStart == 1) {
                     cree_New_Start()
                     initializationProgress = 1f
                 } else {
-                    loadFromFirebaseHandler.loadFromFirebase {
-                        if (it != null) {
-                            _appsHead.produits_Main_DataBase=it
+                    // Convert Firebase callback to coroutine
+                    val products = suspendCancellableCoroutine { continuation ->
+                        loadFromFirebaseHandler.loadFromFirebase { products ->
+                            if (continuation.isActive) {
+                                continuation.resume(products)
+                            }
                         }
                     }
+
+                    // Update the products if loaded successfully
+                    products?.let {
+                        _appsHead.produits_Main_DataBase = it
+                        Log.d(TAG, "Successfully loaded ${it.size} products from Firebase")
+                    } ?: run {
+                        Log.e(TAG, "Failed to load products from Firebase")
+                        throw Exception("Failed to load products from Firebase")
+                    }
+
                     initializationProgress = 1f
                 }
 
@@ -49,75 +60,11 @@ open class InitViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 Log.e(TAG, "Initialization failed", e)
+                throw e // Rethrow to handle in UI if needed
             } finally {
                 isInitializing = false
             }
         }
     }
-
-    private fun setupDatabaseListener() {
-        _appsHead.ref_Produits_Main_DataBase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                viewModelScope.launch {
-                    try {
-                        // Store current positions before loading new data
-                        val previousPositions = _appsHead.produits_Main_DataBase.associate { produit ->
-                            produit.id to produit.historiqueBonsCommend.map { grossist ->
-                                grossist.vid to grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-                            }
-                        }
-
-                        // Load new data
-                        // _app_Initialize_Model.loadAllProducts()
-                        Log.d(TAG, "Starting to check products for updates")
-
-                        // Check for image updates and position changes
-                        _appsHead.produits_Main_DataBase.forEach { produit ->
-                            // Handle image updates
-                            if (produit.it_Image_besoin_To_Be_Updated) {
-                                Log.d(TAG, "Product ${produit.id} needs image update, initiating update process")
-                              //  FireBase_Store_Handler().startImageUpdate(_appsHead, produit.id)
-                            }
-
-                            // Check for position changes
-                            val previousProductPositions = previousPositions[produit.id] ?: emptyList()
-                            produit.historiqueBonsCommend.forEach { grossist ->
-                                val previousPosition = previousProductPositions.find { it.first == grossist.vid }?.second
-                                if (previousPosition != null && previousPosition != grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit) {
-                                    Log.d(TAG, "Position changed for product ${produit.id}, supplier ${grossist.vid}: $previousPosition -> ${grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit}")
-                                    handlePositionChange(produit.id, grossist.vid, grossist.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit)
-                                }
-                            }
-                        }
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error in database listener: ${e.message}", e)
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Database error: ${error.message}", error.toException())
-            }
-        })
-    }
-
-    private fun handlePositionChange(productId: Long, supplierId: Long, newPosition: Int) {
-        viewModelScope.launch {
-            try {
-                // Update the position in Firebase
-                val productRef = _appsHead.ref_Produits_Main_DataBase.child(productId.toString())
-                    .child("grossist_Choisi_Pour_Acheter_CeProduit")
-                    .child(supplierId.toString())
-                    .child("position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit")
-
-                productRef.setValue(newPosition).await()
-                Log.d(TAG, "Successfully updated position for product $productId, supplier $supplierId")
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to update position in Firebase: ${e.message}", e)
-            }
-        }
-    }
-
-
 
 }

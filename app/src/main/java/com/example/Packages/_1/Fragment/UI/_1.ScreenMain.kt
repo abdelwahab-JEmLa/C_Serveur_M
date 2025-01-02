@@ -1,5 +1,6 @@
 package com.example.Packages._1.Fragment.UI
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,9 @@ import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.GlobalActions_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.Grossissts_FloatingActionButtons_Grouped
 import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
+
+private const val TAG = "ScreenMain"
+private const val DEBUG_LIMIT = 7
 
 @Composable
 internal fun ScreenMain(
@@ -44,6 +48,19 @@ internal fun ScreenMain(
     // Create an immutable snapshot of the database list
     val currentItems by
     remember(initViewModel._appsHead.produits_Main_DataBase) {
+        // Log the first 7 products
+        initViewModel._appsHead.produits_Main_DataBase.take(DEBUG_LIMIT).forEach { product ->
+            Log.d(TAG, """
+                Product ${product.id}:
+                Name: ${product.nom}
+                Reference: ${product.it_ref_don_FireBase}
+                Colors/Flavors: ${product.coloursEtGouts.size}
+                Visible: ${product.isVisible}
+                Needs Update: ${product.besoin_To_Be_Updated}
+                """.trimIndent()
+            )
+        }
+
         mutableStateOf(initViewModel._appsHead.produits_Main_DataBase)
     }
 

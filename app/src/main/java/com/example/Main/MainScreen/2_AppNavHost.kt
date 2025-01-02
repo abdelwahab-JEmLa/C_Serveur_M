@@ -28,10 +28,12 @@ fun AppNavHost(
         ) {
 
             composable(FragmentMainScreenDestination1().route) {
-                com.example.Packages._1.Fragment.UI.ScreenMain(initViewModel=appViewModels.initViewModel)
+                com.example.Packages.
+                _1.Fragment.UI.ScreenMain(initViewModel=appViewModels.initViewModel)
             }
             composable(FragmentMainScreenDestination2().route) {
-                com.example.Packages._2.Fragment.UI.ScreenMain(initViewModel=appViewModels.initViewModel)
+                com.example.Packages.
+                _2.Fragment.UI.ScreenMain(initViewModel=appViewModels.initViewModel)
             }
 
         }

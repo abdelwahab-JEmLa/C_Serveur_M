@@ -61,26 +61,22 @@ object LoadFromFirebaseHandler {
             init_visible = (productMap["isVisible"] as? Boolean) ?: true
         ).apply {
             if (shouldLog) Log.d(TAG, "Parsing product ID: $productId")
-            parseProductDetails(snapshot, shouldLog)
-        }
-    }
+            parseList<ProduitModel.ColourEtGout_Model>("coloursEtGoutsList", snapshot) { coloursEtGoutsList = it }
+            parseList<ProduitModel.ClientBonVent_Model>("bonsVentDeCetteCotaList", snapshot) { bonsVentDeCetteCotaList = it }
+            parseList<ProduitModel.ClientBonVent_Model>("historiqueBonsVentsList", snapshot) { historiqueBonsVentsList = it }
+            parseList<ProduitModel.GrossistBonCommandes>("historiqueBonsCommendList", snapshot) { historiqueBonsCommendList = it }
 
-    private fun ProduitModel.parseProductDetails(snapshot: DataSnapshot, shouldLog: Boolean) {
-        parseList<ProduitModel.ColourEtGout_Model>("coloursEtGoutsList", snapshot) { coloursEtGoutsList = it }
-        parseList<ProduitModel.ClientBonVent_Model>("bonsVentDeCetteCotaList", snapshot) { bonsVentDeCetteCotaList = it }
-        parseList<ProduitModel.ClientBonVent_Model>("historiqueBonsVentsList", snapshot) { historiqueBonsVentsList = it }
-        parseList<ProduitModel.GrossistBonCommandes>("historiqueBonsCommendList", snapshot) { historiqueBonsCommendList = it }
+            snapshot.child("bonCommendDeCetteCota").let { bonCommendSnapshot ->
+                if (bonCommendSnapshot.exists()) {
+                    bonCommendDeCetteCota = bonCommendSnapshot.getValue(ProduitModel.GrossistBonCommandes::class.java)?.apply {
+                        grossistInformations = snapshot.child("bonCommendDeCetteCota/grossistInformations")
+                            .getValue(ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
 
-        snapshot.child("bonCommendDeCetteCota").let { bonCommendSnapshot ->
-            if (bonCommendSnapshot.exists()) {
-                bonCommendDeCetteCota = bonCommendSnapshot.getValue(ProduitModel.GrossistBonCommandes::class.java)?.apply {
-                    grossistInformations = snapshot.child("bonCommendDeCetteCota/grossistInformations")
-                        .getValue(ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
-
-                    parseList<ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee>(
-                        "coloursEtGoutsCommendeeList",
-                        bonCommendSnapshot
-                    ) { coloursEtGoutsCommendeeList = it }
+                        parseList<ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee>(
+                            "coloursEtGoutsCommendeeList",
+                            bonCommendSnapshot
+                        ) { coloursEtGoutsCommendeeList = it }
+                    }
                 }
             }
         }

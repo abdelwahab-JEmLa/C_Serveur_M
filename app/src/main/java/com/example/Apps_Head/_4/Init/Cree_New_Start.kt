@@ -23,7 +23,8 @@ suspend fun InitViewModel.cree_New_Start() {
                 val nouveauProduit = AppsHeadModel.ProduitModel(
                     id = ancien.idArticle,
                     it_ref_Id_don_FireBase = 1L,
-                    it_ref_don_FireBase = "produit_DataBase"
+                    it_ref_don_FireBase = "produit_DataBase",
+                    init_besoin_To_Be_Updated = true
                 )
 
                 nouveauProduit.apply {
@@ -89,7 +90,7 @@ suspend fun InitViewModel.cree_New_Start() {
                         historiqueBonsCommend.clear()
                     }
 
-                    besoin_To_Be_Updated = true
+
                 }
 
                 _appsHead.produits_Main_DataBase.add(nouveauProduit)

@@ -59,8 +59,8 @@ fun Grossissts_FloatingActionButtons_Grouped(
     val scope = rememberCoroutineScope()
 
     // Optimized grouping logic with null safety
-    val grouped_Produits_Par_grossistInformations = remember(app_Initialize_Model.produits_Main_DataBase) {
-        app_Initialize_Model.produits_Main_DataBase
+    val grouped_Produits_Par_grossistInformations = remember(app_Initialize_Model.produitsMainDataBase) {
+        app_Initialize_Model.produitsMainDataBase
             .mapNotNull { produit ->
                 produit.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
                     grossist to produit
@@ -70,7 +70,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
             .also { grouped ->
                 Log.d("GrossistGrouping", """
                     -------- Grouping Details --------
-                    Total products: ${app_Initialize_Model.produits_Main_DataBase.size}
+                    Total products: ${app_Initialize_Model.produitsMainDataBase.size}
                     Products with grossists: ${grouped.values.sumOf { it.size }}
                     Number of groups: ${grouped.size}
                     
@@ -134,7 +134,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                 scope.launch {
                                     try {
                                         // Reset all filters first
-                                        app_Initialize_Model.produits_Main_DataBase.forEach { product ->
+                                        app_Initialize_Model.produitsMainDataBase.forEach { product ->
                                             product.isVisible = false
                                             product.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB = false
                                         }
@@ -153,7 +153,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                         }
 
                                         // Log filtered products
-                                        val filteredProducts = app_Initialize_Model.produits_Main_DataBase
+                                        val filteredProducts = app_Initialize_Model.produitsMainDataBase
                                             .filter { it.isVisible }
 
                                         Log.d("FilteredProducts", """
@@ -171,7 +171,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                         """.trimIndent())
 
                                         // Update Firebase
-                                        app_Initialize_Model.produits_Main_DataBase.updateProduitsFireBase()
+                                        app_Initialize_Model.produitsMainDataBase.updateProduitsFireBase()
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
                                     }

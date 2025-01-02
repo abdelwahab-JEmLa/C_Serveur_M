@@ -2,27 +2,24 @@ package com.example.Apps_Head._4.Init
 
 import android.util.Log
 import androidx.compose.runtime.toMutableStateList
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 object LoadFromFirebaseHandler {
     private const val TAG = "LoadFromFirebaseHandler"
-    private const val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
     private const val DEBUG_LIMIT = 7
-    private val databaseRef = Firebase.database.getReference(CHEMIN_BASE)
 
     suspend fun loadFromFirebase(initViewModel: InitViewModel) = try {
         initViewModel.apply {
-            _appsHeadModel.produits_Main_DataBase = loadProducts()
+            _appsHeadModel.produitsMainDataBase = loadProducts()
             initializationProgress = 1f
         }
     } catch (e: Exception) {
@@ -31,7 +28,7 @@ object LoadFromFirebaseHandler {
     }
 
     private suspend fun loadProducts() = suspendCancellableCoroutine { continuation ->
-        databaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        AppsHeadModel.ref_produitsDataBase.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) = try {
                 val products = snapshot.children
                     .mapNotNull { parseProduct(it) }

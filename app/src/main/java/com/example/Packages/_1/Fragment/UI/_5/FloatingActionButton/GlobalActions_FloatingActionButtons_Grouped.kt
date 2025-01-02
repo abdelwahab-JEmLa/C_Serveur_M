@@ -37,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,6 +59,7 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
     modifier: Modifier = Modifier,
     fragment_Ui_State: UiState,
     app_Initialize_Model: AppsHeadModel,
+    produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
 ) {
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }
@@ -120,7 +122,7 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
                         showLabel = showLabels,
                         onClick = {
                             val uri = imageHandler.handleNewProductImageCapture(
-                                app_Initialize_Model.produits_Main_DataBase
+                                app_Initialize_Model.produitsMainDataBase
                                     .firstOrNull{ produit ->
                                         produit.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true
                                                 && produit.id>2000

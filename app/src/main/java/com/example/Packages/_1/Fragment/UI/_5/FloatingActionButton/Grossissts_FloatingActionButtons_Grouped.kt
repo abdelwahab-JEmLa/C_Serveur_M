@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,24 +47,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
-import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages._1.Fragment.ViewModel.Models.UiState
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun Grossissts_FloatingActionButtons_Grouped(
-    headViewModel: InitViewModel,
+    onClickFAB: (SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
+    produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
-    ui_State: UiState,
-    appsHeadModel: AppsHeadModel,
 ) {
     val scope = rememberCoroutineScope()
 
     // Optimized grouping logic with null safety
     val grouped_Produits_Par_grossistInformations =
-        remember(appsHeadModel.produits_Main_DataBase) {
-            appsHeadModel.produits_Main_DataBase
+        remember(produitsMainDataBase) {
+            produitsMainDataBase
                 .mapNotNull { produit ->
                     produit.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
                         grossist to produit
@@ -74,7 +72,7 @@ fun Grossissts_FloatingActionButtons_Grouped(
                     Log.d(
                         "GrossistGrouping", """
                     -------- Grouping Details --------
-                    Total products: ${appsHeadModel.produits_Main_DataBase.size}
+                    Total products: ${produitsMainDataBase.size}
                     Products with grossists: ${grouped.values.sumOf { it.size }}
                     Number of groups: ${grouped.size}
                     Groups breakdown:
@@ -145,14 +143,16 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                         }
 
                                         // Update product visibility
-                                        headViewModel._appsHeadModel.produits_Main_DataBase.map { product ->
+                                        produitsMainDataBase.map { product ->
                                             product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
                                                 bon.grossistInformations?.id == grossistModel.id
                                                         && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
                                             } ?: false
                                         }
 
-                                        headViewModel._appsHeadModel.produits_Main_DataBase.updateProduitsFireBase()
+                                        onClickFAB(produitsMainDataBase)
+
+                                        produitsMainDataBase.updateProduitsFireBase()
 
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)

@@ -120,7 +120,7 @@ internal fun GlobalActions_FloatingActionButtons_Grouped(
                         showLabel = showLabels,
                         onClick = {
                             val uri = imageHandler.handleNewProductImageCapture(
-                                app_Initialize_Model.produits_Main_DataBase
+                                app_Initialize_Model.produitsMainDataBase
                                     .firstOrNull{ produit ->
                                         produit.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true
                                                 && produit.id>2000

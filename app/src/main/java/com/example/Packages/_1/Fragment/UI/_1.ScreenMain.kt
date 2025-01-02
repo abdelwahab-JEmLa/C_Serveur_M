@@ -12,6 +12,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +47,10 @@ internal fun ScreenMain(
     }
 
     // Create an immutable snapshot of the database list
-    val currentItems by
-    remember(initViewModel._appsHeadModel.produits_Main_DataBase) {
+    var produitsMainDataBase by
+    remember(initViewModel._appsHeadModel.produitsMainDataBase) {
         // Log the first 7 products
-        initViewModel._appsHeadModel.produits_Main_DataBase.take(DEBUG_LIMIT).forEach { product ->
+        initViewModel._appsHeadModel.produitsMainDataBase.take(DEBUG_LIMIT).forEach { product ->
             Log.d(TAG, """
                 Product ${product.id}:
                 Name: ${product.nom}
@@ -60,19 +61,19 @@ internal fun ScreenMain(
             )
         }
 
-        mutableStateOf(initViewModel._appsHeadModel.produits_Main_DataBase)
+        mutableStateOf(initViewModel._appsHeadModel.produitsMainDataBase)
     }
 
     // With this:
-    val visibleItems by remember(currentItems) {
-        derivedStateOf { currentItems.filter { it.isVisible }.toMutableStateList() }
+    val visibleItems by remember(produitsMainDataBase) {
+        derivedStateOf { produitsMainDataBase.filter { it.isVisible }.toMutableStateList() }
     }
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                val databaseSize = initViewModel.appsHead.produits_Main_DataBase.size
+                val databaseSize = initViewModel.appsHead.produitsMainDataBase.size
 
                 if (databaseSize > 0) {
                     ListMain(
@@ -84,13 +85,13 @@ internal fun ScreenMain(
             }
 
             Grossissts_FloatingActionButtons_Grouped(
-                appsHeadModel = initViewModel.appsHead,
-                headViewModel = initViewModel,
-                modifier = modifier,
-                ui_State = frag_ViewModel.uiState,
+                onClickFAB = {produitsMainDataBase=it},
+                produitsMainDataBase=produitsMainDataBase,
+                modifier = modifier
             )
 
             GlobalActions_FloatingActionButtons_Grouped(
+                produitsMainDataBase=produitsMainDataBase,
                 app_Initialize_Model = initViewModel.appsHead,
                 modifier = modifier,
                 fragment_Ui_State = frag_ViewModel.uiState

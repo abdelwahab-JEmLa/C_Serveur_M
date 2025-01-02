@@ -17,18 +17,15 @@ class AppsHeadModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
 ) {
     @get:Exclude
-    var produits_Main_DataBase: SnapshotStateList<ProduitModel> =
+    var produitsMainDataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
 
     // Property for Firebase serialization
-    var produitsMainDataBaseList: List<ProduitModel>
-        get() = produits_Main_DataBase
+    var produitsDataBaseList: List<ProduitModel>
+        get() = produitsMainDataBase
         set(value) {
-            produits_Main_DataBase = value.toMutableStateList()
+            produitsMainDataBase = value.toMutableStateList()
         }
-
-    val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
-    val ref_Produits_Main_DataBase = Firebase.database.getReference(CHEMIN_BASE)
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -192,16 +189,16 @@ class AppsHeadModel(
     }
 
     companion object {
+        private const val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produitsDataBase"
+        val ref_produitsDataBase = Firebase.database.getReference(CHEMIN_BASE)
+
         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
-                val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produit_DataBase"
-                val baseRef = Firebase.database.getReference(CHEMIN_BASE)
-
                 val updatedProducts = this.filter { it.besoin_To_Be_Updated }
 
                 updatedProducts.forEach { product ->
                     try {
-                        baseRef.child(product.id.toString()).setValue(product)
+                        ref_produitsDataBase.child(product.id.toString()).setValue(product)
                         product.besoin_To_Be_Updated = false
                         Log.d("Firebase", "Successfully updated product ${product.id}")
                     } catch (e: Exception) {

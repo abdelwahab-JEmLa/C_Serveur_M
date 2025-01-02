@@ -93,7 +93,7 @@ suspend fun InitViewModel.cree_New_Start() {
 
                 }
 
-                _appsHead.produits_Main_DataBase.add(nouveauProduit)
+                _appsHeadModel.produits_Main_DataBase.add(nouveauProduit)
             } catch (e: Exception) {
                 // Handle exception silently
             }
@@ -106,7 +106,7 @@ suspend fun InitViewModel.cree_New_Start() {
 
         ref_Produits_Main_DataBase.removeValue()
 
-        _appsHead.produits_Main_DataBase.updateProduitsFireBase()
+        _appsHeadModel.produits_Main_DataBase.updateProduitsFireBase()
 
         initializationProgress = 1.0f
         initializationComplete = true

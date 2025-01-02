@@ -145,14 +145,14 @@ fun Grossissts_FloatingActionButtons_Grouped(
                                         }
 
                                         // Update product visibility
-                                        headViewModel._appsHead.produits_Main_DataBase.map { product ->
+                                        headViewModel._appsHeadModel.produits_Main_DataBase.map { product ->
                                             product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
                                                 bon.grossistInformations?.id == grossistModel.id
                                                         && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
                                             } ?: false
                                         }
 
-                                        headViewModel._appsHead.produits_Main_DataBase.updateProduitsFireBase()
+                                        headViewModel._appsHeadModel.produits_Main_DataBase.updateProduitsFireBase()
 
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)

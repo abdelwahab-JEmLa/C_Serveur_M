@@ -24,7 +24,7 @@ import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.Grossissts_Fl
 import com.example.Packages._1.Fragment.ViewModel.F3_ViewModel
 
 private const val TAG = "ScreenMain"
-private const val DEBUG_LIMIT = 7
+internal const val DEBUG_LIMIT = 7
 
 @Composable
 internal fun ScreenMain(
@@ -47,9 +47,9 @@ internal fun ScreenMain(
 
     // Create an immutable snapshot of the database list
     val currentItems by
-    remember(initViewModel._appsHead.produits_Main_DataBase) {
+    remember(initViewModel._appsHeadModel.produits_Main_DataBase) {
         // Log the first 7 products
-        initViewModel._appsHead.produits_Main_DataBase.take(DEBUG_LIMIT).forEach { product ->
+        initViewModel._appsHeadModel.produits_Main_DataBase.take(DEBUG_LIMIT).forEach { product ->
             Log.d(TAG, """
                 Product ${product.id}:
                 Name: ${product.nom}
@@ -60,7 +60,7 @@ internal fun ScreenMain(
             )
         }
 
-        mutableStateOf(initViewModel._appsHead.produits_Main_DataBase)
+        mutableStateOf(initViewModel._appsHeadModel.produits_Main_DataBase)
     }
 
     // With this:
@@ -84,16 +84,16 @@ internal fun ScreenMain(
             }
 
             Grossissts_FloatingActionButtons_Grouped(
+                appsHeadModel = initViewModel.appsHead,
                 headViewModel = initViewModel,
                 modifier = modifier,
                 ui_State = p3_ViewModel.uiState,
-                appsHeadModel = initViewModel.appsHead,
             )
 
             GlobalActions_FloatingActionButtons_Grouped(
+                app_Initialize_Model = initViewModel.appsHead,
                 modifier = modifier,
-                fragment_Ui_State = p3_ViewModel.uiState,
-                app_Initialize_Model = initViewModel.appsHead
+                fragment_Ui_State = p3_ViewModel.uiState
             )
         }
     }

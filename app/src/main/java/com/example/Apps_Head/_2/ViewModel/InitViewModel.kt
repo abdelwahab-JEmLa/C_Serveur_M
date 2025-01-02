@@ -13,8 +13,8 @@ import com.example.Apps_Head._4.Init.cree_New_Start
 import kotlinx.coroutines.launch
 
 class InitViewModel : ViewModel() {
-    var _appsHead by mutableStateOf(AppsHeadModel())
-    val appsHead: AppsHeadModel get() = _appsHead
+    var _appsHeadModel by mutableStateOf(AppsHeadModel())
+    val appsHead: AppsHeadModel get() = _appsHeadModel
 
     var initializationProgress by mutableFloatStateOf(0f)
     var isInitializing by mutableStateOf(false)
@@ -34,7 +34,7 @@ class InitViewModel : ViewModel() {
                 isInitializing = true
                 initializationProgress = 0f
 
-                val createStart = 0 // Changed to test Firebase loading
+                val createStart = 0
 
                 if (createStart == 1) {
                     cree_New_Start()

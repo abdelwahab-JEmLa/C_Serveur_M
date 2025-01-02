@@ -22,7 +22,7 @@ object LoadFromFirebaseHandler {
 
     suspend fun loadFromFirebase(initViewModel: InitViewModel) = try {
         initViewModel.apply {
-            _appsHead.produits_Main_DataBase = loadProducts()
+            _appsHeadModel.produits_Main_DataBase = loadProducts()
             initializationProgress = 1f
         }
     } catch (e: Exception) {

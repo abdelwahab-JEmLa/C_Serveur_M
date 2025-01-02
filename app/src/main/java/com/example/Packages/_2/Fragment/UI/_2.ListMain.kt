@@ -47,15 +47,12 @@ fun ListMain(
             val visibleProducts = products.filter { it.isVisible }
             if (visibleProducts.isNotEmpty()) {
                 stickyHeader(
-                    key = client.nom  // Add a key for the header
                 ) {
                     ClientHeader(client = client, productCount = visibleProducts.size)
                 }
 
                 items(
                     items = visibleProducts,
-                    // Create a composite key using both client and product IDs
-                    key = { product -> "${client.nom}_${product.id}" }
                 ) { produit ->
                     ItemMain(
                         itemMain = produit,

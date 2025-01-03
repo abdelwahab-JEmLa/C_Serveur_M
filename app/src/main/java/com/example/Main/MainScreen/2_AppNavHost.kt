@@ -23,7 +23,7 @@ fun AppNavHost(
     Box(modifier = modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = Screen.FragmentMainScreen1.route,
+            startDestination = Screen.FragmentMainScreen2.route,
             modifier = Modifier.fillMaxSize()
         ) {
 

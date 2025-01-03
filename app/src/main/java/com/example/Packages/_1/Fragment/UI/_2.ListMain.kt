@@ -2,125 +2,166 @@ package com.example.Packages._1.Fragment.UI
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import kotlin.random.Random
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListMain(
-    mapVisibleItemeSetEtleurClient: Map<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, Set<AppsHeadModel.ProduitModel>>,
+    visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues
+    contentPadding: PaddingValues,
+    viewModelScope: CoroutineScope
 ) {
+    var itemsFiltre by remember(visibleItems) { mutableStateOf(visibleItems) }
+
+    val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {
+        { produit, nouvellePosition ->
+            if (produit.bonCommendDeCetteCota == null) {
+                produit.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+            }
+
+            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                nouvellePosition
+
+            // Mark product for update
+            produit.besoin_To_Be_Updated = true
+
+            // Update local state immediately
+            itemsFiltre = itemsFiltre.map {
+                if (it.id == produit.id) produit else it
+            }.toMutableStateList()
+
+            // Update Firebase
+            viewModelScope.launch {
+                itemsFiltre.updateProduitsFireBase()
+            }
+        }
+    }
+
+    // Separate products into positioned and unpositioned using derived state
+    val produitsPositionnes by remember(itemsFiltre) {
+        derivedStateOf {
+            itemsFiltre.filter { produit ->
+                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+                    position > 0
+                } ?: false
+            }.sortedBy {
+                it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+            }
+        }
+    }
+
+    val produitsNonPositionnes by remember(itemsFiltre) {
+        derivedStateOf {
+            itemsFiltre.filter { produit ->
+                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+                    position <= 0
+                } ?: true
+            }.sortedBy { it.nom }
+        }
+    }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
-        modifier = modifier.fillMaxWidth().background(
-            color = Color(0xE3C85858).copy(alpha = 0.1f),
-            shape = RoundedCornerShape(8.dp)
-        ),
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                color = Color(0xE3C85858).copy(alpha = 0.1f),
+                shape = RoundedCornerShape(8.dp)
+            ),
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        mapVisibleItemeSetEtleurClient.forEach { (client, itemSet) ->
-            if (itemSet.isEmpty()) {
-                item(span = { GridItemSpan(5) }) {
-                    Text(
-                        text = "Aucun produit disponible pour ${client.nom}",
-                        modifier = Modifier.padding(32.dp)
-                    )
-                }
-                return@forEach
+        // Handle empty list
+        if (itemsFiltre.isEmpty()) {
+            item(span = { GridItemSpan(5) }) {
+                Text(
+                    text = "Aucun produit disponible",
+                    modifier = Modifier.padding(32.dp),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+            return@LazyVerticalGrid
+        }
+
+        // Positioned products section
+        if (produitsPositionnes.isNotEmpty()) {
+            item(span = { GridItemSpan(5) }) {
+                SectionHeader(
+                    text = "Produits avec position (${produitsPositionnes.size})"
+                )
             }
 
-            // En-tête client
-            item(span = { GridItemSpan(5) }) {
-                Surface(
-                    color = Color(android.graphics.Color.parseColor(client.couleur)).copy(alpha = 0.1f),
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = client.nom,
-                            style = MaterialTheme.typography.titleLarge,
-                            color = Color(android.graphics.Color.parseColor(client.couleur))
-                        )
-                        Text(text = "Nombre de produits: ${itemSet.size}")
+            items(
+                items = produitsPositionnes,
+                key = { it.id }
+            ) { produit ->
+                ItemMain(
+                    itemMain = produit,
+                    onCLickOnMain ={
+                        val maxPosition = produitsPositionnes.maxOfOrNull {
+                            it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
+                        } ?: 0
+                        updateProductPosition(produit, maxPosition + 1)
+                    },
+                    onClickDelete = {
+                        updateProductPosition(produit, 0)
                     }
-                }
+                )
+            }
+        }
+
+        // Unpositioned products section
+        if (produitsNonPositionnes.isNotEmpty()) {
+            item(span = { GridItemSpan(5) }) {
+                SectionHeader(
+                    text = "Produits sans position (${produitsNonPositionnes.size})"
+                )
             }
 
-            item(span = { GridItemSpan(5) }) {
-                val positionedItems = remember(itemSet) {
-                    mutableStateOf(itemSet.filter { Random.nextBoolean() }.toSet())
-                }
-
-                Column {
-                    // Produits avec position
-                    val positioned = itemSet.filter { it in positionedItems.value }
-                    if (positioned.isNotEmpty()) {
-                        Surface(
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = "Produits avec position (${positioned.size})",
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                            )
-                        }
-
-                        positioned.forEach { produit ->
-                            ItemMain(
-                                itemMain = produit,
-                                onCLickOnMain = { positionedItems.value -= produit },
-                                onClickDelete = { positionedItems.value -= produit }
-                            )
-                        }
+            items(
+                items = produitsNonPositionnes,
+                key = { it.id }
+            ) { produit ->
+                ItemMain(
+                    itemMain = produit,
+                    onCLickOnMain ={
+                        val maxPosition = produitsPositionnes.maxOfOrNull {
+                            it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
+                        } ?: 0
+                        updateProductPosition(produit, maxPosition + 1)
+                    },
+                    onClickDelete = {
+                        updateProductPosition(produit, 0)
                     }
-
-                    // Produits sans position
-                    val unpositioned = itemSet.filter { it !in positionedItems.value }
-                    if (unpositioned.isNotEmpty()) {
-                        Surface(
-                            color = MaterialTheme.colorScheme.surfaceVariant,
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = "Produits sans position (${unpositioned.size})",
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                            )
-                        }
-
-                        unpositioned.forEach { produit ->
-                            ItemMain(
-                                itemMain = produit,
-                                onCLickOnMain = { positionedItems.value += produit },
-                                onClickDelete = { }
-                            )
-                        }
-                    }
-                }
+                )
             }
         }
     }
 }
+
+

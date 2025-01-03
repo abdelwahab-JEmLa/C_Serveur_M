@@ -33,7 +33,7 @@ internal fun ScreenMain(
     }
 
     val selectedClientData = remember {
-        mutableStateOf(emptyMap<AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations, List<AppsHeadModel.ProduitModel>>())
+        mutableStateOf(emptyMap<AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations,List<AppsHeadModel.ProduitModel>>())
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
@@ -49,7 +49,9 @@ internal fun ScreenMain(
 
             ClientsGroupedFABs(
                 onClientSelected = { client, products ->
-                    selectedClientData.value = mapOf(client to products)
+                    selectedClientData.value = mapOf(client to products.sortedBy { it.bonCommendDeCetteCota?.position_Grossist_Don_Parent_Grossists_List }
+                        .sortedBy { it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
+                    )
                 },
                 produitsMainDataBase = initViewModel.appsHead.produitsMainDataBase,
                 modifier = modifier

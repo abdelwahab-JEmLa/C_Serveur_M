@@ -1,13 +1,14 @@
 package com.example.Packages._2.Fragment.UI
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,15 +19,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 
-// ListMain.kt
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ListMain(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     visibleClientEtCesProduit: Map<AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations, List<AppsHeadModel.ProduitModel>>
 ) {
-    LazyColumn(
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         modifier = modifier
             .fillMaxWidth()
             .background(
@@ -34,21 +34,25 @@ fun ListMain(
                 shape = RoundedCornerShape(8.dp)
             ),
         contentPadding = contentPadding,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (visibleClientEtCesProduit.isEmpty()) {
-            item {
+            item(span = { GridItemSpan(2) }) {
                 EmptyListMessage()
             }
-            return@LazyColumn
+            return@LazyVerticalGrid
         }
 
         visibleClientEtCesProduit.forEach { (client, products) ->
             val visibleProducts = products.filter { it.isVisible }
             if (visibleProducts.isNotEmpty()) {
-                stickyHeader(
-                ) {
-                    ClientHeader(client = client, productCount = visibleProducts.size)
+                item(span = { GridItemSpan(2) }) {
+                    ClientHeader(
+                        client = client,
+                        productCount = visibleProducts.size,
+                        modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
+                    )
                 }
 
                 items(
@@ -63,6 +67,7 @@ fun ListMain(
         }
     }
 }
+
 @Composable
 private fun EmptyListMessage() {
     Text(
@@ -75,14 +80,15 @@ private fun EmptyListMessage() {
 @Composable
 private fun ClientHeader(
     client: AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations,
-    productCount: Int
+    productCount: Int,
+    modifier: Modifier = Modifier
 ) {
     Text(
         text = "${client.nom} ($productCount)",
         style = MaterialTheme.typography.titleMedium.copy(
             fontWeight = FontWeight.Bold
         ),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = 16.dp, vertical = 8.dp)

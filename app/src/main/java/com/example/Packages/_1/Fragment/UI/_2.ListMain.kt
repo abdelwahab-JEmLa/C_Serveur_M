@@ -13,13 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -35,52 +29,17 @@ fun ListMain(
     contentPadding: PaddingValues,
     viewModelScope: CoroutineScope
 ) {
-    var itemsFiltre by remember(visibleItems) { mutableStateOf(visibleItems) }
-
-    val updateProductPosition: (AppsHeadModel.ProduitModel, Int) -> Unit = remember {
-        { produit, nouvellePosition ->
-            if (produit.bonCommendDeCetteCota == null) {
-                produit.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
-            }
-
-            produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
-                nouvellePosition
-
-            // Mark product for update
-            produit.besoin_To_Be_Updated = true
-
-            // Update local state immediately
-            itemsFiltre = itemsFiltre.map {
-                if (it.id == produit.id) produit else it
-            }.toMutableStateList()
-
-            // Update Firebase
-            viewModelScope.launch {
-                itemsFiltre.updateProduitsFireBase()
-            }
+    // Transformer la fonction en valeur lambda
+    val updateProduct: (AppsHeadModel.ProduitModel, Int, SnapshotStateList<AppsHeadModel.ProduitModel>, CoroutineScope) -> Unit = { product, newPosition, items, scope ->
+        if (product.bonCommendDeCetteCota == null) {
+            product.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
         }
-    }
 
-    // Separate products into positioned and unpositioned using derived state
-    val produitsPositionnes by remember(itemsFiltre) {
-        derivedStateOf {
-            itemsFiltre.filter { produit ->
-                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
-                    position > 0
-                } ?: false
-            }.sortedBy {
-                it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-            }
-        }
-    }
+        product.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
+        product.besoin_To_Be_Updated = true
 
-    val produitsNonPositionnes by remember(itemsFiltre) {
-        derivedStateOf {
-            itemsFiltre.filter { produit ->
-                produit.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
-                    position <= 0
-                } ?: true
-            }.sortedBy { it.nom }
+        scope.launch {
+            items.updateProduitsFireBase()
         }
     }
 
@@ -96,72 +55,75 @@ fun ListMain(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Handle empty list
-        if (itemsFiltre.isEmpty()) {
+        // Show message if no items
+        if (visibleItems.isEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Text(
                     text = "Aucun produit disponible",
                     modifier = Modifier.padding(32.dp),
                     style = MaterialTheme.typography.bodyLarge
                 )
+                return@item
             }
-            return@LazyVerticalGrid
         }
 
-        // Positioned products section
-        if (produitsPositionnes.isNotEmpty()) {
+        // Split items into positioned and unpositioned
+        val (positioned, unpositioned) = visibleItems.partition { product ->
+            product.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { it > 0 } ?: false
+        }
+
+        // Display positioned items
+        if (positioned.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
-                SectionHeader(
-                    text = "Produits avec position (${produitsPositionnes.size})"
+                Text(
+                    text = "Produits avec position (${positioned.size})",
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
-            items(
-                items = produitsPositionnes,
-                key = { it.id }
-            ) { produit ->
+            items(items = positioned.sortedBy {
+                it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
+            }, key = { it.id }) { product ->
                 ItemMain(
-                    itemMain = produit,
-                    onCLickOnMain ={
-                        val maxPosition = produitsPositionnes.maxOfOrNull {
+                    itemMain = product,
+                    onCLickOnMain = {
+                        val maxPosition = positioned.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        updateProductPosition(produit, maxPosition + 1)
+                        updateProduct(product, maxPosition + 1, visibleItems, viewModelScope)
                     },
                     onClickDelete = {
-                        updateProductPosition(produit, 0)
+                        updateProduct(product, 0, visibleItems, viewModelScope)
                     }
                 )
             }
         }
 
-        // Unpositioned products section
-        if (produitsNonPositionnes.isNotEmpty()) {
+        // Display unpositioned items
+        if (unpositioned.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
-                SectionHeader(
-                    text = "Produits sans position (${produitsNonPositionnes.size})"
+                Text(
+                    text = "Produits sans position (${unpositioned.size})",
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
 
-            items(
-                items = produitsNonPositionnes,
-                key = { it.id }
-            ) { produit ->
+            items(items = unpositioned.sortedBy { it.nom }, key = { it.id }) { product ->
                 ItemMain(
-                    itemMain = produit,
-                    onCLickOnMain ={
-                        val maxPosition = produitsPositionnes.maxOfOrNull {
+                    itemMain = product,
+                    onCLickOnMain = {
+                        val maxPosition = positioned.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        updateProductPosition(produit, maxPosition + 1)
+                        updateProduct(product, maxPosition + 1, visibleItems, viewModelScope)
                     },
                     onClickDelete = {
-                        updateProductPosition(produit, 0)
+                        updateProduct(product, 0, visibleItems, viewModelScope)
                     }
                 )
             }
         }
     }
 }
-
-

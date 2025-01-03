@@ -18,6 +18,9 @@ class Frag_ViewModel : ViewModel() {
     )
     val uiState: UiState get() = this._uiState
 
+
+
+
     // Progress tracking
     var initializationProgress by mutableFloatStateOf(0f)
 

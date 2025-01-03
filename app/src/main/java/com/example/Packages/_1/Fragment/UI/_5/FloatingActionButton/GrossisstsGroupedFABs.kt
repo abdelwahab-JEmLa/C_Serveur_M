@@ -52,7 +52,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABs(
-    onClickFAB: (SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
+    onClickFAB: (Map<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, Set<AppsHeadModel.ProduitModel>>) -> Unit,
     produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
 ) {
@@ -70,23 +70,24 @@ fun GrossisstsGroupedFABs(
                 .groupBy({ it.first }, { it.second })
                 .also { grouped ->
                     Log.d(
-                        "GrossistGrouping", """
-                    -------- Grouping Details --------
-                    Total products: ${produitsMainDataBase.size}
-                    Products with grossists: ${grouped.values.sumOf { it.size }}
-                    Number of groups: ${grouped.size}
-                    Groups breakdown:
-                    ${
+                        "GrossistGrouping",
+                        """
+                        -------- Grouping Details --------
+                        Total products: ${produitsMainDataBase.size}
+                        Products with grossists: ${grouped.values.sumOf { it.size }}
+                        Number of groups: ${grouped.size}
+                        Groups breakdown:
+                        ${
                             grouped.entries.joinToString("\n") { (grossist, products) ->
                                 """
-                        Grossist: ${grossist.nom}
-                        Color: ${grossist.couleur}
-                        Products count: ${products.size}
-                        Product names: ${products.joinToString(", ") { it.nom }}
-                    """.trimIndent()
+                                Grossist: ${grossist.nom}
+                                Color: ${grossist.couleur}
+                                Products count: ${products.size}
+                                Product names: ${products.joinToString(", ") { it.nom }}
+                                """.trimIndent()
                             }
                         }
-                """.trimIndent()
+                        """.trimIndent()
                     )
                 }
         }
@@ -138,25 +139,34 @@ fun GrossisstsGroupedFABs(
                                 scope.launch {
                                     try {
                                         // Reset all filters first
-                                        grouped_Produits_Par_grossistInformations.map { (grossist, _) ->
+                                        grouped_Produits_Par_grossistInformations.forEach { (grossist, _) ->
                                             grossist.auFilterFAB = grossist.id == grossistModel.id
                                         }
 
-                                        // Update product visibility
-                                        produitsMainDataBase.map { product ->
-                                            product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
-                                                bon.grossistInformations?.id == grossistModel.id
-                                                        && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
+                                        // Filter and create visible products set
+                                        val filteredProducts = produitsMainDataBase.filter { product ->
+                                            product.bonCommendDeCetteCota?.let { bon ->
+                                                bon.grossistInformations?.id == grossistModel.id &&
+                                                        bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
                                             } ?: false
+                                        }.toSet()
+
+                                        // Update product visibility
+                                        produitsMainDataBase.forEach { product ->
+                                            product.isVisible = product in filteredProducts
                                         }
 
-                                        onClickFAB(produitsMainDataBase)
+                                        // Create the map of visible products per grossist
+                                        val visibleProductsMap = mapOf(grossistModel to filteredProducts)
 
+                                        // Notify parent component
+                                        onClickFAB(visibleProductsMap)
+
+                                        // Update Firebase
                                         produitsMainDataBase.updateProduitsFireBase()
 
                                     } catch (e: Exception) {
                                         Log.e("FilterError", "Error while filtering products", e)
-                                        // Consider adding user feedback here
                                     }
                                 }
                             }

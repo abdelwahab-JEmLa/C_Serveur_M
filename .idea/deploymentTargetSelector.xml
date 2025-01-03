@@ -49,6 +49,9 @@
       <SelectionState runConfigName="PreviewFragmentMainScreen">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="Preview_Fragment_4_Main_Screen (2)">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

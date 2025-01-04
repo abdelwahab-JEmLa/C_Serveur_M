@@ -4,9 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -21,14 +20,11 @@ fun B_ListMainFragment_2(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
 ) {
-    LazyVerticalGrid(     //-->
-    //TODO(1): change le a lazy column 
-        columns = GridCells.Fixed(2),
+    LazyColumn(
         modifier = modifier
             .fillMaxWidth()
             .background(Color(0xE3C85858).copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (visibleItems.isNotEmpty()) {

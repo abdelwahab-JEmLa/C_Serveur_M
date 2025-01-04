@@ -86,7 +86,7 @@ internal fun A_ScreenMainFragment_2(
             GlobalEditesGFABsFragment_2(
                 appsHeadModel = initViewModel.appsHead,
                 modifier = modifier,
-                )
+            )
         }
     }
 }

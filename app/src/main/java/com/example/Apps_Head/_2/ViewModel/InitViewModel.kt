@@ -43,7 +43,10 @@ class InitViewModel : ViewModel() {
             try {
                 isInitializing = true
 
-                val NOMBRE_ENTRE by mutableIntStateOf(20)
+                val NOMBRE_ENTRE
+                by mutableIntStateOf(
+                    50
+                )
 
                 if (NOMBRE_ENTRE>0) {
                     CreeNewStart(NOMBRE_ENTRE,true)

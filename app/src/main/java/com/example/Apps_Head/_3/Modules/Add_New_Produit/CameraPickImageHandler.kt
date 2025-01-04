@@ -38,24 +38,6 @@ class CameraPickImageHandler(
         return createTempImageUri()
     }
 
-    private fun findNextAvailableId(): Number {
-        val maxId = appsHeadModel.produitsMainDataBase
-            .filter { it.id < 2000 }
-            .maxOfOrNull { it.id } ?: 0
-
-        return if (maxId + 1 < 2000) {
-            maxId + 1
-        } else {
-            val existingIds = appsHeadModel.produitsMainDataBase
-                .filter { it.id < 2000 }
-                .map { it.id }
-                .toSet()
-
-            (1..2000).firstOrNull { it.toLong() !in existingIds }
-                ?: throw IllegalStateException("No available IDs under 2000")
-        }
-    }
-
     suspend fun handleImageCaptureResult(imageUri: Uri?) {
         if (imageUri == null) {
             Log.d(TAG, "Image capture cancelled or failed")
@@ -69,7 +51,10 @@ class CameraPickImageHandler(
                 Log.d(TAG, "Removed original product with ID: ${original.id}")
             }
 
-            val newId = findNextAvailableId().toLong()
+            val newId = appsHeadModel.produitsMainDataBase
+                    .filter { it.id < 2000 }
+                    .maxOfOrNull { it.id } ?: 0
+
             val fileName = "${newId}_1.jpg"
             val storageRef = Firebase.storage.reference
                 .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")

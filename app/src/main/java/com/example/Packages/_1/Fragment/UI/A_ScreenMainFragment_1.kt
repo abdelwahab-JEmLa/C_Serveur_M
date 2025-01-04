@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
+import com.example.Packages._1.Fragment.UI.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Packages._1.Fragment.UI.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
-import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.GlobalEditesGroupedFloatingActionButtons
 import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 
 internal const val DEBUG_LIMIT = 7
@@ -79,8 +79,7 @@ internal fun A_ScreenMainFragment_1(
                 modifier = modifier
             )
 
-            GlobalEditesGroupedFloatingActionButtons(
-                produitsMainDataBase = produitsMainDataBase,
+            GlobalEditesGFABsFragment_1(
                 app_Initialize_Model = initViewModel.appsHead,
                 modifier = modifier,
                 fragment_Ui_State = frag_ViewModel.uiState

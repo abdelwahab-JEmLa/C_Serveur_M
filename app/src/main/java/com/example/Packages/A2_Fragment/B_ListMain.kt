@@ -30,8 +30,7 @@ fun B_ListMainFragment_2(
         if (visibleItems.isNotEmpty()) {
             items(visibleItems, key = {
                     "${ it.bonCommendDeCetteCota
-                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit}" +
-                        "->${it.id}"}) { item ->
+                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit}->${it.id}"}) { item ->
                 C_ItemMainFragment_2(
                     itemMain = item,
                 )

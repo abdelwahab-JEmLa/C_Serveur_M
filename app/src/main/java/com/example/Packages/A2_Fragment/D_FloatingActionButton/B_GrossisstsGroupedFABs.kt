@@ -43,7 +43,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABsFragment_2(
-    onClickFAB: (AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations,SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
+    onClickFAB: (SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
     produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier
 ) {
@@ -112,13 +112,14 @@ fun GrossisstsGroupedFABsFragment_2(
                                                         && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
                                                         && bon.positionProduitDonGrossistChoisiPourAcheterCeProduit > 0
                                             } ?: false
+
                                         }
 
                                         groupedProducts.keys.forEach {
                                             it.auFilterFAB = it.id == supplier.id
                                         }
 
-                                        onClickFAB(supplier,updatedList.toMutableStateList())
+                                        onClickFAB(updatedList.toMutableStateList())
                                         updatedList.toMutableStateList().updateProduitsFireBase()
                                     }
                                 },

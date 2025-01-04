@@ -11,15 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages.A2_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_2
 import com.example.Packages.A2_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_2
@@ -38,9 +35,17 @@ internal fun A_ScreenMainFragment_2(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
 ) {
-    // Fixed: Properly declare mutable state using remember and mutableStateOf
-    var grossistVisibleMnt by remember {
-        mutableStateOf(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations())
+    val produitsMainDataBase by remember(initViewModel._appsHeadModel.produitsMainDataBase) {
+        derivedStateOf { initViewModel._appsHeadModel.produitsMainDataBase.toList() }
+    }
+
+    val visibleItems by remember(produitsMainDataBase) {
+        derivedStateOf {
+            produitsMainDataBase
+                .filter { it.isVisible }
+                .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
+                .toMutableStateList()
+        }
     }
 
     Surface(
@@ -50,6 +55,7 @@ internal fun A_ScreenMainFragment_2(
         // Handle position changes
         LaunchedEffect(Unit) {
             initViewModel.positionChangeFlow.collectLatest { (productId, newPosition) ->
+                val grossistVisibleMnt= visibleItems.first().bonCommendDeCetteCota?.grossistInformations
                 initViewModel._appsHeadModel.produitsMainDataBase
                     .find { it.id == productId }
                     ?.let {
@@ -68,18 +74,6 @@ internal fun A_ScreenMainFragment_2(
                     trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor
                 )
             } else {
-                val produitsMainDataBase by remember(initViewModel._appsHeadModel.produitsMainDataBase) {
-                    derivedStateOf { initViewModel._appsHeadModel.produitsMainDataBase.toList() }
-                }
-
-                val visibleItems by remember(produitsMainDataBase) {
-                    derivedStateOf {
-                        produitsMainDataBase
-                            .filter { it.isVisible }
-                            .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
-                            .toMutableStateList()
-                    }
-                }
 
                 Scaffold { paddingValues ->
                     Box(modifier = Modifier.fillMaxSize()) {
@@ -91,8 +85,7 @@ internal fun A_ScreenMainFragment_2(
                         }
 
                         GrossisstsGroupedFABsFragment_2(
-                            onClickFAB = { supplier, newList ->
-                                grossistVisibleMnt = supplier
+                            onClickFAB = { newList ->
                                 with(initViewModel._appsHeadModel.produitsMainDataBase) {
                                     clear()
                                     addAll(newList)

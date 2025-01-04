@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.Packages._1.Fragment.UI.ScreenMainFragment1
 import com.example.c_serveur.AppViewModels
 import kotlinx.serialization.Serializable
 
@@ -28,12 +29,11 @@ fun AppNavHost(
         ) {
 
             composable(FragmentMainScreenDestination1().route) {
-                com.example.Packages.
-                _1.Fragment.UI.ScreenMain(initViewModel=appViewModels.initViewModel)
+             ScreenMainFragment1(initViewModel=appViewModels.initViewModel)
             }
             composable(FragmentMainScreenDestination2().route) {
                 com.example.Packages.
-                _2.Fragment.UI.ScreenMain(initViewModel=appViewModels.initViewModel)
+                _2.Fragment.UI.ScreenMainFragment2(initViewModel=appViewModels.initViewModel)
             }
 
         }

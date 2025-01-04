@@ -24,12 +24,12 @@ import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 internal const val DEBUG_LIMIT = 7
 
 @Composable
-internal fun ScreenMain(
+internal fun ScreenMainFragment1(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
     frag_ViewModel: Frag_ViewModel = viewModel(),
 ) {
-    val TAG = "ScreenMain"
+    val TAG = "ScreenMainFragment1"
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -63,7 +63,7 @@ internal fun ScreenMain(
                 val databaseSize = produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    ListMain(
+                    ListMainFragment1(
                         visibleItems = visibleItems,
                         contentPadding = paddingValues,
                         viewModelScope = initViewModel.viewModelScope
@@ -93,6 +93,6 @@ internal fun ScreenMain(
 
 @Preview
 @Composable
-private fun Preview_Fragment_4_Main_Screen() {
-    com.example.Packages._2.Fragment.UI.ScreenMain(modifier = Modifier.fillMaxSize())
+private fun PreviewScreenFrag1() {
+    ScreenMainFragment1(modifier = Modifier.fillMaxSize())
 }

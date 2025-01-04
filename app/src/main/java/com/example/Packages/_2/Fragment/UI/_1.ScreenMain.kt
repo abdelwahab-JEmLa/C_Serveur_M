@@ -22,7 +22,7 @@ import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 internal const val DEBUG_LIMIT = 7
 
 @Composable
-internal fun ScreenMain(
+internal fun ScreenMainFragment2(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
     frag_ViewModel: Frag_ViewModel = viewModel(),
@@ -81,5 +81,5 @@ private fun LoadingScreen() {
 @Preview
 @Composable
 private fun PreviewFragmentMainScreen() {
-    ScreenMain(modifier = Modifier.fillMaxSize())
+    ScreenMainFragment2(modifier = Modifier.fillMaxSize())
 }

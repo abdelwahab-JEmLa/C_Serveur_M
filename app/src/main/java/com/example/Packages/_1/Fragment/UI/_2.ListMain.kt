@@ -23,105 +23,86 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun ListMain(
+fun ListMainFragment1(
     visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     viewModelScope: CoroutineScope
 ) {
-    // Transformer la fonction en valeur lambda
-    val updateProduct: (AppsHeadModel.ProduitModel, Int, SnapshotStateList<AppsHeadModel.ProduitModel>, CoroutineScope) -> Unit = { product, newPosition, items, scope ->
-        if (product.bonCommendDeCetteCota == null) {
-            product.bonCommendDeCetteCota = AppsHeadModel.ProduitModel.GrossistBonCommandes()
+    fun updateProductPosition(product: AppsHeadModel.ProduitModel, newPosition: Int) {
+        product.apply {
+            bonCommendDeCetteCota = bonCommendDeCetteCota ?: AppsHeadModel.ProduitModel.GrossistBonCommandes()
+            bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
+            besoin_To_Be_Updated = true
         }
 
-        product.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
-        product.besoin_To_Be_Updated = true
+        // Normalize positions
+        visibleItems
+            .filter { (it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0) > 0 }
+            .sortedBy { it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
+            .forEachIndexed { index, item ->
+                item.apply {
+                    bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = index + 1
+                    besoin_To_Be_Updated = true
+                }
+            }
 
-        scope.launch {
-            items.updateProduitsFireBase()
-        }
+        viewModelScope.launch { visibleItems.updateProduitsFireBase() }
     }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
             .fillMaxWidth()
-            .background(
-                color = Color(0xE3C85858).copy(alpha = 0.1f),
-                shape = RoundedCornerShape(8.dp)
-            ),
+            .background(Color(0xE3C85858).copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Show message if no items
-        if (visibleItems.isEmpty()) {
-            item(span = { GridItemSpan(5) }) {
-                Text(
-                    text = "Aucun produit disponible",
-                    modifier = Modifier.padding(32.dp),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                return@item
-            }
+        val (positioned, unpositioned) = visibleItems.partition {
+            (it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0) > 0
         }
 
-        // Split items into positioned and unpositioned
-        val (positioned, unpositioned) = visibleItems.partition { product ->
-            product.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { it > 0 } ?: false
-        }
-
-        // Display positioned items
         if (positioned.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Text(
-                    text = "Produits avec position (${positioned.size})",
+                    "Produits avec position (${positioned.size})",
                     modifier = Modifier.padding(8.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
 
-            items(items = positioned.sortedBy {
-                it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
-            }, key = { it.id }) { product ->
+            items(positioned.sortedBy { it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }, key = { it.id }) { product ->
                 ItemMain(
                     itemMain = product,
                     onCLickOnMain = {
-                        val maxPosition = positioned.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
-                        } ?: 0
-                        updateProduct(product, maxPosition + 1, visibleItems, viewModelScope)
+                        val currentPosition = product.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
+                        if (currentPosition > 1) updateProductPosition(product, currentPosition - 1)
                     },
-                    onClickDelete = {
-                        updateProduct(product, 0, visibleItems, viewModelScope)
-                    }
+                    onClickDelete = { updateProductPosition(product, 0) }
                 )
             }
         }
 
-        // Display unpositioned items
         if (unpositioned.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Text(
-                    text = "Produits sans position (${unpositioned.size})",
+                    "Produits sans position (${unpositioned.size})",
                     modifier = Modifier.padding(8.dp),
                     style = MaterialTheme.typography.titleMedium
                 )
             }
 
-            items(items = unpositioned.sortedBy { it.nom }, key = { it.id }) { product ->
+            items(unpositioned.sortedBy { it.nom }, key = { it.id }) { product ->
                 ItemMain(
                     itemMain = product,
                     onCLickOnMain = {
                         val maxPosition = positioned.maxOfOrNull {
                             it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
                         } ?: 0
-                        updateProduct(product, maxPosition + 1, visibleItems, viewModelScope)
+                        updateProductPosition(product, maxPosition + 1)
                     },
-                    onClickDelete = {
-                        updateProduct(product, 0, visibleItems, viewModelScope)
-                    }
+                    onClickDelete = { updateProductPosition(product, 0) }
                 )
             }
         }

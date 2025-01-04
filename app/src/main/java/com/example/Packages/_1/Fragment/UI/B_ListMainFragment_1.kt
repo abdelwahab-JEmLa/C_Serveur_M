@@ -21,7 +21,7 @@ import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 
 @Composable
-fun ListMainFragment1(
+fun B_ListMainFragment_1(
     visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
@@ -70,7 +70,7 @@ fun ListMainFragment1(
             }
 
             items(positioned.sortedBy { it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }, key = { it.id }) { product ->
-                ItemMain(
+                C_ItemMainFragment_1(
                     itemMain = product,
                     onCLickOnMain = {
                         val maxPosition = positioned.maxOfOrNull {
@@ -93,7 +93,7 @@ fun ListMainFragment1(
             }
 
             items(unpositioned.sortedBy { it.nom }, key = { it.id }) { product ->
-                ItemMain(
+                C_ItemMainFragment_1(
                     itemMain = product,
                     onCLickOnMain = {
                         val maxPosition = positioned.maxOfOrNull {

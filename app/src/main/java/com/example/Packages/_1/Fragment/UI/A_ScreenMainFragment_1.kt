@@ -62,7 +62,7 @@ internal fun A_ScreenMainFragment_1(
                 val databaseSize = produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    ListMainFragment1(
+                    B_ListMainFragment_1(
                         visibleItems = visibleItems,
                         contentPadding = paddingValues
                     )
@@ -91,6 +91,6 @@ internal fun A_ScreenMainFragment_1(
 
 @Preview
 @Composable
-private fun PreviewScreenFrag1() {
+private fun PreviewScreenMainFragment_1() {
     A_ScreenMainFragment_1(modifier = Modifier.fillMaxSize())
 }

@@ -27,7 +27,7 @@ import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 
 @Composable
-fun ItemMain(
+fun C_ItemMainFragment_1(
     itemMain: AppsHeadModel.ProduitModel,
     onClickDelete: () -> Unit,
     onCLickOnMain: () -> Unit,

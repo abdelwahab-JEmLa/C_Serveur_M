@@ -1,5 +1,5 @@
 package com.example.Packages._4.Fragment.UI._Y.Modules
-  /*
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.fadeIn
@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Dehaze
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.Packages._2.Fragment.ViewModel.Models.UiState
 import com.example.Packages._4.Fragment._1.Main.Model.Ui_State_4_Fragment
 import kotlin.math.roundToInt
 
@@ -106,7 +108,7 @@ internal fun Globale_Edites_GroupedFloatingActionButtons(
 
                         }
                     )
-                    /**FabButton(
+                    FabButton(
                         icon = Icons.Default.Upload,
                         label = when (uiState.currentMode) {
                             UiState.CE_TELEPHONE_EST._SERVEUR -> "_SERVEUR"
@@ -119,7 +121,7 @@ internal fun Globale_Edites_GroupedFloatingActionButtons(
                         onClick = {
                             uiState.currentMode = UiState.CE_TELEPHONE_EST.toggle(uiState.currentMode)
                         }
-                    )  */
+                    )
 
                     FabButton(
                         icon = if (showLabels) Icons.Default.Close else Icons.Default.Dehaze,

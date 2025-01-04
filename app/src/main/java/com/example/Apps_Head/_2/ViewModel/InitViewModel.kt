@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-class InitViewModel : ViewModel() {
+open class InitViewModel : ViewModel() {
     // Model state
     var _appsHeadModel by mutableStateOf(AppsHeadModel())
     val appsHead: AppsHeadModel get() = _appsHeadModel

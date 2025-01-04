@@ -37,7 +37,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,7 +58,6 @@ internal fun GlobalEditesGroupedFloatingActionButtons(
     modifier: Modifier = Modifier,
     fragment_Ui_State: UiState,
     app_Initialize_Model: AppsHeadModel,
-    produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
 ) {
     var showLabels by remember { mutableStateOf(true) }
     var showFloatingButtons by remember { mutableStateOf(false) }

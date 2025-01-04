@@ -31,7 +31,7 @@ fun ItemMain(
     itemMain: AppsHeadModel.ProduitModel,
     onClickDelete: () -> Unit,
     onCLickOnMain: () -> Unit,
-    ) {
+) {
     // Calculate if the product has a valid position
     val hasPosition = remember(itemMain.bonCommendDeCetteCota) {
         itemMain.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { pos ->
@@ -52,7 +52,7 @@ fun ItemMain(
                 shape = RoundedCornerShape(4.dp)
             )
             .clickable {
-                    onCLickOnMain()
+                onCLickOnMain()
             },
         contentAlignment = Alignment.Center
     ) {
@@ -70,7 +70,7 @@ fun ItemMain(
         if (hasPosition) {
             IconButton(
                 onClick = {
-                        onClickDelete()
+                    onClickDelete()
                 },
                 modifier = Modifier
                     .align(Alignment.TopStart)

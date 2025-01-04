@@ -16,19 +16,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages._1.Fragment.UI._5.FloatingActionButton.GrossisstsGroupedFABs
+import com.example.Packages._1.Fragment.UI.D_FloatingActionButton.GrossisstsGroupedFABs
 import com.example.Packages._2.Fragment.UI._5.FloatingActionButton.GlobalEditesGroupedFloatingActionButtons
 import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 
 internal const val DEBUG_LIMIT = 7
 
 @Composable
-internal fun ScreenMainFragment1(
+internal fun A_ScreenMainFragment_1(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
     frag_ViewModel: Frag_ViewModel = viewModel(),
 ) {
-    val TAG = "ScreenMainFragment1"
+    val TAG = "A_ScreenMainFragment_1"
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -92,5 +92,5 @@ internal fun ScreenMainFragment1(
 @Preview
 @Composable
 private fun PreviewScreenFrag1() {
-    ScreenMainFragment1(modifier = Modifier.fillMaxSize())
+    A_ScreenMainFragment_1(modifier = Modifier.fillMaxSize())
 }

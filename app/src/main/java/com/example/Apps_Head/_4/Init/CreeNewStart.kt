@@ -8,6 +8,18 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+suspend fun InitViewModel.initializer() {
+
+    val NOMBRE_ENTRE=50
+
+    if (NOMBRE_ENTRE > 0) {
+        CreeNewStart(NOMBRE_ENTRE, true)
+        CreeNewStart(NOMBRE_ENTRE, false)
+        initializationProgress = 1f
+    } else {
+        LoadFromFirebaseHandler.loadFromFirebase(this)
+    }
+}
 suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, takeUp2000: Boolean) {
     try {
         initializationProgress = 0.1f

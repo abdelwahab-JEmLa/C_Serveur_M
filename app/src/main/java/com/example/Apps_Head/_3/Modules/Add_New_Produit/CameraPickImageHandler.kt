@@ -17,6 +17,7 @@ class CameraPickImageHandler(
 ) {
     companion object {
         private const val TAG = "CameraPickImageHandler"
+        private const val ID_THRESHOLD = 2000L // Changed to Long
     }
 
     var tempImageUri: Uri? = null
@@ -38,6 +39,26 @@ class CameraPickImageHandler(
         return createTempImageUri()
     }
 
+    private fun generateNewProductId(): Long {
+        // Get the maximum ID from all products, regardless of their ID range
+        val maxExistingId = appsHeadModel.produitsMainDataBase
+            .maxOfOrNull { it.id } ?: 0L
+
+        // If we're in the lower range (< 2000), stay in that range
+        return if (maxExistingId < ID_THRESHOLD) {
+            maxExistingId + 1
+        } else {
+            // Find the next available ID in the lower range
+            val usedIds = appsHeadModel.produitsMainDataBase
+                .filter { it.id < ID_THRESHOLD }
+                .map { it.id }
+                .toSet()
+
+            // Find first available ID in the lower range, ensuring Long values
+            (1L..ID_THRESHOLD).first { it !in usedIds }
+        }
+    }
+
     suspend fun handleImageCaptureResult(imageUri: Uri?) {
         if (imageUri == null) {
             Log.d(TAG, "Image capture cancelled or failed")
@@ -51,10 +72,7 @@ class CameraPickImageHandler(
                 Log.d(TAG, "Removed original product with ID: ${original.id}")
             }
 
-            val newId = appsHeadModel.produitsMainDataBase
-                    .filter { it.id < 2000 }
-                    .maxOfOrNull { it.id } ?: 0
-
+            val newId = generateNewProductId()
             val fileName = "${newId}_1.jpg"
             val storageRef = Firebase.storage.reference
                 .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")

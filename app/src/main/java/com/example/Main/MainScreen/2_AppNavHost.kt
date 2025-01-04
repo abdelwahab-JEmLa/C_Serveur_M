@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.Packages._1.Fragment.UI.A_ScreenMainFragment_1
+import com.example.Packages._1.A1_Fragment.UI.A_ScreenMainFragment_1
 import com.example.c_serveur.AppViewModels
 import kotlinx.serialization.Serializable
 

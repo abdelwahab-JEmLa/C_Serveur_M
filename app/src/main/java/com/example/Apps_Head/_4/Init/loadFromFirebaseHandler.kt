@@ -72,7 +72,7 @@ object LoadFromFirebaseHandler {
                         parseList<ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee>(
                             "coloursEtGoutsCommendeeList",
                             bonCommendSnapshot
-                        ) { coloursEtGoutsCommendeeList = it }
+                        ) { coloursEtGoutsCommendeList = it }
                     }
                 }
             }

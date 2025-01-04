@@ -133,7 +133,7 @@ suspend fun InitViewModel.cree_New_Start() {
                         AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                             id = couleur.position_Du_Couleur_Au_Produit,
                             nom = couleur.nom,
-                            couleur = couleur.nom,
+                            emoji = couleur.nom,
                             init_quantityAchete = (10..50).random()
                         )
                     }

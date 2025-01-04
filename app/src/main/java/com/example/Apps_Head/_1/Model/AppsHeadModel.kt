@@ -2,6 +2,7 @@ package com.example.Apps_Head._1.Model
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -128,7 +129,7 @@ class AppsHeadModel(
             var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
                 init_coloursEtGoutsCommendee.toMutableStateList()
 
-            var coloursEtGoutsCommendeeList: List<ColoursGoutsCommendee>
+            var coloursEtGoutsCommendeList: List<ColoursGoutsCommendee>
                 get() = coloursEtGoutsCommendee
                 set(value) {
                     coloursEtGoutsCommendee = value.toMutableStateList()
@@ -159,10 +160,10 @@ class AppsHeadModel(
             class ColoursGoutsCommendee(
                 val id: Long = 0,
                 val nom: String = "",
-                val couleur: String = "",
+                val emoji: String = "",
                 init_quantityAchete: Int = 0
             ) {
-                var quantityAchete: Int by mutableStateOf(init_quantityAchete)
+                var quantityAchete: Int by mutableIntStateOf(init_quantityAchete)
             }
         }
 

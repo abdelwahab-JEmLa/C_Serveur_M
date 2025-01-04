@@ -2,10 +2,15 @@ package com.example.Packages.A2_Fragment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -103,6 +108,38 @@ fun C_ItemMainFragment_2(
                         color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .width(200.dp)
+                .height(80.dp)
+        ) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                val colorsList = itemMain.bonCommendDeCetteCota
+                    ?.coloursEtGoutsCommendeList
+                    ?.sortedBy { it.quantityAchete }
+                    ?.filter { it.quantityAchete > 0 }
+                    ?: emptyList()
+
+                items(colorsList.size) { index ->
+                    val colorFlavor = colorsList[index]
+                    val displayText = when {
+                        colorFlavor.emoji.isNotEmpty() -> colorFlavor.emoji
+                        else -> colorFlavor.nom.take(3)
+                    }
+
+                    Text(
+                        text = "(${colorFlavor.quantityAchete})$displayText",
+                        fontSize = 24.sp,
+                        color = Color.White
                     )
                 }
             }

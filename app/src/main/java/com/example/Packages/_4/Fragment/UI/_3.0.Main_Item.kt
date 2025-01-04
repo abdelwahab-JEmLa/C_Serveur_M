@@ -44,7 +44,7 @@ internal fun Main_Item(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (uiState.currentMode == Ui_State_4_Fragment.CE_TELEPHONE_EST.AFFICHEUR)
+                if (uiState.currentMode == Ui_State_4_Fragment.CE_TELEPHONE_EST._AFFICHEUR)
                     Modifier.wrapContentHeight()
                 else
                     Modifier.height(heightCard)

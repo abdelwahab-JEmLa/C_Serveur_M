@@ -26,22 +26,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Add_New_Produit.CameraPickImageHandler
-import com.example.Packages._1.Fragment.UI.CE_TELEPHONE_EST
-import com.example.Packages._1.Fragment.UI.CE_TELEPHONE_EST.AFFICHEUR
-import com.example.Packages._1.Fragment.UI.CE_TELEPHONE_EST.SERVEUR
 import kotlinx.coroutines.launch
 
+enum class CE_TELEPHONE_EST {
+    _SERVEUR,
+    _AFFICHEUR
+}
 @Composable
 fun GlobalEditesGFABsFragment_1(
     modifier: Modifier = Modifier,
     appsHeadModel: AppsHeadModel,
-    onClickFAB: (CE_TELEPHONE_EST) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val imageHandler = remember { CameraPickImageHandler(context, appsHeadModel) }
 
-    var currentMode by remember { mutableStateOf(SERVEUR) }
+    var currentMode by remember { mutableStateOf(CE_TELEPHONE_EST._SERVEUR) }
     var showOptions by remember { mutableStateOf(false) }
 
     val cameraLauncher = rememberLauncherForActivityResult(
@@ -82,12 +82,11 @@ fun GlobalEditesGFABsFragment_1(
                 // Mode Toggle Button
                 FloatingActionButton(
                     onClick = {
-                        currentMode = if (currentMode == SERVEUR) AFFICHEUR else SERVEUR
-                        onClickFAB(currentMode)
+                        currentMode = if (currentMode == CE_TELEPHONE_EST._SERVEUR) CE_TELEPHONE_EST._AFFICHEUR else CE_TELEPHONE_EST._SERVEUR
                     },
                     containerColor = Color(0xFFFF5722)
                 ) {
-                    Icon(Icons.Default.Upload, if (currentMode == SERVEUR) "To AFFICHEUR" else "To SERVEUR")
+                    Icon(Icons.Default.Upload, if (currentMode == CE_TELEPHONE_EST._SERVEUR) "To _AFFICHEUR" else "To _SERVEUR")
                 }
             }
         }

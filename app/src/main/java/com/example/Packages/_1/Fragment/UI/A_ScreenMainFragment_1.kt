@@ -9,9 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,10 +22,7 @@ import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 
 internal const val DEBUG_LIMIT = 7
 
-enum class CE_TELEPHONE_EST {
-    SERVEUR,
-    AFFICHEUR
-}
+
 
 @Composable
 internal fun A_ScreenMainFragment_1(
@@ -35,7 +30,6 @@ internal fun A_ScreenMainFragment_1(
     initViewModel: InitViewModel = viewModel(),
     frag_ViewModel: Frag_ViewModel = viewModel(),
 ) {
-    var currentMode: CE_TELEPHONE_EST by remember { mutableStateOf(CE_TELEPHONE_EST.SERVEUR) }
 
     val TAG = "A_ScreenMainFragment_1"
     if (!initViewModel.initializationComplete) {
@@ -88,9 +82,7 @@ internal fun A_ScreenMainFragment_1(
             GlobalEditesGFABsFragment_1(
                 appsHeadModel = initViewModel.appsHead,
                 modifier = modifier,
-                onClickFAB = { newMode ->
-                    currentMode = newMode
-                }
+
             )
         }
     }

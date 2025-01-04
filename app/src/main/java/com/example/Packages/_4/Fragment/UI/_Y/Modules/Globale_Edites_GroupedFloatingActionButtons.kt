@@ -109,8 +109,8 @@ internal fun Globale_Edites_GroupedFloatingActionButtons(
                     /**FabButton(
                         icon = Icons.Default.Upload,
                         label = when (uiState.currentMode) {
-                            UiState.CE_TELEPHONE_EST.SERVEUR -> "SERVEUR"
-                            UiState.CE_TELEPHONE_EST.AFFICHEUR -> "Mode Acheteurs"
+                            UiState.CE_TELEPHONE_EST._SERVEUR -> "_SERVEUR"
+                            UiState.CE_TELEPHONE_EST._AFFICHEUR -> "Mode Acheteurs"
                             UiState.CE_TELEPHONE_EST.MODE_Affiche_Produits -> "Mode Produits"
                         },
                         color = Color(0xFFFF5722),

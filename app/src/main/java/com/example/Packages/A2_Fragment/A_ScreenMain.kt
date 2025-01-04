@@ -24,6 +24,13 @@ internal const val DEBUG_LIMIT = 7
  * ce fragment affiche les produits a commende du grossists
  * regle depuit un serveur app
  * */
+
+@Preview
+@Composable
+private fun PreviewScreenMainFragment_2() {
+    A_ScreenMainFragment_2(modifier = Modifier.fillMaxSize())
+}
+
 @Composable
 internal fun A_ScreenMainFragment_2(
     modifier: Modifier = Modifier,
@@ -85,8 +92,4 @@ internal fun A_ScreenMainFragment_2(
     }
 }
 
-@Preview
-@Composable
-private fun PreviewScreenMainFragment_2() {
-    A_ScreenMainFragment_2(modifier = Modifier.fillMaxSize())
-}
+

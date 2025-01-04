@@ -19,15 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun ListMainFragment1(
     visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    viewModelScope: CoroutineScope
 ) {
     fun updateProductPosition(product: AppsHeadModel.ProduitModel, newPosition: Int) {
         product.apply {
@@ -47,7 +44,7 @@ fun ListMainFragment1(
                 }
             }
 
-        viewModelScope.launch { visibleItems.updateProduitsFireBase() }
+        visibleItems.updateProduitsFireBase()
     }
 
     LazyVerticalGrid(
@@ -76,8 +73,10 @@ fun ListMainFragment1(
                 ItemMain(
                     itemMain = product,
                     onCLickOnMain = {
-                        val currentPosition = product.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
-                        if (currentPosition > 1) updateProductPosition(product, currentPosition - 1)
+                        val maxPosition = positioned.maxOfOrNull {
+                            it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
+                        } ?: 0
+                        updateProductPosition(product, maxPosition + 1)
                     },
                     onClickDelete = { updateProductPosition(product, 0) }
                 )

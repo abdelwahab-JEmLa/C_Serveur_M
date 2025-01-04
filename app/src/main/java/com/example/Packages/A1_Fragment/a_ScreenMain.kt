@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages.A2_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_2
-import com.example.Packages.A2_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_2
+import com.example.Packages.A1_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
+import com.example.Packages.A1_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
 
 internal const val DEBUG_LIMIT = 7
 
@@ -65,7 +65,7 @@ internal fun A_ScreenMainFragment_1(
                 }
             }
 
-            GrossisstsGroupedFABsFragment_2(
+            GrossisstsGroupedFABsFragment_1(
                 onClickFAB = { newList ->
                     initViewModel._appsHeadModel.produitsMainDataBase.clear()
                     initViewModel._appsHeadModel.produitsMainDataBase.addAll(newList)
@@ -74,7 +74,7 @@ internal fun A_ScreenMainFragment_1(
                 modifier = modifier
             )
 
-            GlobalEditesGFABsFragment_2(
+            GlobalEditesGFABsFragment_1(
                 appsHeadModel = initViewModel.appsHead,
                 modifier = modifier,
 

@@ -2,17 +2,21 @@ package com.example.Apps_Head._3.Modules.Images_Handler
 
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._2.ViewModel.InitViewModel
+import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 
-open class FireBase_Store_Handler : InitViewModel() {
+open class FireBaseStoreHandler(private val initViewModel: InitViewModel) {
    // Pour suivre les opérations de mise à jour d'image en cours
    private var currentImageUpdateJobs = mutableMapOf<Long, Job>()
 
@@ -23,20 +27,20 @@ open class FireBase_Store_Handler : InitViewModel() {
        }
 
        // Lance une nouvelle mise à jour
-       currentImageUpdateJobs[produitId] = viewModelScope.launch {
+       currentImageUpdateJobs[produitId] = initViewModel.viewModelScope.launch {
            try {
                updateProductImage(produitId)
 
                // Met à jour le flag dans le modèle
                val productIndex =
-                   _app_Initialize_Model.produits_Main_DataBase.indexOfFirst { it.id == produitId }
+                   initViewModel._appsHeadModel.produitsMainDataBase.indexOfFirst { it.id == produitId }
                if (productIndex != -1) {
-                   _app_Initialize_Model.produits_Main_DataBase[productIndex].it_Image_besoin_To_Be_Updated =
+                   initViewModel._appsHeadModel.produitsMainDataBase[productIndex].itImageBesoinToBeUpdated =
                        false
                }
 
                // Met à jour Firebase
-               _app_Initialize_Model.produits_Main_DataBase.updateProduitsFireBase()
+               initViewModel._appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
 
                // Nettoie le job terminé
                currentImageUpdateJobs.remove(produitId)
@@ -65,8 +69,10 @@ open class FireBase_Store_Handler : InitViewModel() {
        }
    }
 
-   override fun onCleared() {
-       super.onCleared()
+   override fun onCleared() {   //-->
+   //TODO(1): 'onCleared' overrides nothing
+       super.onCleared()    //-->
+       //TODO(1): Unresolved reference: onCleared
        // Annule toutes les opérations de mise à jour d'image en cours
        currentImageUpdateJobs.values.forEach { job ->
            job.cancel()
@@ -74,7 +80,7 @@ open class FireBase_Store_Handler : InitViewModel() {
        currentImageUpdateJobs.clear()
 
        // Supprime le listener de la base de données
-       _appsHead.ref_Produits_Main_DataBase.removeEventListener(object : ValueEventListener {
+       AppsHeadModel.ref_produitsDataBase.removeEventListener(object : ValueEventListener {
            override fun onDataChange(snapshot: DataSnapshot) {}
            override fun onCancelled(error: DatabaseError) {}
        })

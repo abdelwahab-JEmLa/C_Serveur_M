@@ -13,7 +13,7 @@ import java.io.File
 
 class CameraPickImageHandler(
     private val context: Context,
-    private val appInitializeModel: AppsHeadModel
+    private val appsHeadModel: AppsHeadModel
 ) {
     companion object {
         private const val TAG = "CameraPickImageHandler"
@@ -39,14 +39,14 @@ class CameraPickImageHandler(
     }
 
     private fun findNextAvailableId(): Number {
-        val maxId = appInitializeModel.produitsMainDataBase
+        val maxId = appsHeadModel.produitsMainDataBase
             .filter { it.id < 2000 }
             .maxOfOrNull { it.id } ?: 0
 
         return if (maxId + 1 < 2000) {
             maxId + 1
         } else {
-            val existingIds = appInitializeModel.produitsMainDataBase
+            val existingIds = appsHeadModel.produitsMainDataBase
                 .filter { it.id < 2000 }
                 .map { it.id }
                 .toSet()
@@ -65,7 +65,7 @@ class CameraPickImageHandler(
         try {
             // Remove the original product if it exists
             pendingProduct?.let { original ->
-                appInitializeModel.produitsMainDataBase.removeAll { it.id == original.id }
+                appsHeadModel.produitsMainDataBase.removeAll { it.id == original.id }
                 Log.d(TAG, "Removed original product with ID: ${original.id}")
             }
 
@@ -91,14 +91,14 @@ class CameraPickImageHandler(
                 )
             }
 
-            appInitializeModel.produitsMainDataBase.add(newProduct)
+            appsHeadModel.produitsMainDataBase.add(newProduct)
 
             context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
                 val bytes = inputStream.readBytes()
                 storageRef.putBytes(bytes).await()
             }
 
-            appInitializeModel.produitsMainDataBase.updateProduitsFireBase()
+            appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
             Log.d(TAG, "Successfully created new product with ID: $newId")
             pendingProduct = null
 

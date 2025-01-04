@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import com.example.Apps_Head._3.Modules.Images_Handler.FireBaseStoreHandler
 import com.example.Apps_Head._4.Init.LoadFromFirebaseHandler
 import com.example.Apps_Head._4.Init.cree_New_Start
 import com.google.firebase.database.DataSnapshot
@@ -22,6 +23,7 @@ open class InitViewModel : ViewModel() {
     // Model state
     var _appsHeadModel by mutableStateOf(AppsHeadModel())
     val appsHead: AppsHeadModel get() = _appsHeadModel
+    var _fireBase_Store_Handler by mutableStateOf(FireBaseStoreHandler(this@InitViewModel))
 
     // Initialization states
     var initializationProgress by mutableFloatStateOf(0f)

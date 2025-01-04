@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,7 +28,7 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 @Composable
 fun C_ItemMainFragment_2(
     itemMain: AppsHeadModel.ProduitModel,
-    onCLickOnMain: (() -> Unit)? =null,
+    onCLickOnMain: (() -> Unit)? = null,
 ) {
     // Main container
     Box(
@@ -36,7 +37,7 @@ fun C_ItemMainFragment_2(
             .height(80.dp)
             .background(
                 color =
-                    MaterialTheme.colorScheme.surface,
+                MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
             .clickable {
@@ -73,23 +74,7 @@ fun C_ItemMainFragment_2(
             overflow = TextOverflow.Ellipsis
         )
 
-        // Product Name (First Letter)
-        Text(
-            text = itemMain.nom.firstOrNull()?.toString() ?: "",
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(4.dp)
-                .background(
-                    color = Color.LightGray.copy(alpha = 0.7f),
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .padding(4.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
 
-        // Position Number (if exists)
         itemMain.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.let { position ->
             if (position > 0) {
                 Box(
@@ -112,35 +97,51 @@ fun C_ItemMainFragment_2(
                 }
             }
         }
-        Box(
-            modifier = Modifier
-                .width(200.dp)
-                .height(80.dp)
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                val colorsList = itemMain.bonCommendDeCetteCota
-                    ?.coloursEtGoutsCommendeList
-                    ?.sortedBy { it.quantityAchete }
-                    ?.filter { it.quantityAchete > 0 }
-                    ?: emptyList()
-
-                items(colorsList.size) { index ->
-                    val colorFlavor = colorsList[index]
-                    val displayText = when {
-                        colorFlavor.emoji.isNotEmpty() -> colorFlavor.emoji
-                        else -> colorFlavor.nom.take(3)
-                    }
-
-                    Text(
-                        text = "(${colorFlavor.quantityAchete})$displayText",
-                        fontSize = 24.sp,
-                        color = Color.White
+        Column() {
+            // Product Name (First Letter)
+            Text(
+                text = itemMain.nom,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .background(
+                        color = Color.LightGray.copy(alpha = 0.7f),
+                        shape = RoundedCornerShape(4.dp)
                     )
+                    .padding(4.dp),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Box(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(80.dp)
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    val colorsList = itemMain.bonCommendDeCetteCota
+                        ?.coloursEtGoutsCommendeList
+                        ?.sortedBy { it.quantityAchete }
+                        ?.filter { it.quantityAchete > 0 }
+                        ?: emptyList()
+
+                    items(colorsList.size) { index ->
+                        val colorFlavor = colorsList[index]
+                        val displayText = when {
+                            colorFlavor.emoji.isNotEmpty() -> colorFlavor.emoji
+                            else -> colorFlavor.nom.take(3)
+                        }
+
+                        Text(
+                            text = "(${colorFlavor.quantityAchete})$displayText",
+                            fontSize = 24.sp,
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

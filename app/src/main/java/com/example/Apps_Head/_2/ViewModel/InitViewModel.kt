@@ -3,6 +3,7 @@ package com.example.Apps_Head._2.ViewModel
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -10,8 +11,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._3.Modules.Images_Handler.ImageStoreUpdate
+import com.example.Apps_Head._4.Init.CreeNewStart
 import com.example.Apps_Head._4.Init.LoadFromFirebaseHandler
-import com.example.Apps_Head._4.Init.cree_New_Start
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -26,7 +27,6 @@ class InitViewModel : ViewModel() {
     var initializationProgress by mutableFloatStateOf(0f)
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
-    private var createStart by mutableStateOf(false)
 
     // Position change flow for observing position updates
     private val _positionChangeFlow = MutableSharedFlow<Pair<Long, Int>>()
@@ -43,8 +43,11 @@ class InitViewModel : ViewModel() {
             try {
                 isInitializing = true
 
-                if (createStart) {
-                    cree_New_Start()
+                val NOMBRE_ENTRE by mutableIntStateOf(20)
+
+                if (NOMBRE_ENTRE>0) {
+                    CreeNewStart(NOMBRE_ENTRE,true)
+                    CreeNewStart(NOMBRE_ENTRE,false)
                     initializationProgress = 1f
                 } else {
                     LoadFromFirebaseHandler.loadFromFirebase(this@InitViewModel)

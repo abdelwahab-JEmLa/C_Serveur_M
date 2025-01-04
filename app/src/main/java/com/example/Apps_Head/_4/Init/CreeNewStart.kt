@@ -8,16 +8,12 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-suspend fun InitViewModel.cree_New_Start() {
+suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, takeUp2000: Boolean) {
     try {
-        val NOMBRE_ENTRE = 40
-
         initializationProgress = 0.1f
         isInitializing = true
 
-
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val currentTime = System.currentTimeMillis()
         val ancienData = get_Ancien_DataBases_Main()
 
         // Predefined clients for consistent data
@@ -36,9 +32,15 @@ suspend fun InitViewModel.cree_New_Start() {
             Triple(3L, "Grossist Gamma", "#5733FF")
         )
 
-        ancienData.produitsDatabase.take(NOMBRE_ENTRE).forEachIndexed { index, ancien ->
-            // Create new product
-            val nouveauProduit = AppsHeadModel.ProduitModel(
+        // Apply filtering based on takeUp200 parameter
+        val filteredProduits = if (takeUp2000) {
+            ancienData.produitsDatabase.filter { it.idArticle > 2000 }
+        } else {
+            ancienData.produitsDatabase.take(NOMBRE_ENTRE)
+        }
+
+        filteredProduits.forEachIndexed { index, ancien ->
+            val depuitAncienDataBase = AppsHeadModel.ProduitModel(
                 id = ancien.idArticle,
                 init_nom = ancien.nomArticleFinale,
                 init_visible = false,
@@ -53,7 +55,7 @@ suspend fun InitViewModel.cree_New_Start() {
                 ancien.idcolor4 to 4L
             ).forEach { (colorId, position) ->
                 ancienData.couleurs_List.find { it.idColore == colorId }?.let { couleur ->
-                    nouveauProduit.coloursEtGouts.add(
+                    depuitAncienDataBase.coloursEtGouts.add(
                         AppsHeadModel.ProduitModel.ColourEtGout_Model(
                             position_Du_Couleur_Au_Produit = position,
                             nom = couleur.nameColore,
@@ -77,16 +79,17 @@ suspend fun InitViewModel.cree_New_Start() {
                         nom = clientName,
                         couleur = clientColor
                     ),
-                    init_colours_achete = nouveauProduit.coloursEtGouts.take((1..3).random()).map { couleur ->
-                        AppsHeadModel.ProduitModel.ClientBonVentModel.ColorAchatModel(
-                            vidPosition = couleur.position_Du_Couleur_Au_Produit,
-                            nom = couleur.nom,
-                            quantity_Achete = (1..10).random(),
-                            imogi = couleur.imogi
-                        )
-                    }
+                    init_colours_achete = depuitAncienDataBase.coloursEtGouts.take((1..3).random())
+                        .map { couleur ->
+                            AppsHeadModel.ProduitModel.ClientBonVentModel.ColorAchatModel(
+                                vidPosition = couleur.position_Du_Couleur_Au_Produit,
+                                nom = couleur.nom,
+                                quantity_Achete = (1..10).random(),
+                                imogi = couleur.imogi
+                            )
+                        }
                 )
-                nouveauProduit.historiqueBonsVents.add(bonVent)
+                depuitAncienDataBase.historiqueBonsVents.add(bonVent)
             }
 
             // Generate current sales
@@ -99,38 +102,39 @@ suspend fun InitViewModel.cree_New_Start() {
                         nom = clientName,
                         couleur = clientColor
                     ),
-                    init_colours_achete = nouveauProduit.coloursEtGouts.take((1..3).random()).map { couleur ->
-                        AppsHeadModel.ProduitModel.ClientBonVentModel.ColorAchatModel(
-                            vidPosition = couleur.position_Du_Couleur_Au_Produit,
-                            nom = couleur.nom,
-                            quantity_Achete = (1..10).random(),
-                            imogi = couleur.imogi
-                        )
-                    }
+                    init_colours_achete = depuitAncienDataBase.coloursEtGouts.take((1..3).random())
+                        .map { couleur ->
+                            AppsHeadModel.ProduitModel.ClientBonVentModel.ColorAchatModel(
+                                vidPosition = couleur.position_Du_Couleur_Au_Produit,
+                                nom = couleur.nom,
+                                quantity_Achete = (1..10).random(),
+                                imogi = couleur.imogi
+                            )
+                        }
                 )
-                nouveauProduit.bonsVentDeCetteCota.add(bonVent)
+                depuitAncienDataBase.bonsVentDeCetteCota.add(bonVent)
             }
 
-            // Generate grossist data for first 30 products
-            if (index < 30) {
-                val (grossistId, grossistName, grossistColor) = grossists.random()
-                val currentDate = dateFormat.format(Calendar.getInstance().time)
+            val (grossistId, grossistName, grossistColor) = grossists.random()
+            val currentDate = dateFormat.format(Calendar.getInstance().time)
 
-                val grossiste = AppsHeadModel.ProduitModel.GrossistBonCommandes(
-                    vid = grossistId,
-                    init_grossistInformations = AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations(
-                        id = grossistId,
-                        nom = grossistName,
-                        couleur = grossistColor
-                    ),
-                    date = currentDate,
-                    date_String_Divise = currentDate.split(" ")[0],
-                    time_String_Divise = currentDate.split(" ")[1],
-                    currentCreditBalance = (1000..2000).random().toDouble(),
-                    init_position_Grossist_Don_Parent_Grossists_List = grossistId.toInt() - 1,
-                    init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
-                    if (Math.random() < 0.4) 0 else (1..10).random(),
-                    init_coloursEtGoutsCommendee = nouveauProduit.coloursEtGouts.take(1).map { couleur ->
+            val grossiste = AppsHeadModel.ProduitModel.GrossistBonCommandes(
+                vid = grossistId,
+                init_grossistInformations = AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations(
+                    id = grossistId,
+                    nom = grossistName,
+                    couleur = grossistColor
+                ),
+                date = currentDate,
+                date_String_Divise = currentDate.split(" ")[0],
+                time_String_Divise = currentDate.split(" ")[1],
+                currentCreditBalance = (1000..2000).random().toDouble(),
+                init_position_Grossist_Don_Parent_Grossists_List = grossistId.toInt() - 1,
+                init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                if (Math.random() < 0.4) 0 else (1..10).random(),
+                init_coloursEtGoutsCommendee = depuitAncienDataBase.coloursEtGouts
+                    .take( if (takeUp2000) 1 else (1..4).random())
+                    .map { couleur ->
                         AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                             id = couleur.position_Du_Couleur_Au_Produit,
                             nom = couleur.nom,
@@ -138,14 +142,13 @@ suspend fun InitViewModel.cree_New_Start() {
                             init_quantityAchete = (10..50).random()
                         )
                     }
-                )
+            )
 
-                nouveauProduit.bonCommendDeCetteCota = grossiste
-                nouveauProduit.historiqueBonsCommend.add(grossiste)
-            }
+            depuitAncienDataBase.bonCommendDeCetteCota = grossiste
+            depuitAncienDataBase.historiqueBonsCommend.add(grossiste)
 
-            _appsHeadModel.produitsMainDataBase.add(nouveauProduit)
-            initializationProgress = 0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
+            _appsHeadModel.produitsMainDataBase.add(depuitAncienDataBase)
+            initializationProgress = 0.1f + (0.8f * (index + 1) / filteredProduits.size)
         }
 
         // Clear and update Firebase database

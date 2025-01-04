@@ -21,7 +21,8 @@ fun B_ListMainFragment_2(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
 ) {
-    LazyVerticalGrid(
+    LazyVerticalGrid(     //-->
+    //TODO(1): change le a lazy column 
         columns = GridCells.Fixed(2),
         modifier = modifier
             .fillMaxWidth()

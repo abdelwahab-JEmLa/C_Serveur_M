@@ -28,7 +28,7 @@ fun ItemMain(
     ) {
     // Calculate if the product has a valid position
     val hasPosition = remember(itemMain.bonCommendDeCetteCota) {
-        itemMain.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { pos ->
+        itemMain.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.let { pos ->
             pos > 0
         } ?: false
     }
@@ -53,7 +53,7 @@ fun ItemMain(
         // Product Image
         Glide_Display_Image_By_Id(
             produit_Id = itemMain.id,
-            produit_Image_Need_Update = itemMain.it_Image_besoin_To_Be_Updated,
+            produit_Image_Need_Update = itemMain.itImageBesoinToBeUpdated,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
@@ -94,7 +94,7 @@ fun ItemMain(
         )
 
         // Position Number (if exists)
-        itemMain.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit?.let { position ->
+        itemMain.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.let { position ->
             if (position > 0) {
                 Box(
                     modifier = Modifier
@@ -118,7 +118,7 @@ fun ItemMain(
         }
 
         // Optional: Show loading indicator when updating
-        if (itemMain.it_Image_besoin_To_Be_Updated) {
+        if (itemMain.itImageBesoinToBeUpdated) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()

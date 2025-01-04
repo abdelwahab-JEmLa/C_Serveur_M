@@ -43,7 +43,7 @@ class AppsHeadModel(
     ) {
         var nom: String by mutableStateOf(init_nom)
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
-        var it_Image_besoin_To_Be_Updated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)
+        var itImageBesoinToBeUpdated: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var isVisible: Boolean by mutableStateOf(init_visible)
 
@@ -108,7 +108,7 @@ class AppsHeadModel(
             init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
         ) {
             var grossistInformations: GrossistInformations? by mutableStateOf(init_grossistInformations)
-            var position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int by mutableStateOf(
+            var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
             )
             var position_Grossist_Don_Parent_Grossists_List: Int by mutableStateOf(

@@ -29,17 +29,17 @@ fun B_ListMainFragment_1(
     fun updateProductPosition(product: AppsHeadModel.ProduitModel, newPosition: Int) {
         product.apply {
             bonCommendDeCetteCota = bonCommendDeCetteCota ?: AppsHeadModel.ProduitModel.GrossistBonCommandes()
-            bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = newPosition
+            bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
             besoin_To_Be_Updated = true
         }
 
         // Normalize positions
         visibleItems
-            .filter { (it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0) > 0 }
-            .sortedBy { it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
+            .filter { (it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0 }
+            .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
             .forEachIndexed { index, item ->
                 item.apply {
-                    bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit = index + 1
+                    bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = index + 1
                     besoin_To_Be_Updated = true
                 }
             }
@@ -57,7 +57,7 @@ fun B_ListMainFragment_1(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         val (positioned, unpositioned) = visibleItems.partition {
-            (it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0) > 0
+            (it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
         }
 
         if (positioned.isNotEmpty()) {
@@ -69,12 +69,12 @@ fun B_ListMainFragment_1(
                 )
             }
 
-            items(positioned.sortedBy { it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }, key = { it.id }) { product ->
+            items(positioned.sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }, key = { it.id }) { product ->
                 C_ItemMainFragment_1(
                     itemMain = product,
                     onCLickOnMain = {
                         val maxPosition = positioned.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
+                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                         } ?: 0
                         updateProductPosition(product, maxPosition + 1)
                     },
@@ -97,7 +97,7 @@ fun B_ListMainFragment_1(
                     itemMain = product,
                     onCLickOnMain = {
                         val maxPosition = positioned.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit ?: 0
+                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                         } ?: 0
                         updateProductPosition(product, maxPosition + 1)
                     },

@@ -50,7 +50,7 @@ internal fun ScreenMainFragment2(
             ClientsGroupedFABs(
                 onClientSelected = { client, products ->
                     selectedClientData.value = mapOf(client to products.sortedBy { it.bonCommendDeCetteCota?.position_Grossist_Don_Parent_Grossists_List }
-                        .sortedBy { it.bonCommendDeCetteCota?.position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit }
+                        .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
                     )
                 },
                 produitsMainDataBase = initViewModel.appsHead.produitsMainDataBase,

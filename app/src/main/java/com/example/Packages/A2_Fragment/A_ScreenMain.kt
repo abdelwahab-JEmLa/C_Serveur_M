@@ -1,4 +1,4 @@
-package com.example.Packages.A1_Fragment.UI
+package com.example.Packages.A2_Fragment
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,13 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages.A1_Fragment.UI.D_FloatingActionButton.GlobalEditesGFABsFragment_1
-import com.example.Packages.A1_Fragment.UI.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
+import com.example.Packages.A2_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_2
+import com.example.Packages.A2_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_2
 
 internal const val DEBUG_LIMIT = 7
 
 @Composable
-internal fun A_ScreenMainFragment_1(
+internal fun A_ScreenMainFragment_2(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
 ) {
@@ -58,14 +58,14 @@ internal fun A_ScreenMainFragment_1(
                 val databaseSize = produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    B_ListMainFragment_1(
+                    B_ListMainFragment_2(
                         visibleItems = visibleItems,
                         contentPadding = paddingValues
                     )
                 }
             }
 
-            GrossisstsGroupedFABsFragment_1(
+            GrossisstsGroupedFABsFragment_2(
                 onClickFAB = { newList ->
                     initViewModel._appsHeadModel.produitsMainDataBase.clear()
                     initViewModel._appsHeadModel.produitsMainDataBase.addAll(newList)
@@ -74,17 +74,16 @@ internal fun A_ScreenMainFragment_1(
                 modifier = modifier
             )
 
-            GlobalEditesGFABsFragment_1(
+            GlobalEditesGFABsFragment_2(
                 appsHeadModel = initViewModel.appsHead,
                 modifier = modifier,
-
-            )
+                )
         }
     }
 }
 
 @Preview
 @Composable
-private fun PreviewScreenMainFragment_1() {
-    A_ScreenMainFragment_1(modifier = Modifier.fillMaxSize())
+private fun PreviewScreenMainFragment_2() {
+    A_ScreenMainFragment_2(modifier = Modifier.fillMaxSize())
 }

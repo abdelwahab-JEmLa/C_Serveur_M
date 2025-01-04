@@ -1,4 +1,4 @@
-package com.example.Packages.A1_Fragment.UI
+package com.example.Packages.A2_Fragment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,7 +27,7 @@ import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 
 @Composable
-fun C_ItemMainFragment_1(
+fun C_ItemMainFragment_2(
     itemMain: AppsHeadModel.ProduitModel,
     onClickDelete: () -> Unit,
     onCLickOnMain: () -> Unit,

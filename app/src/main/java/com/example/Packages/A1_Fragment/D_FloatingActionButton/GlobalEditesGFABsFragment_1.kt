@@ -1,4 +1,4 @@
-package com.example.Packages.A1_Fragment.UI.D_FloatingActionButton
+package com.example.Packages.A1_Fragment.D_FloatingActionButton
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Add_New_Produit.CameraPickImageHandler
+import com.example.Packages.A2_Fragment.D_FloatingActionButton.CE_TELEPHONE_EST
 import kotlinx.coroutines.launch
 
 enum class CE_TELEPHONE_EST {

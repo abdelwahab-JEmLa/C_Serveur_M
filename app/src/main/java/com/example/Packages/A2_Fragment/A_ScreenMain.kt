@@ -20,7 +20,10 @@ import com.example.Packages.A2_Fragment.D_FloatingActionButton.GlobalEditesGFABs
 import com.example.Packages.A2_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_2
 
 internal const val DEBUG_LIMIT = 7
-
+/**
+ * ce fragment affiche les produits a commende du grossists
+ * regle depuit un serveur app
+ * */
 @Composable
 internal fun A_ScreenMainFragment_2(
     modifier: Modifier = Modifier,

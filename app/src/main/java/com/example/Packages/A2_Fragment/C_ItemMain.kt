@@ -29,8 +29,8 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 @Composable
 fun C_ItemMainFragment_2(
     itemMain: AppsHeadModel.ProduitModel,
-    onClickDelete: () -> Unit,
-    onCLickOnMain: () -> Unit,
+    onClickDelete: (() -> Unit)? =null,
+    onCLickOnMain: (() -> Unit)? =null,
 ) {
     // Calculate if the product has a valid position
     val hasPosition = remember(itemMain.bonCommendDeCetteCota) {
@@ -52,7 +52,9 @@ fun C_ItemMainFragment_2(
                 shape = RoundedCornerShape(4.dp)
             )
             .clickable {
-                onCLickOnMain()
+                if (onCLickOnMain != null) {
+                    onCLickOnMain()
+                }
             },
         contentAlignment = Alignment.Center
     ) {
@@ -70,7 +72,9 @@ fun C_ItemMainFragment_2(
         if (hasPosition) {
             IconButton(
                 onClick = {
-                    onClickDelete()
+                    if (onClickDelete != null) {
+                        onClickDelete()
+                    }
                 },
                 modifier = Modifier
                     .align(Alignment.TopStart)

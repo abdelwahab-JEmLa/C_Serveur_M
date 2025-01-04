@@ -28,7 +28,10 @@ fun B_ListMainFragment_2(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (visibleItems.isNotEmpty()) {
-            items(visibleItems, key = { it.id }) { item ->
+            items(visibleItems, key = {
+                    "${ it.bonCommendDeCetteCota
+                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit}" +
+                        "->${it.id}"}) { item ->
                 C_ItemMainFragment_2(
                     itemMain = item,
                 )

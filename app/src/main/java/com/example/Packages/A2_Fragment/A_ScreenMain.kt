@@ -35,6 +35,8 @@ internal fun A_ScreenMainFragment_2(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
 ) {
+    initViewModel.createStart =true
+
     val TAG = "A_ScreenMainFragment_1"
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {

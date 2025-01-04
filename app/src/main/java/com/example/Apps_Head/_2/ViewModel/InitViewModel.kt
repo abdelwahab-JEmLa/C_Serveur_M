@@ -19,7 +19,7 @@ class InitViewModel : ViewModel() {
     var initializationProgress by mutableFloatStateOf(0f)
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
-
+    var createStart by mutableStateOf(false)
     private companion object {
         const val TAG = "InitViewModel"
     }
@@ -34,9 +34,7 @@ class InitViewModel : ViewModel() {
                 isInitializing = true
                 initializationProgress = 0f
 
-                val createStart = 1
-
-                if (createStart == 1) {
+                if (createStart) {
                     cree_New_Start()
                     initializationProgress = 1f
                 } else {

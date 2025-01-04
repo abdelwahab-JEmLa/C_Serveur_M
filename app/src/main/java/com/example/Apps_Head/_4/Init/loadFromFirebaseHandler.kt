@@ -20,6 +20,7 @@ object LoadFromFirebaseHandler {
     suspend fun loadFromFirebase(initViewModel: InitViewModel) = try {
         initViewModel.apply {
             _appsHeadModel.produitsMainDataBase = loadProducts()
+
             initializationProgress = 1f
         }
     } catch (e: Exception) {
@@ -55,7 +56,7 @@ object LoadFromFirebaseHandler {
             init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean) ?: false,
             init_it_Image_besoin_To_Be_Updated = (productMap["it_Image_besoin_To_Be_Updated"] as? Boolean) ?: false,
             initialNon_Trouve = (productMap["non_Trouve"] as? Boolean) ?: false,
-            init_visible = (productMap["isVisible"] as? Boolean) ?: true
+            init_visible = false,
         ).apply {
             if (shouldLog) Log.d(TAG, "Parsing product ID: $productId")
             parseList<ProduitModel.ColourEtGout_Model>("coloursEtGoutsList", snapshot) { coloursEtGoutsList = it }

@@ -108,8 +108,9 @@ fun GrossisstsGroupedFABsFragment_2(
                                         val updatedList = produitsMainDataBase.toMutableList()
                                         updatedList.forEach { product ->
                                             product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
-                                                bon.grossistInformations?.id == supplier.id &&
-                                                        bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
+                                                bon.grossistInformations?.id == supplier.id
+                                                        && bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
+                                                        && bon.positionProduitDonGrossistChoisiPourAcheterCeProduit > 0
                                             } ?: false
                                         }
 

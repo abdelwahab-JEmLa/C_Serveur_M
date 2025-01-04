@@ -41,6 +41,7 @@ suspend fun InitViewModel.cree_New_Start() {
             val nouveauProduit = AppsHeadModel.ProduitModel(
                 id = ancien.idArticle,
                 init_nom = ancien.nomArticleFinale,
+                init_visible = false,
                 init_besoin_To_Be_Updated = true
             )
 

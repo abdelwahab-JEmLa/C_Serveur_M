@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
+import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
 
 @Composable
 fun C_ItemMainFragment_2(
@@ -48,7 +48,7 @@ fun C_ItemMainFragment_2(
         contentAlignment = Alignment.Center
     ) {
         // Product Image
-        Glide_Display_Image_By_Id(
+        GlideDisplayImageById(
             produit_Id = itemMain.id,
             produit_Image_Need_Update = itemMain.itImageBesoinToBeUpdated,
             modifier = Modifier

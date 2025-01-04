@@ -51,7 +51,7 @@ internal fun Main_Item(
             )
     ) {
         // Background image
-        Glide_Display_Image_By_Id(
+        GlideDisplayImageById(
             produit_Id = produit.id,
             modifier = Modifier
                 .fillMaxWidth()

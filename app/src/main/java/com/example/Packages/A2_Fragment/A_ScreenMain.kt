@@ -11,12 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages.A2_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_2
 import com.example.Packages.A2_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_2
@@ -24,20 +27,22 @@ import kotlinx.coroutines.flow.collectLatest
 
 internal const val DEBUG_LIMIT = 7
 
-/**
- * Main screen fragment that displays wholesaler's product orders
- * Managed by server app
- */
 @Preview(showBackground = true)
 @Composable
 private fun PreviewA_ScreenMainFragment_2() {
     A_ScreenMainFragment_2(modifier = Modifier.fillMaxSize())
 }
+
 @Composable
 internal fun A_ScreenMainFragment_2(
     modifier: Modifier = Modifier,
-    initViewModel: InitViewModel = viewModel()
+    initViewModel: InitViewModel = viewModel(),
 ) {
+    // Fixed: Properly declare mutable state using remember and mutableStateOf
+    var grossistVisibleMnt by remember {
+        mutableStateOf(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations())
+    }
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -47,13 +52,15 @@ internal fun A_ScreenMainFragment_2(
             initViewModel.positionChangeFlow.collectLatest { (productId, newPosition) ->
                 initViewModel._appsHeadModel.produitsMainDataBase
                     .find { it.id == productId }
-                    ?.bonCommendDeCetteCota
-                    ?.let { it.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition }
+                    ?.let {
+                        it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
+                        // Simplified visibility logic
+                        it.isVisible = it.bonCommendDeCetteCota?.grossistInformations == grossistVisibleMnt && !it.isVisible
+                    }
             }
         }
 
         Box(modifier = Modifier.fillMaxSize()) {
-            // Show loading screen or main content
             if (!initViewModel.initializationComplete) {
                 CircularProgressIndicator(
                     progress = { initViewModel.initializationProgress },
@@ -74,10 +81,8 @@ internal fun A_ScreenMainFragment_2(
                     }
                 }
 
-                // Main content layout
                 Scaffold { paddingValues ->
                     Box(modifier = Modifier.fillMaxSize()) {
-                        // List content
                         if (produitsMainDataBase.isNotEmpty()) {
                             B_ListMainFragment_2(
                                 visibleItems = visibleItems,
@@ -85,9 +90,9 @@ internal fun A_ScreenMainFragment_2(
                             )
                         }
 
-                        // FAB components
                         GrossisstsGroupedFABsFragment_2(
-                            onClickFAB = { newList ->
+                            onClickFAB = { supplier, newList ->
+                                grossistVisibleMnt = supplier
                                 with(initViewModel._appsHeadModel.produitsMainDataBase) {
                                     clear()
                                     addAll(newList)

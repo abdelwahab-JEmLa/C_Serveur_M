@@ -18,19 +18,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages._1.Fragment.UI.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Packages._1.Fragment.UI.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
-import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 
 internal const val DEBUG_LIMIT = 7
-
-
 
 @Composable
 internal fun A_ScreenMainFragment_1(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
-    frag_ViewModel: Frag_ViewModel = viewModel(),
 ) {
-
     val TAG = "A_ScreenMainFragment_1"
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {

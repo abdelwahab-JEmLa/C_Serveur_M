@@ -74,7 +74,6 @@ fun C_ItemMainFragment_2(
             overflow = TextOverflow.Ellipsis
         )
 
-
         itemMain.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.let { position ->
             if (position > 0) {
                 Box(

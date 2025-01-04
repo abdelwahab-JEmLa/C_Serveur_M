@@ -3,6 +3,7 @@ package com.example.Main.MainScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,6 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.Packages.A1_Fragment.A_ScreenMainFragment_1
+import com.example.Packages.A2_Fragment.A_ScreenMainFragment_2
 import com.example.c_serveur.AppViewModels
 import kotlinx.serialization.Serializable
 
@@ -32,8 +34,7 @@ fun AppNavHost(
                A_ScreenMainFragment_1(initViewModel=appViewModels.initViewModel)
             }
             composable(FragmentMainScreenDestination2().route) {
-                com.example.Packages.
-                _2.Fragment.UI.ScreenMainFragment2(initViewModel=appViewModels.initViewModel)
+                A_ScreenMainFragment_2(initViewModel=appViewModels.initViewModel)
             }
 
         }
@@ -45,7 +46,7 @@ fun AppNavHost(
 @Serializable
 data class FragmentMainScreenDestination1(val route: String = "FragmentMainScreenDestination1") : java.io.Serializable
 @Serializable
-data class FragmentMainScreenDestination2(val route: String = "FragmentMainScreenDestination2") : java.io.Serializable
+data class FragmentMainScreenDestination2(val route: String = "A_ScreenMainFragment_2") : java.io.Serializable
 
 sealed class Screen(
     val route: String,
@@ -60,10 +61,10 @@ sealed class Screen(
         color = Color(0xFFFF5722)
     )
     data object FragmentMainScreen2 : Screen(
-        route = "FragmentMainScreenDestination2",
-        icon = Icons.Default.Tab,
-        title = "FragmentMainScreenDestination2",
-        color = Color(0xFFFF5722)
+        route = "A_ScreenMainFragment_2",
+        icon = Icons.Default.People,
+        title = "A_ScreenMainFragment_2",
+        color = Color(0xFF9C27B0)
     )
 
 }

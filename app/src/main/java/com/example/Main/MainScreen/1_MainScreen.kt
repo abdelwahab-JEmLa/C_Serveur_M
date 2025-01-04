@@ -48,7 +48,8 @@ fun MainScreen(
                 visible = true,
                 modifier = Modifier.align(Alignment.BottomCenter)
             ) {
-                NavigationBarWithFab(
+                NavigationBarWithFab(   //-->
+                //TODO(1): diminu le height de la bar a 30.dp
                     items = items,
                     currentRoute = currentRoute,
                     onNavigate = { route ->

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -41,7 +42,9 @@ fun NavigationBarWithFab(
         contentAlignment = Alignment.BottomCenter
     ) {
         NavigationBar(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),  // Set the height to 30.dp as requested
             containerColor = MaterialTheme.colorScheme.surface,
             tonalElevation = 8.dp
         ) {
@@ -99,5 +102,3 @@ fun NavigationBarWithFab(
         }
     }
 }
-
-

@@ -54,8 +54,9 @@ internal fun A_ScreenMainFragment_2(
     ) {
         // Handle position changes
         LaunchedEffect(Unit) {
-            initViewModel.positionChangeFlow.collectLatest { (productId, newPosition) ->
-                val grossistVisibleMnt= visibleItems.first().bonCommendDeCetteCota?.grossistInformations
+                initViewModel.positionChangeFlow.collectLatest { (productId, newPosition) ->
+                    val grossistVisibleMnt = visibleItems.firstOrNull()?.bonCommendDeCetteCota?.grossistInformations
+                        ?: return@collectLatest // Exit if no visible items
                 initViewModel._appsHeadModel.produitsMainDataBase
                     .find { it.id == productId }
                     ?.let {
@@ -63,7 +64,7 @@ internal fun A_ScreenMainFragment_2(
                         // Simplified visibility logic
                         it.isVisible = it.bonCommendDeCetteCota?.grossistInformations == grossistVisibleMnt && !it.isVisible
                     }
-            }
+                }
         }
 
         Box(modifier = Modifier.fillMaxSize()) {

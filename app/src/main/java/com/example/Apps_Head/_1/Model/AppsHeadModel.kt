@@ -47,6 +47,9 @@ class AppsHeadModel(
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var isVisible: Boolean by mutableStateOf(init_visible)
 
+     /*   var internStatues: SnapshotStateList<InternStatues> =
+             List<ColourEtGout_Model> = emptyList() .toMutableStateList()    */
+
         var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
             init_colours_Et_Gouts.toMutableStateList()
 
@@ -89,10 +92,16 @@ class AppsHeadModel(
             }
 
         @IgnoreExtraProperties
+        data class InternStatues(
+            var ilAUneCouleurAvecImage: Boolean = false,
+        )
+
+        @IgnoreExtraProperties
         class ColourEtGout_Model(
             var position_Du_Couleur_Au_Produit: Long = 0,
             var nom: String = "",
-            var imogi: String = ""
+            var imogi: String = "",
+            var sonImageNeExistPas: Boolean = false,
         )
 
         @IgnoreExtraProperties

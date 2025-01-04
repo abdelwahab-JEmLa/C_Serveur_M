@@ -3,20 +3,13 @@ package com.example.Packages.A2_Fragment
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,25 +22,15 @@ import com.example.Apps_Head._3.Modules.Images_Handler.Glide_Display_Image_By_Id
 @Composable
 fun C_ItemMainFragment_2(
     itemMain: AppsHeadModel.ProduitModel,
-    onClickDelete: (() -> Unit)? =null,
     onCLickOnMain: (() -> Unit)? =null,
 ) {
-    // Calculate if the product has a valid position
-    val hasPosition = remember(itemMain.bonCommendDeCetteCota) {
-        itemMain.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.let { pos ->
-            pos > 0
-        } ?: false
-    }
-
     // Main container
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
             .background(
-                color = if (hasPosition)
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                else
+                color =
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
@@ -67,27 +50,6 @@ fun C_ItemMainFragment_2(
                 .height(100.dp),
             reloadKey = 0
         )
-
-        // Delete Position Button
-        if (hasPosition) {
-            IconButton(
-                onClick = {
-                    if (onClickDelete != null) {
-                        onClickDelete()
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(4.dp)
-                    .size(24.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "Remove position",
-                    tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
-                )
-            }
-        }
 
         // Product ID
         Text(
@@ -143,18 +105,6 @@ fun C_ItemMainFragment_2(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-            }
-        }
-
-        // Optional: Show loading indicator when updating
-        if (itemMain.itImageBesoinToBeUpdated) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f)),
-                contentAlignment = Alignment.Center
-            ) {
-                // You can add a CircularProgressIndicator here if needed
             }
         }
     }

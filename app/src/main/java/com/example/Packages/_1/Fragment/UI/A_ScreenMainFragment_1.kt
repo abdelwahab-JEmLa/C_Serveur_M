@@ -9,7 +9,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,12 +24,19 @@ import com.example.Packages._2.Fragment.ViewModel.Frag_ViewModel
 
 internal const val DEBUG_LIMIT = 7
 
+enum class CE_TELEPHONE_EST {
+    SERVEUR,
+    AFFICHEUR
+}
+
 @Composable
 internal fun A_ScreenMainFragment_1(
     modifier: Modifier = Modifier,
     initViewModel: InitViewModel = viewModel(),
     frag_ViewModel: Frag_ViewModel = viewModel(),
 ) {
+    var currentMode: CE_TELEPHONE_EST by remember { mutableStateOf(CE_TELEPHONE_EST.SERVEUR) }
+
     val TAG = "A_ScreenMainFragment_1"
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -42,12 +51,10 @@ internal fun A_ScreenMainFragment_1(
         return
     }
 
-    // Fix: Create an immutable snapshot using derivedStateOf
     val produitsMainDataBase by remember(initViewModel._appsHeadModel.produitsMainDataBase) {
         derivedStateOf { initViewModel._appsHeadModel.produitsMainDataBase.toList() }
     }
 
-    // Use derivedStateOf for visible items
     val visibleItems by remember(produitsMainDataBase) {
         derivedStateOf {
             produitsMainDataBase.filter { it.isVisible }.toMutableStateList()
@@ -71,7 +78,6 @@ internal fun A_ScreenMainFragment_1(
 
             GrossisstsGroupedFABsFragment_1(
                 onClickFAB = { newList ->
-                    // Update the ViewModel's data
                     initViewModel._appsHeadModel.produitsMainDataBase.clear()
                     initViewModel._appsHeadModel.produitsMainDataBase.addAll(newList)
                 },
@@ -80,9 +86,11 @@ internal fun A_ScreenMainFragment_1(
             )
 
             GlobalEditesGFABsFragment_1(
-                app_Initialize_Model = initViewModel.appsHead,
+                appsHeadModel = initViewModel.appsHead,
                 modifier = modifier,
-                fragment_Ui_State = frag_ViewModel.uiState
+                onClickFAB = { newMode ->
+                    currentMode = newMode
+                }
             )
         }
     }

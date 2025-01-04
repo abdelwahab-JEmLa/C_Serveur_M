@@ -109,15 +109,15 @@ internal fun Globale_Edites_GroupedFloatingActionButtons(
                     /**FabButton(
                         icon = Icons.Default.Upload,
                         label = when (uiState.currentMode) {
-                            UiState.Affichage_Et_Click_Modes.MODE_Click_Change_Position -> "MODE_Click_Change_Position"
-                            UiState.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs -> "Mode Acheteurs"
-                            UiState.Affichage_Et_Click_Modes.MODE_Affiche_Produits -> "Mode Produits"
+                            UiState.CE_TELEPHONE_EST.SERVEUR -> "SERVEUR"
+                            UiState.CE_TELEPHONE_EST.AFFICHEUR -> "Mode Acheteurs"
+                            UiState.CE_TELEPHONE_EST.MODE_Affiche_Produits -> "Mode Produits"
                         },
                         color = Color(0xFFFF5722),
                         showLabel = showLabels,
                         isFiltered = true,
                         onClick = {
-                            uiState.currentMode = UiState.Affichage_Et_Click_Modes.toggle(uiState.currentMode)
+                            uiState.currentMode = UiState.CE_TELEPHONE_EST.toggle(uiState.currentMode)
                         }
                     )  */
 

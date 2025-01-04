@@ -11,7 +11,7 @@ internal fun Main_Item(
     var isExpanded by remember { mutableStateOf(false) }
 
     val heightCard = when {
-        uiState.currentMode == Ui_State_4_Fragment.Affichage_Et_Click_Modes.MODE_Affiche_Produits ->
+        uiState.currentMode == Ui_State_4_Fragment.CE_TELEPHONE_EST.MODE_Affiche_Produits ->
             if (isExpanded) 300.dp else 100.dp
         else -> 100.dp
     }
@@ -44,7 +44,7 @@ internal fun Main_Item(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (uiState.currentMode == Ui_State_4_Fragment.Affichage_Et_Click_Modes.MODE_Affiche_Achteurs)
+                if (uiState.currentMode == Ui_State_4_Fragment.CE_TELEPHONE_EST.AFFICHEUR)
                     Modifier.wrapContentHeight()
                 else
                     Modifier.height(heightCard)

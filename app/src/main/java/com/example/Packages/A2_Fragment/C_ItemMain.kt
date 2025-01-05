@@ -54,7 +54,8 @@ fun C_ItemMainFragment_2(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
-            reloadKey = 0
+            reloadKey = 0 ,
+            onRelodeDonne = {}
         )
 
         // Product ID

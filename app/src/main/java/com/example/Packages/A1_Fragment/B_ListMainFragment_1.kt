@@ -19,9 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 
 @Composable
 fun B_ListMainFragment_1(
+    initViewModel: InitViewModel,
     visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
@@ -80,7 +82,8 @@ fun B_ListMainFragment_1(
                             it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                         } ?: 0
                         updateProductPosition(product, maxPosition + 1)
-                    }
+                    },
+                    initViewModel = initViewModel,
                 )
             }
         }
@@ -97,6 +100,7 @@ fun B_ListMainFragment_1(
             items(unpositioned.sortedBy { it.nom }, key = { it.id }) {
                 product ->
                 C_ItemMainFragment_1(
+                    initViewModel=initViewModel,
                     itemMain = product,
                     onClickDelete = { updateProductPosition(product, 0) },
                     onCLickOnMain = {
@@ -106,7 +110,7 @@ fun B_ListMainFragment_1(
 
                         onCLickOnMainEtitsTempProduit(product)
                         updateProductPosition(product, maxPosition + 1)
-                    }
+                    },
                 )
             }
         }

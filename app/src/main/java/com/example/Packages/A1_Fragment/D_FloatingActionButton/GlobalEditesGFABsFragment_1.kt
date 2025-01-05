@@ -94,6 +94,7 @@ fun GlobalEditesGFABsFragment_1(
                         statuesBase.apply {
                             prePourCameraCapture = false
                             naAucunImage = false
+                            sonImageBesoinActualisation=true
                         }
                         besoin_To_Be_Updated = true
                     }

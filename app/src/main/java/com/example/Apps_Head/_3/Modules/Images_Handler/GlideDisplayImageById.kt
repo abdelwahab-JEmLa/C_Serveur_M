@@ -39,9 +39,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 
-private const val TAG = "Suive_Le_tigere_quend_Update"
 private const val BASE_PATH = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
 private const val IMAGE_QUALITY = 3
+private const val TAG = "GlideImageDebug"
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -54,14 +54,16 @@ fun GlideDisplayImageById(
     contentDescription: String? = null,
     height_Defini: Dp? = null,
     width_Defini: Dp? = null,
-    cornerRadius: Dp = 8.dp
+    cornerRadius: Dp = 8.dp,
+    onRelodeDonne: () -> Unit
 ) {
-    var retryCount by remember { mutableStateOf(0) }
-    val maxRetries = 3
-    var currentQuality by remember { mutableStateOf(5f) }
+    Log.d(TAG, "Démarrage GlideDisplayImageById - produit_Id: $produit_Id, index: $index")
+    Log.d(TAG, "État initial - sonImageBesoinActualisation: $sonImageBesoinActualisation")
+
     var isLoading by remember { mutableStateOf(true) }
-    var imageLoaded by remember { mutableStateOf(false) }
-    var forceReload by remember { mutableStateOf(0) } // Nouvel état pour forcer le rechargement
+    var forceReload by remember { mutableStateOf(0) }
+    var currentQuality by remember { mutableStateOf(IMAGE_QUALITY.toFloat()) }
+    var reloadSuccess by remember { mutableStateOf(false) }
 
     val blurRadius by animateFloatAsState(
         targetValue = if (isLoading) 25f else 0f,
@@ -69,113 +71,105 @@ fun GlideDisplayImageById(
         label = "blur"
     )
 
-    // Wait for image update before triggering reload
-    LaunchedEffect(sonImageBesoinActualisation, reloadKey) {
-        if (sonImageBesoinActualisation) {
-            Log.d(TAG, "🔄 Starting update process for Product ID: $produit_Id")
-            isLoading = true
-            imageLoaded = false
+    val boxModifier = modifier.then(
+        if (height_Defini != null && width_Defini != null) {
+            Modifier.size(width = width_Defini, height = height_Defini)
+        } else {
+            Modifier.fillMaxSize()
+        }
+    )
 
+    LaunchedEffect(sonImageBesoinActualisation, reloadKey) {
+        Log.d(TAG, "LaunchedEffect déclenché - sonImageBesoinActualisation: $sonImageBesoinActualisation")
+
+        if (sonImageBesoinActualisation) {
             val baseImagePath = "$BASE_PATH/${produit_Id}_${index + 1}"
             val imageFile = File("$baseImagePath.jpg")
+            Log.d(TAG, "Chemin du fichier: $baseImagePath.jpg")
+            Log.d(TAG, "Le fichier existe: ${imageFile.exists()}")
 
             imageFile.parentFile?.mkdirs()
+            val initialFileSize = if (imageFile.exists()) imageFile.length() else 0
+            Log.d(TAG, "Taille initiale du fichier: $initialFileSize bytes")
 
-            val initialFileSize = if (imageFile.exists()) {
-                Log.d(TAG, "📁 Existing file found for Product ID: $produit_Id")
-                imageFile.length()
-            } else {
-                Log.d(TAG, "📁 No existing file for Product ID: $produit_Id")
-                0
-            }
+            var shouldReload = false
 
-            Log.d(TAG, "📊 Initial file size for Product ID: $produit_Id is $initialFileSize bytes")
-
-            while (retryCount < maxRetries) {
+            repeat(3) { attempt ->
                 delay(1000)
+                if (imageFile.exists()) {
+                    val currentFileSize = imageFile.length()
+                    Log.d(TAG, "Tentative $attempt - Nouvelle taille: $currentFileSize bytes")
 
-                if (!imageFile.exists()) {
-                    Log.w(TAG, "⚠️ File still not created after delay for Product ID: $produit_Id")
-                    retryCount++
-                    continue
+                    if (currentFileSize > 0 && currentFileSize != initialFileSize) {
+                        shouldReload = true
+                        Log.d(TAG, "Changement de taille détecté - Reload nécessaire")
+                    }
+                } else {
+                    Log.d(TAG, "Tentative $attempt - Fichier n'existe pas")
                 }
+            }
 
-                val currentFileSize = imageFile.length()
-                Log.d(TAG, "📍 Retry $retryCount - Current file size: $currentFileSize bytes for Product ID: $produit_Id")
-
-                if (currentFileSize > 0 && currentFileSize != initialFileSize) {
-                    Log.d(TAG, "✅ Valid file detected for Product ID: $produit_Id - Size: $currentFileSize bytes")
-                    delay(500) // Attendre que le fichier soit complètement écrit
-                    forceReload++ // Forcer un rechargement
-                    Log.d(TAG, "🔄 Triggering force reload for Product ID: $produit_Id")
-                    break
-                }
-
-                retryCount++
+            if (shouldReload) {
+                Log.d(TAG, "Préparation du reload - Attente de 500ms")
+                delay(500)
+                forceReload++
+                reloadSuccess = true
+                Log.d(TAG, "Reload initié - forceReload: $forceReload, reloadSuccess: $reloadSuccess")
+            } else {
+                Log.d(TAG, "Aucun reload nécessaire")
             }
         }
     }
 
-    // Effet séparé pour gérer le rechargement forcé
-    LaunchedEffect(forceReload) {
-        if (forceReload > 0) {
-            Log.d(TAG, "🔄 Executing force reload for Product ID: $produit_Id")
-            isLoading = true
-            imageLoaded = false
-            currentQuality = 5f
-            delay(300)
-            currentQuality = IMAGE_QUALITY.toFloat()
-            imageLoaded = true
-            isLoading = false
+    LaunchedEffect(reloadSuccess) {
+        if (reloadSuccess) {
+            Log.d(TAG, "Callback onRelodeDonne appelé")
+            onRelodeDonne()
+            reloadSuccess = false
+            Log.d(TAG, "reloadSuccess réinitialisé à false")
         }
     }
 
-    // Effet pour le rechargement normal
-    LaunchedEffect(reloadKey) {
-        if (!sonImageBesoinActualisation) {
-            Log.d(TAG, "🔄 Normal reload for Product ID: $produit_Id")
+    LaunchedEffect(forceReload, reloadKey) {
+        if (forceReload > 0 || !sonImageBesoinActualisation) {
+            Log.d(TAG, "Début du processus de reload - forceReload: $forceReload")
             isLoading = true
-            imageLoaded = false
             currentQuality = 5f
             delay(300)
             currentQuality = IMAGE_QUALITY.toFloat()
-            imageLoaded = true
+            isLoading = false
+            Log.d(TAG, "Fin du processus de reload - currentQuality: $currentQuality")
         }
     }
 
     val imageFile by produceState<File?>(
         initialValue = null,
-        // Utiliser vararg keys pour passer plusieurs clés
         keys = arrayOf(produit_Id, index, reloadKey, forceReload)
     ) {
         value = withContext(Dispatchers.IO) {
-            Log.d(TAG, "🔍 Searching for image files for Product ID: $produit_Id")
             val baseImagePath = "$BASE_PATH/${produit_Id}_${index + 1}"
-            val file = listOf("jpg", "jpeg", "png", "webp")
+            Log.d(TAG, "Recherche du fichier image - Chemin de base: $baseImagePath")
+
+            listOf("jpg", "jpeg", "png", "webp")
                 .asSequence()
                 .map { ext -> File("$baseImagePath.$ext") }
-                .firstOrNull { it.exists() && it.canRead() && it.length() > 0 }
-
-            file?.let {
-                Log.d(TAG, "✅ Using image file: ${it.absolutePath} (size: ${it.length()} bytes)")
-            } ?: Log.w(TAG, "⚠️ No valid image file found for Product ID: $produit_Id")
-
-            file
+                .firstOrNull { file ->
+                    val exists = file.exists()
+                    val canRead = file.canRead()
+                    val length = file.length()
+                    Log.d(TAG, "Test fichier ${file.name} - existe: $exists, lisible: $canRead, taille: $length")
+                    exists && canRead && length > 0
+                }
         }
     }
 
-    Box(
-        modifier = modifier.then(
-            if (height_Defini != null && width_Defini != null) {
-                Modifier.size(width = width_Defini, height = height_Defini)
-            } else {
-                Modifier.fillMaxSize()
-            }
-        )
-    ) {
-        imageFile?.takeIf { it.length() > 0 }?.let { file ->
+    Box(modifier = boxModifier) {
+        val fileLength = imageFile?.length() ?: 0
+        Log.d(TAG, "Taille du fichier à afficher: $fileLength bytes")
+
+        if (fileLength > 0) {
             GlideImage(
-                model = file,
+                model = imageFile,
                 contentDescription = contentDescription ?: "Product Image $produit_Id",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -202,7 +196,7 @@ fun GlideDisplayImageById(
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .priority(com.bumptech.glide.Priority.HIGH)
-                    .signature(ObjectKey("${produit_Id}_${index}_${currentQuality}_${forceReload}")) // Ajout de forceReload à la signature
+                    .signature(ObjectKey("${produit_Id}_${index}_${currentQuality}_${forceReload}"))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(
                             e: GlideException?,
@@ -210,7 +204,7 @@ fun GlideDisplayImageById(
                             target: Target<Drawable>,
                             isFirstResource: Boolean
                         ): Boolean {
-                            Log.e(TAG, "❌ Glide load failed for Product ID $produit_Id: ${e?.message}")
+                            Log.e(TAG, "Échec du chargement de l'image", e)
                             return false
                         }
 
@@ -221,19 +215,27 @@ fun GlideDisplayImageById(
                             dataSource: DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
-                            Log.d(TAG, "✅ Glide load success for Product ID: $produit_Id")
+                            Log.d(TAG, "Image chargée avec succès - dataSource: $dataSource, isFirstResource: $isFirstResource")
                             isLoading = false
+                            if (reloadSuccess) {
+                                Log.d(TAG, "Exécution du callback après chargement réussi")
+                                onRelodeDonne()
+                                reloadSuccess = false
+                            }
                             return false
                         }
                     })
             }
-        } ?: GlideImage(
-            model = R.drawable.ic_launcher_background,
-            contentDescription = "Fallback Image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(RoundedCornerShape(cornerRadius))
-        )
+        } else {
+            Log.d(TAG, "Affichage de l'image par défaut - fichier non trouvé ou vide")
+            GlideImage(
+                model = R.drawable.ic_launcher_background,
+                contentDescription = "Fallback Image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(cornerRadius))
+            )
+        }
     }
 }

@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Packages.A1_Fragment.D_FloatingActionButton.CE_TELEPHONE_EST
 
 enum class CE_TELEPHONE_EST {
     _SERVEUR,
@@ -31,11 +30,8 @@ fun GlobalEditesGFABsFragment_2(
     modifier: Modifier = Modifier,
     appsHeadModel: AppsHeadModel,
 ) {
-
     var currentMode by remember { mutableStateOf(CE_TELEPHONE_EST._SERVEUR) }
     var showOptions by remember { mutableStateOf(false) }
-
-
 
     Box(
         modifier = modifier.padding(16.dp),

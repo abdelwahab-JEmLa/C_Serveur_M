@@ -60,6 +60,8 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                 init_besoin_To_Be_Updated = true
             )
 
+            depuitAncienDataBase.statuesBase?.naAucunImage =filterIdUp2000
+
             // Add colors/tastes
             listOf(
                 ancien.idcolor1 to 1L,
@@ -73,7 +75,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                             position_Du_Couleur_Au_Produit = position,
                             nom = couleur.nameColore,
                             imogi = couleur.iconColore,
-                            sonImageNeExistPas= !filterIdUp2000 && position == 1L,
+                            sonImageNeExistPas= filterIdUp2000 && position == 1L,
                         )
                     )
                 }

@@ -82,7 +82,7 @@ internal fun A_ScreenMainFragment_1(
                                 init_it_Image_besoin_To_Be_Updated=true
                             ).apply {
                                 // Copy all other relevant properties
-                                baseStatues = existingProduct.baseStatues
+                                statuesBase = existingProduct.statuesBase
                                 non_Trouve = existingProduct.non_Trouve
                                 bonsVentDeCetteCotaList = existingProduct.bonsVentDeCetteCotaList
                                 historiqueBonsVentsList = existingProduct.historiqueBonsVentsList

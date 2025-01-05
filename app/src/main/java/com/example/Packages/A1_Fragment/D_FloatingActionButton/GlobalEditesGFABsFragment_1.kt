@@ -53,7 +53,7 @@ fun GlobalEditesGFABsFragment_1(
             try {
                 // Find the first product that needs an image
                 val productNeedingImage = appsHeadModel.produitsMainDataBase.find { product ->
-                    product.coloursEtGouts.any { it.sonImageNeExistPas && it.position_Du_Couleur_Au_Produit == 1L }
+                    product.statuesBase?.naAucunImage ?: false
                 }
 
                 productNeedingImage?.let { product ->
@@ -67,10 +67,8 @@ fun GlobalEditesGFABsFragment_1(
                     }
 
                     // Update product image status
-                    product.coloursEtGouts.find {
-                        it.position_Du_Couleur_Au_Produit == 1L
-                    }?.let { colorOption ->
-                        colorOption.sonImageNeExistPas = true
+                    product.let {
+                        it.statuesBase?.naAucunImage = false
                     }
 
                     // Update database

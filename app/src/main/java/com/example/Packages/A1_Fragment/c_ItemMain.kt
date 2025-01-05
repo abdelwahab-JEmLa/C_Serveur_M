@@ -60,7 +60,7 @@ fun C_ItemMainFragment_1(
         // Product Image
         GlideDisplayImageById(
             produit_Id = itemMain.id,
-            produit_Image_Need_Update = itemMain.itImageBesoinToBeUpdated,
+            produit_Image_Need_Update = itemMain.itImageBesoinActualisation,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),

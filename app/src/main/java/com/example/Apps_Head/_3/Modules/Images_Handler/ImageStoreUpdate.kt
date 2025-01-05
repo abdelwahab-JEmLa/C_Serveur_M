@@ -41,7 +41,7 @@ fun ImageStoreUpdate(initViewModel: InitViewModel, produitId: Long) {
                 initViewModel._appsHeadModel.produitsMainDataBase
                     .find { it.id == produitId }
                     ?.let { product ->
-                        product.itImageBesoinToBeUpdated = false
+                        product.itImageBesoinActualisation = false
                         initViewModel._appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
                     }
 

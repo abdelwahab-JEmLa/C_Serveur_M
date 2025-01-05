@@ -33,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
 enum class DeviceMode {
     SERVER,
@@ -42,75 +43,90 @@ enum class DeviceMode {
 @Composable
 fun GlobalEditesGFABsFragment_1(
     appsHeadModel: AppsHeadModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onError: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showOptions by remember { mutableStateOf(false) }
     var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
+    var tempImageUri by remember { mutableStateOf<Uri?>(null) }
+    var pendingProduct by remember { mutableStateOf<AppsHeadModel.ProduitModel?>(null) }
 
-    val handleImage = { uri: Uri ->
-        scope.launch {
-            try {
-                // Find the first product that needs an image
-                val productNeedingImage = appsHeadModel.produitsMainDataBase
-                    .find { product ->
-                        product.statuesBase.prePourCameraCapture
-                    }
+    fun createTempImageUri(): Uri? {
+        return try {
+            val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
+            FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                tempFile
+            ).also { tempImageUri = it }
+        } catch (e: IOException) {
+            onError("Failed to create temporary image file: ${e.localizedMessage}")
+            null
+        }
+    }
 
-                productNeedingImage?.let { product ->
-                    val fileName = "${product.id}_1.jpg"
+    suspend fun handleImageCapture(uri: Uri) {
+        try {
+            pendingProduct?.let { product ->
+                val fileName = "${product.id}_1.jpg"
+                val localStorageDir = File(imagesProduitsLocalExternalStorageBasePath).apply {
+                    if (!exists()) mkdirs()
+                }
 
-                    // Create local storage directory if it doesn't exist
-                    val localStorageDir = File(imagesProduitsLocalExternalStorageBasePath)
-                    if (!localStorageDir.exists()) {
-                        localStorageDir.mkdirs()
-                    }
+                val localFile = File(localStorageDir, fileName)
+
+                context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                    val imageBytes = inputStream.readBytes()
 
                     // Save to local storage
-                    val localFile = File(localStorageDir, fileName)
-                    context.contentResolver.openInputStream(uri)?.use { input ->
-                        val imageBytes = input.readBytes()
+                    FileOutputStream(localFile).use { output ->
+                        output.write(imageBytes)
+                    }
 
-                        // Save to local storage
-                        FileOutputStream(localFile).use { output ->
-                            output.write(imageBytes)
+                    // Upload to Firebase Storage
+                    imagesProduitsFireBaseStorageRef
+                        .child(fileName)
+                        .putBytes(imageBytes)
+                        .await()
+
+                    // Update product status
+                    product.apply {
+                        statuesBase.apply {
+                            prePourCameraCapture = false
+                            naAucunImage = false
                         }
-
-                        // Upload to Firebase
-                        imagesProduitsFireBaseStorageRef.child(fileName)
-                            .putBytes(imageBytes)
-                            .await()
+                        besoin_To_Be_Updated = true
                     }
 
-                    // Update product image status
-                    product.statuesBase.apply {
-                        prePourCameraCapture = false
-                        naAucunImage = false
-                    }
-
-                    // Update database
+                    // Update in Firebase Realtime Database
                     AppsHeadModel.produitsFireBaseRef
                         .child(product.id.toString())
                         .setValue(product)
+                        .await()
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            } ?: throw IllegalStateException("No pending product found")
+
+        } catch (e: Exception) {
+            onError("Failed to process image: ${e.localizedMessage}")
+        } finally {
+            pendingProduct = null
+            tempImageUri = null
         }
     }
 
     val cameraLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.TakePicture()
+        contract = ActivityResultContracts.TakePicture()
     ) { success ->
         if (success) {
-            val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
-            val uri = FileProvider.getUriForFile(
-                context,
-                "${context.packageName}.fileprovider",
-                tempFile
-            )
-            handleImage(uri)
+            tempImageUri?.let { uri ->
+                scope.launch {
+                    handleImageCapture(uri)
+                }
+            }
+        } else {
+            onError("Failed to capture image")
         }
     }
 
@@ -126,29 +142,38 @@ fun GlobalEditesGFABsFragment_1(
                 // Camera FAB
                 FloatingActionButton(
                     onClick = {
-                        val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
-                        val uri = FileProvider.getUriForFile(
-                            context,
-                            "${context.packageName}.fileprovider",
-                            tempFile
-                        )
-                        cameraLauncher.launch(uri)
+                        val productForCapture = appsHeadModel.produitsMainDataBase
+                            .find { it.statuesBase.prePourCameraCapture }
+
+                        if (productForCapture != null) {
+                            pendingProduct = productForCapture
+                            createTempImageUri()?.let { uri ->
+                                cameraLauncher.launch(uri)
+                            }
+                        } else {
+                            onError("No product marked for image capture")
+                        }
                     },
                     containerColor = Color(0xFF4CAF50)
                 ) {
-                    Icon(Icons.Default.AddAPhoto, contentDescription = "Take Photo")
+                    Icon(
+                        imageVector = Icons.Default.AddAPhoto,
+                        contentDescription = "Take Photo"
+                    )
                 }
 
                 // Mode Toggle FAB
                 FloatingActionButton(
                     onClick = {
-                        deviceMode = if (deviceMode == DeviceMode.SERVER)
-                            DeviceMode.DISPLAY else DeviceMode.SERVER
+                        deviceMode = when (deviceMode) {
+                            DeviceMode.SERVER -> DeviceMode.DISPLAY
+                            DeviceMode.DISPLAY -> DeviceMode.SERVER
+                        }
                     },
                     containerColor = Color(0xFFFF5722)
                 ) {
                     Icon(
-                        Icons.Default.Upload,
+                        imageVector = Icons.Default.Upload,
                         contentDescription = if (deviceMode == DeviceMode.SERVER)
                             "Switch to Display Mode" else "Switch to Server Mode"
                     )

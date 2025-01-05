@@ -73,8 +73,7 @@ fun GlobalEditesGFABsFragment_1(
                 val fileName = "${product.id}_1.jpg"
                 val localStorageDir = File(imagesProduitsLocalExternalStorageBasePath).apply {
                     if (!exists()) mkdirs()
-                }
-
+                }   //
                 val localFile = File(localStorageDir, fileName)
 
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->

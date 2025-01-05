@@ -19,7 +19,12 @@ import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,64 +59,6 @@ fun GlobalEditesGFABsFragment_1(
     var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<AppsHeadModel.ProduitModel?>(null) }
-
-    // Define cameraLauncher first
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success) {
-            tempImageUri?.let { uri ->
-                scope.launch {
-                    handleImageCapture(uri)
-                }
-            }
-        } else {
-            scope.launch {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Failed to capture image", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
-    // Permission launcher
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val allGranted = permissions.values.all { it }
-        if (allGranted) {
-            // Now we can safely use cameraLauncher since it's defined above
-            if (pendingProduct != null && tempImageUri != null) {
-                cameraLauncher.launch(tempImageUri)
-            }
-        } else {
-            scope.launch {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        "Permissions required for camera operation",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-    }
-
-    fun createTempImageUri(): Uri? {
-        return try {
-            val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir).apply {
-                deleteOnExit()
-            }
-            FileProvider.getUriForFile(
-                context,
-                "${context.packageName}.fileprovider",
-                tempFile
-            ).also { tempImageUri = it }
-        } catch (e: IOException) {
-            Log.e("ImageCapture", "Failed to create temp file", e)
-            null
-        }
-    }
 
     suspend fun handleImageCapture(uri: Uri) {
         try {
@@ -197,6 +144,61 @@ fun GlobalEditesGFABsFragment_1(
         } finally {
             pendingProduct = null
             tempImageUri = null
+        }
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            tempImageUri?.let { uri ->
+                scope.launch {
+                    handleImageCapture(uri)
+                }
+            }
+        } else {
+            scope.launch {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, "Failed to capture image", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val allGranted = permissions.values.all { it }
+        if (allGranted) {
+            if (pendingProduct != null && tempImageUri != null) {
+                cameraLauncher.launch(tempImageUri!!)
+            }
+        } else {
+            scope.launch {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        "Permissions required for camera operation",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    fun createTempImageUri(): Uri? {
+        return try {
+            val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir).apply {
+                deleteOnExit()
+            }
+            FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                tempFile
+            ).also { tempImageUri = it }
+        } catch (e: IOException) {
+            Log.e("ImageCapture", "Failed to create temp file", e)
+            null
         }
     }
 

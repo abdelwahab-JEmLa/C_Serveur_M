@@ -226,7 +226,8 @@ class AppsHeadModel(
         val imagesProduitsFireBaseStorageRef = Firebase.storage.reference
             .child("Images Articles Data Base")
             .child("produits")
-        val imagesProduitsLocalExternalStorageBasePath = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
+
+        const val imagesProduitsLocalExternalStorageBasePath = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
 
         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {

@@ -44,7 +44,6 @@ enum class DeviceMode {
 fun GlobalEditesGFABsFragment_1(
     appsHeadModel: AppsHeadModel,
     modifier: Modifier = Modifier,
-    onError: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -62,7 +61,6 @@ fun GlobalEditesGFABsFragment_1(
                 tempFile
             ).also { tempImageUri = it }
         } catch (e: IOException) {
-            onError("Failed to create temporary image file: ${e.localizedMessage}")
             null
         }
     }
@@ -73,7 +71,8 @@ fun GlobalEditesGFABsFragment_1(
                 val fileName = "${product.id}_1.jpg"
                 val localStorageDir = File(imagesProduitsLocalExternalStorageBasePath).apply {
                     if (!exists()) mkdirs()
-                }   //
+                }
+
                 val localFile = File(localStorageDir, fileName)
 
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
@@ -108,7 +107,6 @@ fun GlobalEditesGFABsFragment_1(
             } ?: throw IllegalStateException("No pending product found")
 
         } catch (e: Exception) {
-            onError("Failed to process image: ${e.localizedMessage}")
         } finally {
             pendingProduct = null
             tempImageUri = null
@@ -125,7 +123,6 @@ fun GlobalEditesGFABsFragment_1(
                 }
             }
         } else {
-            onError("Failed to capture image")
         }
     }
 
@@ -150,7 +147,6 @@ fun GlobalEditesGFABsFragment_1(
                                 cameraLauncher.launch(uri)
                             }
                         } else {
-                            onError("No product marked for image capture")
                         }
                     },
                     containerColor = Color(0xFF4CAF50)

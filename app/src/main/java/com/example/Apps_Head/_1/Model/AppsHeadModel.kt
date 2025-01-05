@@ -31,6 +31,7 @@ class AppsHeadModel(
     @IgnoreExtraProperties
     class ProduitModel(
         var id: Long = 0,
+        var itsTempProduit: Boolean = false,
         init_nom: String = "",
         init_besoin_To_Be_Updated: Boolean = false,
         init_it_Image_besoin_To_Be_Updated: Boolean = false,
@@ -48,8 +49,7 @@ class AppsHeadModel(
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var isVisible: Boolean by mutableStateOf(init_visible)
 
-     /*   var internStatues: SnapshotStateList<InternStatues> =
-             List<ColourEtGout_Model> = emptyList() .toMutableStateList()    */
+        var baseStatues: BaseStatues? by mutableStateOf(BaseStatues())
 
         var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
             init_colours_Et_Gouts.toMutableStateList()
@@ -93,7 +93,7 @@ class AppsHeadModel(
             }
 
         @IgnoreExtraProperties
-        data class InternStatues(
+        data class BaseStatues(
             var ilAUneCouleurAvecImage: Boolean = false,
         )
 

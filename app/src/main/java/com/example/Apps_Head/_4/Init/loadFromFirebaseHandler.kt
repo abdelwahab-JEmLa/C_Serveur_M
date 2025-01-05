@@ -52,6 +52,7 @@ object LoadFromFirebaseHandler {
 
         return ProduitModel(
             id = productId,
+            itsTempProduit  = (productMap["itsTempProduit"] as? Boolean) ?: false,
             init_nom = (productMap["nom"] as? String) ?: "",
             init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean) ?: false,
             init_it_Image_besoin_To_Be_Updated = (productMap["it_Image_besoin_To_Be_Updated"] as? Boolean) ?: false,

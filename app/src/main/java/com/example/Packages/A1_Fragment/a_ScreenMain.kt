@@ -27,6 +27,7 @@ internal fun A_ScreenMainFragment_1(
     initViewModel: InitViewModel = viewModel(),
 ) {
     val TAG = "A_ScreenMainFragment_1"
+
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(

@@ -54,6 +54,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, takeUp2000: Boolean) {
         filteredProduits.forEachIndexed { index, ancien ->
             val depuitAncienDataBase = AppsHeadModel.ProduitModel(
                 id = ancien.idArticle,
+                itsTempProduit = takeUp2000,
                 init_nom = ancien.nomArticleFinale,
                 init_visible = false,
                 init_besoin_To_Be_Updated = true

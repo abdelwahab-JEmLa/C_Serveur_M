@@ -1,5 +1,6 @@
 package com.example.Packages.A1_Fragment.D_FloatingActionButton
 
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -24,10 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._3.Modules.Add_New_Produit.CameraPickImageHandler
-import com.example.Packages.A2_Fragment.D_FloatingActionButton.CE_TELEPHONE_EST
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.io.File
 
 enum class CE_TELEPHONE_EST {
     _SERVEUR,
@@ -35,23 +40,79 @@ enum class CE_TELEPHONE_EST {
 }
 @Composable
 fun GlobalEditesGFABsFragment_1(
-    modifier: Modifier = Modifier,
     appsHeadModel: AppsHeadModel,
+    modifier: Modifier = Modifier
 ) {
-    val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val imageHandler = remember { CameraPickImageHandler(context, appsHeadModel) }
-
-    var currentMode by remember { mutableStateOf(CE_TELEPHONE_EST._SERVEUR) }
+    val scope = rememberCoroutineScope()
     var showOptions by remember { mutableStateOf(false) }
+    var mode by remember { mutableStateOf(CE_TELEPHONE_EST._SERVEUR) }
+
+    val handleImage = { uri: Uri ->
+        scope.launch {
+            try {
+                val sortedByPosition = appsHeadModel.produitsMainDataBase
+                    .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
+
+                // Find existing product that needs update
+                val existingProduct = sortedByPosition.firstOrNull {
+                    it.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true
+                            && it.bonCommendDeCetteCota!!.
+                    positionProduitDonGrossistChoisiPourAcheterCeProduit>0
+                            && it.itsTempProduit
+                }
+
+                val lastIdUnder2000 = sortedByPosition
+                    .filter { !it.itsTempProduit }
+                    .maxOfOrNull { it.id } ?: 0L
+
+                // Le nouvel ID sera le dernier ID + 1
+                val newId = lastIdUnder2000 + 1
+
+                // Create and add new product
+                val newProduct = AppsHeadModel.ProduitModel(
+                    id = newId,
+                    init_nom = existingProduct?.nom ?: "",
+                    init_besoin_To_Be_Updated = true,
+                    init_it_Image_besoin_To_Be_Updated = true,
+                    initialNon_Trouve = existingProduct?.non_Trouve ?: false,
+                    init_colours_Et_Gouts = existingProduct?.coloursEtGouts?.toList() ?: listOf(),
+                    init_historiqueBonsCommend = existingProduct?.historiqueBonsCommend?.toList() ?: listOf()
+                )
+
+                // Remove old product if it exists
+                existingProduct?.let {
+                    appsHeadModel.produitsMainDataBase.removeAll { prod -> prod.id == it.id }
+                }
+                appsHeadModel.produitsMainDataBase.add(newProduct)
+
+                // Upload image
+                val fileName = "${newId}_1.jpg"
+                val storageRef = Firebase.storage.reference
+                    .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
+
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    storageRef.putBytes(input.readBytes()).await()
+                }
+
+                appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture()
+        ActivityResultContracts.TakePicture()
     ) { success ->
         if (success) {
-            imageHandler.tempImageUri?.let { uri ->
-                scope.launch { imageHandler.handleImageCaptureResult(uri) }
-            }
+            val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
+            val uri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                tempFile
+            )
+            handleImage(uri)
         }
     }
 
@@ -64,14 +125,13 @@ fun GlobalEditesGFABsFragment_1(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Camera Button
                 FloatingActionButton(
                     onClick = {
-                        val uri = imageHandler.handleNewProductImageCapture(
-                            appsHeadModel.produitsMainDataBase.firstOrNull {
-                                it.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true &&
-                                        it.id > 2000
-                            }
+                        val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
+                        val uri = FileProvider.getUriForFile(
+                            context,
+                            "${context.packageName}.fileprovider",
+                            tempFile
                         )
                         cameraLauncher.launch(uri)
                     },
@@ -80,19 +140,15 @@ fun GlobalEditesGFABsFragment_1(
                     Icon(Icons.Default.AddAPhoto, "Take Photo")
                 }
 
-                // Mode Toggle Button
                 FloatingActionButton(
-                    onClick = {
-                        currentMode = if (currentMode == CE_TELEPHONE_EST._SERVEUR) CE_TELEPHONE_EST._AFFICHEUR else CE_TELEPHONE_EST._SERVEUR
-                    },
+                    onClick = { mode = if (mode == CE_TELEPHONE_EST._SERVEUR) CE_TELEPHONE_EST._AFFICHEUR else CE_TELEPHONE_EST._SERVEUR },
                     containerColor = Color(0xFFFF5722)
                 ) {
-                    Icon(Icons.Default.Upload, if (currentMode == CE_TELEPHONE_EST._SERVEUR) "To _AFFICHEUR" else "To _SERVEUR")
+                    Icon(Icons.Default.Upload, if (mode == CE_TELEPHONE_EST._SERVEUR) "To _AFFICHEUR" else "To _SERVEUR")
                 }
             }
         }
 
-        // Main Toggle Button
         FloatingActionButton(
             onClick = { showOptions = !showOptions },
             containerColor = Color(0xFF3F51B5)

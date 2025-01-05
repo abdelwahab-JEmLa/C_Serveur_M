@@ -8,14 +8,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.imagesProduitsFireBaseStorageRef
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.produitsFireBaseRef
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._4.Init.initializer
-import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.database
-import com.google.firebase.storage.storage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -55,8 +54,8 @@ class InitViewModel : ViewModel() {
 
     private fun setupDataListeners() {
         // Listen for image changes
-        Firebase.database.getReference("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase")
-            .addValueEventListener(object : ValueEventListener {
+
+        produitsFireBaseRef.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     snapshot.children.forEach { imageData ->
                         val fileName = imageData.key ?: return@forEach
@@ -66,12 +65,12 @@ class InitViewModel : ViewModel() {
                         if (activeDownloads[productId]?.isActive == true) return@forEach
 
                         val localFile = File("$basePath/$fileName")
-                        if (!localFile.exists() || product.statuesBase.naAucunImage == true) {
+                        if (!localFile.exists() || product.statuesBase.naAucunImage) {
                             activeDownloads[productId] = viewModelScope.launch {
                                 try {
                                     File(basePath).mkdirs()
-                                    Firebase.storage.reference
-                                        .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
+                                    imagesProduitsFireBaseStorageRef
+                                        .child(fileName)
                                         .getFile(localFile)
                                         .addOnSuccessListener {
                                             product.apply {
@@ -98,7 +97,7 @@ class InitViewModel : ViewModel() {
             })
 
         // Listen for position changes
-        AppsHeadModel.ref_produitsDataBase.addValueEventListener(object : ValueEventListener {
+        AppsHeadModel.produitsFireBaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 _appsHeadModel.produitsMainDataBase.forEach { product ->
                     viewModelScope.launch {
@@ -108,7 +107,7 @@ class InitViewModel : ViewModel() {
                             .getValue(Int::class.java)?.let { newPosition ->
                                 _positionChangeFlow.emit(product.id to newPosition)
 
-                                AppsHeadModel.ref_produitsDataBase
+                                AppsHeadModel.produitsFireBaseRef
                                     .child(product.id.toString())
                                     .child("grossist_Choisi_Pour_Acheter_CeProduit")
                                     .child(product.bonCommendDeCetteCota?.grossistInformations?.id.toString())

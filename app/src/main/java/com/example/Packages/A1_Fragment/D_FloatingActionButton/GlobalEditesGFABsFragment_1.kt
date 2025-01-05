@@ -27,8 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.imagesProduitsFireBaseStorageRef
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.File
@@ -58,19 +57,17 @@ fun GlobalEditesGFABsFragment_1(
 
                 productNeedingImage?.let { product ->
                     val fileName = "${product.id}_1.jpg"
-                    val storageRef = Firebase.storage.reference
-                        .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
-
+                    imagesProduitsFireBaseStorageRef.child(fileName)
                     // Upload image
                     context.contentResolver.openInputStream(uri)?.use { input ->
-                        storageRef.putBytes(input.readBytes()).await()
+                        imagesProduitsFireBaseStorageRef.putBytes(input.readBytes()).await()
                     }
 
                     // Update product image status
                     product.statuesBase.naAucunImage = false
 
                     // Update database
-                    AppsHeadModel.ref_produitsDataBase
+                    AppsHeadModel.produitsFireBaseRef
                         .child(product.id.toString())
                         .setValue(product)
                 }

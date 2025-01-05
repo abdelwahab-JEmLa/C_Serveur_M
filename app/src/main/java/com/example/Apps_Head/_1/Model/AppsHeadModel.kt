@@ -11,6 +11,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
+import com.google.firebase.storage.storage
 import java.util.Objects
 
 @IgnoreExtraProperties
@@ -217,8 +218,13 @@ class AppsHeadModel(
     }
 
     companion object {
-        private const val CHEMIN_BASE = "0_UiState_3_Host_Package_3_Prototype11Dec/produitsDataBase"
-        val ref_produitsDataBase = Firebase.database.getReference(CHEMIN_BASE)
+        val produitsFireBaseRef = Firebase.database
+            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+            .child("produits")
+
+        val imagesProduitsFireBaseStorageRef = Firebase.storage.reference
+            .child("Images Articles Data Base")
+            .child("produits")
 
         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
@@ -226,7 +232,7 @@ class AppsHeadModel(
 
                 updatedProducts.forEach { product ->
                     try {
-                        ref_produitsDataBase.child(product.id.toString()).setValue(product)
+                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
                         product.besoin_To_Be_Updated = false
                         Log.d("Firebase", "Successfully updated product ${product.id}")
                     } catch (e: Exception) {

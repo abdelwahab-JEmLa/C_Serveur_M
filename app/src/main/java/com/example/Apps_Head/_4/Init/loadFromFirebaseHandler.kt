@@ -29,7 +29,7 @@ object LoadFromFirebaseHandler {
     }
 
     private suspend fun loadProducts() = suspendCancellableCoroutine { continuation ->
-        AppsHeadModel.ref_produitsDataBase.addListenerForSingleValueEvent(object : ValueEventListener {
+        AppsHeadModel.produitsFireBaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) = try {
                 val products = snapshot.children
                     .mapNotNull { parseProduct(it) }

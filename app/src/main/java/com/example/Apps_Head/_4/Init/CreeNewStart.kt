@@ -168,7 +168,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
         }
 
         // Clear and update Firebase database
-        AppsHeadModel.ref_produitsDataBase.removeValue()
+        AppsHeadModel.produitsFireBaseRef.removeValue()
         _appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
 
         initializationProgress = 1.0f

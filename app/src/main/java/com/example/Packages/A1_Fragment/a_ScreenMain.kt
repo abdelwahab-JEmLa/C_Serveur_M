@@ -79,15 +79,13 @@ internal fun A_ScreenMainFragment_1(
                                 init_bonCommendDeCetteCota = existingProduct.bonCommendDeCetteCota,
                                 init_visible = existingProduct.isVisible,
                                 init_besoin_To_Be_Updated = true,
-                                init_it_Image_besoin_To_Be_Updated=true
                             ).apply {
                                 // Copy all other relevant properties
                                 statuesBase = existingProduct.statuesBase
                                 non_Trouve = existingProduct.non_Trouve
                                 bonsVentDeCetteCotaList = existingProduct.bonsVentDeCetteCotaList
                                 historiqueBonsVentsList = existingProduct.historiqueBonsVentsList
-                                historiqueBonsCommendList =
-                                    existingProduct.historiqueBonsCommendList
+                                historiqueBonsCommendList = existingProduct.historiqueBonsCommendList
                             }
 
                             // Remove old product if it exists

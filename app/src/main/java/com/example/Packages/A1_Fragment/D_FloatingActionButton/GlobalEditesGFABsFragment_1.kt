@@ -53,7 +53,7 @@ fun GlobalEditesGFABsFragment_1(
             try {
                 // Find the first product that needs an image
                 val productNeedingImage = appsHeadModel.produitsMainDataBase.find { product ->
-                    product.statuesBase?.naAucunImage ?: false
+                    product.statuesBase.naAucunImage
                 }
 
                 productNeedingImage?.let { product ->
@@ -67,9 +67,7 @@ fun GlobalEditesGFABsFragment_1(
                     }
 
                     // Update product image status
-                    product.let {
-                        it.statuesBase?.naAucunImage = false
-                    }
+                    product.statuesBase.naAucunImage = false
 
                     // Update database
                     AppsHeadModel.ref_produitsDataBase

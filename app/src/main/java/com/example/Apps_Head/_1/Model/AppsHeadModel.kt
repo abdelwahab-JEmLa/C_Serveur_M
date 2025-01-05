@@ -34,7 +34,6 @@ class AppsHeadModel(
         var itsTempProduit: Boolean = false,
         init_nom: String = "",
         init_besoin_To_Be_Updated: Boolean = false,
-        init_it_Image_besoin_To_Be_Updated: Boolean = false,
         initialNon_Trouve: Boolean = false,
         init_colours_Et_Gouts: List<ColourEtGout_Model> = emptyList(),
         init_bonCommendDeCetteCota: GrossistBonCommandes? = null,
@@ -45,11 +44,10 @@ class AppsHeadModel(
     ) {
         var nom: String by mutableStateOf(init_nom)
         var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
-        var itImageBesoinActualisation: Boolean by mutableStateOf(init_it_Image_besoin_To_Be_Updated)
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var isVisible: Boolean by mutableStateOf(init_visible)
 
-        var statuesBase: StatuesBase? by mutableStateOf(StatuesBase())
+        var statuesBase: StatuesBase by mutableStateOf(StatuesBase())
 
         var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
             init_colours_Et_Gouts.toMutableStateList()
@@ -97,6 +95,7 @@ class AppsHeadModel(
             var ilAUneCouleurAvecImage: Boolean = false,
         ) {
             var naAucunImage: Boolean by mutableStateOf(false)
+            var sonImageBesoinActualisation: Boolean by mutableStateOf(false)
         }
 
         @IgnoreExtraProperties

@@ -66,7 +66,7 @@ class InitViewModel : ViewModel() {
                         if (activeDownloads[productId]?.isActive == true) return@forEach
 
                         val localFile = File("$basePath/$fileName")
-                        if (!localFile.exists() || product.statuesBase?.naAucunImage == true) {
+                        if (!localFile.exists() || product.statuesBase.naAucunImage == true) {
                             activeDownloads[productId] = viewModelScope.launch {
                                 try {
                                     File(basePath).mkdirs()
@@ -75,7 +75,8 @@ class InitViewModel : ViewModel() {
                                         .getFile(localFile)
                                         .addOnSuccessListener {
                                             product.apply {
-                                                statuesBase?.naAucunImage = false
+                                                statuesBase.naAucunImage = false
+                                                statuesBase.sonImageBesoinActualisation=true
                                                 besoin_To_Be_Updated = true
                                             }
                                             _appsHeadModel.produitsMainDataBase.updateProduitsFireBase()

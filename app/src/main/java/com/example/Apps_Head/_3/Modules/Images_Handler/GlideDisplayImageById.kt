@@ -48,7 +48,7 @@ private const val IMAGE_QUALITY = 3
 fun GlideDisplayImageById(
     modifier: Modifier = Modifier,
     produit_Id: Long,
-    produit_Image_Need_Update: Boolean = false,
+    sonImageBesoinActualisation: Boolean = false,
     index: Int = 0,
     reloadKey: Any = Unit,
     contentDescription: String? = null,
@@ -70,8 +70,8 @@ fun GlideDisplayImageById(
     )
 
     // Wait for image update before triggering reload
-    LaunchedEffect(produit_Image_Need_Update, reloadKey) {
-        if (produit_Image_Need_Update) {
+    LaunchedEffect(sonImageBesoinActualisation, reloadKey) {
+        if (sonImageBesoinActualisation) {
             Log.d(TAG, "🔄 Starting update process for Product ID: $produit_Id")
             isLoading = true
             imageLoaded = false
@@ -132,7 +132,7 @@ fun GlideDisplayImageById(
 
     // Effet pour le rechargement normal
     LaunchedEffect(reloadKey) {
-        if (!produit_Image_Need_Update) {
+        if (!sonImageBesoinActualisation) {
             Log.d(TAG, "🔄 Normal reload for Product ID: $produit_Id")
             isLoading = true
             imageLoaded = false

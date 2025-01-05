@@ -11,12 +11,16 @@ import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._3.Modules.Images_Handler.ImageStoreUpdate
 import com.example.Apps_Head._4.Init.initializer
+import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.database
+import com.google.firebase.storage.storage
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import java.io.File
 
 class InitViewModel : ViewModel() {
     var _appsHeadModel by mutableStateOf(AppsHeadModel())
@@ -34,6 +38,46 @@ class InitViewModel : ViewModel() {
 
     init {
         initAndObserveData()
+        // Configurer le listener pour les images
+        Firebase.database.getReference("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // Pour chaque image détectée
+                    snapshot.children.forEach { imageData ->
+                        val fileName = imageData.key ?: return@forEach
+                        val productId = fileName.split("_")[0].toLongOrNull() ?: return@forEach
+                        val product = _appsHeadModel.produitsMainDataBase.find { it.id == productId } ?: return@forEach
+
+                        // Préparer le dossier local
+                        val localDir = File("/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne").apply {
+                            if (!exists()) mkdirs()
+                        }
+                        val localFile = File(localDir, fileName)
+
+                        // Télécharger si nécessaire
+                        if (!localFile.exists() || product.itImageBesoinToBeUpdated) {
+                            Firebase.storage.reference
+                                .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
+                                .getFile(localFile)
+                                .addOnSuccessListener {
+                                    product.apply {
+                                        itImageBesoinToBeUpdated = false
+                                        besoin_To_Be_Updated = true
+                                    }
+                                    _appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
+                                    Log.d("InitViewModel", "Image téléchargée: $fileName")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("InitViewModel", "Erreur téléchargement: $fileName", e)
+                                }
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("InitViewModel", "Erreur listener", error.toException())
+                }
+            })
     }
 
     private fun initAndObserveData() {
@@ -123,4 +167,9 @@ class InitViewModel : ViewModel() {
         positionListeners.clear()
         _appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
     }
+    //-->
+    //TODO(1): ajoute on datachange listner de val storageRef = Firebase.storage.reference
+    //                        .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
+    // qui telechage val imagesBasePath = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
+    // si _appsHeadModel.produitsMainDataBase
 }

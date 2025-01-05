@@ -3,13 +3,13 @@ package com.example.Packages.A1_Fragment
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +31,7 @@ fun C_ItemMainFragment_1(
     itemMain: AppsHeadModel.ProduitModel,
     onClickDelete: () -> Unit,
     onCLickOnMain: () -> Unit,
+    onClickCamera: (() -> Unit)? =null,
 ) {
     // Calculate if the product has a valid position
     val hasPosition = remember(itemMain.bonCommendDeCetteCota) {
@@ -141,16 +142,21 @@ fun C_ItemMainFragment_1(
                 }
             }
         }
-
-        // Optional: Show loading indicator when updating
-        if (itemMain.itImageBesoinToBeUpdated) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.3f)),
-                contentAlignment = Alignment.Center
-            ) {
-                // You can add a CircularProgressIndicator here if needed
+        if (itemMain.itsTempProduit) {
+            if (onClickCamera != null) {
+                IconButton(
+                    onClick = onClickCamera,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp)
+                        .size(24.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CameraAlt,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error.copy(alpha = 0.7f)
+                    )
+                }
             }
         }
     }

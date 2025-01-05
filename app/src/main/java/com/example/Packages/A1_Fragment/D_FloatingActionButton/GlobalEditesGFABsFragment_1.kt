@@ -27,17 +27,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.File
 
-enum class CE_TELEPHONE_EST {
-    _SERVEUR,
-    _AFFICHEUR
+enum class DeviceMode {
+    SERVER,
+    DISPLAY
 }
+
 @Composable
 fun GlobalEditesGFABsFragment_1(
     appsHeadModel: AppsHeadModel,
@@ -46,56 +46,38 @@ fun GlobalEditesGFABsFragment_1(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showOptions by remember { mutableStateOf(false) }
-    var mode by remember { mutableStateOf(CE_TELEPHONE_EST._SERVEUR) }
+    var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
 
     val handleImage = { uri: Uri ->
         scope.launch {
             try {
-                val sortedByPosition = appsHeadModel.produitsMainDataBase
-                    .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
-
-                // Find existing product that needs update
-                val existingProduct = sortedByPosition.firstOrNull {
-                    it.bonCommendDeCetteCota?.grossistInformations?.auFilterFAB == true
-                            && it.bonCommendDeCetteCota!!.
-                    positionProduitDonGrossistChoisiPourAcheterCeProduit>0
-                            && it.itsTempProduit
+                // Find the first product that needs an image
+                val productNeedingImage = appsHeadModel.produitsMainDataBase.find { product ->
+                    product.coloursEtGouts.any { it.sonImageNeExistPas && it.position_Du_Couleur_Au_Produit == 1L }
                 }
 
-                val lastIdUnder2000 = sortedByPosition
-                    .filter { !it.itsTempProduit }
-                    .maxOfOrNull { it.id } ?: 0L
+                productNeedingImage?.let { product ->
+                    val fileName = "${product.id}_1.jpg"
+                    val storageRef = Firebase.storage.reference
+                        .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
 
-                // Le nouvel ID sera le dernier ID + 1
-                val newId = lastIdUnder2000 + 1
+                    // Upload image
+                    context.contentResolver.openInputStream(uri)?.use { input ->
+                        storageRef.putBytes(input.readBytes()).await()
+                    }
 
-                // Create and add new product
-                val newProduct = AppsHeadModel.ProduitModel(
-                    id = newId,
-                    init_nom = existingProduct?.nom ?: "",
-                    init_besoin_To_Be_Updated = true,
-                    init_it_Image_besoin_To_Be_Updated = true,
-                    initialNon_Trouve = existingProduct?.non_Trouve ?: false,
-                    init_colours_Et_Gouts = existingProduct?.coloursEtGouts?.toList() ?: listOf(),
-                    init_historiqueBonsCommend = existingProduct?.historiqueBonsCommend?.toList() ?: listOf()
-                )
+                    // Update product image status
+                    product.coloursEtGouts.find {
+                        it.position_Du_Couleur_Au_Produit == 1L
+                    }?.let { colorOption ->
+                        colorOption.sonImageNeExistPas = true
+                    }
 
-                // Remove old product if it exists
-                existingProduct?.let {
-                    appsHeadModel.produitsMainDataBase.removeAll { prod -> prod.id == it.id }
+                    // Update database
+                    AppsHeadModel.ref_produitsDataBase
+                        .child(product.id.toString())
+                        .setValue(product)
                 }
-                appsHeadModel.produitsMainDataBase.add(newProduct)
-
-                // Upload image
-                val fileName = "${newId}_1.jpg"
-                val storageRef = Firebase.storage.reference
-                    .child("Images Articles Data Base/AppsHeadModel.Produit_Main_DataBase/$fileName")
-
-                context.contentResolver.openInputStream(uri)?.use { input ->
-                    storageRef.putBytes(input.readBytes()).await()
-                }
-
-                appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -125,6 +107,7 @@ fun GlobalEditesGFABsFragment_1(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Camera FAB
                 FloatingActionButton(
                     onClick = {
                         val tempFile = File.createTempFile("temp_image", ".jpg", context.cacheDir)
@@ -137,24 +120,34 @@ fun GlobalEditesGFABsFragment_1(
                     },
                     containerColor = Color(0xFF4CAF50)
                 ) {
-                    Icon(Icons.Default.AddAPhoto, "Take Photo")
+                    Icon(Icons.Default.AddAPhoto, contentDescription = "Take Photo")
                 }
 
+                // Mode Toggle FAB
                 FloatingActionButton(
-                    onClick = { mode = if (mode == CE_TELEPHONE_EST._SERVEUR) CE_TELEPHONE_EST._AFFICHEUR else CE_TELEPHONE_EST._SERVEUR },
+                    onClick = {
+                        deviceMode = if (deviceMode == DeviceMode.SERVER)
+                            DeviceMode.DISPLAY else DeviceMode.SERVER
+                    },
                     containerColor = Color(0xFFFF5722)
                 ) {
-                    Icon(Icons.Default.Upload, if (mode == CE_TELEPHONE_EST._SERVEUR) "To _AFFICHEUR" else "To _SERVEUR")
+                    Icon(
+                        Icons.Default.Upload,
+                        contentDescription = if (deviceMode == DeviceMode.SERVER)
+                            "Switch to Display Mode" else "Switch to Server Mode"
+                    )
                 }
             }
         }
 
+        // Main FAB
         FloatingActionButton(
             onClick = { showOptions = !showOptions },
             containerColor = Color(0xFF3F51B5)
         ) {
             Icon(
-                imageVector = if (showOptions) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                imageVector = if (showOptions) Icons.Default.ExpandLess
+                else Icons.Default.ExpandMore,
                 contentDescription = if (showOptions) "Hide Options" else "Show Options"
             )
         }

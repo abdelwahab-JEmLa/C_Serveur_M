@@ -25,6 +25,7 @@ fun B_ListMainFragment_1(
     visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
+    onClickCamera: (AppsHeadModel.ProduitModel) -> Unit,
 ) {
     fun updateProductPosition(product: AppsHeadModel.ProduitModel, newPosition: Int) {
         product.apply {
@@ -78,7 +79,8 @@ fun B_ListMainFragment_1(
                         } ?: 0
                         updateProductPosition(product, maxPosition + 1)
                     },
-                    onClickDelete = { updateProductPosition(product, 0) }
+                    onClickDelete = { updateProductPosition(product, 0) } ,
+                    onClickCamera = { onClickCamera(product) }
                 )
             }
         }

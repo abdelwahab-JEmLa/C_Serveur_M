@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages.A1_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Packages.A1_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
@@ -27,7 +29,6 @@ internal fun A_ScreenMainFragment_1(
     initViewModel: InitViewModel = viewModel(),
 ) {
     val TAG = "A_ScreenMainFragment_1"
-
     if (!initViewModel.initializationComplete) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -61,10 +62,52 @@ internal fun A_ScreenMainFragment_1(
                 if (databaseSize > 0) {
                     B_ListMainFragment_1(
                         visibleItems = visibleItems,
-                        contentPadding = paddingValues
+                        contentPadding = paddingValues,
+                        onClickCamera = { existingProduct: AppsHeadModel.ProduitModel ->
+                            val lastIdUnder2000 = produitsMainDataBase
+                                .filter { !it.itsTempProduit }
+                                .maxOfOrNull { it.id } ?: 0L
+
+                            // Le nouvel ID sera le dernier ID + 1
+                            val newId = lastIdUnder2000 + 1
+
+                            // Create and add new product
+                            val newProduct = AppsHeadModel.ProduitModel(
+                                id = newId,
+                                init_nom = existingProduct.nom,
+                                init_colours_Et_Gouts = existingProduct.coloursEtGoutsList,
+                                init_bonCommendDeCetteCota = existingProduct.bonCommendDeCetteCota,
+                                init_visible = existingProduct.isVisible,
+                                init_besoin_To_Be_Updated = true,
+                                init_it_Image_besoin_To_Be_Updated=true
+                            ).apply {
+                                // Copy all other relevant properties
+                                baseStatues = existingProduct.baseStatues
+                                non_Trouve = existingProduct.non_Trouve
+                                bonsVentDeCetteCotaList = existingProduct.bonsVentDeCetteCotaList
+                                historiqueBonsVentsList = existingProduct.historiqueBonsVentsList
+                                historiqueBonsCommendList =
+                                    existingProduct.historiqueBonsCommendList
+                            }
+
+                            // Remove old product if it exists
+                            existingProduct.let {
+                                visibleItems.removeAll { prod -> prod.id == existingProduct.id }
+                            }
+
+                            visibleItems.add(newProduct)
+
+                            // Use the extension function from the companion object
+                            visibleItems.toMutableStateList().updateProduitsFireBase()
+                        }
                     )
                 }
             }
+
+            GlobalEditesGFABsFragment_1(
+                appsHeadModel = initViewModel.appsHead,
+                modifier = modifier,
+            )
 
             GrossisstsGroupedFABsFragment_1(
                 onClickFAB = { newList ->
@@ -75,11 +118,6 @@ internal fun A_ScreenMainFragment_1(
                 modifier = modifier
             )
 
-            GlobalEditesGFABsFragment_1(
-                appsHeadModel = initViewModel.appsHead,
-                modifier = modifier,
-
-            )
         }
     }
 }

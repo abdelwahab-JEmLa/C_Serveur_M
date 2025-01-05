@@ -20,7 +20,7 @@ suspend fun InitViewModel.initializer() {
         LoadFromFirebaseHandler.loadFromFirebase(this)
     }
 }
-suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, takeUp2000: Boolean) {
+suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolean) {
     try {
         initializationProgress = 0.1f
         isInitializing = true
@@ -45,7 +45,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, takeUp2000: Boolean) {
         )
 
         // Apply filtering based on takeUp200 parameter
-        val filteredProduits = if (takeUp2000) {
+        val filteredProduits = if (filterIdUp2000) {
             ancienData.produitsDatabase.filter { it.idArticle > 2000 }
         } else {
             ancienData.produitsDatabase.take(NOMBRE_ENTRE)
@@ -54,7 +54,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, takeUp2000: Boolean) {
         filteredProduits.forEachIndexed { index, ancien ->
             val depuitAncienDataBase = AppsHeadModel.ProduitModel(
                 id = ancien.idArticle,
-                itsTempProduit = takeUp2000,
+                itsTempProduit = filterIdUp2000,
                 init_nom = ancien.nomArticleFinale,
                 init_visible = false,
                 init_besoin_To_Be_Updated = true
@@ -72,7 +72,8 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, takeUp2000: Boolean) {
                         AppsHeadModel.ProduitModel.ColourEtGout_Model(
                             position_Du_Couleur_Au_Produit = position,
                             nom = couleur.nameColore,
-                            imogi = couleur.iconColore
+                            imogi = couleur.iconColore,
+                            sonImageNeExistPas= !filterIdUp2000 && position == 1L,
                         )
                     )
                 }
@@ -146,7 +147,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, takeUp2000: Boolean) {
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
                 if (Math.random() < 0.4) 0 else (1..10).random(),
                 init_coloursEtGoutsCommendee = depuitAncienDataBase.coloursEtGouts
-                    .take( if (takeUp2000) 1 else (1..4).random())
+                    .take( if (filterIdUp2000) 1 else (1..4).random())
                     .map { couleur ->
                         AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                             id = couleur.position_Du_Couleur_Au_Produit,

@@ -97,6 +97,7 @@ class AppsHeadModel(
         ) {
             var naAucunImage: Boolean by mutableStateOf(false)
             var sonImageBesoinActualisation: Boolean by mutableStateOf(false)
+            var prePourCameraCapture: Boolean by mutableStateOf(false)
         }
 
         @IgnoreExtraProperties
@@ -225,6 +226,7 @@ class AppsHeadModel(
         val imagesProduitsFireBaseStorageRef = Firebase.storage.reference
             .child("Images Articles Data Base")
             .child("produits")
+        val imagesProduitsLocalExternalStorageBasePath = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
 
         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {

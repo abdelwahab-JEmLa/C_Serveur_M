@@ -28,9 +28,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.imagesProduitsFireBaseStorageRef
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.imagesProduitsLocalExternalStorageBasePath
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.File
+import java.io.FileOutputStream
 
 enum class DeviceMode {
     SERVER,
@@ -51,20 +53,41 @@ fun GlobalEditesGFABsFragment_1(
         scope.launch {
             try {
                 // Find the first product that needs an image
-                val productNeedingImage = appsHeadModel.produitsMainDataBase.find { product ->
-                    product.statuesBase.naAucunImage
-                }
+                val productNeedingImage = appsHeadModel.produitsMainDataBase
+                    .find { product ->
+                        product.statuesBase.prePourCameraCapture
+                    }
 
                 productNeedingImage?.let { product ->
                     val fileName = "${product.id}_1.jpg"
-                    imagesProduitsFireBaseStorageRef.child(fileName)
-                    // Upload image
+
+                    // Create local storage directory if it doesn't exist
+                    val localStorageDir = File(imagesProduitsLocalExternalStorageBasePath)
+                    if (!localStorageDir.exists()) {
+                        localStorageDir.mkdirs()
+                    }
+
+                    // Save to local storage
+                    val localFile = File(localStorageDir, fileName)
                     context.contentResolver.openInputStream(uri)?.use { input ->
-                        imagesProduitsFireBaseStorageRef.putBytes(input.readBytes()).await()
+                        val imageBytes = input.readBytes()
+
+                        // Save to local storage
+                        FileOutputStream(localFile).use { output ->
+                            output.write(imageBytes)
+                        }
+
+                        // Upload to Firebase
+                        imagesProduitsFireBaseStorageRef.child(fileName)
+                            .putBytes(imageBytes)
+                            .await()
                     }
 
                     // Update product image status
-                    product.statuesBase.naAucunImage = false
+                    product.statuesBase.apply {
+                        prePourCameraCapture = false
+                        naAucunImage = false
+                    }
 
                     // Update database
                     AppsHeadModel.produitsFireBaseRef

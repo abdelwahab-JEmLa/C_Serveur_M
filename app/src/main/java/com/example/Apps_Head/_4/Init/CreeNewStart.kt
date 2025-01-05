@@ -10,7 +10,7 @@ import java.util.Locale
 
 suspend fun InitViewModel.initializer() {
 
-    val NOMBRE_ENTRE=50
+    val NOMBRE_ENTRE = 50
 
     if (NOMBRE_ENTRE > 0) {
         CreeNewStart(NOMBRE_ENTRE, true)
@@ -20,6 +20,7 @@ suspend fun InitViewModel.initializer() {
         LoadFromFirebaseHandler.loadFromFirebase(this)
     }
 }
+
 suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolean) {
     try {
         initializationProgress = 0.1f
@@ -60,7 +61,6 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                 init_besoin_To_Be_Updated = true
             )
 
-            depuitAncienDataBase.statuesBase.naAucunImage=filterIdUp2000
 
             // Add colors/tastes
             listOf(
@@ -75,7 +75,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                             position_Du_Couleur_Au_Produit = position,
                             nom = couleur.nameColore,
                             imogi = couleur.iconColore,
-                            sonImageNeExistPas= filterIdUp2000 && position == 1L,
+                            sonImageNeExistPas = filterIdUp2000 && position == 1L,
                         )
                     )
                 }
@@ -149,7 +149,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
                 if (Math.random() < 0.4) 0 else (1..10).random(),
                 init_coloursEtGoutsCommendee = depuitAncienDataBase.coloursEtGouts
-                    .take( if (filterIdUp2000) 1 else (1..4).random())
+                    .take(if (filterIdUp2000) 1 else (1..4).random())
                     .map { couleur ->
                         AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                             id = couleur.position_Du_Couleur_Au_Produit,
@@ -159,6 +159,12 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                         )
                     }
             )
+
+            depuitAncienDataBase.let { pro ->
+                pro.statuesBase.prePourCameraCapture =
+                    (pro.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
+                            && pro.itsTempProduit
+            }
 
             depuitAncienDataBase.bonCommendDeCetteCota = grossiste
             depuitAncienDataBase.historiqueBonsCommend.add(grossiste)

@@ -26,6 +26,7 @@ fun B_ListMainFragment_1(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     onClickCamera: (AppsHeadModel.ProduitModel) -> Unit,
+    onCLickOnMainEtitsTempProduit: (AppsHeadModel.ProduitModel) -> Unit,
 ) {
     fun updateProductPosition(product: AppsHeadModel.ProduitModel, newPosition: Int) {
         product.apply {
@@ -73,14 +74,13 @@ fun B_ListMainFragment_1(
             items(positioned.sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }, key = { it.id }) { product ->
                 C_ItemMainFragment_1(
                     itemMain = product,
+                    onClickDelete = { updateProductPosition(product, 0) },
                     onCLickOnMain = {
                         val maxPosition = positioned.maxOfOrNull {
                             it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                         } ?: 0
                         updateProductPosition(product, maxPosition + 1)
-                    },
-                    onClickDelete = { updateProductPosition(product, 0) } ,
-                    onClickCamera = { onClickCamera(product) }
+                    }
                 )
             }
         }
@@ -94,16 +94,19 @@ fun B_ListMainFragment_1(
                 )
             }
 
-            items(unpositioned.sortedBy { it.nom }, key = { it.id }) { product ->
+            items(unpositioned.sortedBy { it.nom }, key = { it.id }) {
+                product ->
                 C_ItemMainFragment_1(
                     itemMain = product,
+                    onClickDelete = { updateProductPosition(product, 0) },
                     onCLickOnMain = {
                         val maxPosition = positioned.maxOfOrNull {
                             it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                         } ?: 0
+
+                        onCLickOnMainEtitsTempProduit(product)
                         updateProductPosition(product, maxPosition + 1)
-                    },
-                    onClickDelete = { updateProductPosition(product, 0) }
+                    }
                 )
             }
         }

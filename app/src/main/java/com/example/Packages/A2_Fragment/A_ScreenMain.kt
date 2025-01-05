@@ -54,13 +54,14 @@ internal fun A_ScreenMainFragment_2(
     ) {
         // Handle position changes
         LaunchedEffect(Unit) {
-                initViewModel.positionChangeFlow.collectLatest { (productId, newPosition) ->
+                initViewModel.produitChangeFlow.collectLatest { (productId, produit) ->
                     val grossistVisibleMnt = visibleItems.firstOrNull()?.bonCommendDeCetteCota?.grossistInformations
                         ?: return@collectLatest // Exit if no visible items
                 initViewModel._appsHeadModel.produitsMainDataBase
                     .find { it.id == productId }
                     ?.let {
-                        it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
+                        it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
+                            produit.bonCommendDeCetteCota?.position_Grossist_Don_Parent_Grossists_List!!
                         // Simplified visibility logic
                         it.isVisible = it.bonCommendDeCetteCota?.grossistInformations == grossistVisibleMnt && !it.isVisible
                     }
@@ -80,6 +81,7 @@ internal fun A_ScreenMainFragment_2(
                     Box(modifier = Modifier.fillMaxSize()) {
                         if (produitsMainDataBase.isNotEmpty()) {
                             B_ListMainFragment_2(
+                                initViewModel=initViewModel,
                                 visibleItems = visibleItems,
                                 contentPadding = paddingValues
                             )

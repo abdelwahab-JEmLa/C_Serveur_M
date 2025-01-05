@@ -13,12 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 
 @Composable
 fun B_ListMainFragment_2(
     visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
+    initViewModel: InitViewModel,
 ) {
     LazyColumn(
         modifier = modifier
@@ -32,6 +34,7 @@ fun B_ListMainFragment_2(
                     "${ it.bonCommendDeCetteCota
                         ?.positionProduitDonGrossistChoisiPourAcheterCeProduit}->${it.id}"}) { item ->
                 C_ItemMainFragment_2(
+                    initViewModel=initViewModel,
                     itemMain = item,
                 )
             }

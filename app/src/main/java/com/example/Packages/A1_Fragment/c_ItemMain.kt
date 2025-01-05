@@ -59,6 +59,7 @@ fun C_ItemMainFragment_1(
     ) {
         // Product Image
         GlideDisplayImageById(
+            initViewModel=initViewModel,
             produit_Id = itemMain.id,
             sonImageBesoinActualisation = itemMain.statuesBase.sonImageBesoinActualisation,
             modifier = Modifier

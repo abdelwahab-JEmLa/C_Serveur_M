@@ -23,12 +23,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
 
 @Composable
 fun C_ItemMainFragment_2(
     itemMain: AppsHeadModel.ProduitModel,
     onCLickOnMain: (() -> Unit)? = null,
+    initViewModel: InitViewModel,
 ) {
     // Main container
     Box(
@@ -49,12 +51,13 @@ fun C_ItemMainFragment_2(
     ) {
         // Product Image
         GlideDisplayImageById(
-            produit_Id = itemMain.id,
-            sonImageBesoinActualisation = itemMain.statuesBase.sonImageBesoinActualisation,
+            initViewModel = initViewModel,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
-            reloadKey = 0 ,
+            produit_Id = itemMain.id,
+            sonImageBesoinActualisation = itemMain.statuesBase.sonImageBesoinActualisation,
+            reloadKey = 0,
             onRelodeDonne = {}
         )
 

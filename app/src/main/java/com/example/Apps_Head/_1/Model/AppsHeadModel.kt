@@ -97,6 +97,7 @@ class AppsHeadModel(
         ) {
             var naAucunImage: Boolean by mutableStateOf(false)
             var sonImageBesoinActualisation: Boolean by mutableStateOf(false)
+            var imageGlidReloadTigger: Int by mutableStateOf(0)
             var prePourCameraCapture: Boolean by mutableStateOf(false)
         }
 

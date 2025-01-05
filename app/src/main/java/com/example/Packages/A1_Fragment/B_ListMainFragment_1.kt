@@ -75,6 +75,7 @@ fun B_ListMainFragment_1(
 
             items(positioned.sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }, key = { it.id }) { product ->
                 C_ItemMainFragment_1(
+                    initViewModel=initViewModel,
                     itemMain = product,
                     onClickDelete = { updateProductPosition(product, 0) },
                     onCLickOnMain = {
@@ -83,7 +84,6 @@ fun B_ListMainFragment_1(
                         } ?: 0
                         updateProductPosition(product, maxPosition + 1)
                     },
-                    initViewModel = initViewModel,
                 )
             }
         }

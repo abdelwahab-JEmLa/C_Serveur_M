@@ -33,9 +33,11 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.c_serveur.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import java.io.File
 
@@ -46,6 +48,7 @@ private const val TAG = "GlideImageDebug"
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GlideDisplayImageById(
+    initViewModel: InitViewModel,
     modifier: Modifier = Modifier,
     produit_Id: Long,
     sonImageBesoinActualisation: Boolean = false,
@@ -64,6 +67,22 @@ fun GlideDisplayImageById(
     var forceReload by remember { mutableStateOf(0) }
     var currentQuality by remember { mutableStateOf(IMAGE_QUALITY.toFloat()) }
     var reloadSuccess by remember { mutableStateOf(false) }
+    var previousTrigger by remember { mutableStateOf(0) }
+
+    // Handle product changes and reload triggers
+    LaunchedEffect(Unit) {
+        initViewModel.produitChangeFlow.collectLatest { (productId, produit) ->
+            if (productId == produit_Id) {
+                val currentTrigger = produit.statuesBase.imageGlidReloadTigger
+                if (currentTrigger != previousTrigger) {
+                    Log.d(TAG, "Reload trigger changed: $previousTrigger -> $currentTrigger")
+                    previousTrigger = currentTrigger
+                    forceReload++
+                    isLoading = true
+                }
+            }
+        }
+    }
 
     val blurRadius by animateFloatAsState(
         targetValue = if (isLoading) 25f else 0f,

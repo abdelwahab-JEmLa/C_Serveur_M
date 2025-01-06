@@ -37,7 +37,6 @@ fun B_ListMainFragment_1(
     modifier: Modifier = Modifier,
 ) {
     var showSearchDialog by remember { mutableStateOf(false) }
-    var searchText by remember { mutableStateOf("") }
 
     val (positioned, unpositioned) =
         visibleItems
@@ -69,7 +68,6 @@ fun B_ListMainFragment_1(
         visibleItems.toMutableStateList()
             .update_produitsViewModelEtFireBases(initViewModel)
     }
-
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -146,12 +144,10 @@ fun B_ListMainFragment_1(
             unpositionedItems = unpositioned,
             onDismiss = {
                 showSearchDialog = false
-                searchText = ""
             },
             onItemSelected = { selectedProduct ->
                 updatePosition(positioned, selectedProduct)
                 showSearchDialog = false
-                searchText = ""
             },
             initViewModel = initViewModel
         )

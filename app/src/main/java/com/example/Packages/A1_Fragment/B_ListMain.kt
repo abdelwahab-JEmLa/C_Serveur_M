@@ -36,6 +36,28 @@ fun B_ListMainFragment_1(
                     ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
             }
 
+    fun update (product: AppsHeadModel.ProduitModel,) {
+        val position =
+            if (product in positioned)
+                0
+            else {
+                (positioned.maxOfOrNull {
+                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                        ?: 0
+                } ?: 0) + 1
+            }
+
+        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
+            product.apply {
+                statuesBase.prePourCameraCapture = true
+                bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
+                    position
+            }
+
+        visibleItems.toMutableStateList()
+            .update_produitsViewModelEtFireBases(initViewModel)
+    }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
@@ -62,16 +84,7 @@ fun B_ListMainFragment_1(
                     initViewModel = initViewModel,
                     itemMain = product,
                     onCLickOnMain = {
-                        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
-                            product.apply {
-                                statuesBase.prePourCameraCapture = true
-                                bonCommendDeCetteCota
-                                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
-                                    0
-                            }
-
-                        visibleItems.toMutableStateList()
-                            .update_produitsViewModelEtFireBases(initViewModel)
+                        update(product)
                     }
                 )
             }
@@ -94,23 +107,12 @@ fun B_ListMainFragment_1(
                     initViewModel = initViewModel,
                     itemMain = product,
                     onCLickOnMain = {
-                        val maxPosition = positioned.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                                ?: 0
-                        } ?: 0
-
-                        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
-                            product.apply {
-                                statuesBase.prePourCameraCapture = true
-                                bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
-                                    maxPosition + 1
-                            }
-
-                        visibleItems.toMutableStateList()
-                            .update_produitsViewModelEtFireBases(initViewModel)
+                        update(product)
                     }
                 )
             }
         }
     }
 }
+
+

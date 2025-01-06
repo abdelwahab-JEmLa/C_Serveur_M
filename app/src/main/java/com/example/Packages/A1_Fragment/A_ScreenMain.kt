@@ -58,11 +58,7 @@ internal fun A_ScreenMainFragment_1(
                 val databaseSize = produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    B_ListMainFragment_1(
-                        visibleSortedItems = visibleItems,
-                        initViewModel=initViewModel,
-                        contentPadding = paddingValues,
-                    )
+                    B_ListMainFragment_1(visibleItems,initViewModel, paddingValues,)
                 }
             }
 

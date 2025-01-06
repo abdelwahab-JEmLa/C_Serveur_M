@@ -24,14 +24,13 @@ import com.example.Apps_Head._2.ViewModel.InitViewModel
 
 @Composable
 fun B_ListMainFragment_1(
-    visibleSortedItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
+    visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     initViewModel: InitViewModel,
-    modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
 ) {
-
     val (positioned, unpositioned) =
-        visibleSortedItems
+        visibleItems
             .partition {
                 (it.bonCommendDeCetteCota
                     ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
@@ -63,7 +62,7 @@ fun B_ListMainFragment_1(
                     initViewModel = initViewModel,
                     itemMain = product,
                     onCLickOnMain = {
-                        visibleSortedItems[visibleSortedItems.indexOfFirst { it.id == product.id }] =
+                        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
                             product.apply {
                                 statuesBase.prePourCameraCapture = true
                                 bonCommendDeCetteCota
@@ -71,8 +70,7 @@ fun B_ListMainFragment_1(
                                     0
                             }
 
-
-                        visibleSortedItems.toMutableStateList()
+                        visibleItems.toMutableStateList()
                             .update_produitsViewModelEtFireBases(initViewModel)
                     }
                 )
@@ -101,14 +99,14 @@ fun B_ListMainFragment_1(
                                 ?: 0
                         } ?: 0
 
-                        visibleSortedItems[visibleSortedItems.indexOfFirst { it.id == product.id }] =
+                        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
                             product.apply {
                                 statuesBase.prePourCameraCapture = true
                                 bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
                                     maxPosition + 1
                             }
 
-                        visibleSortedItems.toMutableStateList()
+                        visibleItems.toMutableStateList()
                             .update_produitsViewModelEtFireBases(initViewModel)
                     }
                 )

@@ -1,4 +1,4 @@
-package com.example.Packages.A3_Fragment
+package com.example.Packages.A3_DiviseProduitsAuCamionFragment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

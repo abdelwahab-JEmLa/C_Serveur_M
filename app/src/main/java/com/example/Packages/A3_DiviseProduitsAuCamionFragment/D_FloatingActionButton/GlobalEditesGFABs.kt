@@ -1,4 +1,4 @@
-package com.example.Packages.A3_Fragment.D_FloatingActionButton
+package com.example.Packages.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton
 
 import android.Manifest
 import android.content.pm.PackageManager

@@ -19,7 +19,7 @@ import kotlinx.coroutines.tasks.await
 
 class InitViewModel : ViewModel() {
     var _appsHeadModel by mutableStateOf(AppsHeadModel())
-    val appsHead: AppsHeadModel get() = _appsHeadModel
+    val appsHeadModel: AppsHeadModel get() = _appsHeadModel
 
     var initializationProgress by mutableFloatStateOf(0f)
     var isInitializing by mutableStateOf(false)

@@ -56,7 +56,7 @@ fun GlideDisplayImageById(
     // Monitor product changes and trigger reloads
     LaunchedEffect(productId) {
         while (true) {
-            initViewModel.appsHead.produitsMainDataBase.find { it.id == productId }?.let { product ->
+            initViewModel.appsHeadModel.produitsMainDataBase.find { it.id == productId }?.let { product ->
                 val currentTime = System.currentTimeMillis()
                 val currentTrigger = product.statuesBase.imageGlidReloadTigger
 

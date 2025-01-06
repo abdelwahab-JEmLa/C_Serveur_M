@@ -34,7 +34,7 @@ fun B_ListMainFragment_1(
         product.apply {
             bonCommendDeCetteCota = bonCommendDeCetteCota ?: AppsHeadModel.ProduitModel.GrossistBonCommandes()
             bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
-            besoin_To_Be_Updated = true
+            besoinToBeUpdated = true
         }
 
         // Normalize positions
@@ -44,7 +44,7 @@ fun B_ListMainFragment_1(
             .forEachIndexed { index, item ->
                 item.apply {
                     bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = index + 1
-                    besoin_To_Be_Updated = true
+                    besoinToBeUpdated = true
                 }
             }
 

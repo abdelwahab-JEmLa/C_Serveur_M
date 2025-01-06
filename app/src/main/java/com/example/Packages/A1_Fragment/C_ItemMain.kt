@@ -29,8 +29,8 @@ import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
 @Composable
 fun C_ItemMainFragment_1(
     itemMain: AppsHeadModel.ProduitModel,
-    onClickDelete: () -> Unit,
-    onCLickOnMain: () -> Unit,
+    onClickDelete: () -> Unit = {},
+    onCLickOnMain: () -> Unit = {},
     initViewModel: InitViewModel,
 ) {
     // Calculate if the product has a valid position

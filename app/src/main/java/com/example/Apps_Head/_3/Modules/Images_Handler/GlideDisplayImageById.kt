@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,6 +28,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.imagesProduitsLocalExternalStorageBasePath
 import com.example.Apps_Head._2.ViewModel.InitViewModel
+import com.example.c_serveur.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -44,10 +47,10 @@ fun GlideDisplayImageById(
     onLoadComplete: () -> Unit = {}
 ) {
     var imageFile by remember { mutableStateOf<File?>(null) }
-    var forceReload by remember { mutableStateOf(0) }
+    var forceReload by remember { mutableIntStateOf(0) }
     var reloadSuccess by remember { mutableStateOf(false) }
-    var previousTrigger by remember { mutableStateOf(0) }
-    var lastReloadTimestamp by remember { mutableStateOf(0L) }
+    var previousTrigger by remember { mutableIntStateOf(0) }
+    var lastReloadTimestamp by remember { mutableLongStateOf(0L) }
     var isLoading by remember { mutableStateOf(true) }
 
     // Monitor product changes and trigger reloads
@@ -67,8 +70,7 @@ fun GlideDisplayImageById(
 
                     if (product.statuesBase.sonImageBesoinActualisation) {
                         delay(1000)
-                        product.statuesBase.sonImageBesoinActualisation = false
-                        product.besoin_To_Be_Updated = true
+                        product.besoinToBeUpdated = true
                         initViewModel.updateProduct(product)
                     }
                 }
@@ -90,7 +92,7 @@ fun GlideDisplayImageById(
     // Display image
     Box(modifier = modifier.then(size?.let { Modifier.size(it) } ?: Modifier.fillMaxSize())) {
         GlideImage(
-            model = imageFile ?: com.example.c_serveur.R.drawable.ic_launcher_background,
+            model = imageFile ?: R.drawable.ic_launcher_background,
             contentDescription = "Product $productId",
             contentScale = ContentScale.Crop,
             modifier = Modifier

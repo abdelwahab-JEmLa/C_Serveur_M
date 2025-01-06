@@ -45,7 +45,7 @@ class AppsHeadModel(
         init_historiqueBonsCommend: List<GrossistBonCommandes> = emptyList(),
     ) {
         var nom: String by mutableStateOf(init_nom)
-        var besoin_To_Be_Updated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
+        var besoinToBeUpdated: Boolean by mutableStateOf(init_besoin_To_Be_Updated)
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var isVisible: Boolean by mutableStateOf(init_visible)
 
@@ -241,12 +241,12 @@ class AppsHeadModel(
 
         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
-                val updatedProducts = this.filter { it.besoin_To_Be_Updated }
+                val updatedProducts = this.filter { it.besoinToBeUpdated }
 
                 updatedProducts.forEach { product ->
                     try {
                         produitsFireBaseRef.child(product.id.toString()).setValue(product)
-                        product.besoin_To_Be_Updated = false
+                        product.besoinToBeUpdated = false
                         Log.d("Firebase", "Successfully updated product ${product.id}")
                     } catch (e: Exception) {
                         Log.e("Firebase", "Failed to update product ${product.id}", e)

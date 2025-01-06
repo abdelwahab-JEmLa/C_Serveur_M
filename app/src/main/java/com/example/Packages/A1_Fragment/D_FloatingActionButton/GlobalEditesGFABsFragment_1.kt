@@ -62,7 +62,7 @@ fun GlobalEditesGFABsFragment_1(
 
     suspend fun handleImageCapture(uri: Uri) {
         try {
-            if (!uri.toString().isNotEmpty()) {
+            if (uri.toString().isEmpty()) {
                 throw IllegalArgumentException("Invalid URI")
             }
 
@@ -104,11 +104,9 @@ fun GlobalEditesGFABsFragment_1(
                                 statuesBase.apply {
                                     prePourCameraCapture = false
                                     naAucunImage = false
-                                    sonImageBesoinActualisation = true
-                                    imageGlidReloadTigger += 1     //-->
-                                    //TODO(2): comme ici
+                                    imageGlidReloadTigger += 1
                                 }
-                                besoin_To_Be_Updated = true
+                                besoinToBeUpdated = true
                             }
 
                             // Update in Firebase Realtime Database

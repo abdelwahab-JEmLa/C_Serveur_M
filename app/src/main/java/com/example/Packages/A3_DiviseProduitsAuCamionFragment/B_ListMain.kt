@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -23,8 +22,15 @@ fun ListMain_Fragment_3(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-    val visibleItems=
-        produitsMainDataBase.filter { it.isVisible }.toMutableStateList()
+    val visibleSortedItems =
+        produitsMainDataBase
+            .filter { it.isVisible }
+            .sortedWith(
+                compareBy(
+                    { it.bonCommendDeCetteCota?.position_Grossist_Don_Parent_Grossists_List },
+                    { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
+                )
+            )
 
     LazyColumn(
         modifier = modifier
@@ -33,8 +39,8 @@ fun ListMain_Fragment_3(
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        if (visibleItems.isNotEmpty()) {
-            items(visibleItems ) { item ->
+        if (visibleSortedItems.isNotEmpty()) {
+            items(visibleSortedItems ) { item ->
                 ItemMain_Fragment_3(
                     itemMain = item,
                     initViewModel=initViewModel,

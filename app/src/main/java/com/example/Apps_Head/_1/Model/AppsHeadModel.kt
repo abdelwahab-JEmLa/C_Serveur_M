@@ -262,7 +262,6 @@ class AppsHeadModel(
                     "Abdelwahab_jeMla.com" +
                     "/IMGs" +
                     "/BaseDonne"
-        //
         fun List<ProduitModel>.update_produitsViewModelEtFireBases(initViewModel: InitViewModel) {
 
             try {

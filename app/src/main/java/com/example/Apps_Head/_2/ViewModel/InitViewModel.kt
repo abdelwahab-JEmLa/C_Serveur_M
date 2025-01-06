@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.produitsFireBaseRef
 import com.example.Apps_Head._4.Init.initializer
+import com.example.Packages.A3_DiviseProduitsAuCamionFragment.D.Actions.onClickOn_Fragment_3
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -20,6 +21,8 @@ import kotlinx.coroutines.tasks.await
 class InitViewModel : ViewModel() {
     var _appsHeadModel by mutableStateOf(AppsHeadModel())
     val appsHeadModel: AppsHeadModel get() = _appsHeadModel
+
+    val onClickOn_Fragment_3 = onClickOn_Fragment_3(this@InitViewModel)
 
     var initializationProgress by mutableFloatStateOf(0f)
     var isInitializing by mutableStateOf(false)

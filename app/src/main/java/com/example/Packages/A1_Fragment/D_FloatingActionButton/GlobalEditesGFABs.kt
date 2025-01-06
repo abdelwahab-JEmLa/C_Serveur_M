@@ -3,7 +3,6 @@ package com.example.Packages.A1_Fragment.D_FloatingActionButton
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -202,28 +201,26 @@ fun GlobalEditesGFABsFragment_1(
     }
 
     fun checkAndRequestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val permissions = arrayOf(
-                Manifest.permission.CAMERA,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
+        val permissions = arrayOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
 
-            val hasPermissions = permissions.all {
-                ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-            }
+        val hasPermissions = permissions.all {
+            ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+        }
 
-            if (!hasPermissions) {
-                permissionLauncher.launch(permissions)
-            } else {
-                val productForCapture = appsHeadModel.produitsMainDataBase
-                    .find { it.statuesBase.prePourCameraCapture }
+        if (!hasPermissions) {
+            permissionLauncher.launch(permissions)
+        } else {
+            val productForCapture = appsHeadModel.produitsMainDataBase
+                .find { it.statuesBase.prePourCameraCapture }
 
-                if (productForCapture != null) {
-                    pendingProduct = productForCapture
-                    createTempImageUri()?.let { uri ->
-                        cameraLauncher.launch(uri)
-                    }
+            if (productForCapture != null) {
+                pendingProduct = productForCapture
+                createTempImageUri()?.let { uri ->
+                    cameraLauncher.launch(uri)
                 }
             }
         }

@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
@@ -216,6 +217,25 @@ class AppsHeadModel(
                 override fun hashCode(): Int {
                     return Objects.hash(id, nom, couleur)
                 }
+                // AppsHeadModel.kt - Companion object section
+                companion object {
+                    fun groupedProductsByClientBonVentModelClientInformations(
+                        produitsMainDataBase: List<ProduitModel>
+                    ): Map<ClientInformations, List<ProduitModel>> {
+                        return produitsMainDataBase
+                            .flatMap { product ->
+                                product.bonsVentDeCetteCota.mapNotNull { bonVent ->
+                                    bonVent.clientInformations?.let { clientInfo ->
+                                        clientInfo to product
+                                    }
+                                }
+                            }
+                            .groupBy(
+                                keySelector = { it.first },
+                                valueTransform = { it.second }
+                            )
+                    }
+                }
             }
 
             @IgnoreExtraProperties
@@ -242,7 +262,26 @@ class AppsHeadModel(
                     "Abdelwahab_jeMla.com" +
                     "/IMGs" +
                     "/BaseDonne"
+        fun List<ProduitModel>.update_produitsViewModelEtFireBases(initViewModel: InitViewModel) {
 
+            try {
+                this.forEach { product ->
+                    try {
+                        val index = initViewModel._appsHeadModel.produitsMainDataBase.indexOfFirst { it.id == product.id }
+                        if (index != -1) {
+                            initViewModel._appsHeadModel.produitsMainDataBase[index] = product
+                        }
+                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
+                        Log.d("Firebase", "Successfully updated product ${product.id}")
+                    } catch (e: Exception) {
+                        Log.e("Firebase", "Failed to update product ${product.id}", e)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("Firebase", "Error updating products", e)
+                throw e
+            }
+        }
         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
                 val updatedProducts = this.filter { it.besoinToBeUpdated }

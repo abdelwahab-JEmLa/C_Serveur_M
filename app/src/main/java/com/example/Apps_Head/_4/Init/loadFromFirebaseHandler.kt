@@ -20,7 +20,6 @@ object LoadFromFirebaseHandler {
     suspend fun loadFromFirebase(initViewModel: InitViewModel) = try {
         initViewModel.apply {
             _appsHeadModel.produitsMainDataBase = loadProducts()
-
             initializationProgress = 1f
         }
     } catch (e: Exception) {
@@ -52,19 +51,19 @@ object LoadFromFirebaseHandler {
 
         return ProduitModel(
             id = productId,
-            itsTempProduit  = (productMap["itsTempProduit"] as? Boolean) ?: false,
+            itsTempProduit = (productMap["itsTempProduit"] as? Boolean) ?: false,
             init_nom = (productMap["nom"] as? String) ?: "",
             init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean) ?: false,
             initialNon_Trouve = (productMap["non_Trouve"] as? Boolean) ?: false,
             init_visible = false,
         ).apply {
             if (shouldLog) Log.d(TAG, "Parsing product ID: $productId")
-           // parseList<ProduitModel.StatuesBase>("statuesBase", snapshot) { statuesBase = it }         //-->
-            //TODO(1): ype mismatch.
-            //Required:
-            //AppsHeadModel.ProduitModel.StatuesBase
-            //Found:
-            //List<AppsHeadModel.ProduitModel.StatuesBase>
+
+            // Fix the statuesBase parsing
+            snapshot.child("statuesBase").getValue(ProduitModel.StatuesBase::class.java)?.let {
+                statuesBase = it
+                statuesBase.imageGlidReloadTigger=0
+            }
             parseList<ProduitModel.ColourEtGout_Model>("coloursEtGoutsList", snapshot) { coloursEtGoutsList = it }
             parseList<ProduitModel.ClientBonVentModel>("bonsVentDeCetteCotaList", snapshot) { bonsVentDeCetteCotaList = it }
             parseList<ProduitModel.ClientBonVentModel>("historiqueBonsVentsList", snapshot) { historiqueBonsVentsList = it }
@@ -85,7 +84,6 @@ object LoadFromFirebaseHandler {
             }
         }
     }
-
     private inline fun <reified T> parseList(
         path: String,
         snapshot: DataSnapshot,

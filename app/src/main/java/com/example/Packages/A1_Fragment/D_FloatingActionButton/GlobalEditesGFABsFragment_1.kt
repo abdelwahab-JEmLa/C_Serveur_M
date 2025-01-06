@@ -105,7 +105,8 @@ fun GlobalEditesGFABsFragment_1(
                                     prePourCameraCapture = false
                                     naAucunImage = false
                                     sonImageBesoinActualisation = true
-                                    imageGlidReloadTigger += 1
+                                    imageGlidReloadTigger += 1     //-->
+                                    //TODO(2): comme ici
                                 }
                                 besoin_To_Be_Updated = true
                             }

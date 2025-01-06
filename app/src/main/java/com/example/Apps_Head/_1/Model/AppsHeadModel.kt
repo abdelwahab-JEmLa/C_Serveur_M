@@ -24,9 +24,10 @@ class AppsHeadModel(
 
     // Property for Firebase serialization
     var produitsDataBaseList: List<ProduitModel>
-        get() = produitsMainDataBase
+        get() = produitsMainDataBase.toList()
         set(value) {
-            produitsMainDataBase = value.toMutableStateList()
+            produitsMainDataBase.clear()
+            produitsMainDataBase.addAll(value)
         }
 
     @IgnoreExtraProperties
@@ -50,13 +51,15 @@ class AppsHeadModel(
 
         var statuesBase: StatuesBase by mutableStateOf(StatuesBase())
 
+        @get:Exclude
         var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
             init_colours_Et_Gouts.toMutableStateList()
 
         var coloursEtGoutsList: List<ColourEtGout_Model>
-            get() = coloursEtGouts
+            get() = coloursEtGouts.toList()
             set(value) {
-                coloursEtGouts = value.toMutableStateList()
+                coloursEtGouts.clear()
+                coloursEtGouts.addAll(value)
             }
 
         var bonCommendDeCetteCota: GrossistBonCommandes? by mutableStateOf(init_bonCommendDeCetteCota)
@@ -66,9 +69,10 @@ class AppsHeadModel(
             initBonsVentDeCetteCota.toMutableStateList()
 
         var bonsVentDeCetteCotaList: List<ClientBonVentModel>
-            get() = bonsVentDeCetteCota
+            get() = bonsVentDeCetteCota.toList()
             set(value) {
-                bonsVentDeCetteCota = value.toMutableStateList()
+                bonsVentDeCetteCota.clear()
+                bonsVentDeCetteCota.addAll(value)
             }
 
         @get:Exclude
@@ -76,9 +80,10 @@ class AppsHeadModel(
             init_historiqueBonsVents.toMutableStateList()
 
         var historiqueBonsVentsList: List<ClientBonVentModel>
-            get() = historiqueBonsVents
+            get() = historiqueBonsVents.toList()
             set(value) {
-                historiqueBonsVents = value.toMutableStateList()
+                historiqueBonsVents.clear()
+                historiqueBonsVents.addAll(value)
             }
 
         @get:Exclude
@@ -86,9 +91,10 @@ class AppsHeadModel(
             init_historiqueBonsCommend.toMutableStateList()
 
         var historiqueBonsCommendList: List<GrossistBonCommandes>
-            get() = historiqueBonsCommend
+            get() = historiqueBonsCommend.toList()
             set(value) {
-                historiqueBonsCommend = value.toMutableStateList()
+                historiqueBonsCommend.clear()
+                historiqueBonsCommend.addAll(value)
             }
 
         @IgnoreExtraProperties
@@ -100,14 +106,6 @@ class AppsHeadModel(
             var imageGlidReloadTigger: Int by mutableStateOf(0)
             var prePourCameraCapture: Boolean by mutableStateOf(false)
         }
-
-        @IgnoreExtraProperties
-        class ColourEtGout_Model(
-            var position_Du_Couleur_Au_Produit: Long = 0,
-            var nom: String = "",
-            var imogi: String = "",
-            var sonImageNeExistPas: Boolean = false,
-        )
 
         @IgnoreExtraProperties
         class GrossistBonCommandes(
@@ -134,11 +132,13 @@ class AppsHeadModel(
                 init_coloursEtGoutsCommendee.toMutableStateList()
 
             var coloursEtGoutsCommendeList: List<ColoursGoutsCommendee>
-                get() = coloursEtGoutsCommendee
+                get() = coloursEtGoutsCommendee.toList()
                 set(value) {
-                    coloursEtGoutsCommendee = value.toMutableStateList()
+                    coloursEtGoutsCommendee.clear()
+                    coloursEtGoutsCommendee.addAll(value)
                 }
 
+            // Rest of the nested classes remain the same
             @IgnoreExtraProperties
             data class GrossistInformations(
                 val id: Long = 0,
@@ -172,6 +172,14 @@ class AppsHeadModel(
         }
 
         @IgnoreExtraProperties
+        class ColourEtGout_Model(
+            var position_Du_Couleur_Au_Produit: Long = 0,
+            var nom: String = "",
+            var imogi: String = "",
+            var sonImageNeExistPas: Boolean = false,
+        )
+
+        @IgnoreExtraProperties
         class ClientBonVentModel(
             init_clientInformations: ClientInformations? = null,
             init_colours_achete: List<ColorAchatModel> = emptyList(),
@@ -183,9 +191,10 @@ class AppsHeadModel(
                 init_colours_achete.toMutableStateList()
 
             var coloursAcheteList: List<ColorAchatModel>
-                get() = colours_Achete
+                get() = colours_Achete.toList()
                 set(value) {
-                    colours_Achete = value.toMutableStateList()
+                    colours_Achete.clear()
+                    colours_Achete.addAll(value)
                 }
 
             @IgnoreExtraProperties

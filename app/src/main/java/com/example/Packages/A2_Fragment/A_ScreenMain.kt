@@ -8,7 +8,6 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -20,7 +19,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages.A2_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_2
 import com.example.Packages.A2_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_2
-import kotlinx.coroutines.flow.collectLatest
 
 internal const val DEBUG_LIMIT = 7
 
@@ -52,21 +50,6 @@ internal fun A_ScreenMainFragment_2(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        // Handle position changes
-        LaunchedEffect(Unit) {
-                initViewModel.produitChangeFlow.collectLatest { (productId, produit) ->
-                    val grossistVisibleMnt = visibleItems.firstOrNull()?.bonCommendDeCetteCota?.grossistInformations
-                        ?: return@collectLatest // Exit if no visible items
-                initViewModel._appsHeadModel.produitsMainDataBase
-                    .find { it.id == productId }
-                    ?.let {
-                        it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
-                            produit.bonCommendDeCetteCota?.position_Grossist_Don_Parent_Grossists_List!!
-                        // Simplified visibility logic
-                        it.isVisible = it.bonCommendDeCetteCota?.grossistInformations == grossistVisibleMnt && !it.isVisible
-                    }
-                }
-        }
 
         Box(modifier = Modifier.fillMaxSize()) {
             if (!initViewModel.initializationComplete) {
@@ -76,7 +59,6 @@ internal fun A_ScreenMainFragment_2(
                     trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor
                 )
             } else {
-
                 Scaffold { paddingValues ->
                     Box(modifier = Modifier.fillMaxSize()) {
                         if (produitsMainDataBase.isNotEmpty()) {

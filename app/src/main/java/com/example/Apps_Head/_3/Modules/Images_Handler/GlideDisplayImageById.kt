@@ -33,17 +33,16 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.imagesProduitsLocalExternalStorageBasePath
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.c_serveur.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withContext
 import java.io.File
 
-private const val BASE_PATH = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
 private const val IMAGE_QUALITY = 3
 private const val TAG = "GlideImageDebug"
+private const val MIN_RELOAD_INTERVAL = 500L // Minimum time between reloads in milliseconds
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -60,36 +59,23 @@ fun GlideDisplayImageById(
     cornerRadius: Dp = 8.dp,
     onRelodeDonne: () -> Unit
 ) {
-    Log.d(TAG, "Démarrage GlideDisplayImageById - produit_Id: $produit_Id, index: $index")
-    Log.d(TAG, "État initial - sonImageBesoinActualisation: $sonImageBesoinActualisation")
+    Log.d(TAG, "Starting GlideDisplayImageById - productId: $produit_Id, index: $index")
 
     var isLoading by remember { mutableStateOf(true) }
     var forceReload by remember { mutableStateOf(0) }
     var currentQuality by remember { mutableStateOf(IMAGE_QUALITY.toFloat()) }
     var reloadSuccess by remember { mutableStateOf(false) }
     var previousTrigger by remember { mutableStateOf(0) }
+    var lastReloadTimestamp by remember { mutableStateOf(0L) }
 
-    // Handle product changes and reload triggers
-    LaunchedEffect(Unit) {
-        initViewModel.produitChangeFlow.collectLatest { (productId, produit) ->
-            if (productId == produit_Id) {
-                val currentTrigger = produit.statuesBase.imageGlidReloadTigger
-                if (currentTrigger != previousTrigger) {
-                    Log.d(TAG, "Reload trigger changed: $previousTrigger -> $currentTrigger")
-                    previousTrigger = currentTrigger
-                    forceReload++
-                    isLoading = true
-                }
-            }
-        }
-    }
-
+    // Animate blur effect
     val blurRadius by animateFloatAsState(
         targetValue = if (isLoading) 25f else 0f,
         animationSpec = tween(700),
         label = "blur"
     )
 
+    // Configure box modifier
     val boxModifier = modifier.then(
         if (height_Defini != null && width_Defini != null) {
             Modifier.size(width = width_Defini, height = height_Defini)
@@ -98,93 +84,61 @@ fun GlideDisplayImageById(
         }
     )
 
-    LaunchedEffect(sonImageBesoinActualisation, reloadKey) {
-        Log.d(TAG, "LaunchedEffect déclenché - sonImageBesoinActualisation: $sonImageBesoinActualisation")
+    // Handle reload triggers and state updates
+    LaunchedEffect(produit_Id, sonImageBesoinActualisation, reloadKey) {
+        initViewModel.appsHead.produitsMainDataBase.find { it.id == produit_Id }?.let { product ->
+            val currentTime = System.currentTimeMillis()
+            val currentTrigger = product.statuesBase.imageGlidReloadTigger
 
-        if (sonImageBesoinActualisation) {
-            val baseImagePath = "$BASE_PATH/${produit_Id}_${index + 1}"
-            val imageFile = File("$baseImagePath.jpg")
-            Log.d(TAG, "Chemin du fichier: $baseImagePath.jpg")
-            Log.d(TAG, "Le fichier existe: ${imageFile.exists()}")
+            if (currentTime - lastReloadTimestamp > MIN_RELOAD_INTERVAL &&
+                (currentTrigger != previousTrigger || sonImageBesoinActualisation)
+            ) {
+                Log.d(TAG, "Initiating reload sequence - trigger: $currentTrigger")
+                lastReloadTimestamp = currentTime
+                previousTrigger = currentTrigger
+                forceReload++
+                isLoading = true
 
-            imageFile.parentFile?.mkdirs()
-            val initialFileSize = if (imageFile.exists()) imageFile.length() else 0
-            Log.d(TAG, "Taille initiale du fichier: $initialFileSize bytes")
-
-            var shouldReload = false
-
-            repeat(3) { attempt ->
-                delay(1000)
-                if (imageFile.exists()) {
-                    val currentFileSize = imageFile.length()
-                    Log.d(TAG, "Tentative $attempt - Nouvelle taille: $currentFileSize bytes")
-
-                    if (currentFileSize > 0 && currentFileSize != initialFileSize) {
-                        shouldReload = true
-                        Log.d(TAG, "Changement de taille détecté - Reload nécessaire")
-                    }
-                } else {
-                    Log.d(TAG, "Tentative $attempt - Fichier n'existe pas")
+                // Update product state
+                if (product.statuesBase.sonImageBesoinActualisation) {
+                    delay(1000) // Wait for file system operations
+                    product.statuesBase.sonImageBesoinActualisation = false
+                    product.besoin_To_Be_Updated = true
+                    initViewModel.updateProduct(product)
                 }
             }
-
-            if (shouldReload) {
-                Log.d(TAG, "Préparation du reload - Attente de 500ms")
-                delay(500)
-                forceReload++
-                reloadSuccess = true
-                Log.d(TAG, "Reload initié - forceReload: $forceReload, reloadSuccess: $reloadSuccess")
-            } else {
-                Log.d(TAG, "Aucun reload nécessaire")
-            }
         }
     }
 
-    LaunchedEffect(reloadSuccess) {
-        if (reloadSuccess) {
-            Log.d(TAG, "Callback onRelodeDonne appelé")
-            onRelodeDonne()
-            reloadSuccess = false
-            Log.d(TAG, "reloadSuccess réinitialisé à false")
-        }
-    }
-
-    LaunchedEffect(forceReload, reloadKey) {
-        if (forceReload > 0 || !sonImageBesoinActualisation) {
-            Log.d(TAG, "Début du processus de reload - forceReload: $forceReload")
-            isLoading = true
-            currentQuality = 5f
-            delay(300)
-            currentQuality = IMAGE_QUALITY.toFloat()
-            isLoading = false
-            Log.d(TAG, "Fin du processus de reload - currentQuality: $currentQuality")
-        }
-    }
-
+    // Monitor image file state
     val imageFile by produceState<File?>(
         initialValue = null,
-        keys = arrayOf(produit_Id, index, reloadKey, forceReload)
+        produit_Id,
+        index,
+        reloadKey,
+        forceReload
     ) {
-        value = withContext(Dispatchers.IO) {
-            val baseImagePath = "$BASE_PATH/${produit_Id}_${index + 1}"
-            Log.d(TAG, "Recherche du fichier image - Chemin de base: $baseImagePath")
+        withContext(Dispatchers.IO) {
+            val baseImagePath = "$imagesProduitsLocalExternalStorageBasePath/${produit_Id}_${index + 1}"
+            Log.d(TAG, "Checking image file at: $baseImagePath")
 
-            listOf("jpg", "jpeg", "png", "webp")
+            value = listOf("jpg", "jpeg", "png", "webp")
                 .asSequence()
                 .map { ext -> File("$baseImagePath.$ext") }
                 .firstOrNull { file ->
                     val exists = file.exists()
                     val canRead = file.canRead()
                     val length = file.length()
-                    Log.d(TAG, "Test fichier ${file.name} - existe: $exists, lisible: $canRead, taille: $length")
+                    Log.d(TAG, "File ${file.name} - exists: $exists, readable: $canRead, size: $length")
                     exists && canRead && length > 0
                 }
         }
     }
 
+    // Main image display
     Box(modifier = boxModifier) {
         val fileLength = imageFile?.length() ?: 0
-        Log.d(TAG, "Taille du fichier à afficher: $fileLength bytes")
+        Log.d(TAG, "File size for display: $fileLength bytes")
 
         if (fileLength > 0) {
             GlideImage(
@@ -211,7 +165,7 @@ fun GlideDisplayImageById(
                     )
                     .downsample(DownsampleStrategy.AT_MOST)
                     .encodeQuality(IMAGE_QUALITY)
-                    .error(R.drawable.ic_launcher_background)
+                    .error(com.example.c_serveur.R.drawable.ic_launcher_background)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .priority(com.bumptech.glide.Priority.HIGH)
@@ -223,7 +177,7 @@ fun GlideDisplayImageById(
                             target: Target<Drawable>,
                             isFirstResource: Boolean
                         ): Boolean {
-                            Log.e(TAG, "Échec du chargement de l'image", e)
+                            Log.e(TAG, "Image load failed", e)
                             return false
                         }
 
@@ -234,10 +188,9 @@ fun GlideDisplayImageById(
                             dataSource: DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
-                            Log.d(TAG, "Image chargée avec succès - dataSource: $dataSource, isFirstResource: $isFirstResource")
+                            Log.d(TAG, "Image loaded successfully - source: $dataSource, isFirst: $isFirstResource")
                             isLoading = false
                             if (reloadSuccess) {
-                                Log.d(TAG, "Exécution du callback après chargement réussi")
                                 onRelodeDonne()
                                 reloadSuccess = false
                             }
@@ -246,9 +199,9 @@ fun GlideDisplayImageById(
                     })
             }
         } else {
-            Log.d(TAG, "Affichage de l'image par défaut - fichier non trouvé ou vide")
+            // Fallback image
             GlideImage(
-                model = R.drawable.ic_launcher_background,
+                model = com.example.c_serveur.R.drawable.ic_launcher_background,
                 contentDescription = "Fallback Image",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

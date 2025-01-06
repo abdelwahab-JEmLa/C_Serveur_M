@@ -51,7 +51,7 @@ fun B_ListMainFragment_1(
         visibleItems.update_produitsViewModelEtFireBases(initViewModel)
     }
     val (positioned, unpositioned) = visibleItems.partition {
-        (it.bonCommendDeCetteCota?.c
+        (it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
     }
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),

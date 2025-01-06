@@ -27,7 +27,6 @@ fun B_ListMainFragment_1(
     initViewModel: InitViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onClickCamera: (AppsHeadModel.ProduitModel) -> Unit,
     onCLickOnMainEtitsTempProduit: (AppsHeadModel.ProduitModel) -> Unit,
 ) {
     fun updateProductPosition(product: AppsHeadModel.ProduitModel, newPosition: Int) {

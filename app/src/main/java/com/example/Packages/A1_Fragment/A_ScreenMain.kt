@@ -61,13 +61,6 @@ internal fun A_ScreenMainFragment_1(
                         visibleItems = visibleItems,
                         initViewModel=initViewModel,
                         contentPadding = paddingValues,
-                        onClickCamera = {item->
-                            initViewModel._appsHeadModel.produitsMainDataBase
-                                .find { it.id==item.id }
-                                .let {
-                                it?.statuesBase?.prePourCameraCapture
-                            }
-                        },
                         onCLickOnMainEtitsTempProduit = { product ->
                             initViewModel._appsHeadModel
                                 .produitsMainDataBase.find { it.id==product.id }.let {

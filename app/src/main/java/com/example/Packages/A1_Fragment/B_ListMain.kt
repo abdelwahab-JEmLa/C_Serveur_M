@@ -19,7 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +38,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.update_produitsViewModelEtFireBases
 import com.example.Apps_Head._2.ViewModel.InitViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun B_ListMainFragment_1(
@@ -46,7 +47,6 @@ fun B_ListMainFragment_1(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-    // Previous code remains the same until SearchDialog call
     var showSearchDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
 
@@ -91,7 +91,6 @@ fun B_ListMainFragment_1(
             initViewModel = initViewModel
         )
     }
-
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -194,8 +193,20 @@ private fun SearchDialog(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
+    LaunchedEffect(Unit) {
+        delay(100) // Small delay to ensure the TextField is composed
+        try {
+            focusRequester.requestFocus()
+        } catch (e: Exception) {
+            // Handle potential focus request failure gracefully
+        }
+    }
+
     Dialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            focusManager.clearFocus()
+            onDismiss()
+        },
         properties = DialogProperties(
             usePlatformDefaultWidth = false,
             dismissOnBackPress = true,
@@ -231,7 +242,7 @@ private fun SearchDialog(
                     it.nom.contains(searchText, ignoreCase = true)
                 }
 
-                if (searchText.isNotEmpty()) {
+                if (searchText.length >= 2) {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(4),
                         modifier = Modifier
@@ -254,7 +265,10 @@ private fun SearchDialog(
                 }
 
                 TextButton(
-                    onClick = onDismiss,
+                    onClick = {
+                        focusManager.clearFocus()
+                        onDismiss()
+                    },
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(top = 8.dp)
@@ -262,13 +276,6 @@ private fun SearchDialog(
                     Text("Fermer")
                 }
             }
-        }
-    }
-
-    DisposableEffect(Unit) {
-        focusRequester.requestFocus()
-        onDispose {
-            focusManager.clearFocus()
         }
     }
 }

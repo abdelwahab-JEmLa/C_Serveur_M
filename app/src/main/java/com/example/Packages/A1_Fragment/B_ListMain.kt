@@ -32,31 +32,9 @@ fun B_ListMainFragment_1(
     val (positioned, unpositioned) =
         visibleItems
             .partition {
-                (it.bonCommendDeCetteCota
-                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
+                it.bonCommendDeCetteCota
+                    ?.cPositionCheyCeGrossit == true
             }
-
-    fun update (product: AppsHeadModel.ProduitModel,) {
-        val position =
-            if (product in positioned)
-                0
-            else {
-                (positioned.maxOfOrNull {
-                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                        ?: 0
-                } ?: 0) + 1
-            }
-
-        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
-            product.apply {
-                statuesBase.prePourCameraCapture = true
-                bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
-                    position
-            }
-
-        visibleItems.toMutableStateList()
-            .update_produitsViewModelEtFireBases(initViewModel)
-    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -84,7 +62,13 @@ fun B_ListMainFragment_1(
                     initViewModel = initViewModel,
                     itemMain = product,
                     onCLickOnMain = {
-                        update(product)
+                        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
+                            product.apply {
+                                bonCommendDeCetteCota?.cPositionCheyCeGrossit=false
+                            }
+
+                        visibleItems.toMutableStateList()
+                            .update_produitsViewModelEtFireBases(initViewModel)
                     }
                 )
             }
@@ -96,18 +80,42 @@ fun B_ListMainFragment_1(
                     "Produits sans position (${unpositioned.size})",
                     modifier = Modifier.padding(8.dp),
                     style = MaterialTheme.typography.titleMedium
-                )
+                )    //-->
+                //TODO(1): fait que au click ca affiche un dialog windos cotien
+                //outlined text au entre de 2 carecter affiche le matche items de
+                //unpositioned ou leur nom = filterOutlinedText
             }
 
             items(
-                items = unpositioned.sortedBy { it.nom },
+                items = unpositioned.sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit },
                 key = { it.id }
             ) { product ->
                 C_ItemMainFragment_1(
                     initViewModel = initViewModel,
                     itemMain = product,
                     onCLickOnMain = {
-                        update(product)
+                        val newPositione =
+                            (positioned.maxOfOrNull {
+                                it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                                    ?: 0
+                            } ?: 0) + 1
+
+                        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
+                            product.apply {
+                               if (product.itsTempProduit) {
+                                   statuesBase
+                                       .prePourCameraCapture = true
+                               }
+                                bonCommendDeCetteCota
+                                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
+                                newPositione
+                                bonCommendDeCetteCota
+                                    ?.cPositionCheyCeGrossit=true
+
+                            }
+
+                        visibleItems.toMutableStateList()
+                            .update_produitsViewModelEtFireBases(initViewModel)
                     }
                 )
             }

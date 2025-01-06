@@ -122,6 +122,7 @@ class AppsHeadModel(
         ) {
             var grossistInformations: GrossistInformations? by mutableStateOf(init_grossistInformations)
 
+            var cPositionCheyCeGrossit: Boolean by mutableStateOf(false)
             var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
             )

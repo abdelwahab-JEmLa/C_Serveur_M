@@ -121,6 +121,7 @@ class AppsHeadModel(
             init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
         ) {
             var grossistInformations: GrossistInformations? by mutableStateOf(init_grossistInformations)
+
             var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
             )
@@ -262,7 +263,7 @@ class AppsHeadModel(
                     "Abdelwahab_jeMla.com" +
                     "/IMGs" +
                     "/BaseDonne"
-        fun List<ProduitModel>.update_produitsViewModelEtFireBases(initViewModel: InitViewModel) {
+        fun SnapshotStateList<ProduitModel>.update_produitsViewModelEtFireBases(initViewModel: InitViewModel) {
 
             try {
                 this.forEach { product ->

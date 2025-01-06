@@ -18,13 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.update_produitsViewModelEtFireBases
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 
 @Composable
 fun B_ListMainFragment_1(
-    initViewModel: InitViewModel,
     visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
+    initViewModel: InitViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     onClickCamera: (AppsHeadModel.ProduitModel) -> Unit,
@@ -48,9 +48,11 @@ fun B_ListMainFragment_1(
                 }
             }
 
-        visibleItems.updateProduitsFireBase()
+        visibleItems.update_produitsViewModelEtFireBases(initViewModel)
     }
-
+    val (positioned, unpositioned) = visibleItems.partition {
+        (it.bonCommendDeCetteCota?.c
+    }
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
@@ -60,10 +62,6 @@ fun B_ListMainFragment_1(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        val (positioned, unpositioned) = visibleItems.partition {
-            (it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
-        }
-
         if (positioned.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Text(

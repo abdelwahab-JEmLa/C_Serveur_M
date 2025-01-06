@@ -1,6 +1,7 @@
 // onClick.kt
 package com.example.Packages.A3_DiviseProduitsAuCamionFragment.D.Actions
 
+import androidx.compose.runtime.toMutableStateList
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.update_produitsViewModelEtFireBases
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
 import com.example.Apps_Head._2.ViewModel.InitViewModel
@@ -35,6 +36,6 @@ class onClickOn_Fragment_3(private val initViewModel: InitViewModel) {
               }
 
               // Update both local and Firebase databases
-              clientProducts.update_produitsViewModelEtFireBases(initViewModel)
+              clientProducts.toMutableStateList().update_produitsViewModelEtFireBases(initViewModel)
        }
 }

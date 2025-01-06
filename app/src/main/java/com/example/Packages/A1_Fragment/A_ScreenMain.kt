@@ -58,8 +58,8 @@ internal fun A_ScreenMainFragment_1(
 
                 if (databaseSize > 0) {
                     B_ListMainFragment_1(
-                        initViewModel=initViewModel,
                         visibleItems = visibleItems,
+                        initViewModel=initViewModel,
                         contentPadding = paddingValues,
                         onClickCamera = {item->
                             initViewModel._appsHeadModel.produitsMainDataBase

@@ -46,7 +46,8 @@ internal fun A_ScreenMainFragment_1(
 
     val visibleItems by remember(produitsMainDataBase) {
         derivedStateOf {
-            produitsMainDataBase.filter { it.isVisible }.toMutableStateList()
+            produitsMainDataBase.filter { it.isVisible }
+                .toMutableStateList()
         }
     }
     Scaffold(
@@ -58,17 +59,9 @@ internal fun A_ScreenMainFragment_1(
 
                 if (databaseSize > 0) {
                     B_ListMainFragment_1(
-                        visibleItems = visibleItems,
+                        visibleSortedItems = visibleItems,
                         initViewModel=initViewModel,
                         contentPadding = paddingValues,
-                        onCLickOnMainEtitsTempProduit = { product ->
-                            initViewModel._appsHeadModel
-                                .produitsMainDataBase.find { it.id==product.id }.let {
-                                    if (it != null) {
-                                        it.statuesBase.prePourCameraCapture=true
-                                    }
-                                }
-                        }
                     )
                 }
             }

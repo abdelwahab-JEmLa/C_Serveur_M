@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -23,35 +24,19 @@ import com.example.Apps_Head._2.ViewModel.InitViewModel
 
 @Composable
 fun B_ListMainFragment_1(
-    visibleItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
+    visibleSortedItems: SnapshotStateList<AppsHeadModel.ProduitModel>,
     initViewModel: InitViewModel,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onCLickOnMainEtitsTempProduit: (AppsHeadModel.ProduitModel) -> Unit,
 ) {
-    fun updateProductPosition(product: AppsHeadModel.ProduitModel, newPosition: Int) {
-        product.apply {
-            bonCommendDeCetteCota = bonCommendDeCetteCota ?: AppsHeadModel.ProduitModel.GrossistBonCommandes()
-            bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
-            besoinToBeUpdated = true
-        }
 
-        // Normalize positions
-        visibleItems
-            .filter { (it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0 }
-            .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
-            .forEachIndexed { index, item ->
-                item.apply {
-                    bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = index + 1
-                    besoinToBeUpdated = true
-                }
+    val (positioned, unpositioned) =
+        visibleSortedItems
+            .partition {
+                (it.bonCommendDeCetteCota
+                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
             }
 
-        visibleItems.update_produitsViewModelEtFireBases(initViewModel)
-    }
-    val (positioned, unpositioned) = visibleItems.partition {
-        (it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
-    }
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
@@ -70,17 +55,26 @@ fun B_ListMainFragment_1(
                 )
             }
 
-            items(positioned.sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }, key = { it.id }) { product ->
+            items(
+                items = positioned.sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit },
+                key = { it.id }
+            ) { product ->
                 C_ItemMainFragment_1(
-                    initViewModel=initViewModel,
+                    initViewModel = initViewModel,
                     itemMain = product,
-                    onClickDelete = { updateProductPosition(product, 0) },
                     onCLickOnMain = {
-                        val maxPosition = positioned.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
-                        } ?: 0
-                        updateProductPosition(product, maxPosition + 1)
-                    },
+                        visibleSortedItems[visibleSortedItems.indexOfFirst { it.id == product.id }] =
+                            product.apply {
+                                statuesBase.prePourCameraCapture = true
+                                bonCommendDeCetteCota
+                                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
+                                    0
+                            }
+
+
+                        visibleSortedItems.toMutableStateList()
+                            .update_produitsViewModelEtFireBases(initViewModel)
+                    }
                 )
             }
         }
@@ -94,20 +88,29 @@ fun B_ListMainFragment_1(
                 )
             }
 
-            items(unpositioned.sortedBy { it.nom }, key = { it.id }) {
-                product ->
+            items(
+                items = unpositioned.sortedBy { it.nom },
+                key = { it.id }
+            ) { product ->
                 C_ItemMainFragment_1(
-                    initViewModel=initViewModel,
+                    initViewModel = initViewModel,
                     itemMain = product,
-                    onClickDelete = { updateProductPosition(product, 0) },
                     onCLickOnMain = {
                         val maxPosition = positioned.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                                ?: 0
                         } ?: 0
 
-                        onCLickOnMainEtitsTempProduit(product)
-                        updateProductPosition(product, maxPosition + 1)
-                    },
+                        visibleSortedItems[visibleSortedItems.indexOfFirst { it.id == product.id }] =
+                            product.apply {
+                                statuesBase.prePourCameraCapture = true
+                                bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
+                                    maxPosition + 1
+                            }
+
+                        visibleSortedItems.toMutableStateList()
+                            .update_produitsViewModelEtFireBases(initViewModel)
+                    }
                 )
             }
         }

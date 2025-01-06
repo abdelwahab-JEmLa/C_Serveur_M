@@ -57,25 +57,16 @@ fun C_ItemMainFragment_1(
             },
         contentAlignment = Alignment.Center
     ) {
-        // Product Image
+
+
         GlideDisplayImageById(
-            initViewModel=initViewModel,
-            produit_Id = itemMain.id,
-            sonImageBesoinActualisation = itemMain.statuesBase.sonImageBesoinActualisation,
+            initViewModel = initViewModel,
+            productId = itemMain.id,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
-            reloadKey = 0,
-            onRelodeDonne = {
-                initViewModel._appsHeadModel.produitsMainDataBase.find { it.id==itemMain.id }
-                    .let {
-                        if (it != null) {
-                            it.statuesBase.sonImageBesoinActualisation=false
-                        }
-                    }
-            }
+            size = 100.dp
         )
-
         // Delete Position Button
         if (hasPosition) {
             IconButton(

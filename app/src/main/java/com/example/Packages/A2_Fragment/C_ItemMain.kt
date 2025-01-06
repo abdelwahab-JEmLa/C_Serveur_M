@@ -49,16 +49,14 @@ fun C_ItemMainFragment_2(
             },
         contentAlignment = Alignment.Center
     ) {
-        // Product Image
+
         GlideDisplayImageById(
             initViewModel = initViewModel,
+            productId = itemMain.id,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
-            produit_Id = itemMain.id,
-            sonImageBesoinActualisation = itemMain.statuesBase.sonImageBesoinActualisation,
-            reloadKey = 0,
-            onRelodeDonne = {}
+            size = 100.dp
         )
 
         // Product ID

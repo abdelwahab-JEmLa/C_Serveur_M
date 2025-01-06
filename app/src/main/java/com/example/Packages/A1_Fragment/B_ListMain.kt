@@ -57,40 +57,30 @@ fun B_ListMainFragment_1(
                     ?.cPositionCheyCeGrossit == true
             }
 
-    if (showSearchDialog) {
-        SearchDialog(
-            searchText = searchText,
-            onSearchTextChange = { searchText = it },
-            unpositionedItems = unpositioned,
-            onDismiss = {
-                showSearchDialog = false
-                searchText = ""
-            },
-            onItemSelected = { selectedProduct ->
-                val newPositione =
-                    (positioned.maxOfOrNull {
-                        it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                            ?: 0
-                    } ?: 0) + 1
+    fun updatePosition(
+        positioned: List<AppsHeadModel.ProduitModel>,
+        selectedProduct: AppsHeadModel.ProduitModel,
+    ) {
+        val newPositione =
+            (positioned.maxOfOrNull {
+                it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    ?: 0
+            } ?: 0) + 1
 
-                visibleItems[visibleItems.indexOfFirst { it.id == selectedProduct.id }] =
-                    selectedProduct.apply {
-                        if (selectedProduct.itsTempProduit) {
-                            statuesBase.prePourCameraCapture = true
-                        }
-                        bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPositione
-                        bonCommendDeCetteCota?.cPositionCheyCeGrossit = true
-                    }
+        visibleItems[visibleItems.indexOfFirst { it.id == selectedProduct.id }] =
+            selectedProduct.apply {
+                if (selectedProduct.itsTempProduit) {
+                    statuesBase.prePourCameraCapture = true
+                }
+                bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
+                    newPositione
+                bonCommendDeCetteCota?.cPositionCheyCeGrossit = true
+            }
 
-                visibleItems.toMutableStateList()
-                    .update_produitsViewModelEtFireBases(initViewModel)
-
-                showSearchDialog = false
-                searchText = ""
-            },
-            initViewModel = initViewModel
-        )
+        visibleItems.toMutableStateList()
+            .update_produitsViewModelEtFireBases(initViewModel)
     }
+
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -99,7 +89,6 @@ fun B_ListMainFragment_1(
             .background(Color(0xE3C85858).copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         if (positioned.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
@@ -157,49 +146,43 @@ fun B_ListMainFragment_1(
                     initViewModel = initViewModel,
                     itemMain = product,
                     onCLickOnMain = {
-                        val newPositione =
-                            (positioned.maxOfOrNull {
-                                it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                                    ?: 0
-                            } ?: 0) + 1
-
-                        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
-                            product.apply {
-                                if (product.itsTempProduit) {
-                                    statuesBase.prePourCameraCapture = true
-                                }
-                                bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPositione
-                                bonCommendDeCetteCota?.cPositionCheyCeGrossit = true
-                            }
-
-                        visibleItems.toMutableStateList()
-                            .update_produitsViewModelEtFireBases(initViewModel)
+                        updatePosition(positioned, product)
                     }
                 )
             }
         }
     }
+    if (showSearchDialog) {
+        SearchDialog(
+            unpositionedItems = unpositioned,
+            onDismiss = {
+                showSearchDialog = false
+                searchText = ""
+            },
+            onItemSelected = { selectedProduct ->
+                updatePosition(positioned, selectedProduct)
+                showSearchDialog = false
+                searchText = ""
+            },
+            initViewModel = initViewModel
+        )
+    }
 }
 
 @Composable
 private fun SearchDialog(
-    searchText: String,
-    onSearchTextChange: (String) -> Unit,
     unpositionedItems: List<AppsHeadModel.ProduitModel>,
     onDismiss: () -> Unit,
     onItemSelected: (AppsHeadModel.ProduitModel) -> Unit,
     initViewModel: InitViewModel
 ) {
+    var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
-        delay(100) // Small delay to ensure the TextField is composed
-        try {
-            focusRequester.requestFocus()
-        } catch (e: Exception) {
-            // Handle potential focus request failure gracefully
-        }
+        delay(100)
+        focusRequester.requestFocus()
     }
 
     Dialog(
@@ -230,7 +213,7 @@ private fun SearchDialog(
 
                 OutlinedTextField(
                     value = searchText,
-                    onValueChange = onSearchTextChange,
+                    onValueChange = { searchText = it },
                     label = { Text("Nom du produit") },
                     singleLine = true,
                     modifier = Modifier

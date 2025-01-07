@@ -25,8 +25,6 @@ fun C_ItemMainFragment_1(
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
 ) {
-
-    // Main container
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -69,9 +67,8 @@ fun C_ItemMainFragment_1(
             overflow = TextOverflow.Ellipsis
         )
 
-        // Product Name (First Letter)
         Text(
-            text = itemMain.nom.firstOrNull()?.toString() ?: "",
+            text = itemMain.nom,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(4.dp)
@@ -85,7 +82,6 @@ fun C_ItemMainFragment_1(
             overflow = TextOverflow.Ellipsis
         )
 
-        // Position Number (if exists)
         if (position != null) {
             Box(
                 modifier = Modifier

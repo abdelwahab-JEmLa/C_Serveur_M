@@ -70,6 +70,7 @@ fun GlideDisplayImageById(
                     if (product.statuesBase.sonImageBesoinActualisation) {
                         delay(1000)
                         product.besoinToBeUpdated = true
+                        product.statuesBase.imageGlidReloadTigger++
                     }
                 }
             }

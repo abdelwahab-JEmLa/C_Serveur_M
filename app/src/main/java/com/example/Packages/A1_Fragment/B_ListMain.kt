@@ -122,7 +122,7 @@ private fun LazyGridScope.UnPositionedProduits(
     onClickOnMAin: (ProduitModel) -> Unit
 ) {
     if (products.isNotEmpty()) {
-        item(span = { GridItemSpan(4) }) {
+        item(span = { GridItemSpan(5) }) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

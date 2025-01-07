@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.update_produitsViewModelEtFireBases
-import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.groupedProductsBySelf
+import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.produitGroupeurParGrossistInfos
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -51,7 +51,6 @@ fun GrossisstsGroupedFABsFragment_1(
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
-
 
     Column(
         modifier = modifier
@@ -78,28 +77,76 @@ fun GrossisstsGroupedFABsFragment_1(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                groupedProductsBySelf(produitsMainDataBase)
-                .forEach { (supplier, products) ->
-                    key(supplier.id) {          //
+                val groupedProducts = produitGroupeurParGrossistInfos(produitsMainDataBase)
+                groupedProducts.forEach { (grossistInformations, products) ->
+                    key(grossistInformations.id) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            // Up button to move grossist position
+                            if (grossistInformations.positionInGrossistsList > 0) {
+                                FloatingActionButton(
+                                    onClick = {
+                                        scope.launch {
+                                            val updatedList = produitsMainDataBase.toMutableList()
+
+                                            // Create a set of all unique GrossistInformations
+                                            val grossistInfosSet = groupedProducts.keys.toMutableSet()
+
+                                            // Find the grossist that should be swapped with current one
+                                            val previousGrossist = grossistInfosSet.find {
+                                                it.positionInGrossistsList == grossistInformations.positionInGrossistsList - 1
+                                            }
+
+                                            if (previousGrossist != null) {
+                                                // Update positions
+                                                updatedList.forEach { product ->
+                                                    product.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
+                                                        when (grossist.id) {
+                                                            grossistInformations.id -> {
+                                                                grossist.positionInGrossistsList--
+                                                            }
+                                                            previousGrossist.id -> {
+                                                                grossist.positionInGrossistsList++
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                // Update Firebase and ViewModel
+                                                updatedList
+                                                    .toMutableStateList()
+                                                    .update_produitsViewModelEtFireBases(initViewModel)
+                                            }
+                                        }
+                                    },
+                                    modifier = Modifier.size(36.dp),
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ExpandLess,
+                                        contentDescription = "Move Up"
+                                    )
+                                }
+                            }
+
                             Text(
-                                text = "${supplier.nom} (${products.size})",
+                                text = "${grossistInformations.nom} (${products.size})",
                                 modifier = Modifier.padding(end = 8.dp),
                                 style = MaterialTheme.typography.bodyMedium
                             )
+
                             FloatingActionButton(
                                 onClick = {
                                     scope.launch {
                                         val updatedList = produitsMainDataBase.toMutableList()
                                         updatedList.forEach { product ->
                                             product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
-                                                bon.grossistInformations?.id == supplier.id
+                                                bon.grossistInformations?.id == grossistInformations.id
                                             } ?: false
                                             product.bonCommendDeCetteCota
-                                                ?.grossistInformations?.auFilterFAB=true
+                                                ?.grossistInformations?.auFilterFAB = true
                                         }
                                         updatedList
                                             .toMutableStateList()
@@ -107,7 +154,7 @@ fun GrossisstsGroupedFABsFragment_1(
                                     }
                                 },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(supplier.couleur))
+                                containerColor = Color(android.graphics.Color.parseColor(grossistInformations.couleur))
                             ) {
                                 Text(
                                     text = products.size.toString(),

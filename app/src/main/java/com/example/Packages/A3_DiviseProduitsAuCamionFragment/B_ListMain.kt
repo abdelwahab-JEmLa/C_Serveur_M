@@ -27,7 +27,7 @@ fun ListMain_Fragment_3(
             .filter { it.isVisible }
             .sortedWith(
                 compareBy(
-                    { it.bonCommendDeCetteCota?.position_Grossist_Don_Parent_Grossists_List },
+                    { it.bonCommendDeCetteCota?.grossistInformations?.positionInGrossistsList },
                     { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
                 )
             )

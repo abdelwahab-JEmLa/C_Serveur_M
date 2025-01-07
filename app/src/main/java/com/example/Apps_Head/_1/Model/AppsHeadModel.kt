@@ -173,7 +173,7 @@ class AppsHeadModel(
                 }
 
                 companion object {
-                    fun groupedProductsBySelf(
+                    fun produitGroupeurParGrossistInfos(
                         produitsMainDataBase: List<ProduitModel>
                     ): Map<GrossistInformations, List<ProduitModel>> {
                         return produitsMainDataBase

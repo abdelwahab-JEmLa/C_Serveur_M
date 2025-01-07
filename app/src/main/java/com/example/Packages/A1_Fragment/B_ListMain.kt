@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.update_produitsViewModelEtFireBases
-import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.groupedProductsBySelf
+import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.produitGroupeurParGrossistInfos
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 
 @Composable
@@ -126,7 +126,7 @@ fun B_ListMainFragment_1(
                     ) {
                         IconButton(
                             onClick = {
-                                val groupedProducts = groupedProductsBySelf(initViewModel.appsHeadModel.produitsMainDataBase)
+                                val groupedProducts = produitGroupeurParGrossistInfos(initViewModel.appsHeadModel.produitsMainDataBase)
                                 unpositioned.forEach { product ->
                                     val currentPosition = product.bonCommendDeCetteCota
                                         ?.grossistInformations?.positionInGrossistsList ?: return@forEach

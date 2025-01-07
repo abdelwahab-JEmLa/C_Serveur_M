@@ -10,24 +10,23 @@ import java.util.Locale
 
 suspend fun InitViewModel.initializer() {
 
-    val NOMBRE_ENTRE = null
+    val NOMBRE_ENTRE = 100
 
-    if (NOMBRE_ENTRE != 0 && NOMBRE_ENTRE != null ) {
-        CreeNewStart(NOMBRE_ENTRE, false)
+    if (NOMBRE_ENTRE != 0  ) {
+        CreeNewStart(NOMBRE_ENTRE)
         initializationProgress = 1f
     } else {
         LoadFromFirebaseHandler.loadFromFirebase(this)
     }
 }
 
-suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int? =null, useIdUp2000: Boolean) {
+suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int) {
     try {
         initializationProgress = 0.1f
         isInitializing = true
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val ancienData = get_Ancien_DataBases_Main()
-
         // Predefined clients for consistent data
         val clients = listOf(
             Triple(1L, "Client Alpha", "#FF5733"),
@@ -44,22 +43,19 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int? =null, useIdUp2000: Bo
             Triple(3L, "Grossist Gamma", "#5733FF")
         )
 
-        // Apply filtering based on takeUp200 parameter
-        val filteredProduits =
-            if (NOMBRE_ENTRE == null) {
-                ancienData.produitsDatabase
-            } else {
-                if (useIdUp2000) {
-                    ancienData.produitsDatabase.filter { it.idArticle > 2000 }
-                } else {
-                    ancienData.produitsDatabase.take(NOMBRE_ENTRE)
-                }
-            }
+        // Filter and limit the products database
+        val halfCount = NOMBRE_ENTRE / 2
+        val filteredProducts = ancienData.produitsDatabase.let { products ->
+            val olderProducts = products.filter { it.idArticle < 2000 }.take(halfCount)
+            val newerProducts = products.filter { it.idArticle > 2000 }.take(halfCount)
+            (olderProducts + newerProducts).take(NOMBRE_ENTRE)
+        }
 
-        filteredProduits.forEachIndexed { index, ancien ->
+        // Rest of your existing code, but use filteredProducts instead of ancienData.produitsDatabase
+        filteredProducts.forEachIndexed { index, ancien ->
             val depuitAncienDataBase = AppsHeadModel.ProduitModel(
                 id = ancien.idArticle,
-                itsTempProduit = useIdUp2000,
+                itsTempProduit = ancien.idArticle > 2000,
                 init_nom = ancien.nomArticleFinale,
                 init_visible = false,
                 init_besoin_To_Be_Updated = true
@@ -78,7 +74,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int? =null, useIdUp2000: Bo
                             position_Du_Couleur_Au_Produit = position,
                             nom = couleur.nameColore,
                             imogi = couleur.iconColore,
-                            sonImageNeExistPas = useIdUp2000 && position == 1L,
+                            sonImageNeExistPas = depuitAncienDataBase.itsTempProduit && position == 1L,
                         )
                     )
                 }
@@ -153,7 +149,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int? =null, useIdUp2000: Bo
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
                 if (Math.random() < 0.4) 0 else (1..10).random(),
                 init_coloursEtGoutsCommendee = depuitAncienDataBase.coloursEtGouts
-                    .take(if (useIdUp2000) 1 else (1..4).random())
+                    .take(if (depuitAncienDataBase.itsTempProduit) 1 else (1..4).random())
                     .map { couleur ->
                         AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                             id = couleur.position_Du_Couleur_Au_Produit,
@@ -175,7 +171,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int? =null, useIdUp2000: Bo
             depuitAncienDataBase.historiqueBonsCommend.add(grossiste)
 
             _appsHeadModel.produitsMainDataBase.add(depuitAncienDataBase)
-            initializationProgress = 0.1f + (0.8f * (index + 1) / filteredProduits.size)
+            initializationProgress = 0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
         }
 
         // Clear and update Firebase database

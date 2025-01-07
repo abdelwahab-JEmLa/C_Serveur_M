@@ -7,12 +7,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,20 +40,10 @@ internal fun A_ScreenMainFragment_1(
         }
         return
     }
-    var visibleGrossistAssociatedProduits by remember {
-        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?>(null)
-    }
+    val produitsMainDataBase = initViewModel._appsHeadModel.produitsMainDataBase
 
-    val produitsMainDataBase by remember(initViewModel._appsHeadModel.produitsMainDataBase) {
-        derivedStateOf { initViewModel._appsHeadModel.produitsMainDataBase.toList() }
-    }
+    var visibleGrossistAssociatedProduits by remember(produitsMainDataBase) { mutableStateOf<List<AppsHeadModel.ProduitModel>>(emptyList()) }
 
-    val visibleItems by remember(produitsMainDataBase) {
-        derivedStateOf {
-            produitsMainDataBase.filter { it.isVisible }
-                .toMutableStateList()
-        }
-    }
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
@@ -64,7 +52,7 @@ internal fun A_ScreenMainFragment_1(
                 val databaseSize = produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    B_ListMainFragment_1(visibleGrossistAssociatedProduits,visibleItems,initViewModel, paddingValues,)
+                    B_ListMainFragment_1(visibleGrossistAssociatedProduits, paddingValues,)
                 }
             }
 
@@ -76,8 +64,9 @@ internal fun A_ScreenMainFragment_1(
             GrossisstsGroupedFABsFragment_1(
                 produitsMainDataBase,
                 onClick = {
-                    visibleGrossistAssociatedProduits=it
-                          },
+                    if (it != null) {
+                        visibleGrossistAssociatedProduits=it.second
+                    }},
             )
 
         }

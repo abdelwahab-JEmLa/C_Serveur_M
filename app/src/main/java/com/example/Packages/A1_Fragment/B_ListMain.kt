@@ -31,19 +31,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.produitsFireBaseRef
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations
-import com.example.Apps_Head._2.ViewModel.InitViewModel
 
 @Composable
 fun B_ListMainFragment_1(
-    visibleGrossistAssociatedProduits: Map.Entry<GrossistInformations, List<ProduitModel>>?,
-    initViewModel: InitViewModel,
+    visibleGrossistAssociatedProduits: List<ProduitModel>,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     var positionedProduits by remember(visibleGrossistAssociatedProduits) { mutableStateOf<List<ProduitModel>>(emptyList()) }
     var unPositionedProduits by remember(visibleGrossistAssociatedProduits) {
-        mutableStateOf(visibleGrossistAssociatedProduits?.value ?: emptyList())
+        mutableStateOf(visibleGrossistAssociatedProduits)
     }
     var showSearchDialog by remember { mutableStateOf(false) }
 
@@ -88,8 +85,7 @@ fun B_ListMainFragment_1(
             onItemSelected = {
                 handleProductMove(it, true)
                 showSearchDialog = false
-            },
-            initViewModel = initViewModel
+            }
         )
     }
 }

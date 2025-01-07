@@ -28,15 +28,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._2.ViewModel.InitViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun SearchDialog(
     unpositionedItems: List<AppsHeadModel.ProduitModel>,
     onDismiss: () -> Unit,
-    onItemSelected: (AppsHeadModel.ProduitModel) -> Unit,
-    initViewModel: InitViewModel
+    onItemSelected: (AppsHeadModel.ProduitModel) -> Unit
 ) {
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }

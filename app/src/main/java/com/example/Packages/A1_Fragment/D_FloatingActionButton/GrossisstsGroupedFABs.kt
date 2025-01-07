@@ -39,13 +39,17 @@ import kotlin.math.roundToInt
 @Composable
 fun GrossisstsGroupedFABsFragment_1(
     produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: (Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?) -> Unit
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
     var grossistList by remember(produitsMainDataBase) {
         mutableStateOf(produitGroupeurParGrossistInfos(produitsMainDataBase))
+    }
+    var visibleGrossistAssociatedProduits by remember {
+        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?>(null)
     }
 
     Box(
@@ -88,7 +92,8 @@ fun GrossisstsGroupedFABsFragment_1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    grossistList.forEachIndexed { index, (grossist, produits) ->
+                    grossistList.forEachIndexed { index, entry ->
+                        val (grossist, produits) = entry
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -113,11 +118,12 @@ fun GrossisstsGroupedFABsFragment_1(
                             }
 
                             Text(
-                                text = "${grossist.nom} (${produits.size})",
+                                text = grossist.nom,
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        if (grossist.auFilterFAB) Color.Blue else Color.Transparent
+                                        if (visibleGrossistAssociatedProduits?.first == grossist) Color.Blue
+                                        else Color.Transparent
                                     )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
@@ -125,9 +131,8 @@ fun GrossisstsGroupedFABsFragment_1(
 
                             FloatingActionButton(
                                 onClick = {
-                                    grossistList = grossistList.toMutableList().apply {
-                                        this[index].key.auFilterFAB = true
-                                    }
+                                    visibleGrossistAssociatedProduits = entry
+                                    onClick(visibleGrossistAssociatedProduits)
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.update_produitsViewModelEtFireBases
+import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.groupedProductsBySelf
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 
 @Composable
@@ -122,24 +124,49 @@ fun B_ListMainFragment_1(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.align(Alignment.CenterStart)
                     ) {
+                        IconButton(
+                            onClick = {
+                                val groupedProducts = groupedProductsBySelf(initViewModel.appsHeadModel.produitsMainDataBase)
+                                unpositioned.forEach { product ->
+                                    val currentPosition = product.bonCommendDeCetteCota
+                                        ?.grossistInformations?.positionInGrossistsList ?: return@forEach
+
+                                    // Find the matching GrossistInformations for the current position
+                                    groupedProducts.entries
+                                        .find { (key, _) ->
+                                            key.positionInGrossistsList == currentPosition + 1 }
+                                        ?.key?.let { matchingGrossist ->
+                                            // Update the product's GrossistInformations
+                                            visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
+                                                product.apply {
+                                                    bonCommendDeCetteCota?.grossistInformations = matchingGrossist
+                                                    isVisible=false
+                                                }
+                                        }
+                                }
+
+                                // Update Firebase after processing all items
+                                visibleItems.toMutableStateList()
+                                    .update_produitsViewModelEtFireBases(initViewModel)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Moving,
+                                contentDescription = "Moving",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = { showSearchDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                         Text(
-                            "Produits sans position (${unpositioned.size})",
-                            style = MaterialTheme.typography.titleMedium
+                                "Produits sans position (${unpositioned.size})",
+                        style = MaterialTheme.typography.titleMedium
                         )
-                        IconButton(onClick = { showSearchDialog = true }) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Search",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        IconButton(onClick = { showSearchDialog = true }) {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Search",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
                     }
                 }
             }

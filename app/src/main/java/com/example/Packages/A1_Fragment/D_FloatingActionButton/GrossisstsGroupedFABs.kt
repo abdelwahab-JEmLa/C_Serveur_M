@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
@@ -27,7 +26,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,14 +35,16 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.update_produitsViewModelEtFireBases
+import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.groupedProductsBySelf
+import com.example.Apps_Head._2.ViewModel.InitViewModel
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABsFragment_1(
-    onClickFAB: (SnapshotStateList<AppsHeadModel.ProduitModel>) -> Unit,
     produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
+    initViewModel: InitViewModel,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
@@ -52,18 +52,6 @@ fun GrossisstsGroupedFABsFragment_1(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    // Use derivedStateOf for grouping products
-    val groupedProducts by remember(produitsMainDataBase) {
-        derivedStateOf {
-            produitsMainDataBase
-                .mapNotNull { product ->
-                    product.bonCommendDeCetteCota?.grossistInformations?.let {
-                        it to product
-                    }
-                }
-                .groupBy({ it.first }, { it.second })
-        }
-    }
 
     Column(
         modifier = modifier
@@ -90,7 +78,8 @@ fun GrossisstsGroupedFABsFragment_1(
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                groupedProducts.forEach { (supplier, products) ->
+                groupedProductsBySelf(produitsMainDataBase)
+                .forEach { (supplier, products) ->
                     key(supplier.id) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -101,24 +90,20 @@ fun GrossisstsGroupedFABsFragment_1(
                                 modifier = Modifier.padding(end = 8.dp),
                                 style = MaterialTheme.typography.bodyMedium
                             )
-
                             FloatingActionButton(
                                 onClick = {
                                     scope.launch {
                                         val updatedList = produitsMainDataBase.toMutableList()
                                         updatedList.forEach { product ->
                                             product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
-                                                bon.grossistInformations?.id == supplier.id &&
-                                                        bon.coloursEtGoutsCommendee.any { it.quantityAchete > 0 }
+                                                bon.grossistInformations?.id == supplier.id
                                             } ?: false
+                                            product.bonCommendDeCetteCota
+                                                ?.grossistInformations?.auFilterFAB=true
                                         }
-
-                                        groupedProducts.keys.forEach {
-                                            it.auFilterFAB = it.id == supplier.id
-                                        }
-
-                                        onClickFAB(updatedList.toMutableStateList())
-                                        updatedList.toMutableStateList().updateProduitsFireBase()
+                                        updatedList
+                                            .toMutableStateList()
+                                            .update_produitsViewModelEtFireBases(initViewModel)
                                     }
                                 },
                                 modifier = Modifier.size(48.dp),

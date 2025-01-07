@@ -140,12 +140,13 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                     id = grossistId,
                     nom = grossistName,
                     couleur = grossistColor
-                ),
+                ).apply {
+                    positionInGrossistsList = grossistId.toInt() - 1
+                },
                 date = currentDate,
                 date_String_Divise = currentDate.split(" ")[0],
                 time_String_Divise = currentDate.split(" ")[1],
                 currentCreditBalance = (1000..2000).random().toDouble(),
-                init_position_Grossist_Don_Parent_Grossists_List = grossistId.toInt() - 1,
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
                 if (Math.random() < 0.4) 0 else (1..10).random(),
                 init_coloursEtGoutsCommendee = depuitAncienDataBase.coloursEtGouts
@@ -162,7 +163,8 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
 
             depuitAncienDataBase.let { pro ->
                 pro.statuesBase.prePourCameraCapture =
-                    (pro.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0
+                    (pro.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                        ?: 0) > 0
                             && pro.itsTempProduit
             }
 

@@ -68,12 +68,8 @@ internal fun A_ScreenMainFragment_1(
             )
 
             GrossisstsGroupedFABsFragment_1(
-                onClickFAB = { newList ->
-                    initViewModel._appsHeadModel.produitsMainDataBase.clear()
-                    initViewModel._appsHeadModel.produitsMainDataBase.addAll(newList)
-                },
-                produitsMainDataBase = produitsMainDataBase,
-                modifier = modifier
+                produitsMainDataBase ,
+                initViewModel,
             )
 
         }

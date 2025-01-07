@@ -63,7 +63,9 @@ class AppsHeadModel(
                 coloursEtGouts.addAll(value)
             }
 
-        var bonCommendDeCetteCota: GrossistBonCommandes? by mutableStateOf(init_bonCommendDeCetteCota)
+        var bonCommendDeCetteCota: GrossistBonCommandes? by mutableStateOf(
+            init_bonCommendDeCetteCota
+        )
 
         @get:Exclude
         var bonsVentDeCetteCota: SnapshotStateList<ClientBonVentModel> =
@@ -109,6 +111,14 @@ class AppsHeadModel(
         }
 
         @IgnoreExtraProperties
+        class ColourEtGout_Model(
+            var position_Du_Couleur_Au_Produit: Long = 0,
+            var nom: String = "",
+            var imogi: String = "",
+            var sonImageNeExistPas: Boolean = false,
+        )
+
+        @IgnoreExtraProperties
         class GrossistBonCommandes(
             var vid: Long = 0,
             init_grossistInformations: GrossistInformations? = null,
@@ -116,19 +126,18 @@ class AppsHeadModel(
             var date_String_Divise: String = "",
             var time_String_Divise: String = "",
             var currentCreditBalance: Double = 0.0,
-            init_position_Grossist_Don_Parent_Grossists_List: Int = 0,
             init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit: Int = 0,
             init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
         ) {
-            var grossistInformations: GrossistInformations? by mutableStateOf(init_grossistInformations)
+            var grossistInformations: GrossistInformations? by mutableStateOf(
+                init_grossistInformations
+            )
 
             var cPositionCheyCeGrossit: Boolean by mutableStateOf(false)
             var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit
             )
-            var position_Grossist_Don_Parent_Grossists_List: Int by mutableStateOf(
-                init_position_Grossist_Don_Parent_Grossists_List
-            )
+
 
             @get:Exclude
             var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
@@ -141,7 +150,6 @@ class AppsHeadModel(
                     coloursEtGoutsCommendee.addAll(value)
                 }
 
-            // Rest of the nested classes remain the same
             @IgnoreExtraProperties
             data class GrossistInformations(
                 val id: Long = 0,
@@ -149,6 +157,8 @@ class AppsHeadModel(
                 val couleur: String = ""
             ) {
                 var auFilterFAB: Boolean by mutableStateOf(false)
+                var positionInGrossistsList: Int
+                    by mutableIntStateOf(0)
 
                 override fun equals(other: Any?): Boolean {
                     if (this === other) return true
@@ -160,6 +170,23 @@ class AppsHeadModel(
 
                 override fun hashCode(): Int {
                     return Objects.hash(id, nom, couleur)
+                }
+
+                companion object {
+                    fun groupedProductsBySelf(
+                        produitsMainDataBase: List<ProduitModel>
+                    ): Map<GrossistInformations, List<ProduitModel>> {
+                        return produitsMainDataBase
+                            .mapNotNull { product ->
+                                product.bonCommendDeCetteCota?.grossistInformations?.let {
+                                    it to product
+                                }
+                            }
+                            .groupBy(
+                                keySelector = { it.first },
+                                valueTransform = { it.second }
+                            )
+                    }
                 }
             }
 
@@ -173,14 +200,6 @@ class AppsHeadModel(
                 var quantityAchete: Int by mutableIntStateOf(init_quantityAchete)
             }
         }
-
-        @IgnoreExtraProperties
-        class ColourEtGout_Model(
-            var position_Du_Couleur_Au_Produit: Long = 0,
-            var nom: String = "",
-            var imogi: String = "",
-            var sonImageNeExistPas: Boolean = false,
-        )
 
         @IgnoreExtraProperties
         class ClientBonVentModel(
@@ -219,6 +238,7 @@ class AppsHeadModel(
                 override fun hashCode(): Int {
                     return Objects.hash(id, nom, couleur)
                 }
+
                 // AppsHeadModel.kt - Companion object section
                 companion object {
                     fun groupedProductsByClientBonVentModelClientInformations(
@@ -264,12 +284,14 @@ class AppsHeadModel(
                     "Abdelwahab_jeMla.com" +
                     "/IMGs" +
                     "/BaseDonne"
+
         fun SnapshotStateList<ProduitModel>.update_produitsViewModelEtFireBases(initViewModel: InitViewModel) {
 
             try {
                 this.forEach { product ->
                     try {
-                        val index = initViewModel._appsHeadModel.produitsMainDataBase.indexOfFirst { it.id == product.id }
+                        val index =
+                            initViewModel._appsHeadModel.produitsMainDataBase.indexOfFirst { it.id == product.id }
                         if (index != -1) {
                             initViewModel._appsHeadModel.produitsMainDataBase[index] = product
                         }
@@ -284,6 +306,7 @@ class AppsHeadModel(
                 throw e
             }
         }
+
         fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
             try {
                 val updatedProducts = this.filter { it.besoinToBeUpdated }

@@ -42,7 +42,11 @@ internal fun A_ScreenMainFragment_1(
     }
     val produitsMainDataBase = initViewModel._appsHeadModel.produitsMainDataBase
 
-    var visibleGrossistAssociatedProduits by remember(produitsMainDataBase) { mutableStateOf<List<AppsHeadModel.ProduitModel>>(emptyList()) }
+    var visibleGrossistAssociatedProduits by remember(produitsMainDataBase) {
+        mutableStateOf<List<AppsHeadModel.ProduitModel>>(
+            emptyList()
+        )
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -52,7 +56,7 @@ internal fun A_ScreenMainFragment_1(
                 val databaseSize = produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    B_ListMainFragment_1(visibleGrossistAssociatedProduits, paddingValues,)
+                    B_ListMainFragment_1(visibleGrossistAssociatedProduits, paddingValues)
                 }
             }
 
@@ -65,10 +69,10 @@ internal fun A_ScreenMainFragment_1(
                 produitsMainDataBase,
                 onClick = {
                     if (it != null) {
-                        visibleGrossistAssociatedProduits=it.second
-                    }},
+                        visibleGrossistAssociatedProduits = it.second
+                    }
+                },
             )
-
         }
     }
 }

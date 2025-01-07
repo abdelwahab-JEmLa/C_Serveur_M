@@ -80,7 +80,7 @@ fun GrossisstsGroupedFABsFragment_1(
             ) {
                 groupedProductsBySelf(produitsMainDataBase)
                 .forEach { (supplier, products) ->
-                    key(supplier.id) {
+                    key(supplier.id) {          //
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)

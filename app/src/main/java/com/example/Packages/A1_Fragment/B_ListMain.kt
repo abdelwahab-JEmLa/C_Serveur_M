@@ -40,21 +40,17 @@ enum class TypeProduit {
 
 @Composable
 fun B_ListMainFragment_1(
-    visibleGrossistAssociatedProduits: Pair<GrossistInformations, List<ProduitModel>>?,
+    visibleGrossistAssociatedProduits: Map.Entry<GrossistInformations, List<ProduitModel>>?,
     initViewModel: InitViewModel,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     var partitionedProduits by remember(visibleGrossistAssociatedProduits) {
-        mutableStateOf(
-            visibleGrossistAssociatedProduits?.second?.partition {
-                it.bonCommendDeCetteCota?.cPositionCheyCeGrossit != false
-            }?.let { (positioned, unpositioned) ->
-                listOf(
-                    Pair(TypeProduit.POSITIONED, positioned),
-                    Pair(TypeProduit.UN_POSITIONED, unpositioned)
-                )
-            } ?: emptyList()
+        mutableStateOf<List<Pair<TypeProduit, List<ProduitModel>>>>(
+            listOf(
+                TypeProduit.POSITIONED to emptyList(),
+                TypeProduit.UN_POSITIONED to (visibleGrossistAssociatedProduits?.value ?: emptyList())
+            )
         )
     }
 
@@ -68,17 +64,26 @@ fun B_ListMainFragment_1(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        partitionedProduits.forEach { (type, products) ->
-            when (type) {
+        partitionedProduits.forEach { pair ->
+            when (pair.first) {
                 TypeProduit.POSITIONED -> PositionedProduits(
-                    products = products,
+                    products = pair.second,
                     initViewModel = initViewModel
                 )
 
                 TypeProduit.UN_POSITIONED -> UnPositionedProduits(
-                    products = products,
+                    products = pair.second,
                     onShowSearchDialog = { showSearchDialog = true },
-                    initViewModel = initViewModel
+                    initViewModel = initViewModel,
+                    onClickOnMAin = { selectedProduct ->
+                        partitionedProduits = listOf(
+                            TypeProduit.POSITIONED to
+                                    (partitionedProduits.find {
+                                        it.first == TypeProduit.POSITIONED }
+                                        ?.second.orEmpty() + selectedProduct),
+                            TypeProduit.UN_POSITIONED to (partitionedProduits.find { it.first == TypeProduit.UN_POSITIONED }?.second.orEmpty() - selectedProduct)
+                        )
+                    }
                 )
             }
         }
@@ -89,7 +94,10 @@ fun B_ListMainFragment_1(
             unpositionedItems = partitionedProduits.find { it.first == TypeProduit.UN_POSITIONED }?.second ?: emptyList(),
             onDismiss = { showSearchDialog = false },
             onItemSelected = { selectedProduct ->
-                // Update position logic here
+                partitionedProduits = listOf(
+                    TypeProduit.POSITIONED to (partitionedProduits.find { it.first == TypeProduit.POSITIONED }?.second.orEmpty() + selectedProduct),
+                    TypeProduit.UN_POSITIONED to (partitionedProduits.find { it.first == TypeProduit.UN_POSITIONED }?.second.orEmpty() - selectedProduct)
+                )
                 showSearchDialog = false
             },
             initViewModel = initViewModel
@@ -111,9 +119,7 @@ private fun LazyGridScope.PositionedProduits(
         }
 
         items(
-            items = products.sortedBy {
-                it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-            },
+            items = products,
             key = { it.id }
         ) { product ->
             C_ItemMainFragment_1(
@@ -128,7 +134,8 @@ private fun LazyGridScope.PositionedProduits(
 private fun LazyGridScope.UnPositionedProduits(
     products: List<ProduitModel>,
     onShowSearchDialog: () -> Unit,
-    initViewModel: InitViewModel
+    initViewModel: InitViewModel,
+    onClickOnMAin: (ProduitModel) -> Unit
 ) {
     if (products.isNotEmpty()) {
         item(span = { GridItemSpan(5) }) {
@@ -142,7 +149,7 @@ private fun LazyGridScope.UnPositionedProduits(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {}) {
                         Icon(
                             imageVector = Icons.Default.Moving,
                             contentDescription = "Moving",
@@ -165,15 +172,13 @@ private fun LazyGridScope.UnPositionedProduits(
         }
 
         items(
-            items = products.sortedBy {
-                it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-            },
+            items = products,
             key = { it.id }
         ) { product ->
             C_ItemMainFragment_1(
                 initViewModel = initViewModel,
                 itemMain = product,
-                onCLickOnMain = { }
+                onCLickOnMain = { onClickOnMAin(product) }
             )
         }
     }

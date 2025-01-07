@@ -5,9 +5,10 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,14 +20,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.update_produitsViewModelEtFireBases
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.produitGroupeurParGrossistInfos
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import kotlinx.coroutines.launch
@@ -52,73 +51,91 @@ fun GrossisstsGroupedFABsFragment_1(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    change.consume()
-                    offsetX += dragAmount.x
-                    offsetY += dragAmount.y
-                }
+    // Use derivedStateOf to ensure proper recomposition when the list changes
+    val grossistInfosList by remember(produitsMainDataBase) {
+        derivedStateOf {
+            produitGroupeurParGrossistInfos(produitsMainDataBase)
+        }
+    }
+
+    // Keep track of the order separately from the content
+    var grossistOrder by remember(grossistInfosList) {
+        mutableStateOf(grossistInfosList.keys.toList())
+    }
+
+    // Create the ordered map based on the current order
+    val orderedGrossistInfos by remember(grossistInfosList, grossistOrder) {
+        derivedStateOf {
+            grossistOrder.associateWith { key ->
+                grossistInfosList[key] ?: emptyList()
             }
-            .zIndex(1f),
-        horizontalAlignment = Alignment.End,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        }
+    }
+
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
     ) {
-        AnimatedVisibility(
-            visible = showButtons,
-            enter = fadeIn(),
-            exit = fadeOut()
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        offsetX += dragAmount.x
+                        offsetY += dragAmount.y
+                    }
+                }
+                .zIndex(1f),
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            FloatingActionButton(
+                onClick = { showButtons = !showButtons },
+                modifier = Modifier.size(48.dp),
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             ) {
-                val groupedProducts = produitGroupeurParGrossistInfos(produitsMainDataBase)
-                groupedProducts.forEach { (grossistInformations, products) ->
-                    key(grossistInformations.id) {
+                Icon(
+                    imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    contentDescription = if (showButtons) "Hide" else "Show"
+                )
+            }
+
+            AnimatedVisibility(
+                visible = showButtons,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    orderedGrossistInfos.entries.toList().forEachIndexed { index, entry ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // Up button to move grossist position
-                            if (grossistInformations.positionInGrossistsList > 0) {
+                            if (index != 0) {
                                 FloatingActionButton(
                                     onClick = {
                                         scope.launch {
-                                            val updatedList = produitsMainDataBase.toMutableList()
+                                            // Log the current state
+                                            println("Before swap - Current order: $grossistOrder")
 
-                                            // Create a set of all unique GrossistInformations
-                                            val grossistInfosSet = groupedProducts.keys.toMutableSet()
+                                            // Create new order by swapping elements
+                                            val newOrder = grossistOrder.toMutableList()
+                                            val temp = newOrder[index]
+                                            newOrder[index] = newOrder[index - 1]
+                                            newOrder[index - 1] = temp
 
-                                            // Find the grossist that should be swapped with current one
-                                            val previousGrossist = grossistInfosSet.find {
-                                                it.positionInGrossistsList == grossistInformations.positionInGrossistsList - 1
-                                            }
+                                            // Update the order state
+                                            grossistOrder = newOrder
 
-                                            if (previousGrossist != null) {
-                                                // Update positions
-                                                updatedList.forEach { product ->
-                                                    product.bonCommendDeCetteCota?.grossistInformations?.let { grossist ->
-                                                        when (grossist.id) {
-                                                            grossistInformations.id -> {
-                                                                grossist.positionInGrossistsList--
-                                                            }
-                                                            previousGrossist.id -> {
-                                                                grossist.positionInGrossistsList++
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                // Update Firebase and ViewModel
-                                                updatedList
-                                                    .toMutableStateList()
-                                                    .update_produitsViewModelEtFireBases(initViewModel)
-                                            }
+                                            // Log the new state
+                                            println("After swap - New order: ${grossistOrder}")
+                                            println("Updated entry at ${index-1}: ${newOrder[index-1]}")
+                                            println("Updated entry at $index: ${newOrder[index]}")
                                         }
                                     },
                                     modifier = Modifier.size(36.dp),
@@ -132,32 +149,18 @@ fun GrossisstsGroupedFABsFragment_1(
                             }
 
                             Text(
-                                text = "${grossistInformations.nom} (${products.size})",
+                                text = "${entry.key.nom} (${entry.value.size})",
                                 modifier = Modifier.padding(end = 8.dp),
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
                             FloatingActionButton(
-                                onClick = {
-                                    scope.launch {
-                                        val updatedList = produitsMainDataBase.toMutableList()
-                                        updatedList.forEach { product ->
-                                            product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
-                                                bon.grossistInformations?.id == grossistInformations.id
-                                            } ?: false
-                                            product.bonCommendDeCetteCota
-                                                ?.grossistInformations?.auFilterFAB = true
-                                        }
-                                        updatedList
-                                            .toMutableStateList()
-                                            .update_produitsViewModelEtFireBases(initViewModel)
-                                    }
-                                },
+                                onClick = { /* Handle click if needed */ },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(grossistInformations.couleur))
+                                containerColor = Color(android.graphics.Color.parseColor(entry.key.couleur))
                             ) {
                                 Text(
-                                    text = products.size.toString(),
+                                    text = entry.value.size.toString(),
                                     color = Color.White
                                 )
                             }
@@ -165,17 +168,6 @@ fun GrossisstsGroupedFABsFragment_1(
                     }
                 }
             }
-        }
-
-        FloatingActionButton(
-            onClick = { showButtons = !showButtons },
-            modifier = Modifier.size(48.dp),
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ) {
-            Icon(
-                imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                contentDescription = if (showButtons) "Hide" else "Show"
-            )
         }
     }
 }

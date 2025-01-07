@@ -40,6 +40,7 @@ internal fun A_ScreenMainFragment_1(
         }
         return
     }
+
     val produitsMainDataBase = initViewModel._appsHeadModel.produitsMainDataBase
 
     var visibleGrossistAssociatedProduits by remember(produitsMainDataBase) {

@@ -10,10 +10,9 @@ import java.util.Locale
 
 suspend fun InitViewModel.initializer() {
 
-    val NOMBRE_ENTRE = 50
+    val NOMBRE_ENTRE = null
 
-    if (NOMBRE_ENTRE > 0) {
-        CreeNewStart(NOMBRE_ENTRE, true)
+    if (NOMBRE_ENTRE != 0 && NOMBRE_ENTRE != null ) {
         CreeNewStart(NOMBRE_ENTRE, false)
         initializationProgress = 1f
     } else {
@@ -21,7 +20,7 @@ suspend fun InitViewModel.initializer() {
     }
 }
 
-suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolean) {
+suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int? =null, useIdUp2000: Boolean) {
     try {
         initializationProgress = 0.1f
         isInitializing = true
@@ -46,21 +45,25 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
         )
 
         // Apply filtering based on takeUp200 parameter
-        val filteredProduits = if (filterIdUp2000) {
-            ancienData.produitsDatabase.filter { it.idArticle > 2000 }
-        } else {
-            ancienData.produitsDatabase.take(NOMBRE_ENTRE)
-        }
+        val filteredProduits =
+            if (NOMBRE_ENTRE == null) {
+                ancienData.produitsDatabase
+            } else {
+                if (useIdUp2000) {
+                    ancienData.produitsDatabase.filter { it.idArticle > 2000 }
+                } else {
+                    ancienData.produitsDatabase.take(NOMBRE_ENTRE)
+                }
+            }
 
         filteredProduits.forEachIndexed { index, ancien ->
             val depuitAncienDataBase = AppsHeadModel.ProduitModel(
                 id = ancien.idArticle,
-                itsTempProduit = filterIdUp2000,
+                itsTempProduit = useIdUp2000,
                 init_nom = ancien.nomArticleFinale,
                 init_visible = false,
                 init_besoin_To_Be_Updated = true
             )
-
 
             // Add colors/tastes
             listOf(
@@ -75,7 +78,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                             position_Du_Couleur_Au_Produit = position,
                             nom = couleur.nameColore,
                             imogi = couleur.iconColore,
-                            sonImageNeExistPas = filterIdUp2000 && position == 1L,
+                            sonImageNeExistPas = useIdUp2000 && position == 1L,
                         )
                     )
                 }
@@ -150,7 +153,7 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int, filterIdUp2000: Boolea
                 init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
                 if (Math.random() < 0.4) 0 else (1..10).random(),
                 init_coloursEtGoutsCommendee = depuitAncienDataBase.coloursEtGouts
-                    .take(if (filterIdUp2000) 1 else (1..4).random())
+                    .take(if (useIdUp2000) 1 else (1..4).random())
                     .map { couleur ->
                         AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                             id = couleur.position_Du_Couleur_Au_Produit,

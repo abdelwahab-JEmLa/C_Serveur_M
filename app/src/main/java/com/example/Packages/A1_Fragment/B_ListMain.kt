@@ -33,7 +33,6 @@ import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 
-
 @Composable
 fun B_ListMainFragment_1(
     visibleGrossistAssociatedProduits: Map.Entry<GrossistInformations, List<ProduitModel>>?,
@@ -41,12 +40,10 @@ fun B_ListMainFragment_1(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+    var positionedProduits by remember(visibleGrossistAssociatedProduits) { mutableStateOf<List<ProduitModel>>(emptyList()) }
     var unPositionedProduits by remember(visibleGrossistAssociatedProduits) {
         mutableStateOf(visibleGrossistAssociatedProduits?.value ?: emptyList())
     }
-
-    var positionedProduits by remember(visibleGrossistAssociatedProduits) { mutableStateOf<List<ProduitModel>>(emptyList()) }
-
     var showSearchDialog by remember { mutableStateOf(false) }
 
     LazyVerticalGrid(
@@ -57,39 +54,39 @@ fun B_ListMainFragment_1(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        positionedProduits.forEach { pair ->
-            when () {
-               -> PositionedProduits(
-                    products = ,
-                    initViewModel = initViewModel
-                )
+        // First show positioned products
+        PositionedProduits(
+            products = positionedProduits,
+            initViewModel = initViewModel
+        )
 
-                 -> UnPositionedProduits(
-                    products = ,
-                    onShowSearchDialog = { showSearchDialog = true },
-                    initViewModel = initViewModel,
-                    onClickOnMAin = { selectedProduct ->
-                        positionedProduits = positionedProduits + produit
-                        positionedProduits = positionedProduits - produit
-
-                    }
-                )
+        // Then show unpositioned products
+        UnPositionedProduits(
+            products = unPositionedProduits,
+            onShowSearchDialog = { showSearchDialog = true },
+            initViewModel = initViewModel,
+            onClickOnMAin = { selectedProduct ->
+                // Update both lists when a product is positioned
+                unPositionedProduits = unPositionedProduits - selectedProduct
+                positionedProduits = positionedProduits + selectedProduct
             }
-        }
+        )
     }
 
     if (showSearchDialog) {
         SearchDialog(
-            unpositionedItems = ,
+            unpositionedItems = unPositionedProduits,
             onDismiss = { showSearchDialog = false },
-            onItemSelected = {
+            onItemSelected = { selectedProduct ->
+                // Update lists when a product is selected from search
+                unPositionedProduits = unPositionedProduits - selectedProduct
+                positionedProduits = positionedProduits + selectedProduct
                 showSearchDialog = false
             },
             initViewModel = initViewModel
         )
     }
 }
-
 
 private fun LazyGridScope.PositionedProduits(
     products: List<ProduitModel>,
@@ -111,7 +108,7 @@ private fun LazyGridScope.PositionedProduits(
             C_ItemMainFragment_1(
                 initViewModel = initViewModel,
                 itemMain = product,
-                onCLickOnMain = { }
+                onCLickOnMain = { } // No action needed for positioned items
             )
         }
     }

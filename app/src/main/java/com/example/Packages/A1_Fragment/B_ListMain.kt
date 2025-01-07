@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.produitsFireBaseRef
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations
 import com.example.Apps_Head._2.ViewModel.InitViewModel
@@ -46,6 +47,20 @@ fun B_ListMainFragment_1(
     }
     var showSearchDialog by remember { mutableStateOf(false) }
 
+    val handleProductMove = { item: ProduitModel, toPositioned: Boolean ->
+        if (toPositioned) {
+            positionedProduits += item
+            unPositionedProduits -= item
+        } else {
+            positionedProduits -= item
+            unPositionedProduits += item
+        }
+        produitsFireBaseRef.apply {
+            setValue(positionedProduits)
+            setValue(unPositionedProduits)
+        }
+    }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
@@ -54,23 +69,15 @@ fun B_ListMainFragment_1(
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // First show positioned products
         PositionedProduits(
             products = positionedProduits,
-            onClickOnMAin = {
-                positionedProduits -= it
-                unPositionedProduits += it
-            }
+            onClickOnMAin = { handleProductMove(it, false) }
         )
 
-        // Then show unpositioned products
         UnPositionedProduits(
             products = unPositionedProduits,
             onShowSearchDialog = { showSearchDialog = true },
-            onClickOnMAin = {
-                positionedProduits += it
-                unPositionedProduits -= it
-            }
+            onClickOnMAin = { handleProductMove(it, true) }
         )
     }
 
@@ -79,8 +86,7 @@ fun B_ListMainFragment_1(
             unpositionedItems = unPositionedProduits,
             onDismiss = { showSearchDialog = false },
             onItemSelected = {
-                positionedProduits += it
-                unPositionedProduits -= it
+                handleProductMove(it, true)
                 showSearchDialog = false
             },
             initViewModel = initViewModel

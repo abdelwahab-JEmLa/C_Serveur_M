@@ -52,6 +52,7 @@ fun C_ItemMainFragment_2(
 
         GlideDisplayImageById(
             initViewModel = initViewModel,
+            itemMain = itemMain,
             productId = itemMain.id,
             modifier = Modifier
                 .fillMaxWidth()

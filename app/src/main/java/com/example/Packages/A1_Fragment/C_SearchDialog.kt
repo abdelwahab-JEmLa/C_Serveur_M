@@ -101,7 +101,6 @@ fun SearchDialog(
                             key = { it.id }
                         ) { product ->
                             C_ItemMainFragment_1(
-                                initViewModel = initViewModel,
                                 itemMain = product,
                                 onCLickOnMain = { onItemSelected(product) }
                             )

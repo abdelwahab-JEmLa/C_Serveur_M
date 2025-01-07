@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
 
 @Composable
@@ -31,7 +30,6 @@ fun C_ItemMainFragment_1(
     itemMain: AppsHeadModel.ProduitModel,
     onClickDelete: () -> Unit = {},
     onCLickOnMain: () -> Unit = {},
-    initViewModel: InitViewModel,
 ) {
     // Calculate if the product has a valid position
     val hasPosition = remember(itemMain.bonCommendDeCetteCota) {

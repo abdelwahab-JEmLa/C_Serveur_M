@@ -57,18 +57,19 @@ fun B_ListMainFragment_1(
         // First show positioned products
         PositionedProduits(
             products = positionedProduits,
-            initViewModel = initViewModel
+            onClickOnMAin = {
+                positionedProduits -= it
+                unPositionedProduits += it
+            }
         )
 
         // Then show unpositioned products
         UnPositionedProduits(
             products = unPositionedProduits,
             onShowSearchDialog = { showSearchDialog = true },
-            initViewModel = initViewModel,
-            onClickOnMAin = { selectedProduct ->
-                // Update both lists when a product is positioned
-                unPositionedProduits = unPositionedProduits - selectedProduct
-                positionedProduits = positionedProduits + selectedProduct
+            onClickOnMAin = {
+                positionedProduits += it
+                unPositionedProduits -= it
             }
         )
     }
@@ -77,10 +78,9 @@ fun B_ListMainFragment_1(
         SearchDialog(
             unpositionedItems = unPositionedProduits,
             onDismiss = { showSearchDialog = false },
-            onItemSelected = { selectedProduct ->
-                // Update lists when a product is selected from search
-                unPositionedProduits = unPositionedProduits - selectedProduct
-                positionedProduits = positionedProduits + selectedProduct
+            onItemSelected = {
+                positionedProduits += it
+                unPositionedProduits -= it
                 showSearchDialog = false
             },
             initViewModel = initViewModel
@@ -90,7 +90,7 @@ fun B_ListMainFragment_1(
 
 private fun LazyGridScope.PositionedProduits(
     products: List<ProduitModel>,
-    initViewModel: InitViewModel
+    onClickOnMAin: (ProduitModel) -> Unit,
 ) {
     if (products.isNotEmpty()) {
         item(span = { GridItemSpan(5) }) {
@@ -106,9 +106,8 @@ private fun LazyGridScope.PositionedProduits(
             key = { it.id }
         ) { product ->
             C_ItemMainFragment_1(
-                initViewModel = initViewModel,
                 itemMain = product,
-                onCLickOnMain = { } // No action needed for positioned items
+                onCLickOnMain = { onClickOnMAin(product)} // No action needed for positioned items
             )
         }
     }
@@ -117,7 +116,6 @@ private fun LazyGridScope.PositionedProduits(
 private fun LazyGridScope.UnPositionedProduits(
     products: List<ProduitModel>,
     onShowSearchDialog: () -> Unit,
-    initViewModel: InitViewModel,
     onClickOnMAin: (ProduitModel) -> Unit
 ) {
     if (products.isNotEmpty()) {
@@ -159,7 +157,6 @@ private fun LazyGridScope.UnPositionedProduits(
             key = { it.id }
         ) { product ->
             C_ItemMainFragment_1(
-                initViewModel = initViewModel,
                 itemMain = product,
                 onCLickOnMain = { onClickOnMAin(product) }
             )

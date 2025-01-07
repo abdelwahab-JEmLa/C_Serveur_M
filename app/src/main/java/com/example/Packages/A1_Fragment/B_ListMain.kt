@@ -107,7 +107,7 @@ private fun LazyGridScope.PositionedProduits(
         ) { product ->
             C_ItemMainFragment_1(
                 itemMain = product,
-                onCLickOnMain = { onClickOnMAin(product)} // No action needed for positioned items
+                onCLickOnMain = { onClickOnMAin(product) }
             )
         }
     }

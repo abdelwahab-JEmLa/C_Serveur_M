@@ -69,7 +69,6 @@ internal fun A_ScreenMainFragment_1(
 
             GrossisstsGroupedFABsFragment_1(
                 produitsMainDataBase ,
-                initViewModel,
             )
 
         }

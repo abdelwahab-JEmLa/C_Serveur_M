@@ -20,12 +20,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,43 +31,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.produitGroupeurParGrossistInfos
-import com.example.Apps_Head._2.ViewModel.InitViewModel
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABsFragment_1(
     produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
-    initViewModel: InitViewModel,
     modifier: Modifier = Modifier
 ) {
-    val scope = rememberCoroutineScope()
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
-
-    // Use derivedStateOf to ensure proper recomposition when the list changes
-    val grossistInfosList by remember(produitsMainDataBase) {
-        derivedStateOf {
-            produitGroupeurParGrossistInfos(produitsMainDataBase)
-        }
-    }
-
-    // Keep track of the order separately from the content
-    var grossistOrder by remember(grossistInfosList) {
-        mutableStateOf(grossistInfosList.keys.toList())
-    }
-
-    // Create the ordered map based on the current order
-    val orderedGrossistInfos by remember(grossistInfosList, grossistOrder) {
-        derivedStateOf {
-            grossistOrder.associateWith { key ->
-                grossistInfosList[key] ?: emptyList()
-            }
-        }
+    var grossistList by remember(produitsMainDataBase) {
+        mutableStateOf(produitGroupeurParGrossistInfos(produitsMainDataBase).entries.toList())
     }
 
     Box(
@@ -86,11 +61,11 @@ fun GrossisstsGroupedFABsFragment_1(
                         offsetX += dragAmount.x
                         offsetY += dragAmount.y
                     }
-                }
-                .zIndex(1f),
+                },
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Main FAB
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
                 modifier = Modifier.size(48.dp),
@@ -102,6 +77,7 @@ fun GrossisstsGroupedFABsFragment_1(
                 )
             }
 
+            // Animated content
             AnimatedVisibility(
                 visible = showButtons,
                 enter = fadeIn(),
@@ -111,31 +87,18 @@ fun GrossisstsGroupedFABsFragment_1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    orderedGrossistInfos.entries.toList().forEachIndexed { index, entry ->
+                    grossistList.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            if (index != 0) {
+                            if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        scope.launch {
-                                            // Log the current state
-                                            println("Before swap - Current order: $grossistOrder")
-
-                                            // Create new order by swapping elements
-                                            val newOrder = grossistOrder.toMutableList()
-                                            val temp = newOrder[index]
-                                            newOrder[index] = newOrder[index - 1]
-                                            newOrder[index - 1] = temp
-
-                                            // Update the order state
-                                            grossistOrder = newOrder
-
-                                            // Log the new state
-                                            println("After swap - New order: ${grossistOrder}")
-                                            println("Updated entry at ${index-1}: ${newOrder[index-1]}")
-                                            println("Updated entry at $index: ${newOrder[index]}")
+                                        grossistList = grossistList.toMutableList().apply {
+                                            val temp = this[index]
+                                            this[index] = this[index - 1]
+                                            this[index - 1] = temp
                                         }
                                     },
                                     modifier = Modifier.size(36.dp),
@@ -149,18 +112,18 @@ fun GrossisstsGroupedFABsFragment_1(
                             }
 
                             Text(
-                                text = "${entry.key.nom} (${entry.value.size})",
+                                text = "${grossist.nom} (${produits.size})",
                                 modifier = Modifier.padding(end = 8.dp),
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
                             FloatingActionButton(
-                                onClick = { /* Handle click if needed */ },
+                                onClick = { },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(entry.key.couleur))
+                                containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))
                             ) {
                                 Text(
-                                    text = entry.value.size.toString(),
+                                    text = produits.size.toString(),
                                     color = Color.White
                                 )
                             }

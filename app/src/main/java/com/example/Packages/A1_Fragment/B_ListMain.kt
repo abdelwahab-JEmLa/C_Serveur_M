@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -123,7 +122,7 @@ private fun LazyGridScope.UnPositionedProduits(
     onClickOnMAin: (ProduitModel) -> Unit
 ) {
     if (products.isNotEmpty()) {
-        item(span = { GridItemSpan(5) }) {
+        item(span = { GridItemSpan(4) }) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,13 +133,6 @@ private fun LazyGridScope.UnPositionedProduits(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.align(Alignment.CenterStart)
                 ) {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Default.Moving,
-                            contentDescription = "Moving",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
                     IconButton(onClick = onShowSearchDialog) {
                         Icon(
                             imageVector = Icons.Default.Search,

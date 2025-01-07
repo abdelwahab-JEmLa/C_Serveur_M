@@ -22,11 +22,12 @@ import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
 @Composable
 fun C_ItemMainFragment_1(
     itemMain: AppsHeadModel.ProduitModel,
+    modifier: Modifier = Modifier,  // Moved to be first optional parameter
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier  // Using the passed modifier
             .fillMaxWidth()
             .height(80.dp)
             .background(

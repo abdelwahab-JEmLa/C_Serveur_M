@@ -110,7 +110,11 @@ private fun LazyGridScope.PositionedProduits(
             C_ItemMainFragment_1(
                 itemMain = product,
                 onCLickOnMain = { onClickOnMAin(product) },
-                position = index + 1
+                position = index + 1,
+                modifier = Modifier.animateItem(
+                    fadeInSpec = null,
+                    fadeOutSpec = null
+                )  // Add animation for item placement
             )
         }
     }
@@ -150,11 +154,17 @@ private fun LazyGridScope.UnPositionedProduits(
 
         items(
             items = products,
+            key = { it.id }  // Add key for stable animations
         ) { product ->
             C_ItemMainFragment_1(
                 itemMain = product,
-                onCLickOnMain = { onClickOnMAin(product) }
+                onCLickOnMain = { onClickOnMAin(product) },
+                modifier = Modifier.animateItem(
+                    fadeInSpec = null,
+                    fadeOutSpec = null
+                )  // Add animation for item placement
             )
         }
     }
 }
+

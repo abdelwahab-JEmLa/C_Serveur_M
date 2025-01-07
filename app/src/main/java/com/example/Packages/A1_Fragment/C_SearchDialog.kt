@@ -101,6 +101,10 @@ fun SearchDialog(
                             C_ItemMainFragment_1(
                                 itemMain = product,
                                 onCLickOnMain = { onItemSelected(product) },
+                                modifier = Modifier.animateItem(
+                                    fadeInSpec = null,
+                                    fadeOutSpec = null
+                                ),
                             )
                         }
                     }

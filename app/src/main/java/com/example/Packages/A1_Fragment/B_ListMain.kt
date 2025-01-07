@@ -107,9 +107,11 @@ private fun LazyGridScope.PositionedProduits(
             items = products,
             key = { it.id }
         ) { product ->
+            val index = products.indexOf(product)
             C_ItemMainFragment_1(
                 itemMain = product,
-                onCLickOnMain = { onClickOnMAin(product) }
+                onCLickOnMain = { onClickOnMAin(product) },
+                position = index + 1
             )
         }
     }
@@ -156,7 +158,6 @@ private fun LazyGridScope.UnPositionedProduits(
 
         items(
             items = products,
-            key = { it.id }
         ) { product ->
             C_ItemMainFragment_1(
                 itemMain = product,

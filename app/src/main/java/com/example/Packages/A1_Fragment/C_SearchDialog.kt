@@ -100,7 +100,7 @@ fun SearchDialog(
                         ) { product ->
                             C_ItemMainFragment_1(
                                 itemMain = product,
-                                onCLickOnMain = { onItemSelected(product) }
+                                onCLickOnMain = { onItemSelected(product) },
                             )
                         }
                     }

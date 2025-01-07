@@ -3,6 +3,7 @@ package com.example.Packages.A1_Fragment.D_FloatingActionButton
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -113,12 +114,21 @@ fun GrossisstsGroupedFABsFragment_1(
 
                             Text(
                                 text = "${grossist.nom} (${produits.size})",
-                                modifier = Modifier.padding(end = 8.dp),
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .background(
+                                        if (grossist.auFilterFAB) Color.Blue else Color.Transparent
+                                    )
+                                    .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
                             FloatingActionButton(
-                                onClick = { },
+                                onClick = {
+                                    grossistList = grossistList.toMutableList().apply {
+                                        this[index].key.auFilterFAB = true
+                                    }
+                                },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))
                             ) {

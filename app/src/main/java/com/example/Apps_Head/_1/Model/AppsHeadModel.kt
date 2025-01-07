@@ -175,7 +175,7 @@ class AppsHeadModel(
                 companion object {
                     fun produitGroupeurParGrossistInfos(
                         produitsMainDataBase: List<ProduitModel>
-                    ): Map<GrossistInformations, List<ProduitModel>> {
+                    ): List<Map.Entry<GrossistInformations, List<ProduitModel>>> {
                         return produitsMainDataBase
                             .mapNotNull { product ->
                                 product.bonCommendDeCetteCota?.grossistInformations?.let {
@@ -186,6 +186,8 @@ class AppsHeadModel(
                                 keySelector = { it.first },
                                 valueTransform = { it.second }
                             )
+                            .entries
+                            .toList()
                     }
                 }
             }

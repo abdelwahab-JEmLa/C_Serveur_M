@@ -45,7 +45,7 @@ fun GrossisstsGroupedFABsFragment_1(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
     var grossistList by remember(produitsMainDataBase) {
-        mutableStateOf(produitGroupeurParGrossistInfos(produitsMainDataBase).entries.toList())
+        mutableStateOf(produitGroupeurParGrossistInfos(produitsMainDataBase))
     }
 
     Box(

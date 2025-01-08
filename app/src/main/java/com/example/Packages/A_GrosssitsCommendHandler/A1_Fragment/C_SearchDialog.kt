@@ -100,7 +100,7 @@ fun SearchDialog(
                         items(
                             items = filteredItems,
                         ) { product ->
-                            C_ItemMainFragment_1(
+                            /*C_ItemMainFragment_1(
                                 viewModel_Head = viewModel_Head,
                                 itemMainId = product,
                                 modifier = Modifier.animateItem(
@@ -108,7 +108,7 @@ fun SearchDialog(
                                     fadeOutSpec = null
                                 ),
                                 onCLickOnMain = { onItemSelected(product) },
-                            )
+                            )      */
                         }
                     }
                 }

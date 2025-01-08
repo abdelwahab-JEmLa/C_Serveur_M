@@ -26,8 +26,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.imagesProduitsLocalExternalStorageBasePath
-import com.example.Apps_Head._1.Model.ProduitsAncienDataBaseMain
 import com.example.c_serveur.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -40,7 +40,7 @@ private const val IMAGE_QUALITY = 3
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GlideDisplayImageById(
-    itemMain: ProduitsAncienDataBaseMain?,
+    itemMain: AppsHeadModel.ProduitModel,
     modifier: Modifier = Modifier,
     size: Dp? = null,
     onLoadComplete: () -> Unit = {}
@@ -53,87 +53,82 @@ fun GlideDisplayImageById(
     var isLoading by remember { mutableStateOf(true) }
 
     // Monitor product changes and trigger reloads
-    if (itemMain != null) {
-        LaunchedEffect(itemMain.idArticle) {
-            while (true) {
-                itemMain.let { product ->
-                    val currentTime = System.currentTimeMillis()
-                    val currentTrigger = 0
+    LaunchedEffect(itemMain.id) {
+        while (true) {
+            itemMain.let { product ->
+                val currentTime = System.currentTimeMillis()
+                val currentTrigger = 0
 
-                    if (currentTime - lastReloadTimestamp > MIN_RELOAD_INTERVAL &&
-                        currentTrigger != previousTrigger) {
-                        lastReloadTimestamp = currentTime
-                        previousTrigger = currentTrigger
-                        forceReload++
-                        isLoading = true
-                        reloadSuccess = true
+                if (currentTime - lastReloadTimestamp > MIN_RELOAD_INTERVAL &&
+                    currentTrigger != previousTrigger) {
+                    lastReloadTimestamp = currentTime
+                    previousTrigger = currentTrigger
+                    forceReload++
+                    isLoading = true
+                    reloadSuccess = true
 
-                        if (true) {
-                            delay(1000)
-
-                        }
+                    if (true) {
+                        delay(1000)
+                        product.besoinToBeUpdated = true
+                        product.statuesBase.imageGlidReloadTigger++
                     }
                 }
-                delay(MIN_RELOAD_INTERVAL)
             }
+            delay(MIN_RELOAD_INTERVAL)
         }
     }
 
     // Load image file
-    if (itemMain != null) {
-        LaunchedEffect(itemMain.idArticle, forceReload) {
-            withContext(Dispatchers.IO) {
-                val imagePath = "$imagesProduitsLocalExternalStorageBasePath/${itemMain.idArticle}_1"
-                imageFile = listOf("jpg", "jpeg", "png", "webp")
-                    .map { File("$imagePath.$it") }
-                    .firstOrNull { it.exists() && it.length() > 0 }
-            }
+    LaunchedEffect(itemMain.id, forceReload) {
+        withContext(Dispatchers.IO) {
+            val imagePath = "$imagesProduitsLocalExternalStorageBasePath/${itemMain.id}_1"
+            imageFile = listOf("jpg", "jpeg", "png", "webp")
+                .map { File("$imagePath.$it") }
+                .firstOrNull { it.exists() && it.length() > 0 }
         }
     }
 
     // Display image
     Box(modifier = modifier.then(size?.let { Modifier.size(it) } ?: Modifier.fillMaxSize())) {
-        if (itemMain != null) {
-            GlideImage(
-                model = imageFile ?: R.drawable.ic_launcher_background,
-                contentDescription = "Product $itemMain.id",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(8.dp))
-            ) { builder ->
-                builder
-                    .downsample(com.bumptech.glide.load.resource.bitmap.DownsampleStrategy.AT_MOST)
-                    .encodeQuality(IMAGE_QUALITY)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .signature(ObjectKey("${itemMain.idArticle}_${forceReload}"))
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            isLoading = false
-                            return false
-                        }
+        GlideImage(
+            model = imageFile ?: R.drawable.ic_launcher_background,
+            contentDescription = "Product $itemMain.id",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(8.dp))
+        ) { builder ->
+            builder
+                .downsample(com.bumptech.glide.load.resource.bitmap.DownsampleStrategy.AT_MOST)
+                .encodeQuality(IMAGE_QUALITY)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .signature(ObjectKey("${itemMain.id}_${forceReload}"))
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        isLoading = false
+                        return false
+                    }
 
-                        override fun onResourceReady(
-                            resource: Drawable,
-                            model: Any,
-                            target: Target<Drawable>?,
-                            dataSource: DataSource,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            isLoading = false
-                            if (reloadSuccess) {
-                                onLoadComplete()
-                                reloadSuccess = false
-                            }
-                            return false
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        isLoading = false
+                        if (reloadSuccess) {
+                            onLoadComplete()
+                            reloadSuccess = false
                         }
-                    })
-            }
+                        return false
+                    }
+                })
         }
     }
 }

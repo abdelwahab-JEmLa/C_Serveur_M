@@ -28,7 +28,6 @@ fun C_ItemMainFragment_1(
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
 ) {
-    val produit =viewModel_Head._ancienModels.produitsDatabase.find { it.idArticle==itemMainId.produitId }
     Box(
         modifier = modifier  // Using the passed modifier
             .fillMaxWidth()
@@ -47,7 +46,7 @@ fun C_ItemMainFragment_1(
     ) {
 
         GlideDisplayImageById(
-            itemMain = produit,
+            itemMain = itemMainId,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
@@ -55,40 +54,36 @@ fun C_ItemMainFragment_1(
         )
 
         // Product ID
-        if (produit != null) {
-            Text(
-                text = "ID: ${produit.idArticle}",
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(4.dp)
-                    .background(
-                        color = Color.LightGray.copy(alpha = 0.5f),
-                        shape = RoundedCornerShape(4.dp)
-                    )
-                    .padding(4.dp),
-                style = MaterialTheme.typography.bodySmall,
-                fontSize = 8.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+        Text(
+            text = "ID: ${itemMainId.id}",
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(4.dp)
+                .background(
+                    color = Color.LightGray.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .padding(4.dp),
+            style = MaterialTheme.typography.bodySmall,
+            fontSize = 8.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
 
-        if (produit != null) {
-            Text(
-                text = produit.nomArticleFinale,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(4.dp)
-                    .background(
-                        color = Color.LightGray.copy(alpha = 0.7f),
-                        shape = RoundedCornerShape(4.dp)
-                    )
-                    .padding(4.dp),
-                style = MaterialTheme.typography.bodyLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+        Text(
+            text = itemMainId.nom,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(4.dp)
+                .background(
+                    color = Color.LightGray.copy(alpha = 0.7f),
+                    shape = RoundedCornerShape(4.dp)
+                )
+                .padding(4.dp),
+            style = MaterialTheme.typography.bodyLarge,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
 
         if (position != null) {
             Box(

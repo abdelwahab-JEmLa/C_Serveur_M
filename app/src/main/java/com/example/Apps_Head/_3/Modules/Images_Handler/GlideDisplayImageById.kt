@@ -26,8 +26,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ArticleInfosModel
 import com.example.c_serveur.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -40,7 +40,7 @@ private const val IMAGE_QUALITY = 3
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GlideDisplayImageById(
-    itemMain: AppsHeadModel.ProduitModel,
+    itemMain: ArticleInfosModel,
     modifier: Modifier = Modifier,
     size: Dp? = null,
     onLoadComplete: () -> Unit = {}
@@ -57,7 +57,7 @@ fun GlideDisplayImageById(
         while (true) {
             itemMain.let { product ->
                 val currentTime = System.currentTimeMillis()
-                val currentTrigger = 0
+                val currentTrigger = product.imageGlidReloadTigger
 
                 if (currentTime - lastReloadTimestamp > MIN_RELOAD_INTERVAL &&
                     currentTrigger != previousTrigger) {
@@ -67,10 +67,10 @@ fun GlideDisplayImageById(
                     isLoading = true
                     reloadSuccess = true
 
-                    if (true) {
+                    if (product.sonImageBesoinActualisation) {
                         delay(1000)
                         product.besoinToBeUpdated = true
-                        product.statuesBase.imageGlidReloadTigger++
+                        product.imageGlidReloadTigger++
                     }
                 }
             }

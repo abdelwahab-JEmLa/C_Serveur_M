@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 
 class ViewModel_Head : ViewModel() {
     var _appsHeadModel by mutableStateOf(AppsHeadModel())
+
     var _mapsModel by mutableStateOf(Model_CodingWithMaps())
     val mapsModel: Model_CodingWithMaps get() = _mapsModel
 

@@ -1,9 +1,8 @@
 package com.example.Apps_Head._4.Init
 
+import com.example.Apps_Head._1.Model.AncienResourcesDataBaseMain
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
-import com.example.Apps_Head._4.Init.Z.Components.Ancien_Resources_DataBase_Main
-import com.example.Apps_Head._4.Init.Z.Components.get_Ancien_DataBases_Main
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -11,7 +10,7 @@ import java.util.Locale
 suspend fun initializer(
     _appsHeadModel: AppsHeadModel,
     initializationProgress: Float,
-    onInitProgress: () -> (Int, Ancien_Resources_DataBase_Main) -> Unit
+    onInitProgress: () -> (Int, AncienResourcesDataBaseMain) -> Unit
 ) {
 
     val NOMBRE_ENTRE = 100
@@ -31,13 +30,13 @@ suspend fun initializer(
 suspend fun CreeNewStart(
     _appsHeadModel: AppsHeadModel,
     NOMBRE_ENTRE: Int,
-    onInitProgress: (Int, Ancien_Resources_DataBase_Main) -> Unit
+    onInitProgress: (Int, AncienResourcesDataBaseMain) -> Unit
 ) {
     try {
 
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        val ancienData = get_Ancien_DataBases_Main()
+        val ancienData = GetAncienDataBasesMain()
         // Predefined clients for consistent data
         val clients = listOf(
             Triple(1L, "Client Alpha", "#FF5733"),

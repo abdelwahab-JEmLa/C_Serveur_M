@@ -1,7 +1,7 @@
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head
 
 import androidx.compose.runtime.mutableStateListOf
-import com.example.Apps_Head._4.Init.Z.Components.get_Ancien_DataBases_Main
+import com.example.Apps_Head._4.Init.GetAncienDataBasesMain
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Companion.batchFireBaseUpdateGrossist
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Companion.mapsFireBaseRef
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Maper.MapGrossistIdToProduitId
@@ -13,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 suspend fun start(viewModel: ViewModel_Head) {
     try {
         mapsFireBaseRef.removeValue().await()
-        val ancienData = get_Ancien_DataBases_Main()
+        val ancienData = GetAncienDataBasesMain()
 
         val totalProducts = ancienData.produitsDatabase.size
         val selectedIndices = if (totalProducts <= 50) {

@@ -1,22 +1,16 @@
-package com.example.Apps_Head._4.Init.Z.Components
+package com.example.Apps_Head._4.Init
 
 import android.util.Log
-import com.example.Apps_Head._4.Init.Ancien_ClientsDataBase_Main
-import com.example.Apps_Head._4.Init.Ancien_ColorArticle_Main
-import com.example.Apps_Head._4.Init.Ancien_SoldArticlesTabelle_Main
-import com.example.Apps_Head._4.Init.Produits_Ancien_DataBase_Main
+import com.example.Apps_Head._1.Model.AncienResourcesDataBaseMain
+import com.example.Apps_Head._1.Model.Ancien_ClientsDataBase_Main
+import com.example.Apps_Head._1.Model.Ancien_ColorArticle_Main
+import com.example.Apps_Head._1.Model.Ancien_SoldArticlesTabelle_Main
+import com.example.Apps_Head._1.Model.Produits_Ancien_DataBase_Main
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
-data class Ancien_Resources_DataBase_Main(
-    val produitsDatabase: List<Produits_Ancien_DataBase_Main>,
-    val soldArticles: List<Ancien_SoldArticlesTabelle_Main>,
-    val couleurs_List: List<Ancien_ColorArticle_Main>,
-    val clients_List: List<Ancien_ClientsDataBase_Main>
-)
-
-internal suspend fun get_Ancien_DataBases_Main(): Ancien_Resources_DataBase_Main {
+internal suspend fun GetAncienDataBasesMain(): AncienResourcesDataBaseMain {
     try {
         val produitsSnapshot = Firebase.database
             .getReference("e_DBJetPackExport")
@@ -54,7 +48,7 @@ internal suspend fun get_Ancien_DataBases_Main(): Ancien_Resources_DataBase_Main
             it.getValue(Ancien_ClientsDataBase_Main::class.java)
         }
 
-        return Ancien_Resources_DataBase_Main(
+        return AncienResourcesDataBaseMain(
             produitsList,
             soldArticlesList,
             couleurs_List,

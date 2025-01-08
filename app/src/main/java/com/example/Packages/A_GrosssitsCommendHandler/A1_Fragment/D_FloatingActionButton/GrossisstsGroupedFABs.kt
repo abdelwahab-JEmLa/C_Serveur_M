@@ -44,7 +44,7 @@ fun GrossisstsGroupedFABsFragment_1(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    val maps = viewModel_Head.mapsModel.maps
+    val mapGrossistIdToProduitId = viewModel_Head.mapsModel.maps.mapGrossistIdToProduitId
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -84,7 +84,7 @@ fun GrossisstsGroupedFABsFragment_1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    maps.grossistList.forEachIndexed { index, entry ->
+                    mapGrossistIdToProduitId .forEachIndexed { index, entry ->
                         val (grossist, produits) = entry
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -110,7 +110,7 @@ fun GrossisstsGroupedFABsFragment_1(
                             }
 
                             Text(
-                                text = grossist.nom,
+                                text = grossist.id,
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(

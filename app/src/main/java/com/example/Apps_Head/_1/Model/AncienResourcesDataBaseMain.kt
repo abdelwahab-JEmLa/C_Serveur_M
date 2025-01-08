@@ -1,4 +1,11 @@
-package com.example.Apps_Head._4.Init
+package com.example.Apps_Head._1.Model
+
+data class AncienResourcesDataBaseMain(
+    val produitsDatabase: List<Produits_Ancien_DataBase_Main>,
+    val soldArticles: List<Ancien_SoldArticlesTabelle_Main>,
+    val couleurs_List: List<Ancien_ColorArticle_Main>,
+    val clients_List: List<Ancien_ClientsDataBase_Main>
+)
 
 data class Produits_Ancien_DataBase_Main internal constructor(
     var idArticle: Long = 0,

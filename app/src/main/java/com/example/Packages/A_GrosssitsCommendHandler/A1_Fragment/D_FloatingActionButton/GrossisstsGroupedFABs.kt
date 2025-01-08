@@ -36,7 +36,7 @@ import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.V
 import kotlin.math.roundToInt
 
 @Composable
-fun GrossisstsGroupedFABs(viewModel: ViewModel_Head) {
+fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
     // États locaux
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -82,7 +82,7 @@ fun GrossisstsGroupedFABs(viewModel: ViewModel_Head) {
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    viewModel.maps.mapGroToMapPositionToProduits.forEachIndexed { index, entry ->
+                    viewModel_Head.maps.mapGroToMapPositionToProduits.forEachIndexed { index, entry ->
                         val grossist = entry.key
                         val positionMap = entry.value
 
@@ -94,11 +94,11 @@ fun GrossisstsGroupedFABs(viewModel: ViewModel_Head) {
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        val newList = viewModel.maps.mapGroToMapPositionToProduits.toMutableList()
+                                        val newList = viewModel_Head.maps.mapGroToMapPositionToProduits.toMutableList()
                                         val temp = newList[index]
                                         newList[index] = newList[index - 1]
                                         newList[index - 1] = temp
-                                        viewModel._maps.mapGroToMapPositionToProduits = newList
+                                        viewModel_Head._maps.mapGroToMapPositionToProduits = newList
                                     },
                                     modifier = Modifier.size(32.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer

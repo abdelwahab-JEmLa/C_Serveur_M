@@ -3,14 +3,18 @@ package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model
 class Maps {
     var mapGroToMapPositionToProduits:
             MutableList<Map.Entry<GrossistInfosModel,
-                    Map<TypePosition,Map<ArticleInfosModel,Map<ColourEtGoutInfosModel, Double>>>>> =
+                    Map<TypePosition,
+                            MutableList<Map.Entry<ArticleInfosModel,
+                                    MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>>> =
         mutableListOf()
 
-    var positionedArticles: Map<ArticleInfosModel, Map<ColourEtGoutInfosModel, Double>> =
-        mutableMapOf()
+    var positionedArticles: MutableList<Map.Entry<ArticleInfosModel,
+            MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>> =
+        mutableListOf()
 
-    var nonPositionedArticles: Map<ArticleInfosModel, Map<ColourEtGoutInfosModel, Double>> =
-        mutableMapOf()
+    var nonPositionedArticles: MutableList<Map.Entry<ArticleInfosModel,
+            MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>> =
+        mutableListOf()
 }
 
 enum class TypePosition { POSITIONE, NON_POSITIONE }

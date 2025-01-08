@@ -14,7 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GrossisstsGroupedFABs
 
 internal const val DEBUG_LIMIT = 7
 
@@ -55,7 +55,7 @@ internal fun A_ScreenMainFragment_1(
                 modifier = modifier,
             )
 
-            GrossisstsGroupedFABsFragment_1(
+            GrossisstsGroupedFABs(
                 viewModel_Head=viewModel_Head,
 
             )

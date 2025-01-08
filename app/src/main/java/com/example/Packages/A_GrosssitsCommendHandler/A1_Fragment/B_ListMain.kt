@@ -52,13 +52,13 @@ fun B_ListMainFragment_1(
         }
 
         items(
-            items = viewModel_Head.maps.positionedArticles.entries.toList(),
+            items = viewModel_Head.maps.positionedArticles.toList(),
             key = { it.key.id }
         ) { article ->
             C_ItemMainFragment_1(
                 viewModel_Head = viewModel_Head,
                 itemMainId = article,
-                position = viewModel_Head.maps.positionedArticles.entries.indexOf(article) + 1,
+                position = viewModel_Head.maps.positionedArticles.indexOf(article) + 1,
                 modifier = Modifier.padding(4.dp)
             )
         }
@@ -84,7 +84,7 @@ fun B_ListMainFragment_1(
         }
 
         items(
-            items = viewModel_Head.maps.nonPositionedArticles.entries.toList(),
+            items = viewModel_Head.maps.nonPositionedArticles.toList(),
             key = { it.key.id }
         ) { article ->
             C_ItemMainFragment_1(

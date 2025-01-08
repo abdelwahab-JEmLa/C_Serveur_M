@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
 
 @Composable
 fun ItemMain_Fragment_3(
@@ -58,14 +57,14 @@ fun ItemMain_Fragment_3(
         contentAlignment = Alignment.Center
     ) {
 
-
+              /*
         GlideDisplayImageById(
             itemMain = itemMain,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
             size = 100.dp
-        )
+        )      */
         // Delete Position Button
         if (hasPosition) {
             IconButton(

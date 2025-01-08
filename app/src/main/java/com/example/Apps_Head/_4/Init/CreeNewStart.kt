@@ -16,7 +16,7 @@ suspend fun initializer(
     val NOMBRE_ENTRE = 100
 
     if (NOMBRE_ENTRE != 0  ) {
-        com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.init.CreeNewStart(
+        CreeNewStart(
             _appsHeadModel,
             NOMBRE_ENTRE,
             onInitProgress(),

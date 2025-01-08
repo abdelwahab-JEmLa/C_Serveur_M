@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head
+package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model
 
 class Maps {
     var mapGroToMapPositionToProduits:
@@ -21,7 +21,6 @@ class ArticleInfosModel(
     var besoinToBeUpdated: Boolean = false,
     var sonImageBesoinActualisation: Boolean = false,
     var imageGlidReloadTigger: Int = 0,
-
 )
 
 class GrossistInfosModel(

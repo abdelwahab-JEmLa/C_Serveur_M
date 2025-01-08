@@ -17,9 +17,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ArticleInfosModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ColourEtGoutInfosModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ArticleInfosModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ColourEtGoutInfosModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel.ViewModel_Head
 
 @Composable
 fun C_ItemMainFragment_1(

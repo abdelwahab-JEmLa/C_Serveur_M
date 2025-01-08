@@ -36,7 +36,11 @@ class InitViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                initializer(_appsHeadModel)
+                initializer(_appsHeadModel, initializationProgress) {
+                    { index, ancienData ->
+                        initializationProgress=  0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
+                    }
+                }
                 setupDataListeners()
                 initializationComplete = true
             } catch (e: Exception) {

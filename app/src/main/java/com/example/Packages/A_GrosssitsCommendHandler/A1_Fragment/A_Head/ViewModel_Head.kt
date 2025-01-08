@@ -2,6 +2,7 @@ package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head
 
 import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -12,6 +13,7 @@ import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_C
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ViewModel_Head : ViewModel() {
@@ -20,7 +22,13 @@ class ViewModel_Head : ViewModel() {
     val mapsModel: Model_CodingWithMaps get() = _mapsModel
 
     private var isInitializing by mutableStateOf(false)
-    private var initializationComplete by mutableStateOf(false)
+    var initializationComplete by mutableStateOf(false)
+    var initializationProgress by mutableFloatStateOf(0f)
+
+
+    private var activeDownloads = mutableMapOf<Long, Job>()
+    private val basePath = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
+
 
     init {
         initializeData()
@@ -30,7 +38,11 @@ class ViewModel_Head : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                initializer(_appsHeadModel)
+                initializer(_appsHeadModel, initializationProgress) {
+                    { index, ancienData ->
+                        initializationProgress=  0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
+                    }
+                }
 
                 processAndUploadData()
 

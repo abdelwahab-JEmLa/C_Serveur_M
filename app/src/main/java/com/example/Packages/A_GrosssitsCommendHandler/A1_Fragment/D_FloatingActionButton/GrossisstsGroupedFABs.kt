@@ -32,23 +32,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
 import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABsFragment_1(
-    viewModel_Head: ViewModel_Head = viewModel(),
+    viewModel_Head: ViewModel_Head ,
     modifier: Modifier = Modifier,
-    onClick: (Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?) -> Unit
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
-    var visibleGrossistAssociatedProduits by remember {
-        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?>(null)
-    }
+
+    val maps = viewModel_Head.mapsModel.maps
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -88,7 +84,7 @@ fun GrossisstsGroupedFABsFragment_1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    viewModel_Head.mapsModel.maps.grossistList.forEachIndexed { index, entry ->
+                    maps.grossistList.forEachIndexed { index, entry ->
                         val (grossist, produits) = entry
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -118,7 +114,7 @@ fun GrossisstsGroupedFABsFragment_1(
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        if (visibleGrossistAssociatedProduits?.first == grossist) Color.Blue
+                                        if (maps.visibleGrossistAssociatedProduits?.first == grossist) Color.Blue
                                         else Color.Transparent
                                     )
                                     .padding(4.dp),
@@ -127,8 +123,7 @@ fun GrossisstsGroupedFABsFragment_1(
 
                             FloatingActionButton(
                                 onClick = {
-                                    visibleGrossistAssociatedProduits = entry
-                                    onClick(visibleGrossistAssociatedProduits)
+                                    viewModel_Head._mapsModel.maps.visibleGrossistAssociatedProduits = entry
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

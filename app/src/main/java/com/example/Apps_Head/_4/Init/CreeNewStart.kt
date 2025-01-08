@@ -2,24 +2,37 @@ package com.example.Apps_Head._4.Init
 
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import com.example.Apps_Head._4.Init.Z.Components.Ancien_Resources_DataBase_Main
 import com.example.Apps_Head._4.Init.Z.Components.get_Ancien_DataBases_Main
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-suspend fun initializer(_appsHeadModel: AppsHeadModel) {
+suspend fun initializer(
+    _appsHeadModel: AppsHeadModel,
+    initializationProgress: Float,
+    onInitProgress: () -> (Int, Ancien_Resources_DataBase_Main) -> Unit
+) {
 
     val NOMBRE_ENTRE = 100
 
     if (NOMBRE_ENTRE != 0  ) {
-        CreeNewStart(_appsHeadModel,NOMBRE_ENTRE)
+        CreeNewStart(
+            _appsHeadModel,
+            NOMBRE_ENTRE,
+            onInitProgress(),
+        )
     } else {
       //  LoadFromFirebaseHandler.loadFromFirebase(this)
     }
 }
 
 
-suspend fun CreeNewStart(_appsHeadModel: AppsHeadModel, NOMBRE_ENTRE: Int) {
+suspend fun CreeNewStart(
+    _appsHeadModel: AppsHeadModel,
+    NOMBRE_ENTRE: Int,
+    onInitProgress: (Int, Ancien_Resources_DataBase_Main) -> Unit
+) {
     try {
 
 
@@ -169,6 +182,7 @@ suspend fun CreeNewStart(_appsHeadModel: AppsHeadModel, NOMBRE_ENTRE: Int) {
             depuitAncienDataBase.historiqueBonsCommend.add(grossiste)
 
             _appsHeadModel.produitsMainDataBase.add(depuitAncienDataBase)
+            onInitProgress(index, ancienData)
         }
 
         // Clear and update Firebase database

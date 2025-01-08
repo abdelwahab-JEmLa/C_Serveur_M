@@ -1,4 +1,3 @@
-// Model_CodingWithMaps.kt
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head
 
 import androidx.compose.runtime.getValue
@@ -13,8 +12,16 @@ class Model_CodingWithMaps {
 
     class Maps {
         var grossistList: List<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes
-            .GrossistInformations,
+        .GrossistInformations,
                 List<AppsHeadModel.ProduitModel>>> by mutableStateOf(emptyList())
+
+        var visibleGrossistAssociatedProduits: Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>> by mutableStateOf(
+            // Initialize with an empty grossist and empty list as default
+            Pair(
+                AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations(),
+                emptyList()
+            )
+        )
     }
 
     companion object {

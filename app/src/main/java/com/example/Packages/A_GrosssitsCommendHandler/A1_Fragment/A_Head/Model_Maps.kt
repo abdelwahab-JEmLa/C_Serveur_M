@@ -5,12 +5,23 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel
+import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.ColourEtGout_Model
+import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
 class Model_CodingWithMaps {
     var mutableStatesVars by mutableStateOf(MutableStatesVars())
+    var mapsSansModels by mutableStateOf(MapsSansModels())
+
+    class MapsSansModels {
+        var mapGroToMapPositionToProduits: Map<GrossistInformations,
+                Map<TypePosition, Map<ProduitModel,SnapshotStateList<ColourEtGout_Model>>>> =
+            mutableMapOf() // Changed from mutableStateListOf to mutableMapOf
+        enum class TypePosition{POSITIONE,NON_POSITIONE}
+    }
 
     class MutableStatesVars {
         var mapGrossistIdToProduitId: SnapshotStateList<Mapping.Grossist> =
@@ -39,6 +50,7 @@ class Model_CodingWithMaps {
                 )
             }
         }
+
     }
 
     companion object {

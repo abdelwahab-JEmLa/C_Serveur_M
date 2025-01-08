@@ -65,7 +65,6 @@ fun GrossisstsGroupedFABsFragment_1(
 
     // LaunchedEffect to handle Firebase operations
     LaunchedEffect(produitsMainDataBase) {
-
         if (true) {
             startImplementation(produitsMainDataBase, mapsFireBaseRef)
         }
@@ -74,36 +73,35 @@ fun GrossisstsGroupedFABsFragment_1(
         mapsFireBaseRef
             .child("filteredAndGroupedData")
             .addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val updatedList = snapshot.children.mapNotNull { grossistSnapshot ->
-                    try {
-                        val grossist = grossistSnapshot.child("first")
-                            .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
-                        val produits =
-                            grossistSnapshot.child("second").children.mapNotNull { produitSnapshot ->
-                                produitSnapshot.getValue(AppsHeadModel.ProduitModel::class.java)
-                            }
-                        if (grossist != null) {
-                            grossist to produits
-                        } else null
-                    } catch (e: Exception) {
-                        null
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val updatedList = snapshot.children.mapNotNull { grossistSnapshot ->
+                        try {
+                            val grossist = grossistSnapshot.child("first")
+                                .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
+                            val produits =
+                                grossistSnapshot.child("second").children.mapNotNull { produitSnapshot ->
+                                    produitSnapshot.getValue(AppsHeadModel.ProduitModel::class.java)
+                                }
+                            if (grossist != null) {
+                                grossist to produits
+                            } else null
+                        } catch (e: Exception) {
+                            null
+                        }
                     }
+                    grossistList = updatedList
                 }
-                grossistList = updatedList
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Handle error
-                println("Firebase Error: ${error.message}")
-            }
-        })
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle error
+                    println("Firebase Error: ${error.message}")
+                }
+            })
     }
 
     var visibleGrossistAssociatedProduits by remember {
-        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?>(
-            null
-        )
+        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>
+        ?>(null)
     }
 
     Box(

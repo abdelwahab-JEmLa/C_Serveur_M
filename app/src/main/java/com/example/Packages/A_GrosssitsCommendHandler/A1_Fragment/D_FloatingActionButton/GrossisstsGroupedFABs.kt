@@ -36,20 +36,15 @@ import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.V
 import kotlin.math.roundToInt
 
 @Composable
-fun GrossisstsGroupedFABsFragment_1(
-    viewModel_Head: ViewModel_Head,
-    modifier: Modifier = Modifier,
-) {
+fun GrossisstsGroupedFABs(viewModel: ViewModel_Head) {
+    // États locaux
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
-
-    var mapGrossistIdToProduitId = viewModel_Head.maps.mapGroToMapPositionToProduits
-    // Change the type to nullable Long and initialize with null
-    var visibleGrossist by remember { mutableStateOf<Long?>(null) }
+    var selectedId by remember { mutableStateOf<Long?>(null) }
 
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
     ) {
         Column(
@@ -66,17 +61,18 @@ fun GrossisstsGroupedFABsFragment_1(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // FAB principal
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
-                modifier = Modifier.size(48.dp),
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                modifier = Modifier.size(48.dp)
             ) {
                 Icon(
                     imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = if (showButtons) "Hide" else "Show"
+                    contentDescription = if (showButtons) "Masquer" else "Afficher"
                 )
             }
 
+            // Liste des grossistes
             AnimatedVisibility(
                 visible = showButtons,
                 enter = fadeIn(),
@@ -86,54 +82,55 @@ fun GrossisstsGroupedFABsFragment_1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    mapGrossistIdToProduitId.entries.forEachIndexed { index, entry ->
-                        val (, ) = entry
+                    viewModel.maps.mapGroToMapPositionToProduits.forEachIndexed { index, entry ->
+                        val grossist = entry.key
+                        val positionMap = entry.value
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
+                            // Bouton Up
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        val newList = mapGrossistIdToProduitId
+                                        val newList = viewModel.maps.mapGroToMapPositionToProduits.toMutableList()
                                         val temp = newList[index]
                                         newList[index] = newList[index - 1]
                                         newList[index - 1] = temp
-                                        mapGrossistIdToProduitId = newList
+                                        viewModel._maps.mapGroToMapPositionToProduits = newList
                                     },
-                                    modifier = Modifier.size(36.dp),
+                                    modifier = Modifier.size(32.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.ExpandLess,
-                                        contentDescription = "Move Up"
+                                        contentDescription = "Monter"
                                     )
                                 }
                             }
 
+                            // Nom du grossiste
                             Text(
-                                text = grossistInfosModel.toString(),
+                                text = grossist.nom,
                                 modifier = Modifier
-                                    .padding(end = 8.dp)
                                     .background(
-                                        if (visibleGrossist == grossistInfosModel) Color.Blue
+                                        if (selectedId == grossist.id)
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                                         else Color.Transparent
                                     )
-                                    .padding(4.dp),
-                                style = MaterialTheme.typography.bodyMedium
+                                    .padding(4.dp)
                             )
 
+                            // Compteur
                             FloatingActionButton(
-                                onClick = {
-                                    visibleGrossist = grossistInfosModel
-                                    viewModel_Head.mapsModel.mutableStatesVars.unPositionedProduits = produitsSnapshotStateList
-                                },
-                                modifier = Modifier.size(48.dp),
+                                onClick = { selectedId = grossist.id },
+                                modifier = Modifier.size(40.dp)
                             ) {
-                                Text(
-                                    text = produitsSnapshotStateList.size.toString(),
-                                    color = Color.White
-                                )
+                                val total = positionMap.values.sumOf { typeMap ->
+                                    typeMap.values.sumOf { it.values.sum() }
+                                }.toInt()
+                                Text(text = total.toString())
                             }
                         }
                     }

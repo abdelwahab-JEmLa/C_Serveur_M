@@ -2,9 +2,9 @@ package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model
 
 class Maps {
     var mapGroToMapPositionToProduits:
-            Map<GrossistInfosModel,
-                    Map<TypePosition,Map<ArticleInfosModel,Map<ColourEtGoutInfosModel, Double>>>> =
-        mutableMapOf()
+            MutableList<Map.Entry<GrossistInfosModel,
+                    Map<TypePosition,Map<ArticleInfosModel,Map<ColourEtGoutInfosModel, Double>>>>> =
+        mutableListOf()
 
     var positionedArticles: Map<ArticleInfosModel, Map<ColourEtGoutInfosModel, Double>> =
         mutableMapOf()

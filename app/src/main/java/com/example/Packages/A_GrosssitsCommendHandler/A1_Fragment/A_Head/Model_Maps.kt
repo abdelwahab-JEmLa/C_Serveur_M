@@ -64,7 +64,7 @@ class Model_CodingWithMaps {
         updates["$indexToUse"] = mapping
 
         // Effectuer toutes les mises à jour en une seule opération
-        mapsFireBaseRef.updateChildren(updates)
+        mapsFireBaseRef.updateChildren(updates) 
             .addOnSuccessListener {
                 println("Successfully updated grossist mapping at index $indexToUse")
                 if (grossistIndex == -1) {

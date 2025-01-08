@@ -8,14 +8,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.TypePosition
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ArticleInfosModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ColourEtGoutInfosModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
 
 @Composable
@@ -26,7 +25,8 @@ fun B_ListMainFragment_1(
 ) {
     var showSearchDialog by remember { mutableStateOf(false) }
 
-    val currentGrossist = viewModel_Head.mapsSansModels
+    val positionedArticles = viewModel_Head.maps.positionedArticles
+    val nonPositionedArticles = viewModel_Head.maps.nonPositionedArticles
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -37,8 +37,8 @@ fun B_ListMainFragment_1(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         productSection(
-            title = "Produits avec position (${currentGrossist.positionedProduits.size})",
-            products = currentGrossist.positionedProduits,
+            title = "Produits avec position (${positionedArticles.size})",
+            products = positionedArticles,
             viewModel = viewModel_Head,
             showSearch = false,
             onProductClick = { product ->
@@ -46,8 +46,8 @@ fun B_ListMainFragment_1(
         )
 
         productSection(
-            title = "Produits sans position (${currentGrossist.nonPositionedProduits.size})",
-            products =  currentGrossist.nonPositionedProduits,
+            title = "Produits sans position (${nonPositionedArticles.size})",
+            products =  nonPositionedArticles,
             viewModel = viewModel_Head,
             showSearch = true,
             onSearchClick = { showSearchDialog = true },
@@ -59,7 +59,7 @@ fun B_ListMainFragment_1(
 
 private fun LazyGridScope.productSection(
     title: String,
-    products: Map<ProduitModel, SnapshotStateList<ProduitModel.ColourEtGout_Model>>,
+    products: Map<ArticleInfosModel, Map<ColourEtGoutInfosModel, Double>>,
     viewModel: ViewModel_Head,
     showSearch: Boolean = false,
     onSearchClick: () -> Unit = {},
@@ -94,7 +94,8 @@ private fun LazyGridScope.productSection(
         }
 
         items(items = products) { product ->
-            C_ItemMainFragment_1(
+            C_ItemMainFragment_1( //->
+                //TODO(FIXME):Fix erreur @Composable invocations can only happen from the context of a @Composable function
                 viewModel_Head = viewModel,
                 itemMainId = product,
                 onCLickOnMain = { onProductClick(product) },
@@ -105,28 +106,4 @@ private fun LazyGridScope.productSection(
     }
 }
 
-// Extension class to simplify GrossistProducts management
-data class GrossistProducts(
-    val positioned: SnapshotStateList<ProduitModel>,
-    val unpositioned: SnapshotStateList<ProduitModel>
-) {
-    //TODO(1): fait que ca soi un val
-    fun moveProduct(product: ProduitModel, toPositioned: Boolean) {
-        val sourceList = if (toPositioned) unpositioned else positioned
-        val targetList = if (toPositioned) positioned else unpositioned
 
-        if (sourceList.remove(product)) {
-            targetList.add(product)
-        }
-    }
-}
-
-// Extension property for simplified access
-val Model_CodingWithMaps.MapsSansModels.grossistProducts: List<GrossistProducts> //-->
-//TODO(1): fait que ca soi un val
-    get() = mapGroToMapPositionToProduits.map { (_, positions) ->
-        GrossistProducts(
-            positioned = positions[TypePosition.POSITIONE]?.keys?.toMutableStateList() ?: mutableStateListOf(),
-            unpositioned = positions[TypePosition.NON_POSITIONE]?.keys?.toMutableStateList() ?: mutableStateListOf()
-        )
-    }

@@ -53,7 +53,8 @@ fun GrossisstsGroupedFABsFragment_1(
 
     // Firebase reference
     val database = FirebaseDatabase.getInstance()
-    val mapsFireBaseRef = database.getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+    val mapsFireBaseRef = database
+        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
         .child("A_CodingWithListsPatterns")
 
     var grossistList by remember(produitsMainDataBase) {
@@ -65,7 +66,7 @@ fun GrossisstsGroupedFABsFragment_1(
     // LaunchedEffect to handle Firebase operations
     LaunchedEffect(produitsMainDataBase) {
 
-        if (false) {
+        if (true) {
             startImplementation(produitsMainDataBase, mapsFireBaseRef)
         }
 

@@ -70,7 +70,9 @@ fun GrossisstsGroupedFABsFragment_1(
         }
 
         // Listen for changes
-        mapsFireBaseRef.addValueEventListener(object : ValueEventListener {
+        mapsFireBaseRef
+            .child("filteredAndGroupedData")
+            .addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val updatedList = snapshot.children.mapNotNull { grossistSnapshot ->
                     try {
@@ -211,5 +213,7 @@ fun startImplementation(
         .toList()
 
     // Update Firebase
-    mapsFireBaseRef.setValue(filteredAndGroupedData)
+    mapsFireBaseRef
+        .child("filteredAndGroupedData")
+        .setValue(filteredAndGroupedData)
 }

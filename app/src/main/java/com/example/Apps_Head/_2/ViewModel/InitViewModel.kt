@@ -36,7 +36,7 @@ class InitViewModel : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                initializer()
+                initializer(_appsHeadModel)
                 setupDataListeners()
                 initializationComplete = true
             } catch (e: Exception) {

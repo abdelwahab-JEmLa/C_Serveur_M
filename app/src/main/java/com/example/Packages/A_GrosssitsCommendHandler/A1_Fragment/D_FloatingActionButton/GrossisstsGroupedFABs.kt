@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,80 +32,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
 import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABsFragment_1(
     produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
+    viewModel_Head: ViewModel_Head = viewModel(),
+
     modifier: Modifier = Modifier,
     onClick: (Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?) -> Unit
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
-
-    // Firebase reference
-    val database = FirebaseDatabase.getInstance()
-    val mapsFireBaseRef = database
-        .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-        .child("A_CodingWithListsPatterns")
-
-    var grossistList by remember(produitsMainDataBase) {
-        mutableStateOf<List<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>>>(
-            emptyList()
-        )
-    }
+    val grossistList = viewModel_Head._mapsModel.maps.grossistList
+    
 
     // LaunchedEffect to handle Firebase operations
-    LaunchedEffect(produitsMainDataBase) {
-        val startImplementation = true
-        if (startImplementation) {
-            val filteredAndGroupedData = produitsMainDataBase
-                .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
-                .groupBy { it.bonCommendDeCetteCota!!.grossistInformations!! }
-                .toList()
-
-            // Update Firebase
-            mapsFireBaseRef
-                .child("filteredAndGroupedData")
-                .setValue(filteredAndGroupedData)
-        }
-
-        // Listen for changes
-        mapsFireBaseRef
-            .child("filteredAndGroupedData")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val updatedList = snapshot.children.mapNotNull { grossistSnapshot ->
-                        try {
-                            val grossist = grossistSnapshot.child("first")
-                                .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
-                            val produits =
-                                grossistSnapshot.child("second").children.mapNotNull { produitSnapshot ->
-                                    produitSnapshot.getValue(AppsHeadModel.ProduitModel::class.java)
-                                }
-                            if (grossist != null) {
-                                grossist to produits
-                            } else null
-                        } catch (e: Exception) {
-                            null
-                        }
-                    }
-                    grossistList = updatedList
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    // Handle error
-                    println("Firebase Error: ${error.message}")
-                }
-            })
-    }
-
+    
     var visibleGrossistAssociatedProduits by remember {
         mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>
         ?>(null)
@@ -154,14 +100,17 @@ fun GrossisstsGroupedFABsFragment_1(
                 ) {
                     grossistList.forEachIndexed { index, entry ->
                         val (grossist, produits) = entry
-                        Row(
+                        Row(    //->
+                            //TODO(FIXME):Fix erreur 
+                            @Composable invocations can only happen from the context of a @Composable function
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        grossistList = grossistList.toMutableList().apply {
+                                        grossistList = grossistList.toMutableList().apply {      //->
+                                            //TODO(FIXME):Fix erreur Val cannot be reassigned
                                             val temp = this[index]
                                             this[index] = this[index - 1]
                                             this[index - 1] = temp

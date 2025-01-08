@@ -2,29 +2,26 @@ package com.example.Apps_Head._4.Init
 
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
-import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Apps_Head._4.Init.Z.Components.get_Ancien_DataBases_Main
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-suspend fun InitViewModel.initializer() {
+suspend fun initializer(_appsHeadModel: AppsHeadModel) {
 
     val NOMBRE_ENTRE = 100
 
     if (NOMBRE_ENTRE != 0  ) {
-        CreeNewStart(NOMBRE_ENTRE)
-        initializationProgress = 1f
+        CreeNewStart(_appsHeadModel,NOMBRE_ENTRE)
     } else {
-        LoadFromFirebaseHandler.loadFromFirebase(this)
+      //  LoadFromFirebaseHandler.loadFromFirebase(this)
     }
 }
 
 
-suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int) {
+suspend fun CreeNewStart(_appsHeadModel: AppsHeadModel, NOMBRE_ENTRE: Int) {
     try {
-        initializationProgress = 0.1f
-        isInitializing = true
+
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val ancienData = get_Ancien_DataBases_Main()
@@ -172,19 +169,15 @@ suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int) {
             depuitAncienDataBase.historiqueBonsCommend.add(grossiste)
 
             _appsHeadModel.produitsMainDataBase.add(depuitAncienDataBase)
-            initializationProgress = 0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
         }
 
         // Clear and update Firebase database
         AppsHeadModel.produitsFireBaseRef.removeValue()
         _appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
 
-        initializationProgress = 1.0f
-        initializationComplete = true
 
     } catch (e: Exception) {
         throw e
     } finally {
-        isInitializing = false
     }
 }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import com.example.Apps_Head._4.Init.GetAncienDataBasesMain
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Companion.batchFireBaseUpdateGrossist
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Companion.mapsFireBaseRef
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Maper.MapGrossistIdToProduitId
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Mapping.Grossist
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -48,16 +48,16 @@ suspend fun start(viewModel: ViewModel_Head) {
         mapsFireBaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 try {
-                    val newMappings = mutableStateListOf<MapGrossistIdToProduitId>()
+                    val newMappings = mutableStateListOf<Grossist>()
 
                     snapshot.children.forEach { grossistSnapshot ->
                         // Conversion manuelle des données Firebase en objets Compose
                         val grossistId = grossistSnapshot.child("grossistId").getValue(Long::class.java) ?: 0L
-                        val grossist = MapGrossistIdToProduitId(grossistId = grossistId)
+                        val grossist = Grossist(grossistId = grossistId)
 
                         grossistSnapshot.child("produits").children.forEach { produitSnapshot ->
                             val produitId = produitSnapshot.child("produitId").getValue(Long::class.java) ?: 0L
-                            val produit = MapGrossistIdToProduitId.Produit(
+                            val produit = Grossist.Produits(
                                 produitId = produitId,
                                 commendCouleurs = mutableStateListOf()
                             )
@@ -67,7 +67,7 @@ suspend fun start(viewModel: ViewModel_Head) {
                                 val quantity = couleurSnapshot.child("quantityCommend").getValue(Int::class.java) ?: 0
 
                                 produit.commendCouleurs.add(
-                                    MapGrossistIdToProduitId.Produit.CommendCouleur(
+                                    Grossist.Produits.CommendCouleurs(
                                         couleurId = couleurId,
                                         quantityCommend = quantity
                                     )

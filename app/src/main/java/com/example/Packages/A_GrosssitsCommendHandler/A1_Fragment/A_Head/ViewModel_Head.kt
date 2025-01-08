@@ -6,13 +6,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Apps_Head._1.Model.AppsHeadModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ViewModel_Head : ViewModel() {
-    var _appsHeadModel by mutableStateOf(AppsHeadModel())
-
     var _mapsModel by mutableStateOf(Model_CodingWithMaps())
     val mapsModel: Model_CodingWithMaps get() = _mapsModel
 

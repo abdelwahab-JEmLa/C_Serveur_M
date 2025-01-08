@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
@@ -14,31 +13,20 @@ class Model_CodingWithMaps {
     var maps by mutableStateOf(MutableStatesVars())
 
     class MutableStatesVars {
-        var grossistList: List<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations,
-                List<AppsHeadModel.ProduitModel>>> by mutableStateOf(emptyList())
-
-        var mapGrossistIdToProduitId: SnapshotStateList<Maper.MapGrossistIdToProduitId> =
+        var mapGrossistIdToProduitId: SnapshotStateList<Mapping.Grossist> =
             mutableStateListOf()
-
-        var visibleGrossistAssociatedProduits: Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations,
-                List<AppsHeadModel.ProduitModel>> by mutableStateOf(
-            Pair(
-                AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations(),
-                emptyList()
-            )
-        )
     }
 
-    class Maper {
-        data class MapGrossistIdToProduitId(
+    class Mapping {
+        data class Grossist(
             var grossistId: Long = 0,
-            var produits: SnapshotStateList<Produit> = mutableStateListOf()
+            var produits: SnapshotStateList<Produits> = mutableStateListOf()
         ) {
-            data class Produit(
+            data class Produits(
                 var produitId: Long = 0,
-                var commendCouleurs: SnapshotStateList<CommendCouleur> = mutableStateListOf()
+                var commendCouleurs: SnapshotStateList<CommendCouleurs> = mutableStateListOf()
             ) {
-                data class CommendCouleur(
+                data class CommendCouleurs(
                     var couleurId: Long = 0,
                     var quantityCommend: Int = 0
                 )

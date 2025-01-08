@@ -5,7 +5,7 @@ import com.example.Apps_Head._1.Model.AncienResourcesDataBaseMain
 import com.example.Apps_Head._1.Model.Ancien_ClientsDataBase_Main
 import com.example.Apps_Head._1.Model.Ancien_ColorArticle_Main
 import com.example.Apps_Head._1.Model.Ancien_SoldArticlesTabelle_Main
-import com.example.Apps_Head._1.Model.Produits_Ancien_DataBase_Main
+import com.example.Apps_Head._1.Model.ProduitsAncienDataBaseMain
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
@@ -33,7 +33,7 @@ internal suspend fun GetAncienDataBasesMain(): AncienResourcesDataBaseMain {
             .await()
 
         val produitsList = produitsSnapshot.children.mapNotNull {
-            it.getValue(Produits_Ancien_DataBase_Main::class.java)
+            it.getValue(ProduitsAncienDataBaseMain::class.java)
         }
 
         val soldArticlesList = soldArticlesSnapshot.children.mapNotNull {

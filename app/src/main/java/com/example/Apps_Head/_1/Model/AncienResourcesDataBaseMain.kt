@@ -1,13 +1,13 @@
 package com.example.Apps_Head._1.Model
 
 data class AncienResourcesDataBaseMain(
-    val produitsDatabase: List<Produits_Ancien_DataBase_Main>,
+    val produitsDatabase: List<ProduitsAncienDataBaseMain>,
     val soldArticles: List<Ancien_SoldArticlesTabelle_Main>,
     val couleurs_List: List<Ancien_ColorArticle_Main>,
     val clients_List: List<Ancien_ClientsDataBase_Main>
 )
 
-data class Produits_Ancien_DataBase_Main internal constructor(
+data class ProduitsAncienDataBaseMain internal constructor(
     var idArticle: Long = 0,
     var nomArticleFinale: String = "",
     var classementCate: Double = 0.0,

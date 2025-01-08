@@ -44,7 +44,7 @@ fun GrossisstsGroupedFABsFragment_1(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    val mapGrossistIdToProduitId = viewModel_Head.mapsModel.maps.mapGrossistIdToProduitId
+    var mapGrossistIdToProduitId = viewModel_Head.mapsModel.maps.mapGrossistIdToProduitId
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -84,8 +84,8 @@ fun GrossisstsGroupedFABsFragment_1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    mapGrossistIdToProduitId .forEachIndexed { index, entry ->
-                        val (grossist, produits) = entry
+                    mapGrossistIdToProduitId.forEachIndexed { index, entry ->
+                        val (grossistId, produits) = entry
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -93,11 +93,11 @@ fun GrossisstsGroupedFABsFragment_1(
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        val newList = viewModel_Head._mapsModel.maps.grossistList.toMutableList()
+                                        val newList = mapGrossistIdToProduitId
                                         val temp = newList[index]
                                         newList[index] = newList[index - 1]
                                         newList[index - 1] = temp
-                                        viewModel_Head._mapsModel.maps.grossistList = newList
+                                        mapGrossistIdToProduitId = newList
                                     },
                                     modifier = Modifier.size(36.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -110,12 +110,11 @@ fun GrossisstsGroupedFABsFragment_1(
                             }
 
                             Text(
-                                text = grossist.id,
+                                text = grossistId.toString(),
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        if (maps.visibleGrossistAssociatedProduits?.first == grossist) Color.Blue
-                                        else Color.Transparent
+                                        Color.Transparent
                                     )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
@@ -123,10 +122,8 @@ fun GrossisstsGroupedFABsFragment_1(
 
                             FloatingActionButton(
                                 onClick = {
-                                    viewModel_Head._mapsModel.maps.visibleGrossistAssociatedProduits = entry
                                 },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))
                             ) {
                                 Text(
                                     text = produits.size.toString(),

@@ -11,11 +11,9 @@ import kotlinx.coroutines.tasks.await
 
 suspend fun start(viewModel: ViewModel_Head) {
     try {
-        // Clear existing database and get old data
         mapsFireBaseRef.removeValue().await()
         val ancienData = get_Ancien_DataBases_Main()
 
-        // Calculate selected product indices
         val totalProducts = ancienData.produitsDatabase.size
         val selectedIndices = if (totalProducts <= 50) {
             (0 until totalProducts).toSet()
@@ -23,47 +21,74 @@ suspend fun start(viewModel: ViewModel_Head) {
             (0 until totalProducts).shuffled().take(50).toSet()
         }
 
-        // Initialize grossists (Alpha and Beta)
+        // Créer une structure de données compatible Firebase
         val grossists = listOf(1L, 2L).map { grossistId ->
-            MapGrossistIdToProduitId(grossistId = grossistId).apply {
-                // Add only selected products with random colors for each grossist
-                produits.addAll(ancienData.produitsDatabase.mapIndexedNotNull { index, produit ->
+            mapOf(
+                "grossistId" to grossistId,
+                "produits" to ancienData.produitsDatabase.mapIndexedNotNull { index, produit ->
                     if (index in selectedIndices) {
-                        MapGrossistIdToProduitId.Produit(
-                            produitId = produit.idArticle,
-                            commendCouleurs = mutableStateListOf<MapGrossistIdToProduitId.Produit.CommendCouleur>().apply {
-                                // Add 4 random colors with random quantities
-                                repeat(4) {
-                                    add(MapGrossistIdToProduitId.Produit.CommendCouleur(
-                                        couleurId = (10..50).random().toLong(),
-                                        quantityCommend = (10..50).random()
-                                    ))
-                                }
+                        mapOf(
+                            "produitId" to produit.idArticle,
+                            "commendCouleurs" to List(4) {
+                                mapOf(
+                                    "couleurId" to (10..50).random().toLong(),
+                                    "quantityCommend" to (10..50).random()
+                                )
                             }
                         )
                     } else null
-                })
-            }
+                }
+            )
         }
 
-        // Update Firebase with all grossists at once
+        // Mettre à jour Firebase
         val updates = grossists.mapIndexed { index, grossist ->
             "/$index" to grossist
         }.toMap()
 
         mapsFireBaseRef.updateChildren(updates).await()
 
-        // Set up real-time listener
+        // Configurer l'écouteur
         mapsFireBaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val newMappings = mutableStateListOf<MapGrossistIdToProduitId>()
-                snapshot.children.forEach { grossistSnapshot ->
-                    grossistSnapshot.getValue(MapGrossistIdToProduitId::class.java)?.let {
-                        newMappings.add(it)
+                try {
+                    val newMappings = mutableStateListOf<MapGrossistIdToProduitId>()
+
+                    snapshot.children.forEach { grossistSnapshot ->
+                        // Conversion manuelle des données Firebase en objets Compose
+                        val grossistId = grossistSnapshot.child("grossistId").getValue(Long::class.java) ?: 0L
+                        val grossist = MapGrossistIdToProduitId(grossistId = grossistId)
+
+                        grossistSnapshot.child("produits").children.forEach { produitSnapshot ->
+                            val produitId = produitSnapshot.child("produitId").getValue(Long::class.java) ?: 0L
+                            val produit = MapGrossistIdToProduitId.Produit(
+                                produitId = produitId,
+                                commendCouleurs = mutableStateListOf()
+                            )
+
+                            produitSnapshot.child("commendCouleurs").children.forEach { couleurSnapshot ->
+                                val couleurId = couleurSnapshot.child("couleurId").getValue(Long::class.java) ?: 0L
+                                val quantity = couleurSnapshot.child("quantityCommend").getValue(Int::class.java) ?: 0
+
+                                produit.commendCouleurs.add(
+                                    MapGrossistIdToProduitId.Produit.CommendCouleur(
+                                        couleurId = couleurId,
+                                        quantityCommend = quantity
+                                    )
+                                )
+                            }
+
+                            grossist.produits.add(produit)
+                        }
+
+                        newMappings.add(grossist)
                     }
+
+                    viewModel._mapsModel.maps.mapGrossistIdToProduitId.clear()
+                    viewModel._mapsModel.maps.mapGrossistIdToProduitId.addAll(newMappings)
+                } catch (e: Exception) {
+                    println("Error parsing Firebase data: ${e.message}")
                 }
-                viewModel._mapsModel.maps.mapGrossistIdToProduitId.clear()
-                viewModel._mapsModel.maps.mapGrossistIdToProduitId.addAll(newMappings)
             }
 
             override fun onCancelled(error: DatabaseError) {

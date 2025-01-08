@@ -1,4 +1,4 @@
-package com.example.Packages.A1_Fragment
+package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages.A1_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
-import com.example.Packages.A1_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
 
 internal const val DEBUG_LIMIT = 7
 

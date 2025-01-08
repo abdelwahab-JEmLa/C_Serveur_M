@@ -16,7 +16,8 @@ class Model_CodingWithMaps {
         var grossistList: List<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations,
                 List<AppsHeadModel.ProduitModel>>> by mutableStateOf(emptyList())
 
-        var mapGrossistIdToProduitId: SnapshotStateList<Maper.MapGrossistIdToProduitId> = mutableStateListOf()
+        var mapGrossistIdToProduitId: SnapshotStateList<Maper.MapGrossistIdToProduitId> =
+            mutableStateListOf()
 
         var visibleGrossistAssociatedProduits: Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations,
                 List<AppsHeadModel.ProduitModel>> by mutableStateOf(
@@ -56,17 +57,56 @@ class Model_CodingWithMaps {
             maps.mapGrossistIdToProduitId.size
         }
 
-        mapsFireBaseRef.child(indexToUse.toString()).setValue(mapping)
+        // Créer un Map pour les mises à jour multiples
+        val updates = mutableMapOf<String, Any>()
+
+        // Ajouter la mise à jour du grossiste au chemin correct
+        updates["$indexToUse"] = mapping
+
+        // Effectuer toutes les mises à jour en une seule opération
+        mapsFireBaseRef.updateChildren(updates)
             .addOnSuccessListener {
                 println("Successfully updated grossist mapping at index $indexToUse")
                 if (grossistIndex == -1) {
                     maps.mapGrossistIdToProduitId.add(mapping)
+                } else {
+                    maps.mapGrossistIdToProduitId[grossistIndex] = mapping
                 }
             }
             .addOnFailureListener { e ->
                 println("Error updating grossist mapping at index $indexToUse: ${e.message}")
                 e.printStackTrace()
             }
+    }
+
+    // Amélioration de la fonction deleteGrossistMapping pour utiliser updateChildren
+    fun deleteGrossistMapping(grossistId: Long) {
+        val grossistIndex = maps.mapGrossistIdToProduitId.indexOfFirst {
+            it.grossistId == grossistId
+        }
+
+        if (grossistIndex != -1) {
+            val updates = mutableMapOf<String, Any?>()
+
+            // Marquer le nœud pour suppression
+            updates["/${grossistIndex}"] = null
+
+            // Réorganiser les indices restants
+            for (i in grossistIndex + 1 until maps.mapGrossistIdToProduitId.size) {
+                val nextMapping = maps.mapGrossistIdToProduitId[i]
+                updates["/${i - 1}"] = nextMapping
+            }
+
+            mapsFireBaseRef.updateChildren(updates)
+                .addOnSuccessListener {
+                    println("Successfully deleted and reorganized grossist mappings")
+                    maps.mapGrossistIdToProduitId.removeAt(grossistIndex)
+                }
+                .addOnFailureListener { e ->
+                    println("Error in delete operation: ${e.message}")
+                    e.printStackTrace()
+                }
+        }
     }
 
     fun updateCommandQuantity(
@@ -96,9 +136,10 @@ class Model_CodingWithMaps {
 
                     if (couleurIndex != -1) {
                         // Update existing color quantity
-                        produit.commendCouleurs[couleurIndex] = produit.commendCouleurs[couleurIndex].copy(
-                            quantityCommend = newQuantity
-                        )
+                        produit.commendCouleurs[couleurIndex] =
+                            produit.commendCouleurs[couleurIndex].copy(
+                                quantityCommend = newQuantity
+                            )
                     } else {
                         // Add new color
                         produit.commendCouleurs.add(
@@ -148,28 +189,6 @@ class Model_CodingWithMaps {
         }
     }
 
-    fun deleteGrossistMapping(grossistId: Long) {
-        val grossistIndex = maps.mapGrossistIdToProduitId.indexOfFirst {
-            it.grossistId == grossistId
-        }
-
-        if (grossistIndex != -1) {
-            mapsFireBaseRef.child(grossistIndex.toString()).removeValue()
-                .addOnSuccessListener {
-                    println("Successfully deleted grossist mapping at index $grossistIndex")
-                    maps.mapGrossistIdToProduitId.removeAt(grossistIndex)
-
-                    // Réorganiser les indices dans Firebase après la suppression
-                    maps.mapGrossistIdToProduitId.forEachIndexed { index, mapping ->
-                        mapsFireBaseRef.child(index.toString()).setValue(mapping)
-                    }
-                }
-                .addOnFailureListener { e ->
-                    println("Error deleting grossist mapping at index $grossistIndex: ${e.message}")
-                    e.printStackTrace()
-                }
-        }
-    }
 
     fun deleteProductFromGrossist(grossistId: Long, produitId: Long) {
         val grossistIndex = maps.mapGrossistIdToProduitId.indexOfFirst {

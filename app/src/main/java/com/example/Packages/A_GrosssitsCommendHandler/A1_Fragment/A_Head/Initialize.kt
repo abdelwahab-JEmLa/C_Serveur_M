@@ -7,69 +7,67 @@ import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_C
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.tasks.await
 
 suspend fun start(viewModel: ViewModel_Head) {
     try {
+        // Get old data and clear existing database
         val ancienData = get_Ancien_DataBases_Main()
+        mapsFireBaseRef.removeValue().await()
 
-        // 3. Création et envoi des données par défaut
+        // Create default grossists with their mappings
         val defaultGrossists = listOf(
-            Pair(1L, "Grossist Alpha"),
-            Pair(2L, "Grossist Beta")
+            MapGrossistIdToProduitId(grossistId = 1L), // Grossist Alpha
+            MapGrossistIdToProduitId(grossistId = 2L)  // Grossist Beta
         )
 
-        // 4. Traitement des données pour chaque grossiste
-        defaultGrossists.forEach { (grossistId, _) ->
-            val mapping = MapGrossistIdToProduitId(
-                grossistId = grossistId,
-                produits = mutableStateListOf()
-            )
-
-            // Sélectionner aléatoirement 50 indices de produits qui auront des couleurs
-            val totalProducts = ancienData.produitsDatabase.size
-            val selectedIndices = if (totalProducts <= 50) {
-                (0 until totalProducts).toSet()
-            } else {
-                (0 until totalProducts).shuffled().take(50).toSet()
+        // Initialize each grossist with products and random colors
+        defaultGrossists.forEach { grossist ->
+            // Add all products, but with random colors for each
+            ancienData.produitsDatabase.forEach { produit ->
+                val produitMapping = createProductWithRandomColors(produit.idArticle)
+                grossist.produits.add(produitMapping)
             }
 
-            // 5. Ajout des produits pour chaque grossiste
-            ancienData.produitsDatabase.forEachIndexed { index, produit ->
-                // Création du produit
-                val produitMapping = MapGrossistIdToProduitId.Produit(
-                    produitId = produit.idArticle,
-                    commendCouleurs = mutableStateListOf()
-                )
+            // Create updates map for Firebase
+            val updates = mutableMapOf<String, Any>()
+            updates["/${defaultGrossists.indexOf(grossist)}"] = grossist
 
-                // Ajouter des couleurs seulement si l'index est dans les indices sélectionnés
-                if (index in selectedIndices) {
-                    // Ajout de 1 à 4 couleurs aléatoires
-                    repeat((1..4).random()) {
-                        produitMapping.commendCouleurs.add(
-                            MapGrossistIdToProduitId.Produit.CommendCouleur(
-                                couleurId = (10..50).random().toLong(),
-                                quantityCommend = (10..50).random()
-                            )
-                        )
-                    }
-                }
-
-                mapping.produits.add(produitMapping)
-            }
-
-            mapsFireBaseRef.removeValue()
-            // 6. Mise à jour dans Firebase
-            viewModel._mapsModel.updateGrossistMapping(mapping)
+            // Update Firebase with the current grossist
+            mapsFireBaseRef.updateChildren(updates).await()
         }
 
+        // Set up Firebase listener for real-time updates
+        setupFirebaseListener(viewModel)
+
     } catch (e: Exception) {
-        println("Erreur d'initialisation: ${e.message}")
-        e.printStackTrace()
+        println("Initialization error: ${e.message}")
+        throw e
     }
 }
 
+private fun createProductWithRandomColors(produitId: Long): MapGrossistIdToProduitId.Produit {
+    return MapGrossistIdToProduitId.Produit(
+        produitId = produitId,
+        commendCouleurs = mutableStateListOf<MapGrossistIdToProduitId.Produit.CommendCouleur>().apply {
+            // For each possible color (1-4), decide whether to add it
+            repeat(4) { colorIndex ->
+                if (shouldAddColor()) {  // Using probability for colors instead of products
+                    add(MapGrossistIdToProduitId.Produit.CommendCouleur(
+                        couleurId = (10..50).random().toLong(),
+                        quantityCommend = (10..50).random()
+                    ))
+                }
+            }
+        }
+    )
+}
+
+// Changed function name to reflect its new purpose
+private fun shouldAddColor(): Boolean = Math.random() < 0.5 // 50% chance to add each color
+
 private fun setupFirebaseListener(viewModel: ViewModel_Head) {
-    Model_CodingWithMaps.mapsFireBaseRef.addValueEventListener(object : ValueEventListener {
+    mapsFireBaseRef.addValueEventListener(object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             try {
                 val newMappings = mutableStateListOf<MapGrossistIdToProduitId>()
@@ -82,12 +80,12 @@ private fun setupFirebaseListener(viewModel: ViewModel_Head) {
                 viewModel._mapsModel.maps.mapGrossistIdToProduitId.clear()
                 viewModel._mapsModel.maps.mapGrossistIdToProduitId.addAll(newMappings)
             } catch (e: Exception) {
-                println("Erreur de synchronisation Firebase: ${e.message}")
+                println("Firebase sync error: ${e.message}")
             }
         }
 
         override fun onCancelled(error: DatabaseError) {
-            println("Opération Firebase annulée: ${error.message}")
+            println("Firebase operation cancelled: ${error.message}")
         }
     })
 }

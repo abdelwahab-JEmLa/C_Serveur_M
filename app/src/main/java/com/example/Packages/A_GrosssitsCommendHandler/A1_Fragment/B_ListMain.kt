@@ -56,10 +56,9 @@ fun B_ListMainFragment_1(
             key = { it.key.id }
         ) { article ->
             C_ItemMainFragment_1(
-                viewModel_Head = viewModel_Head,
                 itemMainId = article,
-                position = viewModel_Head.maps.positionedArticles.indexOf(article) + 1,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(4.dp),
+                position = viewModel_Head.maps.positionedArticles.indexOf(article) + 1
             )
         }
 
@@ -88,7 +87,6 @@ fun B_ListMainFragment_1(
             key = { it.key.id }
         ) { article ->
             C_ItemMainFragment_1(
-                viewModel_Head = viewModel_Head,
                 itemMainId = article,
                 modifier = Modifier.padding(4.dp)
             )

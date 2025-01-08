@@ -6,62 +6,107 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Apps_Head._1.Model.AncienResourcesDataBaseMain
-import com.example.Apps_Head._4.Init.GetAncienDataBasesMain
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Archives.Model_CodingWithMaps
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ArticleInfosModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ColourEtGoutInfosModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.GrossistInfosModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.init.start
-import kotlinx.coroutines.Job
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.TypePosition
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.init.startImplementationViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.database.database
 import kotlinx.coroutines.launch
+import java.util.AbstractMap
 
 class ViewModel_Head : ViewModel() {
-    var _maps by mutableStateOf(Maps())
+    private var _maps by mutableStateOf(Maps())
     val maps: Maps get() = _maps
 
-    var _mapsModel by mutableStateOf(Model_CodingWithMaps())
-    val mapsModel: Model_CodingWithMaps get() = _mapsModel
-
-    // Initialize _ancienModels with a default empty state
-    var _ancienModels by mutableStateOf(
-        AncienResourcesDataBaseMain(
-            produitsDatabase = emptyList(),
-            soldArticles = emptyList(),
-            couleurs_List = emptyList(),
-            clients_List = emptyList()
-        )
-    )
-
-    private var isInitializing by mutableStateOf(false)
-    var initializationComplete by mutableStateOf(false)
-    var initializationProgress by mutableFloatStateOf(0f)
-
-    val positionedProduits = mapsModel.mutableStatesVars.positionedProduits
-    val unPositionedProduits = mapsModel.mutableStatesVars.unPositionedProduits
-
-    private var activeDownloads = mutableMapOf<Long, Job>()
-    private val basePath = "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne"
+    var isLoading by mutableStateOf(false)
+    var loadingProgress by mutableFloatStateOf(0f)
 
     init {
-        initializeData()
+        loadData()
     }
 
-    private fun initializeData() {
+    private fun loadData() {
         viewModelScope.launch {
             try {
-                isInitializing = true
+                isLoading = true
+                loadingProgress = 0f
 
-                // Load ancien databases
-                _ancienModels = GetAncienDataBasesMain()
+                startImplementationViewModel(100){
+                    loadingProgress= it.toFloat()
+                }
+                // Chargement des données
+                loadingProgress = 0.5f
 
-                start(this@ViewModel_Head)
+                // Récupération Firebase
+                Firebase.database
+                    .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/Maps/mapGroToMapPositionToProduits")
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        _maps.mapGroToMapPositionToProduits = snapshot.children.mapNotNull { grossistSnapshot ->
+                            parseGrossistData(grossistSnapshot.value as? Map<*, *> ?: return@mapNotNull null)
+                        }.toMutableList()
 
-                initializationComplete = true
+                        loadingProgress = 1f
+                        isLoading = false
+                    }
+
             } catch (e: Exception) {
-                // Handle any errors that occur during initialization
-                // You might want to set an error state here
-            } finally {
-                isInitializing = false
+                println("Erreur de chargement: ${e.message}")
+                isLoading = false
             }
         }
+    }
+
+    private fun parseGrossistData(data: Map<*, *>): Map.Entry<GrossistInfosModel, Map<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>> {
+        val grossistInfo = (data["grossistInfo"] as? Map<*, *>)?.let { info ->
+            GrossistInfosModel(
+                (info["id"] as? Number)?.toLong() ?: 0L,
+                info["nom"] as? String ?: ""
+            )
+        } ?: GrossistInfosModel()
+
+        val positionMap = mutableMapOf<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>()
+
+        (data["products"] as? Map<*, *>)?.forEach { (positionKey, products) ->
+            val position = TypePosition.valueOf(positionKey.toString())
+            positionMap[position] = parseProducts(products)
+        }
+
+        return AbstractMap.SimpleEntry(grossistInfo, positionMap)
+    }
+
+    private fun parseProducts(products: Any?): MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>> {
+        return (products as? List<*>)?.mapNotNull { productData ->
+            (productData as? Map<*, *>)?.let { pData ->
+                val articleInfo = parseArticleInfo(pData["articleInfo"] as? Map<*, *>)
+                val colors = parseColors(pData["colors"] as? List<*>)
+                AbstractMap.SimpleEntry(articleInfo, colors)
+            }
+        }?.toMutableList() ?: mutableListOf()
+    }
+
+    private fun parseArticleInfo(data: Map<*, *>?): ArticleInfosModel {
+        return ArticleInfosModel(
+            id = (data?.get("id") as? Number)?.toLong() ?: 0L,
+            nom = data?.get("nom") as? String ?: ""
+        )
+    }
+
+    private fun parseColors(colors: List<*>?): MutableList<Map.Entry<ColourEtGoutInfosModel, Double>> {
+        return colors?.mapNotNull { colorData ->
+            (colorData as? Map<*, *>)?.let { cData ->
+                val colorInfo = (cData["colorInfo"] as? Map<*, *>)?.let { cInfo ->
+                    ColourEtGoutInfosModel(
+                        (cInfo["id"] as? Number)?.toLong() ?: 0L,
+                        cInfo["nom"] as? String ?: "",
+                        cInfo["imogi"] as? String ?: ""
+                    )
+                } ?: return@mapNotNull null
+                AbstractMap.SimpleEntry(colorInfo, (cData["quantity"] as? Number)?.toDouble() ?: 0.0)
+            }
+        }?.toMutableList() ?: mutableListOf()
     }
 }

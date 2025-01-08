@@ -15,6 +15,9 @@ class Maps {
     var nonPositionedArticles: MutableList<Map.Entry<ArticleInfosModel,
             MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>> =
         mutableListOf()
+    companion object {
+
+    }
 }
 
 enum class TypePosition { POSITIONE, NON_POSITIONE }

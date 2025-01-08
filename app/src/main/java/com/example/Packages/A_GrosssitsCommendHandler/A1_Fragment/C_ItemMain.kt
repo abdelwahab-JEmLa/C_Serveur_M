@@ -24,7 +24,7 @@ import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.V
 @Composable
 fun C_ItemMainFragment_1(
     viewModel_Head: ViewModel_Head,
-    itemMainId: Map.Entry<ArticleInfosModel, Map<ColourEtGoutInfosModel, Double>>,  // Moved to be first optional parameter
+    itemMainId: Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>,  // Moved to be first optional parameter
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,

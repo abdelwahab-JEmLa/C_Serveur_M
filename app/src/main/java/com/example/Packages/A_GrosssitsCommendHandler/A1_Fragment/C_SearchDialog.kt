@@ -29,10 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
 import kotlinx.coroutines.delay
 
 @Composable
 fun SearchDialog(
+    viewModel_Head: ViewModel_Head,
     unpositionedItems: SnapshotStateList<Model_CodingWithMaps.Mapping.Grossist.Produits>,
     onDismiss: () -> Unit,
     onItemSelected: (Model_CodingWithMaps.Mapping.Grossist.Produits) -> Unit
@@ -99,12 +101,13 @@ fun SearchDialog(
                             items = filteredItems,
                         ) { product ->
                             C_ItemMainFragment_1(
+                                viewModel_Head = viewModel_Head,
                                 itemMainId = product,
-                                onCLickOnMain = { onItemSelected(product) },
                                 modifier = Modifier.animateItem(
                                     fadeInSpec = null,
                                     fadeOutSpec = null
                                 ),
+                                onCLickOnMain = { onItemSelected(product) },
                             )
                         }
                     }

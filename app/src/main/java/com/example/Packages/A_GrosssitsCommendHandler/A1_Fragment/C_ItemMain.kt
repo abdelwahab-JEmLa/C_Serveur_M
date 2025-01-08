@@ -18,15 +18,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
 
 @Composable
 fun C_ItemMainFragment_1(
-    itemMainId: Model_CodingWithMaps.Mapping.Grossist.Produits,
-    modifier: Modifier = Modifier,  // Moved to be first optional parameter
+    viewModel_Head: ViewModel_Head,
+    itemMainId: Model_CodingWithMaps.Mapping.Grossist.Produits,  // Moved to be first optional parameter
+    modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
 ) {
-
+    val produit =viewModel_Head._ancienModels.produitsDatabase.find { it.idArticle==itemMainId.produitId }
     Box(
         modifier = modifier  // Using the passed modifier
             .fillMaxWidth()
@@ -45,7 +47,7 @@ fun C_ItemMainFragment_1(
     ) {
 
         GlideDisplayImageById(
-            itemMain = itemMainId,
+            itemMain = produit,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
@@ -53,36 +55,40 @@ fun C_ItemMainFragment_1(
         )
 
         // Product ID
-        Text(
-            text = "ID: ${itemMainId.id}",
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(4.dp)
-                .background(
-                    color = Color.LightGray.copy(alpha = 0.5f),
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .padding(4.dp),
-            style = MaterialTheme.typography.bodySmall,
-            fontSize = 8.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        if (produit != null) {
+            Text(
+                text = "ID: ${produit.idArticle}",
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(4.dp)
+                    .background(
+                        color = Color.LightGray.copy(alpha = 0.5f),
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .padding(4.dp),
+                style = MaterialTheme.typography.bodySmall,
+                fontSize = 8.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
 
-        Text(
-            text = itemMainId.nom,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(4.dp)
-                .background(
-                    color = Color.LightGray.copy(alpha = 0.7f),
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .padding(4.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        if (produit != null) {
+            Text(
+                text = produit.nomArticleFinale,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(4.dp)
+                    .background(
+                        color = Color.LightGray.copy(alpha = 0.7f),
+                        shape = RoundedCornerShape(4.dp)
+                    )
+                    .padding(4.dp),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
 
         if (position != null) {
             Box(

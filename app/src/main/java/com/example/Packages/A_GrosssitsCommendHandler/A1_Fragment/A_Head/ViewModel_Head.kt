@@ -1,5 +1,6 @@
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,52 +23,19 @@ class ViewModel_Head : ViewModel() {
     private var initializationComplete by mutableStateOf(false)
 
     init {
+        initializeData()
+    }
+
+    private fun initializeData() {
         viewModelScope.launch {
             try {
-                initializer(_appsHeadModel)
                 isInitializing = true
+                initializer(_appsHeadModel)
 
-                val startImplementation = true
-                if (startImplementation) {
-                    val filteredAndGroupedData = _appsHeadModel.produitsMainDataBase
-                        .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
-                        .groupBy { it.bonCommendDeCetteCota!!.grossistInformations!! }
-                        .toList()
+                processAndUploadData()
 
-                    // Update Firebase
-                    mapsFireBaseRef
-                        .child("filteredAndGroupedData")
-                        .setValue(filteredAndGroupedData)
-                }
+                setupFirebaseListener()
 
-                // Listen for changes
-                mapsFireBaseRef
-                    .child("filteredAndGroupedData")
-                    .addValueEventListener(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val updatedList = snapshot.children.mapNotNull { grossistSnapshot ->
-                                try {
-                                    val grossist = grossistSnapshot.child("first")
-                                        .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
-                                    val produits =
-                                        grossistSnapshot.child("second").children.mapNotNull { produitSnapshot ->
-                                            produitSnapshot.getValue(AppsHeadModel.ProduitModel::class.java)
-                                        }
-                                    if (grossist != null) {
-                                        grossist to produits
-                                    } else null
-                                } catch (e: Exception) {
-                                    null
-                                }
-                            }
-                            _mapsModel.maps.grossistList = updatedList
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            // Handle error
-                            println("Firebase Error: ${error.message}")
-                        }
-                    })
                 initializationComplete = true
             } finally {
                 isInitializing = false
@@ -75,4 +43,42 @@ class ViewModel_Head : ViewModel() {
         }
     }
 
+    private fun processAndUploadData(): List<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>> {
+        val filteredAndGroupedData = _appsHeadModel.produitsMainDataBase
+            .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
+            .groupBy { it.bonCommendDeCetteCota!!.grossistInformations!! }
+            .toList()
+
+        mapsFireBaseRef
+            .child("filteredAndGroupedData")
+            .setValue(filteredAndGroupedData)
+
+        return filteredAndGroupedData
+    }
+
+    private fun setupFirebaseListener() {
+        mapsFireBaseRef
+            .child("filteredAndGroupedData")
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val updatedList = snapshot.children.mapNotNull { grossistSnapshot ->
+                        try {
+                            val grossist = grossistSnapshot.child("first")
+                                .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
+                            val produits = grossistSnapshot.child("second").children.mapNotNull { produitSnapshot ->
+                                produitSnapshot.getValue(AppsHeadModel.ProduitModel::class.java)
+                            }
+                            grossist?.let { it to produits }
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }
+                    _mapsModel.maps.grossistList = updatedList
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("ViewModel_Head", "Firebase Error: ${error.message}")
+                }
+            })
+    }
 }

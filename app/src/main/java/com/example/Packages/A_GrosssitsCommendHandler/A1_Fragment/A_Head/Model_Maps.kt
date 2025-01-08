@@ -1,8 +1,8 @@
+// Model_CodingWithMaps.kt
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.google.firebase.Firebase
@@ -12,13 +12,9 @@ class Model_CodingWithMaps {
     var maps by mutableStateOf(Maps())
 
     class Maps {
-        var grossistList by remember {
-            mutableStateOf<Pair<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>>>(
-                emptyList()
-            ) //->
-            //TODO(FIXME):Fix erreur Property delegate must have a 'getValue(Model_CodingWithMaps.Maps, KProperty*>)' method. None of the following functions are suitable.
-            //State<T>.getValue(Any?, KProperty<*>)   where T cannot be inferred for    inline operator fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T defined in androidx.compose.runtime
-        }
+        var grossistList: List<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes
+            .GrossistInformations,
+                List<AppsHeadModel.ProduitModel>>> by mutableStateOf(emptyList())
     }
 
     companion object {

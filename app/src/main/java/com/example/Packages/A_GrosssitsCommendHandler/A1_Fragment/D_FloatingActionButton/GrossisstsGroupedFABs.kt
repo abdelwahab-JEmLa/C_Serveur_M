@@ -39,23 +39,15 @@ import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABsFragment_1(
-    produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
     viewModel_Head: ViewModel_Head = viewModel(),
-
     modifier: Modifier = Modifier,
     onClick: (Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?) -> Unit
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
-    val grossistList = viewModel_Head._mapsModel.maps.grossistList
-    
-
-    // LaunchedEffect to handle Firebase operations
-    
     var visibleGrossistAssociatedProduits by remember {
-        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>
-        ?>(null)
+        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?>(null)
     }
 
     Box(
@@ -76,7 +68,6 @@ fun GrossisstsGroupedFABsFragment_1(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Main FAB
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
                 modifier = Modifier.size(48.dp),
@@ -88,7 +79,6 @@ fun GrossisstsGroupedFABsFragment_1(
                 )
             }
 
-            // Animated content
             AnimatedVisibility(
                 visible = showButtons,
                 enter = fadeIn(),
@@ -98,23 +88,20 @@ fun GrossisstsGroupedFABsFragment_1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    grossistList.forEachIndexed { index, entry ->
+                    viewModel_Head.mapsModel.maps.grossistList.forEachIndexed { index, entry ->
                         val (grossist, produits) = entry
-                        Row(    //->
-                            //TODO(FIXME):Fix erreur 
-                            @Composable invocations can only happen from the context of a @Composable function
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        grossistList = grossistList.toMutableList().apply {      //->
-                                            //TODO(FIXME):Fix erreur Val cannot be reassigned
-                                            val temp = this[index]
-                                            this[index] = this[index - 1]
-                                            this[index - 1] = temp
-                                        }
+                                        val newList = viewModel_Head._mapsModel.maps.grossistList.toMutableList()
+                                        val temp = newList[index]
+                                        newList[index] = newList[index - 1]
+                                        newList[index - 1] = temp
+                                        viewModel_Head._mapsModel.maps.grossistList = newList
                                     },
                                     modifier = Modifier.size(36.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -158,5 +145,3 @@ fun GrossisstsGroupedFABsFragment_1(
         }
     }
 }
-
-

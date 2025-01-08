@@ -32,7 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel.ViewModel_Head
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 import kotlin.math.roundToInt
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel
+package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -10,7 +10,7 @@ import com.example.Apps_Head._1.Model.AncienResourcesDataBaseMain
 import com.example.Apps_Head._4.Init.GetAncienDataBasesMain
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Archives.Model_CodingWithMaps
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel.init.start
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.init.start
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 

@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel.ViewModel_Head
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_1
 

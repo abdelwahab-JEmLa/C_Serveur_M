@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Archives.Model_CodingWithMaps
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel.ViewModel_Head
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 import kotlinx.coroutines.delay
 
 @Composable

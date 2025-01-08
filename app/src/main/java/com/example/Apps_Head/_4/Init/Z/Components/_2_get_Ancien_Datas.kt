@@ -1,10 +1,10 @@
 package com.example.Apps_Head._4.Init.Z.Components
 
 import android.util.Log
-import com.example.Apps_Head._1.Model.Components.Ancien_ClientsDataBase_Main
-import com.example.Apps_Head._1.Model.Components.Ancien_ColorArticle_Main
-import com.example.Apps_Head._1.Model.Components.Ancien_SoldArticlesTabelle_Main
-import com.example.Apps_Head._1.Model.Components.Produits_Ancien_DataBase_Main
+import com.example.Apps_Head._4.Init.Ancien_ClientsDataBase_Main
+import com.example.Apps_Head._4.Init.Ancien_ColorArticle_Main
+import com.example.Apps_Head._4.Init.Ancien_SoldArticlesTabelle_Main
+import com.example.Apps_Head._4.Init.Produits_Ancien_DataBase_Main
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await

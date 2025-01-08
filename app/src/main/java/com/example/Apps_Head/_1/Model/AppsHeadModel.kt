@@ -16,7 +16,7 @@ import com.google.firebase.storage.storage
 import java.util.Objects
 
 @IgnoreExtraProperties
-class AppsHeadModel(
+open class AppsHeadModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
 ) {
     @get:Exclude
@@ -263,6 +263,7 @@ class AppsHeadModel(
             )
         }
     }
+
 
     companion object {
         val produitsFireBaseRef = Firebase.database

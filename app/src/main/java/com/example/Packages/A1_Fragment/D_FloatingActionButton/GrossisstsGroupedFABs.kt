@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +34,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.produitGroupeurParGrossistInfos
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlin.math.roundToInt
 
 @Composable
@@ -45,11 +50,57 @@ fun GrossisstsGroupedFABsFragment_1(
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
+
+    // Firebase reference
+    val database = FirebaseDatabase.getInstance()
+    val mapsFireBaseRef = database.getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
+        .child("A_CodingWithListsPatterns")
+
     var grossistList by remember(produitsMainDataBase) {
-        mutableStateOf(produitGroupeurParGrossistInfos(produitsMainDataBase))
+        mutableStateOf<List<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>>>(
+            emptyList()
+        )
     }
+
+    // LaunchedEffect to handle Firebase operations
+    LaunchedEffect(produitsMainDataBase) {
+
+        if (false) {
+            startImplementation(produitsMainDataBase, mapsFireBaseRef)
+        }
+
+        // Listen for changes
+        mapsFireBaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val updatedList = snapshot.children.mapNotNull { grossistSnapshot ->
+                    try {
+                        val grossist = grossistSnapshot.child("first")
+                            .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
+                        val produits =
+                            grossistSnapshot.child("second").children.mapNotNull { produitSnapshot ->
+                                produitSnapshot.getValue(AppsHeadModel.ProduitModel::class.java)
+                            }
+                        if (grossist != null) {
+                            grossist to produits
+                        } else null
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+                grossistList = updatedList
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle error
+                println("Firebase Error: ${error.message}")
+            }
+        })
+    }
+
     var visibleGrossistAssociatedProduits by remember {
-        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?>(null)
+        mutableStateOf<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>?>(
+            null
+        )
     }
 
     Box(
@@ -148,4 +199,17 @@ fun GrossisstsGroupedFABsFragment_1(
             }
         }
     }
+}
+
+fun startImplementation(
+    produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
+    mapsFireBaseRef: DatabaseReference
+) {
+    val filteredAndGroupedData = produitsMainDataBase
+        .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
+        .groupBy { it.bonCommendDeCetteCota!!.grossistInformations!! }
+        .toList()
+
+    // Update Firebase
+    mapsFireBaseRef.setValue(filteredAndGroupedData)
 }

@@ -20,6 +20,7 @@ suspend fun InitViewModel.initializer() {
     }
 }
 
+
 suspend fun InitViewModel.CreeNewStart(NOMBRE_ENTRE: Int) {
     try {
         initializationProgress = 0.1f

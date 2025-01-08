@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._4.Init.initializer
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -33,14 +32,8 @@ class ViewModel_Head : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                initializer(_appsHeadModel, initializationProgress) {
-                    { index, ancienData ->
-                        initializationProgress=  0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
-                    }
-                }
-                processAndUploadData(this@ViewModel_Head)
 
-                setupFirebaseListener(this@ViewModel_Head)
+                start(this@ViewModel_Head)
 
                 initializationComplete = true
             } finally {
@@ -48,6 +41,7 @@ class ViewModel_Head : ViewModel() {
             }
         }
     }
+
 
 
 }

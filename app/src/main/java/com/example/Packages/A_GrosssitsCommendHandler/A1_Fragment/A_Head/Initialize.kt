@@ -1,48 +1,81 @@
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head
 
-import android.util.Log
-import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Companion.mapsFireBaseRef
+import androidx.compose.runtime.mutableStateListOf
+import com.example.Apps_Head._4.Init.Z.Components.get_Ancien_DataBases_Main
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Maper.MapGrossistIdToProduitId
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
-fun processAndUploadData(viewmodelHead: ViewModel_Head): List<Pair<AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations, List<AppsHeadModel.ProduitModel>>> {
-    val filteredAndGroupedData = viewmodelHead._appsHeadModel.produitsMainDataBase
-        .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
-        .groupBy { it.bonCommendDeCetteCota!!.grossistInformations!! }
-        .toList()
+suspend fun start(viewModel: ViewModel_Head) {
+    try {
 
-    mapsFireBaseRef
-        .child("filteredAndGroupedData")
-        .setValue(filteredAndGroupedData)
+        val ancienData = get_Ancien_DataBases_Main()
 
-    return filteredAndGroupedData
+        // 3. Création et envoi des données par défaut
+        val defaultGrossists = listOf(
+            Pair(1L, "Grossist Alpha"),
+            Pair(2L, "Grossist Beta")
+        )
+
+        // 4. Traitement des données pour chaque grossiste
+        defaultGrossists.forEach { (grossistId, _) ->
+            val mapping = MapGrossistIdToProduitId(
+                grossistId = grossistId,
+                produits = mutableStateListOf()
+            )
+
+            // 5. Ajout des produits pour chaque grossiste
+            ancienData.produitsDatabase.forEach { produit ->
+                // Création du produit avec couleurs aléatoires
+                val produitMapping = MapGrossistIdToProduitId.Produit(
+                    produitId = produit.idArticle,
+                    commendCouleurs = mutableStateListOf()
+                )
+
+                // Ajout de 1 à 4 couleurs aléatoires
+                repeat((1..4).random()) {
+                    produitMapping.commendCouleurs.add(
+                        MapGrossistIdToProduitId.Produit.CommendCouleur(
+                            couleurId = (10..50).random().toLong(),
+                            quantityCommend = (10..50).random()
+                        )
+                    )
+                }
+
+                mapping.produits.add(produitMapping)
+            }
+
+            // 6. Mise à jour dans Firebase
+            viewModel._mapsModel.updateGrossistMapping(mapping)
+        }
+
+    } catch (e: Exception) {
+        println("Erreur d'initialisation: ${e.message}")
+        e.printStackTrace()
+    }
 }
 
-fun setupFirebaseListener(viewmodelHead: ViewModel_Head) {
-    mapsFireBaseRef
-        .child("filteredAndGroupedData")
-        .addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val updatedList = snapshot.children.mapNotNull { grossistSnapshot ->
-                    try {
-                        val grossist = grossistSnapshot.child("first")
-                            .getValue(AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
-                        val produits =
-                            grossistSnapshot.child("second").children.mapNotNull { produitSnapshot ->
-                                produitSnapshot.getValue(AppsHeadModel.ProduitModel::class.java)
-                            }
-                        grossist?.let { it to produits }
-                    } catch (e: Exception) {
-                        null
+private fun setupFirebaseListener(viewModel: ViewModel_Head) {
+    Model_CodingWithMaps.mapsFireBaseRef.addValueEventListener(object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            try {
+                val newMappings = mutableStateListOf<MapGrossistIdToProduitId>()
+                snapshot.children.forEach { grossistSnapshot ->
+                    grossistSnapshot.getValue(MapGrossistIdToProduitId::class.java)?.let {
+                        newMappings.add(it)
                     }
                 }
-                viewmodelHead._mapsModel.maps.grossistList = updatedList
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("ViewModel_Head", "Firebase Error: ${error.message}")
+                viewModel._mapsModel.maps.mapGrossistIdToProduitId.clear()
+                viewModel._mapsModel.maps.mapGrossistIdToProduitId.addAll(newMappings)
+            } catch (e: Exception) {
+                println("Erreur de synchronisation Firebase: ${e.message}")
             }
-        })
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            println("Opération Firebase annulée: ${error.message}")
+        }
+    })
 }

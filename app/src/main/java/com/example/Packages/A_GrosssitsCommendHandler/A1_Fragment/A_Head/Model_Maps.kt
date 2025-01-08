@@ -10,11 +10,18 @@ import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
 class Model_CodingWithMaps {
-    var maps by mutableStateOf(MutableStatesVars())
+    var mutableStatesVars by mutableStateOf(MutableStatesVars())
 
     class MutableStatesVars {
         var mapGrossistIdToProduitId: SnapshotStateList<Mapping.Grossist> =
             mutableStateListOf()
+
+        var positionedProduits: SnapshotStateList<Mapping.Grossist.Produits> =
+            mutableStateListOf()
+
+        var unPositionedProduits: SnapshotStateList<Mapping.Grossist.Produits> =
+            mutableStateListOf()
+
     }
 
     class Mapping {

@@ -80,8 +80,8 @@ suspend fun start(viewModel: ViewModel_Head) {
                         newMappings.add(grossist)
                     }
 
-                    viewModel._mapsModel.maps.mapGrossistIdToProduitId.clear()
-                    viewModel._mapsModel.maps.mapGrossistIdToProduitId.addAll(newMappings)
+                    viewModel._mapsModel.mutableStatesVars.mapGrossistIdToProduitId.clear()
+                    viewModel._mapsModel.mutableStatesVars.mapGrossistIdToProduitId.addAll(newMappings)
                 } catch (e: Exception) {
                     println("Error parsing Firebase data: ${e.message}")
                 }

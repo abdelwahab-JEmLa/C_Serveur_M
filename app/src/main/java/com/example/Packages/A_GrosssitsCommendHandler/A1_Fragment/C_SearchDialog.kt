@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -27,14 +28,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps
 import kotlinx.coroutines.delay
 
 @Composable
 fun SearchDialog(
-    unpositionedItems: List<AppsHeadModel.ProduitModel>,
+    unpositionedItems: SnapshotStateList<Model_CodingWithMaps.Mapping.Grossist.Produits>,
     onDismiss: () -> Unit,
-    onItemSelected: (AppsHeadModel.ProduitModel) -> Unit
+    onItemSelected: (Model_CodingWithMaps.Mapping.Grossist.Produits) -> Unit
 ) {
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
@@ -82,7 +83,7 @@ fun SearchDialog(
                 )
 
                 val filteredItems = unpositionedItems.filter {
-                    it.nom.contains(searchText, ignoreCase = true)
+                    it.produitId.toString().contains(searchText, ignoreCase = true)
                 }
 
                 if (searchText.length >= 2) {
@@ -96,10 +97,9 @@ fun SearchDialog(
                     ) {
                         items(
                             items = filteredItems,
-                            key = { it.id }
                         ) { product ->
                             C_ItemMainFragment_1(
-                                itemMain = product,
+                                itemMainId = product,
                                 onCLickOnMain = { onItemSelected(product) },
                                 modifier = Modifier.animateItem(
                                     fadeInSpec = null,

@@ -37,17 +37,17 @@ internal fun A_ScreenMainFragment_1(
         }
         return
     }
-    val maps = viewModel_Head.mapsModel.maps
+    val maps = viewModel_Head.mapsModel.mutableStatesVars
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                val databaseSize = initViewModel._appsHeadModel.produitsMainDataBase.size
+                val databaseSize = viewModel_Head.mapsModel.mutableStatesVars.mapGrossistIdToProduitId.size
 
                 if (databaseSize > 0) {
-                    B_ListMainFragment_1(initViewModel._appsHeadModel.produitsMainDataBase.take(5), paddingValues)
+                    B_ListMainFragment_1(viewModel_Head, paddingValues)
                 }
             }
 

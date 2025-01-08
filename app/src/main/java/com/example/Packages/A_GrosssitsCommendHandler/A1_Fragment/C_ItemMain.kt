@@ -16,16 +16,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps
 
 @Composable
 fun C_ItemMainFragment_1(
-    itemMain: AppsHeadModel.ProduitModel,
+    itemMainId: Model_CodingWithMaps.Mapping.Grossist.Produits,
     modifier: Modifier = Modifier,  // Moved to be first optional parameter
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
 ) {
+
     Box(
         modifier = modifier  // Using the passed modifier
             .fillMaxWidth()
@@ -44,7 +45,7 @@ fun C_ItemMainFragment_1(
     ) {
 
         GlideDisplayImageById(
-            itemMain = itemMain,
+            itemMain = itemMainId,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
@@ -53,7 +54,7 @@ fun C_ItemMainFragment_1(
 
         // Product ID
         Text(
-            text = "ID: ${itemMain.id}",
+            text = "ID: ${itemMainId.id}",
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(4.dp)
@@ -69,7 +70,7 @@ fun C_ItemMainFragment_1(
         )
 
         Text(
-            text = itemMain.nom,
+            text = itemMainId.nom,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(4.dp)

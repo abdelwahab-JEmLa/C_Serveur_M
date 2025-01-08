@@ -24,28 +24,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.produitsFireBaseRef
-import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Mapping.Grossist.Produits
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
 
 @Composable
 fun B_ListMainFragment_1(
-    visibleGrossistAssociatedProduits: List<ProduitModel>,
+    viewModel_Head: ViewModel_Head,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    var positionedProduits by remember(visibleGrossistAssociatedProduits) { mutableStateOf<List<ProduitModel>>(emptyList()) }
-    var unPositionedProduits by remember(visibleGrossistAssociatedProduits) {
-        mutableStateOf(visibleGrossistAssociatedProduits)
-    }
+   val positionedProduits= viewModel_Head.mapsModel.mutableStatesVars.
+    positionedProduits
+   val unPositionedProduits= viewModel_Head.mapsModel.mutableStatesVars.
+    unPositionedProduits
     var showSearchDialog by remember { mutableStateOf(false) }
 
-    val handleProductMove = { item: ProduitModel, toPositioned: Boolean ->
+    val handleProductMove = { item: Produits, toPositioned: Boolean ->
         if (toPositioned) {
-            positionedProduits += item
+            viewModel_Head._mapsModel.mutableStatesVars.
+               positionedProduits += item
+            viewModel_Head._mapsModel.mutableStatesVars.
             unPositionedProduits -= item
         } else {
             positionedProduits -= item
@@ -90,8 +94,8 @@ fun B_ListMainFragment_1(
 }
 
 private fun LazyGridScope.PositionedProduits(
-    products: List<ProduitModel>,
-    onClickOnMAin: (ProduitModel) -> Unit,
+    products: SnapshotStateList<Produits>,
+    onClickOnMAin: (Produits) -> Unit,
 ) {
     if (products.isNotEmpty()) {
         item(span = { GridItemSpan(5) }) {
@@ -104,12 +108,11 @@ private fun LazyGridScope.PositionedProduits(
 
         items(
             items = products,
-            key = { it.id }
-        ) { product ->
-            val index = products.indexOf(product)
+        ) { productID ->
+            val index = products.indexOf(productID)
             C_ItemMainFragment_1(
-                itemMain = product,
-                onCLickOnMain = { onClickOnMAin(product) },
+                itemMainId = productID,
+                onCLickOnMain = { onClickOnMAin(productID) },
                 position = index + 1,
                 modifier = Modifier.animateItem(
                     fadeInSpec = null,
@@ -121,9 +124,9 @@ private fun LazyGridScope.PositionedProduits(
 }
 
 private fun LazyGridScope.UnPositionedProduits(
-    products: List<ProduitModel>,
+    products: SnapshotStateList<Produits>,
     onShowSearchDialog: () -> Unit,
-    onClickOnMAin: (ProduitModel) -> Unit
+    onClickOnMAin: (Produits) -> Unit
 ) {
     if (products.isNotEmpty()) {
         item(span = { GridItemSpan(5) }) {
@@ -154,11 +157,10 @@ private fun LazyGridScope.UnPositionedProduits(
 
         items(
             items = products,
-            key = { it.id }  // Add key for stable animations
-        ) { product ->
+        ) { productID ->
             C_ItemMainFragment_1(
-                itemMain = product,
-                onCLickOnMain = { onClickOnMAin(product) },
+                itemMainId = productID,
+                onCLickOnMain = { onClickOnMAin(productID) },
                 modifier = Modifier.animateItem(
                     fadeInSpec = null,
                     fadeOutSpec = null

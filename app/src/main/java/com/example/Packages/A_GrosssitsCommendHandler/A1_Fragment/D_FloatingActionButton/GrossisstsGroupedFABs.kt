@@ -37,14 +37,16 @@ import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABsFragment_1(
-    viewModel_Head: ViewModel_Head ,
+    viewModel_Head: ViewModel_Head,
     modifier: Modifier = Modifier,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    var mapGrossistIdToProduitId = viewModel_Head.mapsModel.maps.mapGrossistIdToProduitId
+    var mapGrossistIdToProduitId = viewModel_Head.mapsModel.mutableStatesVars.mapGrossistIdToProduitId
+    // Change the type to nullable Long and initialize with null
+    var visibleGrossist by remember { mutableStateOf<Long?>(null) }
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -85,7 +87,7 @@ fun GrossisstsGroupedFABsFragment_1(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     mapGrossistIdToProduitId.forEachIndexed { index, entry ->
-                        val (grossistId, produits) = entry
+                        val (grossistId, produitsSnapshotStateList) = entry
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -114,7 +116,8 @@ fun GrossisstsGroupedFABsFragment_1(
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        Color.Transparent
+                                        if (visibleGrossist == grossistId) Color.Blue
+                                        else Color.Transparent
                                     )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
@@ -122,11 +125,13 @@ fun GrossisstsGroupedFABsFragment_1(
 
                             FloatingActionButton(
                                 onClick = {
+                                    visibleGrossist = grossistId
+                                    viewModel_Head.mapsModel.mutableStatesVars.unPositionedProduits = produitsSnapshotStateList
                                 },
                                 modifier = Modifier.size(48.dp),
                             ) {
                                 Text(
-                                    text = produits.size.toString(),
+                                    text = produitsSnapshotStateList.size.toString(),
                                     color = Color.White
                                 )
                             }

@@ -25,11 +25,11 @@ internal fun A_ScreenMainFragment_1(
     viewModel_Head: ViewModel_Head = viewModel(),
     ) {
     val TAG = "A_ScreenMainFragment_1"
-    if (!viewModel_Head.initializationComplete) {
+    if (!viewModel_Head.isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
                 progress = {
-                    viewModel_Head.initializationProgress
+                    viewModel_Head.loadingProgress
                 },
                 modifier = Modifier.align(Alignment.Center),
                 trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
@@ -43,7 +43,7 @@ internal fun A_ScreenMainFragment_1(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                val databaseSize = viewModel_Head.mapsModel.mutableStatesVars.mapGrossistIdToProduitId.size
+                val databaseSize = viewModel_Head.maps.mapGroToMapPositionToProduits.size
 
                 if (databaseSize > 0) {
                     B_ListMainFragment_1(viewModel_Head, paddingValues)

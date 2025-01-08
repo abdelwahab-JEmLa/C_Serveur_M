@@ -16,14 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Apps_Head._3.Modules.Images_Handler.GlideDisplayImageById
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
 
 @Composable
 fun C_ItemMainFragment_1(
     viewModel_Head: ViewModel_Head,
-    itemMainId: Model_CodingWithMaps.Mapping.Grossist.Produits,  // Moved to be first optional parameter
+    itemMainId: AppsHeadModel.ProduitModel,  // Moved to be first optional parameter
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,

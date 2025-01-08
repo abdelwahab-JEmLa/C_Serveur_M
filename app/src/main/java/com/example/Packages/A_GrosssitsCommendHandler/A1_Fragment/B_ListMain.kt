@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,7 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Mapping.Grossist.Produits
+import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.ViewModel_Head
 
 @Composable
@@ -39,16 +40,26 @@ fun B_ListMainFragment_1(
     modifier: Modifier = Modifier
 ) {
     var showSearchDialog by remember { mutableStateOf(false) }
+    val mapGroToMapPositionToProduits = viewModel_Head._mapsSansModels.mapGroToMapPositionToProduits
+    val currentGrossist = mapGroToMapPositionToProduits.entries.firstOrNull()
 
-    val handleProductMove = { item: Produits, toPositioned: Boolean ->
-        if (toPositioned) {
-            viewModel_Head._mapsModel.mutableStatesVars.
-               positionedProduits += item
-            viewModel_Head._mapsModel.mutableStatesVars.
-            unPositionedProduits -= item
-        } else {
-            viewModel_Head. positionedProduits -= item
-            viewModel_Head. unPositionedProduits += item
+    val handleProductMove = { produitModel: AppsHeadModel.ProduitModel, toPositioned: Boolean ->
+        currentGrossist?.let { grossistEntry ->
+            grossistEntry.value[true]?.let { positionedList ->
+                grossistEntry.value[false]?.let { unpositionedList ->
+                    if (toPositioned) {
+                        // Move to positioned list
+                        if (unpositionedList.remove(produitModel)) {
+                            positionedList.add(produitModel)
+                        }
+                    } else {
+                        // Move to unpositioned list
+                        if (positionedList.remove(produitModel)) {
+                            unpositionedList.add(produitModel)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -61,37 +72,24 @@ fun B_ListMainFragment_1(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         PositionedProduits(
-            viewModel_Head=viewModel_Head,
-            products = viewModel_Head.positionedProduits,
+            viewModel_Head = viewModel_Head,
+            products = currentGrossist?.value?.get(true) ?: mutableStateListOf(),
             onClickOnMAin = { handleProductMove(it, false) }
         )
 
         UnPositionedProduits(
-            viewModel_Head=viewModel_Head,
-            products = viewModel_Head.unPositionedProduits,
+            viewModel_Head = viewModel_Head,
+            products = currentGrossist?.value?.get(false) ?: mutableStateListOf(),
             onShowSearchDialog = { showSearchDialog = true },
             onClickOnMAin = { handleProductMove(it, true) }
-        )
-    }
-
-    if (showSearchDialog) {
-        SearchDialog(
-            viewModel_Head=viewModel_Head,
-
-            unpositionedItems = viewModel_Head.unPositionedProduits,
-            onDismiss = { showSearchDialog = false },
-            onItemSelected = {
-                handleProductMove(it, true)
-                showSearchDialog = false
-            }
         )
     }
 }
 
 private fun LazyGridScope.PositionedProduits(
     viewModel_Head: ViewModel_Head,
-    products: SnapshotStateList<Produits>,
-    onClickOnMAin: (Produits) -> Unit,
+    products: SnapshotStateList<AppsHeadModel.ProduitModel>,
+    onClickOnMAin: (AppsHeadModel.ProduitModel) -> Unit,
 ) {
     if (products.isNotEmpty()) {
         item(span = { GridItemSpan(5) }) {
@@ -104,12 +102,12 @@ private fun LazyGridScope.PositionedProduits(
 
         items(
             items = products,
-        ) { productID ->
-            val index = products.indexOf(productID)
+        ) { produitModel ->
+            val index = products.indexOf(produitModel)
             C_ItemMainFragment_1(
-                viewModel_Head=viewModel_Head,
-                itemMainId = productID,
-                onCLickOnMain = { onClickOnMAin(productID) },
+                viewModel_Head =viewModel_Head,
+                itemMainId = produitModel,
+                onCLickOnMain = { onClickOnMAin(produitModel) },
                 position = index + 1,
                 modifier = Modifier.animateItem(
                     fadeInSpec = null,
@@ -122,9 +120,9 @@ private fun LazyGridScope.PositionedProduits(
 
 private fun LazyGridScope.UnPositionedProduits(
     viewModel_Head: ViewModel_Head,
-    products: SnapshotStateList<Produits>,
+    products: SnapshotStateList<AppsHeadModel.ProduitModel>,
     onShowSearchDialog: () -> Unit,
-    onClickOnMAin: (Produits) -> Unit
+    onClickOnMAin: (AppsHeadModel.ProduitModel) -> Unit
 ) {
     if (products.isNotEmpty()) {
         item(span = { GridItemSpan(5) }) {
@@ -155,15 +153,15 @@ private fun LazyGridScope.UnPositionedProduits(
 
         items(
             items = products,
-        ) { productID ->
+        ) { produitModel ->
             C_ItemMainFragment_1(
                 viewModel_Head = viewModel_Head,
-                itemMainId = productID,
+                itemMainId = produitModel,
                 modifier = Modifier.animateItem(
                     fadeInSpec = null,
                     fadeOutSpec = null
                 ),
-                onCLickOnMain = { onClickOnMAin(productID) }  // Add animation for item placement
+                onCLickOnMain = { onClickOnMAin(produitModel) }  // Add animation for item placement
             )
         }
     }

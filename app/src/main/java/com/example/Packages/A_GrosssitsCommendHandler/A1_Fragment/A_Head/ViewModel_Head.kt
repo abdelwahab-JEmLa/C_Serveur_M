@@ -12,6 +12,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ViewModel_Head : ViewModel() {
+    var _mapsSansModels by mutableStateOf(Model_CodingWithMaps.MapsSansModels())
+    val mapsSansModels: Model_CodingWithMaps.MapsSansModels get() = _mapsSansModels
+
     var _mapsModel by mutableStateOf(Model_CodingWithMaps())
     val mapsModel: Model_CodingWithMaps get() = _mapsModel
 

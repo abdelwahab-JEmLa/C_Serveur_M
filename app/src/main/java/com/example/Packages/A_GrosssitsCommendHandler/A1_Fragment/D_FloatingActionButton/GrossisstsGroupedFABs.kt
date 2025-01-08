@@ -37,7 +37,6 @@ import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
-    // États locaux
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
@@ -127,10 +126,8 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                                 onClick = { selectedId = grossist.id },
                                 modifier = Modifier.size(40.dp)
                             ) {
-                                val total = positionMap.values.sumOf { typeMap ->
-                                    typeMap.values.sumOf { it.values.sum() }
-                                }.toInt()
-                                Text(text = total.toString())
+
+                                Text(text = "")
                             }
                         }
                     }

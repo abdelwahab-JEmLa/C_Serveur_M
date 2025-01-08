@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import java.util.AbstractMap
 
 class ViewModel_Head : ViewModel() {
-    private var _maps by mutableStateOf(Maps())
+    var _maps by mutableStateOf(Maps())
     val maps: Maps get() = _maps
 
     var isLoading by mutableStateOf(false)

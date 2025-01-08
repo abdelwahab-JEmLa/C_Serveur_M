@@ -8,6 +8,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
+import kotlinx.coroutines.tasks.await
 
 class Model_CodingWithMaps {
     var maps by mutableStateOf(MutableStatesVars())
@@ -233,5 +234,14 @@ class Model_CodingWithMaps {
         val mapsFireBaseRef = Firebase.database
             .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
             .child("A_CodingWithListsPatterns")
+
+        suspend fun batchFireBaseUpdateGrossist(grossists: List<Map<String, Any>>) {
+            // Mettre à jour Firebase
+            val updates = grossists.mapIndexed { index, grossist ->
+                "/$index" to grossist
+            }.toMap()
+
+            mapsFireBaseRef.updateChildren(updates).await()
+        }
     }
 }

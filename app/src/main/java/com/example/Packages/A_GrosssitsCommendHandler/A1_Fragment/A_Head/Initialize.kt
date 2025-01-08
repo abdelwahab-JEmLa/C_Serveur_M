@@ -2,6 +2,7 @@ package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head
 
 import androidx.compose.runtime.mutableStateListOf
 import com.example.Apps_Head._4.Init.Z.Components.get_Ancien_DataBases_Main
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Companion.batchFireBaseUpdateGrossist
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Companion.mapsFireBaseRef
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model_CodingWithMaps.Maper.MapGrossistIdToProduitId
 import com.google.firebase.database.DataSnapshot
@@ -41,12 +42,7 @@ suspend fun start(viewModel: ViewModel_Head) {
             )
         }
 
-        // Mettre à jour Firebase
-        val updates = grossists.mapIndexed { index, grossist ->
-            "/$index" to grossist
-        }.toMap()
-
-        mapsFireBaseRef.updateChildren(updates).await()
+        batchFireBaseUpdateGrossist(grossists)
 
         // Configurer l'écouteur
         mapsFireBaseRef.addValueEventListener(object : ValueEventListener {
@@ -100,3 +96,5 @@ suspend fun start(viewModel: ViewModel_Head) {
         throw e
     }
 }
+
+

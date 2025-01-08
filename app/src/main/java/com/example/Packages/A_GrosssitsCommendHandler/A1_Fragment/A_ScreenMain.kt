@@ -37,7 +37,7 @@ internal fun A_ScreenMainFragment_1(
         }
         return
     }
-    val maps = viewModel_Head.mapsModel.mutableStatesVars
+    val visibleProduits = viewModel_Head.mapsModel.mutableStatesVars.mapGrossistIdToProduitId
 
     Scaffold(
         modifier = Modifier.fillMaxSize()

@@ -12,6 +12,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
+enum class TypePosition{POSITIONE,NON_POSITIONE}
+
 class Model_CodingWithMaps {
     var mutableStatesVars by mutableStateOf(MutableStatesVars())
     var mapsSansModels by mutableStateOf(MapsSansModels())
@@ -20,7 +22,6 @@ class Model_CodingWithMaps {
         var mapGroToMapPositionToProduits: Map<GrossistInformations,
                 Map<TypePosition, Map<ProduitModel,SnapshotStateList<ColourEtGout_Model>>>> =
             mutableMapOf() // Changed from mutableStateListOf to mutableMapOf
-        enum class TypePosition{POSITIONE,NON_POSITIONE}
     }
 
     class MutableStatesVars {

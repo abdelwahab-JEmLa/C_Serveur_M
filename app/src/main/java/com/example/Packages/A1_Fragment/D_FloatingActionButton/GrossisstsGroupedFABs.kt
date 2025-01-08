@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import com.example.Apps_Head._1.Model.AppsHeadModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlin.math.roundToInt
@@ -65,8 +64,17 @@ fun GrossisstsGroupedFABsFragment_1(
 
     // LaunchedEffect to handle Firebase operations
     LaunchedEffect(produitsMainDataBase) {
-        if (true) {
-            startImplementation(produitsMainDataBase, mapsFireBaseRef)
+        val startImplementation = true
+        if (startImplementation) {
+            val filteredAndGroupedData = produitsMainDataBase
+                .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
+                .groupBy { it.bonCommendDeCetteCota!!.grossistInformations!! }
+                .toList()
+
+            // Update Firebase
+            mapsFireBaseRef
+                .child("filteredAndGroupedData")
+                .setValue(filteredAndGroupedData)
         }
 
         // Listen for changes
@@ -202,17 +210,4 @@ fun GrossisstsGroupedFABsFragment_1(
     }
 }
 
-fun startImplementation(
-    produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
-    mapsFireBaseRef: DatabaseReference
-) {
-    val filteredAndGroupedData = produitsMainDataBase
-        .filter { it.bonCommendDeCetteCota?.grossistInformations != null }
-        .groupBy { it.bonCommendDeCetteCota!!.grossistInformations!! }
-        .toList()
 
-    // Update Firebase
-    mapsFireBaseRef
-        .child("filteredAndGroupedData")
-        .setValue(filteredAndGroupedData)
-}

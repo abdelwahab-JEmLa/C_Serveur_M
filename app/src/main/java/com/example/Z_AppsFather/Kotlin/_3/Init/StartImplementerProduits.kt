@@ -1,7 +1,7 @@
 package com.example.Z_AppsFather.Kotlin._3.Init
 
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.Companion.updateProduitsFireBase
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduitsFireBase
 import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.AncienResourcesDataBaseMain
 import com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent.GetAncienDataBasesMain
 import java.text.SimpleDateFormat

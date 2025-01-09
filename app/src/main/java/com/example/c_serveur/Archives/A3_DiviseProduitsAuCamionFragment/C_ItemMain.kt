@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 
 @Composable
 fun ItemMain_Fragment_3(

@@ -14,7 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.Main.AppNavHost.MainScreen
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
 

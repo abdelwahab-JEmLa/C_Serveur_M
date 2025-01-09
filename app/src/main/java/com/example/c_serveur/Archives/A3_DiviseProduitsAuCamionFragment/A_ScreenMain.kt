@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.ClientsGroupedFABs_Fragment_3
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.GlobalEditesGFABs_Fragment_3
 

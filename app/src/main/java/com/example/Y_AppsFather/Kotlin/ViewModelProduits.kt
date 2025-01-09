@@ -1,4 +1,4 @@
-package com.example.Z_AppsFather.Kotlin._2.ViewModel
+package com.example.Y_AppsFather.Kotlin
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -7,8 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.Companion.produitsFireBaseRef
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.produitsFireBaseRef
 import com.example.Z_AppsFather.Kotlin._3.Init.initializer
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D.Actions.onClickOn_Fragment_3
 import com.google.firebase.database.DataSnapshot

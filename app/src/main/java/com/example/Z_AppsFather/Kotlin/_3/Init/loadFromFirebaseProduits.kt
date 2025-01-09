@@ -2,9 +2,9 @@ package com.example.Z_AppsFather.Kotlin._3.Init
 
 import android.util.Log
 import androidx.compose.runtime.toMutableStateList
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.ProduitModel
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.D_FloatingActionButton.GrossisstsGroupedFABs
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
 
 private const val TAG = "A_ScreenMainFragment_1"

@@ -2,9 +2,9 @@
 package com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D.Actions
 
 import androidx.compose.runtime.toMutableStateList
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.Companion.update_produitsViewModelEtFireBases
-import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.update_produitsViewModelEtFireBases
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 
 class onClickOn_Fragment_3(private val initViewModel: ViewModelProduits) {
        fun ClientsFloatingActionButton(grpFabClientInfoId: Long) {

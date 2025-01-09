@@ -1,9 +1,11 @@
+// ViewModel_Head.kt
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ArticleInfosModel
@@ -34,26 +36,26 @@ class ViewModel_Head : ViewModel() {
                 isLoading = true
                 loadingProgress = 0f
 
-                startImplementationViewModel(0){
-                    loadingProgress= it.toFloat()
+                startImplementationViewModel(0) {
+                    loadingProgress = it.toFloat()
                 }
-                // Chargement des données
                 loadingProgress = 0.5f
 
-                // Récupération Firebase
                 Firebase.database
                     .getReference("0_UiState_3_Host_Package_3_Prototype11Dec/Maps/mapGroToMapPositionToProduits")
                     .get()
                     .addOnSuccessListener { snapshot ->
-                        _maps.mapGroToMapPositionToProduits = snapshot.children.mapNotNull { grossistSnapshot ->
+                        val newList = snapshot.children.mapNotNull { grossistSnapshot ->
                             parseGrossistData(grossistSnapshot.value as? Map<*, *> ?: return@mapNotNull null)
-                        }.toMutableList()         //-->
-                        //TODO(1): cree liu logs pour suivre l inserastion
+                        }.toMutableStateList()
+
+                        _maps = Maps().apply {
+                            mapGroToMapPositionToProduits = newList
+                        }
 
                         loadingProgress = 1f
                         isLoading = false
                     }
-
             } catch (e: Exception) {
                 println("Erreur de chargement: ${e.message}")
                 isLoading = false
@@ -92,7 +94,10 @@ class ViewModel_Head : ViewModel() {
     private fun parseArticleInfo(data: Map<*, *>?): ArticleInfosModel {
         return ArticleInfosModel(
             id = (data?.get("id") as? Number)?.toLong() ?: 0L,
-            nom = data?.get("nom") as? String ?: ""
+            nom = data?.get("nom") as? String ?: "",
+            besoinToBeUpdated = data?.get("besoinToBeUpdated") as? Boolean ?: false,
+            sonImageBesoinActualisation = data?.get("sonImageBesoinActualisation") as? Boolean ?: false,
+            imageGlidReloadTigger = (data?.get("imageGlidReloadTigger") as? Number)?.toInt() ?: 0
         )
     }
 
@@ -111,3 +116,4 @@ class ViewModel_Head : ViewModel() {
         }?.toMutableList() ?: mutableListOf()
     }
 }
+

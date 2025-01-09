@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Modules.ArticleLoggingUtil
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 
 @Composable
@@ -45,7 +46,12 @@ fun B_ListMainFragment_1(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Produits avec position (${viewModel_Head.maps.positionedArticles.size})",
+                    text = "Produits avec position (${viewModel_Head.maps.positionedArticles.size})".also {
+                        ArticleLoggingUtil.logDisplayUpdate(
+                            positionedCount = viewModel_Head.maps.positionedArticles.size,
+                            nonPositionedCount = viewModel_Head.maps.nonPositionedArticles.size
+                        )
+                    },
                     style = MaterialTheme.typography.titleMedium
                 )
             }

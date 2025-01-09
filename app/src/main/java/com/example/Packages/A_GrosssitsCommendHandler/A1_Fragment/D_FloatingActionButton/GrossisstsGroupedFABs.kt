@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Modules.ArticleLoggingUtil
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.TypePosition
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 import kotlin.math.roundToInt
 
@@ -60,7 +62,6 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // FAB principal
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
                 modifier = Modifier.size(48.dp)
@@ -71,7 +72,6 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                 )
             }
 
-            // Liste des grossistes
             AnimatedVisibility(
                 visible = showButtons,
                 enter = fadeIn(),
@@ -89,15 +89,13 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
-                            // Bouton Up
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        val newList = viewModel_Head.maps.mapGroToMapPositionToProduits.toMutableList()
-                                        val temp = newList[index]
-                                        newList[index] = newList[index - 1]
-                                        newList[index - 1] = temp
-                                        viewModel_Head._maps.mapGroToMapPositionToProduits = newList
+                                        val currentList = viewModel_Head.maps.mapGroToMapPositionToProduits
+                                        if (index > 0) {
+                                            currentList.add(index - 1, currentList.removeAt(index))
+                                        }
                                     },
                                     modifier = Modifier.size(32.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -109,7 +107,6 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                                 }
                             }
 
-                            // Nom du grossiste
                             Text(
                                 text = grossist.nom,
                                 modifier = Modifier
@@ -121,12 +118,25 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                                     .padding(4.dp)
                             )
 
-                            // Compteur
                             FloatingActionButton(
-                                onClick = { selectedId = grossist.id },
+                                onClick = {
+                                    selectedId = grossist.id
+                                    viewModel_Head._maps.positionedArticles.clear()
+                                    viewModel_Head._maps.positionedArticles.addAll(
+                                        positionMap[TypePosition.POSITIONE] ?: mutableListOf()
+                                    )
+                                    viewModel_Head._maps.nonPositionedArticles.clear()
+                                    viewModel_Head._maps.nonPositionedArticles.addAll(
+                                        positionMap[TypePosition.NON_POSITIONE] ?: mutableListOf()
+                                    )
+                                    ArticleLoggingUtil.logArticleListChange(
+                                        grossistName = grossist.nom,
+                                        positionedArticles = viewModel_Head._maps.positionedArticles,
+                                        nonPositionedArticles = viewModel_Head._maps.nonPositionedArticles
+                                    )
+                                },
                                 modifier = Modifier.size(40.dp)
                             ) {
-
                                 Text(text = "")
                             }
                         }

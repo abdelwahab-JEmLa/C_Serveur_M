@@ -1,23 +1,20 @@
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model
 
+import androidx.compose.runtime.mutableStateListOf
+
 class Maps {
-    var mapGroToMapPositionToProduits:
-            MutableList<Map.Entry<GrossistInfosModel,
-                    Map<TypePosition,
-                            MutableList<Map.Entry<ArticleInfosModel,
-                                    MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>>> =
-        mutableListOf()
+    // Liste principale
+    var mapGroToMapPositionToProduits = mutableStateListOf<Map.Entry<GrossistInfosModel,
+            Map<TypePosition,
+                    MutableList<Map.Entry<ArticleInfosModel,
+                            MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>>>()
 
-    var positionedArticles: MutableList<Map.Entry<ArticleInfosModel,
-            MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>> =
-        mutableListOf()
+    // Listes dérivées
+    var positionedArticles = mutableStateListOf<Map.Entry<ArticleInfosModel,
+            MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>()
 
-    var nonPositionedArticles: MutableList<Map.Entry<ArticleInfosModel,
-            MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>> =
-        mutableListOf()
-    companion object {
-
-    }
+    var nonPositionedArticles = mutableStateListOf<Map.Entry<ArticleInfosModel,
+            MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>()
 }
 
 enum class TypePosition { POSITIONE, NON_POSITIONE }

@@ -17,7 +17,6 @@ import com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment.D_FloatingActio
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModel_Head
 import com.example._AppsHeadModel._2.ViewModel.InitViewModel
 
-internal const val DEBUG_LIMIT = 7
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable

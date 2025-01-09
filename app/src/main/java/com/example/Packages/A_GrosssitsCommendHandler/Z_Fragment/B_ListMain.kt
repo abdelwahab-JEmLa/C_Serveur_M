@@ -52,6 +52,7 @@ fun B_ListMainFragment_1(
     ) {
         // Section des produits positionnés
         item(span = { GridItemSpan(5) }) {
+            // Section des produits positionnés
             Row(
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -72,6 +73,7 @@ fun B_ListMainFragment_1(
             items = viewModel_Head.maps.positionedArticles.toList(),
             key = { it.key.id }
         ) { article ->
+
             C_ItemMainFragment_1(
                 itemMainId = article,
                 modifier = Modifier
@@ -140,7 +142,6 @@ fun B_ListMainFragment_1(
                 viewModel_Head.maps.nonPositionedArticles.remove(selectedArticle)
                 showSearchDialog = false
                 viewModel_Head.selectedGrossistIndex?.let { updateMapData(it,viewModel_Head) }
-
             }
         )
     }

@@ -19,7 +19,7 @@ import java.util.Objects
 open class AppsHeadModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
 ) {
-    @get:Exclude
+    @get:Exclude     //
     var produitsMainDataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
 

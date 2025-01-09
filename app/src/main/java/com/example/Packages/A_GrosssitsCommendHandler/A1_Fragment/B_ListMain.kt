@@ -1,5 +1,7 @@
+// AnimationModifier.kt
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Modules.ArticleLoggingUtil
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 
+// B_ListMain.kt
 @Composable
 fun B_ListMainFragment_1(
     viewModel_Head: ViewModel_Head,
@@ -69,7 +72,12 @@ fun B_ListMainFragment_1(
         ) { article ->
             C_ItemMainFragment_1(
                 itemMainId = article,
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier
+                    .padding(4.dp)
+                    .animateItem(
+                        fadeInSpec = tween(durationMillis = 300),
+                        fadeOutSpec = tween(durationMillis = 300)
+                    ),
                 position = viewModel_Head.maps.positionedArticles.indexOf(article) + 1,
                 onCLickOnMain = {
                     viewModel_Head.maps.positionedArticles.remove(article)
@@ -104,7 +112,12 @@ fun B_ListMainFragment_1(
         ) { article ->
             C_ItemMainFragment_1(
                 itemMainId = article,
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier
+                    .padding(4.dp)
+                    .animateItem(
+                        fadeInSpec = tween(durationMillis = 300),
+                        fadeOutSpec = tween(durationMillis = 300)
+                    ),
                 onCLickOnMain = {
                     viewModel_Head.maps.positionedArticles.add(article)
                     viewModel_Head.maps.nonPositionedArticles.remove(article)

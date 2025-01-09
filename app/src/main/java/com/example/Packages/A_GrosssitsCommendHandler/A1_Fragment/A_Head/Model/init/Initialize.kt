@@ -3,10 +3,8 @@ package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.
 import com.example.Apps_Head._1.Model.ProduitsAncienDataBaseMain
 import com.example.Apps_Head._4.Init.GetAncienDataBasesMain
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.GrossistInfosModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps.Companion.batchUpdate
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.TypePosition
-import com.google.firebase.Firebase
-import com.google.firebase.database.database
-import kotlinx.coroutines.tasks.await
 
 suspend fun startImplementationViewModel(
     nombreEntries: Int = 100,
@@ -92,16 +90,9 @@ suspend fun startImplementationViewModel(
         }
 
         // 5. Mettre à jour Firebase
-        val mapsRef = Firebase.database
-            .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-            .child("Maps")
-            .child("mapGroToMapPositionToProduits")
 
-        mapsRef.updateChildren(
-            firebaseData.mapIndexed { index, data ->
-                "/$index" to data
-            }.toMap()
-        ).await()
+
+        batchUpdate(firebaseData)
 
         // 6. Mise à jour du progrès
         onInitProgress(100)

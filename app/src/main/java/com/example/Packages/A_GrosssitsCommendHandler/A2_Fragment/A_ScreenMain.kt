@@ -33,8 +33,8 @@ internal fun A_ScreenMainFragment_2(
     modifier: Modifier = Modifier,
     initViewModel: ViewModelProduits = viewModel(),
 ) {
-    val produitsMainDataBase by remember(initViewModel._appsHeadModel.produitsMainDataBase) {
-        derivedStateOf { initViewModel._appsHeadModel.produitsMainDataBase.toList() }
+    val produitsMainDataBase by remember(initViewModel._modelAppsFather.produitsMainDataBase) {
+        derivedStateOf { initViewModel._modelAppsFather.produitsMainDataBase.toList() }
     }
 
     val visibleItems by remember(produitsMainDataBase) {
@@ -71,7 +71,7 @@ internal fun A_ScreenMainFragment_2(
 
                         GrossisstsGroupedFABsFragment_2(
                             onClickFAB = { newList ->
-                                with(initViewModel._appsHeadModel.produitsMainDataBase) {
+                                with(initViewModel._modelAppsFather.produitsMainDataBase) {
                                     clear()
                                     addAll(newList)
                                 }
@@ -81,7 +81,7 @@ internal fun A_ScreenMainFragment_2(
                         )
 
                         GlobalEditesGFABsFragment_2(
-                            appsHeadModel = initViewModel.appsHeadModel,
+                            appsHeadModel = initViewModel.modelAppsFather,
                             modifier = modifier
                         )
                     }

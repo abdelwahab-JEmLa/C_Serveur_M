@@ -1,9 +1,9 @@
-package com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent
+package com.example.Z_AppsFather.Parent._3.Init.Z.Parent
 
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.GrossistInfosModel
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Maps.Companion.batchUpdateCompan
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ProduitsAncienDataBaseMain
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.TypePosition
+import com.example.Z_AppsFather.Parent._1.Model.Parent.GrossistInfosModel
+import com.example.Z_AppsFather.Parent._1.Model.Parent.Maps.Companion.batchUpdateCompan
+import com.example.Z_AppsFather.Parent._1.Model.Parent.ProduitsAncienDataBaseMain
+import com.example.Z_AppsFather.Parent._1.Model.Parent.TypePosition
 
 suspend fun startImplementationViewModel(nombreEntries: Int = 100, onInitProgress: (Int) -> Unit) {
     if (nombreEntries <= 0) return

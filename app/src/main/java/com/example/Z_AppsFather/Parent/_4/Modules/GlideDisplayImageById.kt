@@ -1,4 +1,4 @@
-package com.example.Z_AppsFather.Kotlin._4.Modules
+package com.example.Z_AppsFather.Parent._4.Modules
 
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.layout.Box
@@ -27,7 +27,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ArticleInfosModel
+import com.example.Z_AppsFather.Parent._1.Model.Parent.ArticleInfosModel
 import com.example.c_serveur.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

@@ -279,15 +279,15 @@ open class ModelAppsFather(
                     "/IMGs" +
                     "/BaseDonne"
 
-        fun SnapshotStateList<ProduitModel>.update_produitsViewModelEtFireBases(initViewModel: ViewModelProduits) {
+        fun SnapshotStateList<ModelAppsFather.ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
 
             try {
                 this.forEach { product ->
                     try {
                         val index =
-                            initViewModel._appsHeadModel.produitsMainDataBase.indexOfFirst { it.id == product.id }
+                            initViewModel._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
                         if (index != -1) {
-                            initViewModel._appsHeadModel.produitsMainDataBase[index] = product
+                            initViewModel._modelAppsFather.produitsMainDataBase[index] = product
                         }
                         produitsFireBaseRef.child(product.id.toString()).setValue(product)
                         Log.d("Firebase", "Successfully updated product ${product.id}")

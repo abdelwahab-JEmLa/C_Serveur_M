@@ -1,9 +1,10 @@
 // ParamatersAppsModel.kt
-package com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent
+package com.example.Z_AppsFather.Parent._1.Model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
@@ -12,8 +13,7 @@ class ParamatersAppsModel {
     var telephoneClientParamaters by mutableStateOf(TelephoneClientParamaters())
 
     class TelephoneClientParamaters {
-        var selectedGrossistIndex by mutableStateOf<Int?>(null)
-
+        var selectedGrossist by mutableStateOf<GrossistInformations?>(null)
     }
 
     companion object {

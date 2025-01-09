@@ -14,30 +14,26 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
 
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
 internal fun A_ScreenMainFragment_1(
     modifier: Modifier = Modifier,
-    initViewModel: ViewModelProduits = viewModel(),
-    viewModel_Head: ViewModel_Head = viewModel(),
+    viewModelProduits: ViewModelProduits = viewModel(),
 ) {
     // Log state changes using LaunchedEffect
-    LaunchedEffect(viewModel_Head.isLoading, viewModel_Head.loadingProgress) {
-        logLoadingState(viewModel_Head.isLoading, viewModel_Head.loadingProgress)
+    LaunchedEffect(viewModelProduits.isLoading, viewModelProduits.loadingProgress) {
+        logLoadingState(viewModelProduits.isLoading, viewModelProduits.loadingProgress)
     }
 
-    LaunchedEffect(viewModel_Head.maps.mapGroToMapPositionToProduits.size) {
-        logDatabaseSize(viewModel_Head.maps.mapGroToMapPositionToProduits.size)
-    }
 
-    if (viewModel_Head.isLoading) {  // Changed from !isLoading to isLoading
+
+    if (viewModelProduits.isLoading) {  // Changed from !isLoading to isLoading
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
                 progress = {
-                    viewModel_Head.loadingProgress
+                    viewModelProduits.loadingProgress
                 },
                 modifier = Modifier.align(Alignment.Center),
                 trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
@@ -51,21 +47,22 @@ internal fun A_ScreenMainFragment_1(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                val databaseSize = viewModel_Head.maps.mapGroToMapPositionToProduits.size
+                val databaseSize = viewModelProduits.modelAppsFather.produitsMainDataBase.size
 
                 if (databaseSize > 0) {
-                    B_ListMainFragment_1(viewModel_Head, paddingValues)
+                    B_ListMainFragment_1(
+                        viewModelProduits=viewModelProduits
+                        , paddingValues,)
                 }
             }
 
             GlobalEditesGFABsFragment_1(
-                appsHeadModel = initViewModel.appsHeadModel,
+                appsHeadModel = viewModelProduits.modelAppsFather,
                 modifier = modifier,
             )
 
             FilterScreenFab(
-                initViewModel= initViewModel,
-                viewModel_Head = viewModel_Head
+                viewModelProduits= viewModelProduits,
             )
 
         }

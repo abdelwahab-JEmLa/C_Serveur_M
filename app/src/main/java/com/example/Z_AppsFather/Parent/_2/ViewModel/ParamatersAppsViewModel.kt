@@ -1,5 +1,5 @@
 // ParamatersAppsViewModel.kt
-package com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent
+package com.example.Z_AppsFather.Parent._2.ViewModel
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ParamatersAppsModel
+import com.example.Z_AppsFather.Parent._1.Model.ParamatersAppsModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -24,7 +24,8 @@ class ParamatersAppsViewModel : ViewModel() {
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
     private var createStart by mutableStateOf(false)
-
+    var isLoading by mutableStateOf(false)
+    var loadingProgress by mutableFloatStateOf(0f)
     private val _grossistVisibleMntChangeFlow = MutableSharedFlow<Pair<Long, Int>>()
     val grossistVisibleMntChangeFlow = _grossistVisibleMntChangeFlow.asSharedFlow()
 

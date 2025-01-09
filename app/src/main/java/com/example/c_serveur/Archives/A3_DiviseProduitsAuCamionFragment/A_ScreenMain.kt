@@ -43,7 +43,7 @@ internal fun ScreenMain_Fragment_3(
     }
 
     val produitsMainDataBase =
-        initViewModel._appsHeadModel.produitsMainDataBase
+        initViewModel._modelAppsFather.produitsMainDataBase
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -59,7 +59,7 @@ internal fun ScreenMain_Fragment_3(
         }
 
         GlobalEditesGFABs_Fragment_3(
-            appsHeadModel = initViewModel.appsHeadModel,
+            appsHeadModel = initViewModel.modelAppsFather,
             modifier = modifier,
         )
 

@@ -1,5 +1,5 @@
 // ViewModel_Head.kt
-package com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent
+package com.example.Z_AppsFather.Parent._2.ViewModel.Parent
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -8,12 +8,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ArticleInfosModel
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ColourEtGoutInfosModel
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.GrossistInfosModel
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Maps
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.TypePosition
-import com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent.startImplementationViewModel
+import com.example.Z_AppsFather.Parent._1.Model.Parent.ArticleInfosModel
+import com.example.Z_AppsFather.Parent._1.Model.Parent.ColourEtGoutInfosModel
+import com.example.Z_AppsFather.Parent._1.Model.Parent.GrossistInfosModel
+import com.example.Z_AppsFather.Parent._1.Model.Parent.Maps
+import com.example.Z_AppsFather.Parent._1.Model.Parent.TypePosition
+import com.example.Z_AppsFather.Parent._2.ViewModel.ParamatersAppsViewModel
+import com.example.Z_AppsFather.Parent._3.Init.Z.Parent.startImplementationViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch

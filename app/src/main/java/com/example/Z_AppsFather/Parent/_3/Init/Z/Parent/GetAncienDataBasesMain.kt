@@ -1,11 +1,11 @@
-package com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent
+package com.example.Z_AppsFather.Parent._3.Init.Z.Parent
 
 import android.util.Log
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.AncienResourcesDataBaseMain
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Ancien_ClientsDataBase_Main
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Ancien_ColorArticle_Main
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Ancien_SoldArticlesTabelle_Main
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ProduitsAncienDataBaseMain
+import com.example.Z_AppsFather.Parent._1.Model.Parent.AncienResourcesDataBaseMain
+import com.example.Z_AppsFather.Parent._1.Model.Parent.Ancien_ClientsDataBase_Main
+import com.example.Z_AppsFather.Parent._1.Model.Parent.Ancien_ColorArticle_Main
+import com.example.Z_AppsFather.Parent._1.Model.Parent.Ancien_SoldArticlesTabelle_Main
+import com.example.Z_AppsFather.Parent._1.Model.Parent.ProduitsAncienDataBaseMain
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await

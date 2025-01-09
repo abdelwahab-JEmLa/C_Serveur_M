@@ -1,4 +1,4 @@
-package com.example.Z_AppsFather.Kotlin._3.Init
+package com.example.Z_AppsFather.Parent._3.Init
 
 import android.util.Log
 import androidx.compose.runtime.toMutableStateList
@@ -19,7 +19,7 @@ object LoadFromFirebaseHandler {
 
     suspend fun loadFromFirebase(initViewModel: ViewModelProduits) = try {
         initViewModel.apply {
-            _appsHeadModel.produitsMainDataBase = loadProducts()
+            _modelAppsFather.produitsMainDataBase = loadProducts()
             initializationProgress = 1f
         }
     } catch (e: Exception) {

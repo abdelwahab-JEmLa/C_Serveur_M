@@ -1,9 +1,8 @@
-// AnimationModifier.kt
 package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,127 +24,175 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Maps.Companion.updateMapData
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
-import com.example.Z_AppsFather.Kotlin._4.Modules.ArticleLoggingUtil
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.produitGroupeurParGrossistInfos
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 
-// B_ListMain.kt
+
 @Composable
 fun B_ListMainFragment_1(
-    viewModel_Head: ViewModel_Head,
-    contentPadding: PaddingValues,
-    modifier: Modifier = Modifier
+    viewModelProduits: ViewModelProduits,
+    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
 ) {
     var showSearchDialog by remember { mutableStateOf(false) }
 
-    // Section des produits positionnés
+    val (positioned, unpositioned) =
+        viewModelProduits.produitsMainDataBase
+            .partition {
+                it.bonCommendDeCetteCota
+                    ?.cPositionCheyCeGrossit == true
+            }
+
+    fun updatePosition(
+        positioned: List<AppsHeadModel.ProduitModel>,
+        selectedProduct: AppsHeadModel.ProduitModel,
+    ) {
+        val newPositione =
+            (positioned.maxOfOrNull {
+                it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    ?: 0
+            } ?: 0) + 1
+
+        visibleItems[visibleItems.indexOfFirst { it.id == selectedProduct.id }] =
+            selectedProduct.apply {
+                if (selectedProduct.itsTempProduit) {
+                    statuesBase.prePourCameraCapture = true
+                }
+                bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
+                    newPositione
+                bonCommendDeCetteCota?.cPositionCheyCeGrossit = true
+            }
+
+        visibleItems.toMutableStateList()
+            .update_produitsViewModelEtFireBases(initViewModel)
+    }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
             .fillMaxWidth()
             .background(Color(0xE3C85858).copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
-        contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = paddingValues,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        // Section des produits positionnés
-        item(span = { GridItemSpan(5) }) {
-            // Section des produits positionnés
-            Row(
-                modifier = Modifier.padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+        if (positioned.isNotEmpty()) {
+            item(span = { GridItemSpan(5) }) {
                 Text(
-                    text = "ModelAppsFather avec position (${viewModel_Head.maps.positionedArticles.size})".also {
-                        ArticleLoggingUtil.logDisplayUpdate(
-                            positionedCount = viewModel_Head.maps.positionedArticles.size,
-                            nonPositionedCount = viewModel_Head.maps.nonPositionedArticles.size
+                    "Produits avec position (${positioned.size})",
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+
+            items(
+                items = positioned.sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit },
+                key = { it.id }
+            ) { product ->
+                C_ItemMainFragment_1(
+                    initViewModel = initViewModel,
+                    itemMain = product,
+                    onCLickOnMain = {
+                        visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
+                            product.apply {
+                                bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
+                            }
+
+                        visibleItems.toMutableStateList()
+                            .update_produitsViewModelEtFireBases(initViewModel)
+                    }
+                )
+            }
+        }
+
+        if (unpositioned.isNotEmpty()) {
+            item(span = { GridItemSpan(5) }) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    ) {
+                        IconButton(
+                            onClick = {
+                                val groupedProducts = produitGroupeurParGrossistInfos(initViewModel.appsHeadModel.produitsMainDataBase)
+                                unpositioned.forEach { product ->
+                                    val currentPosition = product.bonCommendDeCetteCota
+                                        ?.grossistInformations?.positionInGrossistsList ?: return@forEach
+
+                                    // Find the matching GrossistInformations for the current position
+                                    groupedProducts.entries
+                                        .find { (key, _) ->
+                                            key.positionInGrossistsList == currentPosition + 1 }
+                                        ?.key?.let { matchingGrossist ->
+                                            // Update the product's GrossistInformations
+                                            visibleItems[visibleItems.indexOfFirst { it.id == product.id }] =
+                                                product.apply {
+                                                    bonCommendDeCetteCota?.grossistInformations = matchingGrossist
+                                                    isVisible=false
+                                                }
+                                        }
+                                }
+
+                                // Update Firebase after processing all items
+                                visibleItems.toMutableStateList()
+                                    .update_produitsViewModelEtFireBases(initViewModel)
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Moving,
+                                contentDescription = "Moving",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        IconButton(onClick = { showSearchDialog = true }) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search",
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Text(
+                            "Produits sans position (${unpositioned.size})",
+                            style = MaterialTheme.typography.titleMedium
                         )
+                    }
+                }
+            }
 
-                    },
-                    style = MaterialTheme.typography.titleMedium
+            items(
+                items = unpositioned.sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit },
+                key = { it.id }
+            ) { product ->
+                C_ItemMainFragment_1(
+                    initViewModel = initViewModel,
+                    itemMain = product,
+                    onCLickOnMain = {
+                        updatePosition(positioned, product)
+                    }
                 )
             }
-        }
-        items(
-            items = viewModel_Head.maps.positionedArticles
-                .toList()
-                .sortedBy { it.key.nom },
-            key = { it.key.id }
-        ) { article ->
-
-            C_ItemMainFragment_1(
-                itemMainId = article,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .animateItem(
-                        fadeInSpec = tween(durationMillis = 300),
-                        fadeOutSpec = tween(durationMillis = 300)
-                    ),
-                position = viewModel_Head.maps.positionedArticles.indexOf(article) + 1,
-                onCLickOnMain = {
-                    viewModel_Head.maps.positionedArticles.remove(article)
-                    viewModel_Head.maps.nonPositionedArticles.add(article)
-                    viewModel_Head.selectedGrossistIndex?.let { updateMapData(it,viewModel_Head) }
-                }
-            )
-        }
-
-        // Section des produits non positionnés
-        item(span = { GridItemSpan(5) }) {
-            Row(
-                modifier = Modifier.padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = { showSearchDialog = true }) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-                Text(
-                    text = "ModelAppsFather sans position (${viewModel_Head.maps.nonPositionedArticles.size})",
-                    style = MaterialTheme.typography.titleMedium
-                )
-            }
-        }
-
-        items(
-            items = viewModel_Head.maps.nonPositionedArticles.toList(),
-            key = { it.key.id }
-        ) { article ->
-            C_ItemMainFragment_1(
-                itemMainId = article,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .animateItem(
-                        fadeInSpec = tween(durationMillis = 300),
-                        fadeOutSpec = tween(durationMillis = 300)
-                    ),
-                onCLickOnMain = {
-                    viewModel_Head.maps.positionedArticles.add(article)
-                    viewModel_Head.maps.nonPositionedArticles.remove(article)
-                    viewModel_Head.selectedGrossistIndex?.let { updateMapData(it,viewModel_Head) }
-
-                }
-            )
         }
     }
-
     if (showSearchDialog) {
         SearchDialog(
-            viewModel_Head = viewModel_Head,
-            onDismiss = { showSearchDialog = false },
-            onItemSelected = { selectedArticle ->
-                viewModel_Head.maps.positionedArticles.add(selectedArticle)
-                viewModel_Head.maps.nonPositionedArticles.remove(selectedArticle)
+            unpositionedItems = unpositioned,
+            onDismiss = {
                 showSearchDialog = false
-                viewModel_Head.selectedGrossistIndex?.let { updateMapData(it,viewModel_Head) }
-            }
+            },
+            onItemSelected = { selectedProduct ->
+                updatePosition(positioned, selectedProduct)
+                showSearchDialog = false
+            },
+            initViewModel = initViewModel
         )
     }
 }

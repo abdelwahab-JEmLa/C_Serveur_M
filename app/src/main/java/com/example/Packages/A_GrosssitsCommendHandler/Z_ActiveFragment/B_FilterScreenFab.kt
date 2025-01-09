@@ -1,4 +1,3 @@
-// FilterScreenFab.kt
 package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
 
 import androidx.compose.animation.AnimatedVisibility
@@ -27,27 +26,29 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updatePoduitsUiEtFireBases
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.produitGroupeurParGrossistInfos
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Maps
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.TypePosition
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
-import com.example.Z_AppsFather.Kotlin._4.Modules.ArticleLoggingUtil
 import kotlin.math.roundToInt
 
 @Composable
-fun FilterScreenFab(initViewModel: ViewModelProduits, viewModel_Head: ViewModel_Head) {
+fun FilterScreenFab(
+    modifier: Modifier = Modifier,
+    viewModelProduits: ViewModelProduits
+) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.BottomEnd
     ) {
         Column(
@@ -64,16 +65,19 @@ fun FilterScreenFab(initViewModel: ViewModelProduits, viewModel_Head: ViewModel_
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // Main FAB
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(48.dp),
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             ) {
                 Icon(
                     imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = if (showButtons) "Masquer" else "Afficher"
+                    contentDescription = if (showButtons) "Hide" else "Show"
                 )
             }
 
+            // Animated content
             AnimatedVisibility(
                 visible = showButtons,
                 enter = fadeIn(),
@@ -83,62 +87,77 @@ fun FilterScreenFab(initViewModel: ViewModelProduits, viewModel_Head: ViewModel_
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    viewModel_Head.maps.mapGroToMapPositionToProduits.forEachIndexed { index, entry ->
-                        val grossist = entry.key
-                        val positionMap = entry.value
-
+                    val produitsMainDataBase = viewModelProduits.produitsMainDataBase.toMutableStateList()
+                    val groupedProducts = produitGroupeurParGrossistInfos(produitsMainDataBase)
+                    groupedProducts.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            // Move Up button (show only if not first item)
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        val currentList = viewModel_Head.maps.mapGroToMapPositionToProduits
-                                        currentList.add(index - 1, currentList.removeAt(index))
-                                        Maps.updateMapData(index - 1, viewModel_Head, true)
+                                        val updatedList = groupedProducts.flatMap { (_, produits) -> produits }.toMutableStateList()
+                                        val previousGrossist = groupedProducts[index - 1].first
+
+                                        // Update positions
+                                        updatedList.forEach { product ->
+                                            product.bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
+                                                when (currentGrossist.id) {
+                                                    grossist.id -> {
+                                                        currentGrossist.positionInGrossistsList--
+                                                    }
+                                                    previousGrossist.id -> {
+                                                        currentGrossist.positionInGrossistsList++
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // Update Firebase and ViewModel
+                                        updatedList.updatePoduitsUiEtFireBases(viewModelProduits)
                                     },
-                                    modifier = Modifier.size(32.dp),
+                                    modifier = Modifier.size(36.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
                                 ) {
                                     Icon(
                                         imageVector = Icons.Default.ExpandLess,
-                                        contentDescription = "Monter"
+                                        contentDescription = "Move Up"
                                     )
                                 }
                             }
 
+                            // Grossist name and count
                             Text(
-                                text = grossist.nom,
+                                text = "${grossist.nom} (${produits.size})",
                                 modifier = Modifier
+                                    .padding(end = 8.dp)
                                     .background(
-                                        if (viewModel_Head.selectedGrossistIndex == index)
-                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-                                        else Color.Transparent
+                                        if (viewModelProduits._paramatersAppsViewModelModel
+                                                .telephoneClientParamaters.selectedGrossist == grossist
+                                        ) Color.Blue else Color.Transparent
                                     )
-                                    .padding(4.dp)
+                                    .padding(4.dp),
+                                style = MaterialTheme.typography.bodyMedium
                             )
 
                             FloatingActionButton(
                                 onClick = {
-                                    viewModel_Head.selectedGrossistIndex = index
-                                    viewModel_Head._maps.positionedArticles.clear()
-                                    viewModel_Head._maps.positionedArticles.addAll(
-                                        positionMap[TypePosition.POSITIONE] ?: mutableListOf()
-                                    )
-                                    viewModel_Head._maps.nonPositionedArticles.clear()
-                                    viewModel_Head._maps.nonPositionedArticles.addAll(
-                                        positionMap[TypePosition.NON_POSITIONE] ?: mutableListOf()
-                                    )
-                                    ArticleLoggingUtil.logArticleListChange(
-                                        grossistName = grossist.nom,
-                                        positionedArticles = viewModel_Head._maps.positionedArticles,
-                                        nonPositionedArticles = viewModel_Head._maps.nonPositionedArticles
-                                    )
+                                    produitsMainDataBase.forEach { product ->
+                                        product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
+                                            bon.grossistInformations?.id == grossist.id
+                                        } ?: false
+                                    }
+                                    produitsMainDataBase.updatePoduitsUiEtFireBases(viewModelProduits)
                                 },
-                                modifier = Modifier.size(40.dp)
+                                modifier = Modifier.size(48.dp),
+                                containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))
                             ) {
-                                Text(text = "")
+                                Text(
+                                    text = produits.size.toString(),
+                                    color = Color.White
+                                )
                             }
                         }
                     }

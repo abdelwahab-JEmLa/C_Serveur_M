@@ -1,9 +1,9 @@
-package com.example.Z_AppsFather.Kotlin._3.Init
+package com.example.Z_AppsFather.Parent._3.Init
 
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduitsFireBase
-import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.AncienResourcesDataBaseMain
-import com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent.GetAncienDataBasesMain
+import com.example.Z_AppsFather.Parent._1.Model.Parent.AncienResourcesDataBaseMain
+import com.example.Z_AppsFather.Parent._3.Init.Z.Parent.GetAncienDataBasesMain
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

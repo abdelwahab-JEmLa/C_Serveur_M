@@ -2,7 +2,7 @@
 package com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D.Actions
 
 import androidx.compose.runtime.toMutableStateList
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.update_produitsViewModelEtFireBases
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updatePoduitsUiEtFireBases
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 
@@ -10,7 +10,7 @@ class onClickOn_Fragment_3(private val initViewModel: ViewModelProduits) {
        fun ClientsFloatingActionButton(grpFabClientInfoId: Long) {
               // Get grouped products
               val groupedProducts = groupedProductsByClientBonVentModelClientInformations(
-                     initViewModel.appsHeadModel.produitsMainDataBase
+                     initViewModel.modelAppsFather.produitsMainDataBase
               )
 
               // Find the products associated with the selected client ID
@@ -36,6 +36,6 @@ class onClickOn_Fragment_3(private val initViewModel: ViewModelProduits) {
               }
 
               // Update both local and Firebase databases
-              clientProducts.toMutableStateList().update_produitsViewModelEtFireBases(initViewModel)
+              clientProducts.toMutableStateList().updatePoduitsUiEtFireBases(initViewModel)
        }
 }

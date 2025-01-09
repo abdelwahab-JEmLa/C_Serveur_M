@@ -40,7 +40,6 @@ class Maps {
         }
 
         fun updateMapFromPositionedLists(grossistId: Long, viewModel_Head: ViewModel_Head) {
-            // Launch in a coroutine scope to handle suspend functions
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val _maps = viewModel_Head._maps
@@ -48,14 +47,7 @@ class Maps {
                     val grossistEntry = mapGroToMapPositionToProduits.find { it.key.id == grossistId }
                         ?: throw IllegalStateException("Grossist with ID $grossistId not found")
 
-                    // Create the updated position map
-                    val updatedPositionMap = mutableMapOf<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>()
-
-                    // Add positioned and non-positioned articles to their respective lists
-                    updatedPositionMap[TypePosition.POSITIONE] = _maps.positionedArticles.toMutableList()
-                    updatedPositionMap[TypePosition.NON_POSITIONE] = _maps.nonPositionedArticles.toMutableList()
-
-                    // Create the Firebase data structure with correct types
+                    // Create the Firebase data structure
                     val firebaseData = mapGroToMapPositionToProduits.map { entry ->
                         if (entry.key.id == grossistId) {
                             mapOf(
@@ -64,10 +56,12 @@ class Maps {
                                     "nom" to entry.key.nom
                                 ),
                                 "products" to mapOf(
-                                    TypePosition.POSITIONE.name to (updatedPositionMap[TypePosition.POSITIONE] ?: mutableListOf())
-                                        .map { article -> formatArticleForFirebase(article) },
-                                    TypePosition.NON_POSITIONE.name to (updatedPositionMap[TypePosition.NON_POSITIONE] ?: mutableListOf())
-                                        .map { article -> formatArticleForFirebase(article) }
+                                    "POSITIONE" to _maps.positionedArticles.map { article ->
+                                        formatArticleForFirebase(article)
+                                    },
+                                    "NON_POSITIONE" to _maps.nonPositionedArticles.map { article ->
+                                        formatArticleForFirebase(article)
+                                    }
                                 )
                             ) as Map<String, Any>
                         } else {
@@ -76,9 +70,9 @@ class Maps {
                                     "id" to entry.key.id,
                                     "nom" to entry.key.nom
                                 ),
-                                "products" to entry.value.mapValues { (_, articles) ->
-                                    articles.map { formatArticleForFirebase(it) }
-                                }
+                                "products" to entry.value.map { (position, articles) ->
+                                    position.name to articles.map { formatArticleForFirebase(it) }
+                                }.toMap()
                             ) as Map<String, Any>
                         }
                     }
@@ -87,6 +81,10 @@ class Maps {
                     batchUpdateCompan(firebaseData)
 
                     // Update local state
+                    val updatedPositionMap = mutableMapOf<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>()
+                    updatedPositionMap[TypePosition.POSITIONE] = _maps.positionedArticles.toMutableList()
+                    updatedPositionMap[TypePosition.NON_POSITIONE] = _maps.nonPositionedArticles.toMutableList()
+
                     val grossistIndex = mapGroToMapPositionToProduits.indexOfFirst { it.key.id == grossistId }
                     if (grossistIndex != -1) {
                         mapGroToMapPositionToProduits[grossistIndex] = AbstractMap.SimpleEntry(

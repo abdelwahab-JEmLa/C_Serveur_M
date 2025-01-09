@@ -34,7 +34,7 @@ class ViewModel_Head : ViewModel() {
                 isLoading = true
                 loadingProgress = 0f
 
-                startImplementationViewModel(100){
+                startImplementationViewModel(0){
                     loadingProgress= it.toFloat()
                 }
                 // Chargement des données
@@ -47,7 +47,8 @@ class ViewModel_Head : ViewModel() {
                     .addOnSuccessListener { snapshot ->
                         _maps.mapGroToMapPositionToProduits = snapshot.children.mapNotNull { grossistSnapshot ->
                             parseGrossistData(grossistSnapshot.value as? Map<*, *> ?: return@mapNotNull null)
-                        }.toMutableList()
+                        }.toMutableList()         //-->
+                        //TODO(1): cree liu logs pour suivre l inserastion
 
                         loadingProgress = 1f
                         isLoading = false

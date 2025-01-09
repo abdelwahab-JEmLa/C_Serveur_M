@@ -95,7 +95,7 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                                     onClick = {
                                         val currentList = viewModel_Head.maps.mapGroToMapPositionToProduits
                                         currentList.add(index - 1, currentList.removeAt(index))
-                                        Maps.updateMapFromPositionedLists(grossist.id, viewModel_Head)
+                                        Maps.updateMapFromPositionedLists(grossist.id, viewModel_Head,true)
                                     },
                                     modifier = Modifier.size(32.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer

@@ -39,13 +39,27 @@ class Maps {
             ).await()
         }
 
-        fun updateMapFromPositionedLists(grossistId: Long, viewModel_Head: ViewModel_Head) {
+        fun updateMapFromPositionedLists(grossistId: Long, viewModel_Head: ViewModel_Head,itsDeplacement:Boolean?=false) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val _maps = viewModel_Head._maps
                     val mapGroToMapPositionToProduits = _maps.mapGroToMapPositionToProduits
-                    val grossistEntry = mapGroToMapPositionToProduits.find { it.key.id == grossistId }
-                        ?: throw IllegalStateException("Grossist with ID $grossistId not found")
+                    if (itsDeplacement == true) {
+                        _maps.positionedArticles.clear()
+                        _maps.nonPositionedArticles.clear()
+
+                        _maps.positionedArticles.addAll(
+                            mapGroToMapPositionToProduits.find { it.key.id == grossistId }
+                                ?.value?.get(TypePosition.POSITIONE) ?: mutableListOf()
+                        )
+                        _maps.nonPositionedArticles.addAll(
+                            mapGroToMapPositionToProduits.find { it.key.id == grossistId }
+                                ?.value?.get(TypePosition.NON_POSITIONE) ?: mutableListOf()
+                        )
+                    }
+                    val grossistEntry =
+                        mapGroToMapPositionToProduits.find { it.key.id == grossistId }
+                            ?: throw IllegalStateException("Grossist with ID $grossistId not found")
 
                     // Create the Firebase data structure
                     val firebaseData = mapGroToMapPositionToProduits.map { entry ->
@@ -81,16 +95,24 @@ class Maps {
                     batchUpdateCompan(firebaseData)
 
                     // Update local state
-                    val updatedPositionMap = mutableMapOf<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>()
-                    updatedPositionMap[TypePosition.POSITIONE] = _maps.positionedArticles.toMutableList()
-                    updatedPositionMap[TypePosition.NON_POSITIONE] = _maps.nonPositionedArticles.toMutableList()
+                    val updatedPositionMap =
+                        mutableMapOf<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>()
+                    updatedPositionMap[TypePosition.POSITIONE] =
+                        _maps.positionedArticles.toMutableList()
+                    updatedPositionMap[TypePosition.NON_POSITIONE] =
+                        _maps.nonPositionedArticles.toMutableList()
 
-                    val grossistIndex = mapGroToMapPositionToProduits.indexOfFirst { it.key.id == grossistId }
+                    val grossistIndex =
+                        mapGroToMapPositionToProduits.indexOfFirst { it.key.id == grossistId }
                     if (grossistIndex != -1) {
                         mapGroToMapPositionToProduits[grossistIndex] = AbstractMap.SimpleEntry(
                             grossistEntry.key,
                             updatedPositionMap
                         )
+                    }
+                    if (itsDeplacement == true) {
+                        _maps.positionedArticles.clear()
+                        _maps.nonPositionedArticles.clear()
                     }
                 } catch (e: Exception) {
                     throw e
@@ -121,6 +143,7 @@ class Maps {
         }
     }
 }
+
 enum class TypePosition { POSITIONE, NON_POSITIONE }
 
 class ArticleInfosModel(

@@ -70,7 +70,9 @@ fun B_ListMainFragment_1(
             }
         }
         items(
-            items = viewModel_Head.maps.positionedArticles.toList(),
+            items = viewModel_Head.maps.positionedArticles
+                .toList()
+                .sortedBy { it.key.nom },
             key = { it.key.id }
         ) { article ->
 

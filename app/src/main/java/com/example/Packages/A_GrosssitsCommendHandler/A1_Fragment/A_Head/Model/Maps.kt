@@ -51,39 +51,30 @@ class Maps {
                     // Create the Firebase data structure
                     val firebaseData = mapGroToMapPositionToProduits.map { entry ->
                         if (entry.key.id == grossistId) {
+                            // Get the current lists based on whether it's a displacement or not
+                            val positionedList = if (itsDeplacement == true) {
+                                entry.value[TypePosition.POSITIONE] ?: mutableListOf()
+                            } else {
+                                _maps.positionedArticles.toMutableList()
+                            }
+
+                            val nonPositionedList = if (itsDeplacement == true) {
+                                entry.value[TypePosition.NON_POSITIONE] ?: mutableListOf()
+                            } else {
+                                _maps.nonPositionedArticles.toMutableList()
+                            }
+
                             mapOf(
                                 "grossistInfo" to mapOf(
                                     "id" to entry.key.id,
                                     "nom" to entry.key.nom
                                 ),
                                 "products" to mapOf(
-                                    "POSITIONE" to run {
-                                        val articlesList = if (itsDeplacement == true) {
-                                            _maps.mapGroToMapPositionToProduits
-                                                .find { it.key.id == grossistId }
-                                                ?.value
-                                                ?.get(TypePosition.POSITIONE)
-                                                ?: mutableListOf()
-                                        } else {
-                                            _maps.positionedArticles
-                                        }
-                                        articlesList.map { article ->
-                                            formatArticleForFirebase(article)
-                                        }
+                                    "POSITIONE" to positionedList.map { article ->
+                                        formatArticleForFirebase(article)
                                     },
-                                    "NON_POSITIONE" to run {
-                                        val articlesList = if (itsDeplacement == true) {
-                                            _maps.mapGroToMapPositionToProduits
-                                                .find { it.key.id == grossistId }
-                                                ?.value
-                                                ?.get(TypePosition.NON_POSITIONE)
-                                                ?: mutableListOf()
-                                        } else {
-                                            _maps.nonPositionedArticles
-                                        }
-                                        articlesList.map { article ->
-                                            formatArticleForFirebase(article)
-                                        }
+                                    "NON_POSITIONE" to nonPositionedList.map { article ->
+                                        formatArticleForFirebase(article)
                                     }
                                 )
                             ) as Map<String, Any>
@@ -104,15 +95,22 @@ class Maps {
                     batchUpdateCompan(firebaseData)
 
                     // Update local state
-                    val updatedPositionMap =
-                        mutableMapOf<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>()
-                    updatedPositionMap[TypePosition.POSITIONE] =
-                        _maps.positionedArticles.toMutableList()
-                    updatedPositionMap[TypePosition.NON_POSITIONE] =
-                        _maps.nonPositionedArticles.toMutableList()
+                    val updatedPositionMap = mutableMapOf<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>()
 
-                    val grossistIndex =
-                        mapGroToMapPositionToProduits.indexOfFirst { it.key.id == grossistId }
+                    // Ensure we maintain the correct lists based on operation type
+                    updatedPositionMap[TypePosition.POSITIONE] = if (itsDeplacement == true) {
+                        grossistEntry.value[TypePosition.POSITIONE] ?: mutableListOf()
+                    } else {
+                        _maps.positionedArticles.toMutableList()
+                    }
+
+                    updatedPositionMap[TypePosition.NON_POSITIONE] = if (itsDeplacement == true) {
+                        grossistEntry.value[TypePosition.NON_POSITIONE] ?: mutableListOf()
+                    } else {
+                        _maps.nonPositionedArticles.toMutableList()
+                    }
+
+                    val grossistIndex = mapGroToMapPositionToProduits.indexOfFirst { it.key.id == grossistId }
                     if (grossistIndex != -1) {
                         mapGroToMapPositionToProduits[grossistIndex] = AbstractMap.SimpleEntry(
                             grossistEntry.key,

@@ -64,7 +64,12 @@ fun B_ListMainFragment_1(
             C_ItemMainFragment_1(
                 itemMainId = article,
                 modifier = Modifier.padding(4.dp),
-                position = viewModel_Head.maps.positionedArticles.indexOf(article) + 1
+                position = viewModel_Head.maps.positionedArticles.indexOf(article) + 1,
+                onCLickOnMain = {
+                    // Move the article from positioned to non-positioned
+                    viewModel_Head.maps.positionedArticles.remove(article)
+                    viewModel_Head.maps.nonPositionedArticles.add(article)
+                }
             )
         }
 
@@ -74,9 +79,7 @@ fun B_ListMainFragment_1(
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {
-
-                }) {
+                IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",

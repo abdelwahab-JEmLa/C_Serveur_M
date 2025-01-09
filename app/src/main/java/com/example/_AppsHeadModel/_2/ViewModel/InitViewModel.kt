@@ -7,10 +7,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Packages.A3_DiviseProduitsAuCamionFragment.D.Actions.onClickOn_Fragment_3
 import com.example._AppsHeadModel._1.Model.AppsHeadModel
 import com.example._AppsHeadModel._1.Model.AppsHeadModel.Companion.produitsFireBaseRef
 import com.example._AppsHeadModel._4.Init.initializer
+import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D.Actions.onClickOn_Fragment_3
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

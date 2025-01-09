@@ -1,5 +1,5 @@
-// C_SearchDialog.kt
-package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
+// SearchDialog.kt
+package com.example.Packages.A1_Fragment
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,93 +28,70 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather
-import com.example.Z_AppsFather.Parent._2.ViewModel.Parent.ViewModel_Head
+import com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.C_ItemMainFragment_1
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import kotlinx.coroutines.delay
 
 @Composable
-fun SearchDialog(
-    viewModel_Head: ViewModel_Head,
-    onDismiss: () -> Unit,
-    onItemSelected: (ModelAppsFather.ProduitModel) -> Unit  // Changed to pass selected item
-) {
+fun SearchDialog(viewModelProduits: ViewModelProduits) {
+    var showDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    // Validation constants
-    val MIN_SEARCH_LENGTH = 2
-
-    // State for loading and error handling
-    var isSearching by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        delay(100)
-        focusRequester.requestFocus()
+    // Get unpositioned items
+    val unpositionedItems = viewModelProduits.produitsMainDataBase.filter {
+        it.isVisible && it.bonCommendDeCetteCota?.cPositionCheyCeGrossit != true
     }
 
-    Dialog(
-        onDismissRequest = {
-            focusManager.clearFocus()
-            onDismiss()
-        },
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false,
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true
-        )
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+    if (showDialog) {
+        LaunchedEffect(Unit) {
+            delay(100)
+            focusRequester.requestFocus()
+        }
+
+        Dialog(
+            onDismissRequest = {
+                focusManager.clearFocus()
+                showDialog = false
+            },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true
+            )
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
             ) {
-                Text(
-                    "Rechercher un produit",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = {
-                        searchText = it.trim()
-                        errorMessage = null
-                    },
-                    label = { Text("Nom du produit") },
-                    singleLine = true,
-                    isError = errorMessage != null,
-                    supportingText = errorMessage?.let { { Text(it) } },
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester)
-                )
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        "Rechercher un produit",
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
 
-                // Improved filtering with error handling
-                val filteredItems = remember(searchText) {
-                    if (searchText.length >= MIN_SEARCH_LENGTH) {
-                        viewModel_Head.maps.nonPositionedArticles.filter {
-                            it.key.nom.contains(searchText, ignoreCase = true)
-                        }
-                    } else {
-                        emptyList()
+                    OutlinedTextField(
+                        value = searchText,
+                        onValueChange = { searchText = it },
+                        label = { Text("Nom du produit") },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester)
+                    )
+
+                    val filteredItems = unpositionedItems.filter {
+                        it.nom.contains(searchText, ignoreCase = true)
                     }
-                }
 
-                if (searchText.length >= MIN_SEARCH_LENGTH) {
-                    if (filteredItems.isEmpty() && !isSearching) {
-                        Text(
-                            "Aucun résultat trouvé",
-                            modifier = Modifier.padding(top = 16.dp),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    } else {
+                    if (searchText.length >= 2) {
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(4),
                             modifier = Modifier
@@ -125,31 +102,38 @@ fun SearchDialog(
                         ) {
                             items(
                                 items = filteredItems,
-                                key = { it.key.id }
-                            ) { article ->
+                                key = { it.id }
+                            ) { product ->
                                 C_ItemMainFragment_1(
-                                    mainItem = article,
+                                    mainItem = product,
                                     onCLickOnMain = {
-                                        onItemSelected(article)
-                                        onDismiss()
+                                        val positionedProducts = viewModelProduits.produitsMainDataBase.filter {
+                                            it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
+                                        }
+                                        val newPosition = (positionedProducts.maxOfOrNull {
+                                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+                                        } ?: 0) + 1
+
+                                        product.bonCommendDeCetteCota?.apply {
+                                            cPositionCheyCeGrossit = true
+                                            positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
+                                        }
+                                        viewModelProduits.updateProduct(product)
+                                        showDialog = false
                                     }
                                 )
                             }
                         }
                     }
-                }
 
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
                     TextButton(
                         onClick = {
                             focusManager.clearFocus()
-                            onDismiss()
-                        }
+                            showDialog = false
+                        },
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 8.dp)
                     ) {
                         Text("Fermer")
                     }

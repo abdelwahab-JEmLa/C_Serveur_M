@@ -14,7 +14,7 @@ class Maps {
     var mapGroToMapPositionToProduits = mutableStateListOf<Map.Entry<GrossistInfosModel, Map<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>>>()
     var positionedArticles = mutableStateListOf<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>()
     var nonPositionedArticles = mutableStateListOf<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>()
-             //
+
     companion object {
 
             private val firebaseRef = Firebase.database

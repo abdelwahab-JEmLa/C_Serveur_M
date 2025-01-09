@@ -1,3 +1,4 @@
+// GrossisstsGroupedFABs.kt
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton
 
 import androidx.compose.animation.AnimatedVisibility
@@ -43,7 +44,6 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
-    var selectedId by remember { mutableStateOf<Long?>(null) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -95,7 +95,7 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                                     onClick = {
                                         val currentList = viewModel_Head.maps.mapGroToMapPositionToProduits
                                         currentList.add(index - 1, currentList.removeAt(index))
-                                        Maps.updateMapFromPositionedLists(grossist.id, viewModel_Head,true)
+                                        Maps.updateMapFromPositionedLists(index - 1, viewModel_Head, true)
                                     },
                                     modifier = Modifier.size(32.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -111,7 +111,7 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                                 text = grossist.nom,
                                 modifier = Modifier
                                     .background(
-                                        if (selectedId == grossist.id)
+                                        if (viewModel_Head.selectedGrossistIndex == index)
                                             MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
                                         else Color.Transparent
                                     )
@@ -120,7 +120,7 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
 
                             FloatingActionButton(
                                 onClick = {
-                                    selectedId = grossist.id
+                                    viewModel_Head.selectedGrossistIndex = index
                                     viewModel_Head._maps.positionedArticles.clear()
                                     viewModel_Head._maps.positionedArticles.addAll(
                                         positionMap[TypePosition.POSITIONE] ?: mutableListOf()

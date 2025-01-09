@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.Apps_Head.B_AppsSetingsMaster.ViewModel.ParamatersAppsViewModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ArticleInfosModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ColourEtGoutInfosModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.GrossistInfosModel
@@ -22,6 +23,12 @@ import java.util.AbstractMap
 class ViewModel_Head : ViewModel() {
     var _maps by mutableStateOf(Maps())
     val maps: Maps get() = _maps
+    private val paramatersAppsViewModel = ParamatersAppsViewModel()
+    var selectedGrossistIndex=
+        paramatersAppsViewModel
+        ._paramatersAppsViewModelModel
+        .telephoneClientParamaters
+        .selectedGrossistIndex
 
     var isLoading by mutableStateOf(false)
     var loadingProgress by mutableFloatStateOf(0f)

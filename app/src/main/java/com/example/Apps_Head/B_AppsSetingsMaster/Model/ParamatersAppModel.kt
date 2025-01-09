@@ -12,8 +12,8 @@ class ParamatersAppsModel {
     var telephoneClientParamaters by mutableStateOf(TelephoneClientParamaters())
 
     class TelephoneClientParamaters {
-        // Initialize with default value of 0L instead of null
-        var grossistVisibleMnt by mutableStateOf(0L)
+        var selectedGrossistIndex by mutableStateOf<Int?>(null)
+
     }
 
     companion object {

@@ -84,7 +84,7 @@ fun B_ListMainFragment_1(
                 onCLickOnMain = {
                     viewModel_Head.maps.positionedArticles.remove(article)
                     viewModel_Head.maps.nonPositionedArticles.add(article)
-                    updateMapFromPositionedLists(1,viewModel_Head)
+                    viewModel_Head.selectedGrossistIndex?.let { updateMapFromPositionedLists(it,viewModel_Head) }
                 }
             )
         }
@@ -124,7 +124,7 @@ fun B_ListMainFragment_1(
                 onCLickOnMain = {
                     viewModel_Head.maps.positionedArticles.add(article)
                     viewModel_Head.maps.nonPositionedArticles.remove(article)
-                    updateMapFromPositionedLists(1,viewModel_Head)
+                    viewModel_Head.selectedGrossistIndex?.let { updateMapFromPositionedLists(it,viewModel_Head) }
 
                 }
             )
@@ -139,7 +139,7 @@ fun B_ListMainFragment_1(
                 viewModel_Head.maps.positionedArticles.add(selectedArticle)
                 viewModel_Head.maps.nonPositionedArticles.remove(selectedArticle)
                 showSearchDialog = false
-                updateMapFromPositionedLists(1,viewModel_Head)
+                viewModel_Head.selectedGrossistIndex?.let { updateMapFromPositionedLists(it,viewModel_Head) }
 
             }
         )

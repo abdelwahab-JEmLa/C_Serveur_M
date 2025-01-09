@@ -1,3 +1,4 @@
+// Maps.kt
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model
 
 import androidx.compose.runtime.mutableStateListOf
@@ -38,19 +39,22 @@ class Maps {
             ).await()
         }
 
-        fun updateMapFromPositionedLists(grossistId: Long, viewModel_Head: ViewModel_Head, itsDeplacement: Boolean? = false) {
+        fun updateMapFromPositionedLists(grossistIndex: Int, viewModel_Head: ViewModel_Head, itsDeplacement: Boolean? = false) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val _maps = viewModel_Head._maps
                     val mapGroToMapPositionToProduits = _maps.mapGroToMapPositionToProduits
 
-                    val grossistEntry =
-                        mapGroToMapPositionToProduits.find { it.key.id == grossistId }
-                            ?: throw IllegalStateException("Grossist with ID $grossistId not found")
+                    // Validate index
+                    if (grossistIndex < 0 || grossistIndex >= mapGroToMapPositionToProduits.size) {
+                        throw IllegalArgumentException("Invalid grossist index: $grossistIndex")
+                    }
+
+                    val grossistEntry = mapGroToMapPositionToProduits[grossistIndex]
 
                     // Create the Firebase data structure
                     val firebaseData = mapGroToMapPositionToProduits.map { entry ->
-                        if (entry.key.id == grossistId) {
+                        if (entry == grossistEntry) {
                             // Get the current lists based on whether it's a displacement or not
                             val positionedList = if (itsDeplacement == true) {
                                 entry.value[TypePosition.POSITIONE] ?: mutableListOf()
@@ -110,13 +114,10 @@ class Maps {
                         _maps.nonPositionedArticles.toMutableList()
                     }
 
-                    val grossistIndex = mapGroToMapPositionToProduits.indexOfFirst { it.key.id == grossistId }
-                    if (grossistIndex != -1) {
-                        mapGroToMapPositionToProduits[grossistIndex] = AbstractMap.SimpleEntry(
-                            grossistEntry.key,
-                            updatedPositionMap
-                        )
-                    }
+                    mapGroToMapPositionToProduits[grossistIndex] = AbstractMap.SimpleEntry(
+                        grossistEntry.key,
+                        updatedPositionMap
+                    )
                 } catch (e: Exception) {
                     throw e
                 }
@@ -167,5 +168,3 @@ class ColourEtGoutInfosModel(
     var nom: String = "",
     var imogi: String = "",
 )
-
-

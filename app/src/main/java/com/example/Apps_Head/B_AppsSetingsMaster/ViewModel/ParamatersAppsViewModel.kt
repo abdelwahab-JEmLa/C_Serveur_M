@@ -68,7 +68,7 @@ class ParamatersAppsViewModel : ViewModel() {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newValue = snapshot.getValue(Long::class.java) ?: 0L
-                _paramatersAppsViewModelModel.telephoneClientParamaters.grossistVisibleMnt = newValue
+                _paramatersAppsViewModelModel.telephoneClientParamaters.selectedGrossistIndex = newValue.toInt()
 
                 viewModelScope.launch {
                     _grossistVisibleMntChangeFlow.emit(Pair(newValue, 0))

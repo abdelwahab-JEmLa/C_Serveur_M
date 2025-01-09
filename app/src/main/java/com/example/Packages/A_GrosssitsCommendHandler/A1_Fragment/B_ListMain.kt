@@ -28,7 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps.Companion.updateMapFromPositionedLists
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps.Companion.updateMapData
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Modules.ArticleLoggingUtil
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 
@@ -84,7 +84,7 @@ fun B_ListMainFragment_1(
                 onCLickOnMain = {
                     viewModel_Head.maps.positionedArticles.remove(article)
                     viewModel_Head.maps.nonPositionedArticles.add(article)
-                    viewModel_Head.selectedGrossistIndex?.let { updateMapFromPositionedLists(it,viewModel_Head) }
+                    viewModel_Head.selectedGrossistIndex?.let { updateMapData(it,viewModel_Head) }
                 }
             )
         }
@@ -124,7 +124,7 @@ fun B_ListMainFragment_1(
                 onCLickOnMain = {
                     viewModel_Head.maps.positionedArticles.add(article)
                     viewModel_Head.maps.nonPositionedArticles.remove(article)
-                    viewModel_Head.selectedGrossistIndex?.let { updateMapFromPositionedLists(it,viewModel_Head) }
+                    viewModel_Head.selectedGrossistIndex?.let { updateMapData(it,viewModel_Head) }
 
                 }
             )
@@ -139,7 +139,7 @@ fun B_ListMainFragment_1(
                 viewModel_Head.maps.positionedArticles.add(selectedArticle)
                 viewModel_Head.maps.nonPositionedArticles.remove(selectedArticle)
                 showSearchDialog = false
-                viewModel_Head.selectedGrossistIndex?.let { updateMapFromPositionedLists(it,viewModel_Head) }
+                viewModel_Head.selectedGrossistIndex?.let { updateMapData(it,viewModel_Head) }
 
             }
         )

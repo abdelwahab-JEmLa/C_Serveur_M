@@ -2,8 +2,8 @@
 package com.example.Z_AppsFather.Kotlin._4.Modules
 
 import android.util.Log
-import com.example.Z_AppsFather.Kotlin._1.Model.ArticleInfosModel
-import com.example.Z_AppsFather.Kotlin._1.Model.ColourEtGoutInfosModel
+import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ArticleInfosModel
+import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ColourEtGoutInfosModel
 
 object ArticleLoggingUtil {
     private const val TAG = "ArticleChanges"

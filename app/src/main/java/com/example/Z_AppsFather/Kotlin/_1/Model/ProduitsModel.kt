@@ -1,4 +1,4 @@
-package com.example._AppsHeadModel._1.Model
+package com.example.Z_AppsFather.Kotlin._1.Model
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import com.example._AppsHeadModel._2.ViewModel.InitViewModel
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 import com.google.firebase.Firebase
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
@@ -16,10 +16,10 @@ import com.google.firebase.storage.storage
 import java.util.Objects
 
 @IgnoreExtraProperties
-open class AppsHeadModel(
+open class ProduitsModel(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
 ) {
-    @get:Exclude     //
+    @get:Exclude
     var produitsMainDataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
 
@@ -233,7 +233,7 @@ open class AppsHeadModel(
                     return Objects.hash(id, nom, couleur)
                 }
 
-                // AppsHeadModel.kt - Companion object section
+                // ProduitsModel.kt - Companion object section
                 companion object {
                     fun groupedProductsByClientBonVentModelClientInformations(
                         produitsMainDataBase: List<ProduitModel>
@@ -280,7 +280,7 @@ open class AppsHeadModel(
                     "/IMGs" +
                     "/BaseDonne"
 
-        fun SnapshotStateList<ProduitModel>.update_produitsViewModelEtFireBases(initViewModel: InitViewModel) {
+        fun SnapshotStateList<ProduitModel>.update_produitsViewModelEtFireBases(initViewModel: ViewModelProduits) {
 
             try {
                 this.forEach { product ->

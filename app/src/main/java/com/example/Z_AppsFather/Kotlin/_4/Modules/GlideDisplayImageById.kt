@@ -26,8 +26,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import com.example.Z_AppsFather.Kotlin._1.Model.ArticleInfosModel
-import com.example._AppsHeadModel._1.Model.AppsHeadModel.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ArticleInfosModel
 import com.example.c_serveur.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

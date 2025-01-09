@@ -31,7 +31,7 @@ class ParamatersAppsViewModel : ViewModel() {
     private val grossistVisibleMnt = mutableMapOf<Long, ValueEventListener>()
 
     private companion object {
-        const val TAG = "InitViewModel"
+        const val TAG = "ViewModelProduits"
     }
 
     init {

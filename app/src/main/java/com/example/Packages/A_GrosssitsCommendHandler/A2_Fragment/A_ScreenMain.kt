@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.A_GrosssitsCommendHandler.A2_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_2
 import com.example.Packages.A_GrosssitsCommendHandler.A2_Fragment.D_FloatingActionButton.GrossisstsGroupedFABsFragment_2
-import com.example._AppsHeadModel._2.ViewModel.InitViewModel
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 
 internal const val DEBUG_LIMIT = 7
 
@@ -31,7 +31,7 @@ private fun PreviewA_ScreenMainFragment_2() {
 @Composable
 internal fun A_ScreenMainFragment_2(
     modifier: Modifier = Modifier,
-    initViewModel: InitViewModel = viewModel(),
+    initViewModel: ViewModelProduits = viewModel(),
 ) {
     val produitsMainDataBase by remember(initViewModel._appsHeadModel.produitsMainDataBase) {
         derivedStateOf { initViewModel._appsHeadModel.produitsMainDataBase.toList() }

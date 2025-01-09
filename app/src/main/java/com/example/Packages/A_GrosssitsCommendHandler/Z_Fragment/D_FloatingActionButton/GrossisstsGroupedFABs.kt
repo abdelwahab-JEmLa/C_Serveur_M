@@ -33,9 +33,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.Z_AppsFather.Kotlin._1.Model.Maps
-import com.example.Z_AppsFather.Kotlin._1.Model.TypePosition
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModel_Head
+import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Maps
+import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.TypePosition
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
 import com.example.Z_AppsFather.Kotlin._4.Modules.ArticleLoggingUtil
 import kotlin.math.roundToInt
 

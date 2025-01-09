@@ -14,15 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment.D_FloatingActionButton.GrossisstsGroupedFABs
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModel_Head
-import com.example._AppsHeadModel._2.ViewModel.InitViewModel
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
 
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
 internal fun A_ScreenMainFragment_1(
     modifier: Modifier = Modifier,
-    initViewModel: InitViewModel = viewModel(),
+    initViewModel: ViewModelProduits = viewModel(),
     viewModel_Head: ViewModel_Head = viewModel(),
 ) {
     // Log state changes using LaunchedEffect

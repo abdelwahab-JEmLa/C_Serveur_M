@@ -1,4 +1,4 @@
-package com.example._AppsHeadModel._4.Init
+package com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent
 
 import android.util.Log
 import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.AncienResourcesDataBaseMain

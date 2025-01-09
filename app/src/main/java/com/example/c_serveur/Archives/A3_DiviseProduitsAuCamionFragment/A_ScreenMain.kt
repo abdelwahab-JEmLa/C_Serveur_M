@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example._AppsHeadModel._2.ViewModel.InitViewModel
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.ClientsGroupedFABs_Fragment_3
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.GlobalEditesGFABs_Fragment_3
 
@@ -26,7 +26,7 @@ private fun PreviewScreenMain_Fragment_3() {
 @Composable
 internal fun ScreenMain_Fragment_3(
     modifier: Modifier = Modifier,
-    initViewModel: InitViewModel = viewModel(),
+    initViewModel: ViewModelProduits = viewModel(),
 ) {
     val TAG = "ScreenMainFragment"
     if (!initViewModel.initializationComplete) {

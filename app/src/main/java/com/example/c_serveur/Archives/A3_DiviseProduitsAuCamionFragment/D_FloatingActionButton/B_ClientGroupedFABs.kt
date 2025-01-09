@@ -32,15 +32,15 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example._AppsHeadModel._1.Model.AppsHeadModel
-import com.example._AppsHeadModel._1.Model.AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
-import com.example._AppsHeadModel._2.ViewModel.InitViewModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 import kotlin.math.roundToInt
 
 @Composable
 fun ClientsGroupedFABs_Fragment_3(
-    produitsMainDataBase: List<AppsHeadModel.ProduitModel>,
-    initViewModel: InitViewModel,
+    produitsMainDataBase: List<ProduitsModel.ProduitModel>,
+    initViewModel: ViewModelProduits,
     modifier: Modifier = Modifier
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }

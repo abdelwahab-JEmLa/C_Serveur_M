@@ -22,14 +22,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example._AppsHeadModel._1.Model.AppsHeadModel
-import com.example._AppsHeadModel._2.ViewModel.InitViewModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 
 @Composable
 fun C_ItemMainFragment_2(
-    itemMain: AppsHeadModel.ProduitModel,
+    itemMain: ProduitsModel.ProduitModel,
     onCLickOnMain: (() -> Unit)? = null,
-    initViewModel: InitViewModel,
+    initViewModel: ViewModelProduits,
 ) {
     // Main container
     Box(

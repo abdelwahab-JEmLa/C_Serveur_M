@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example._AppsHeadModel._1.Model.AppsHeadModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
 
 enum class CE_TELEPHONE_EST {
     _SERVEUR,
@@ -28,7 +28,7 @@ enum class CE_TELEPHONE_EST {
 @Composable
 fun GlobalEditesGFABsFragment_2(
     modifier: Modifier = Modifier,
-    appsHeadModel: AppsHeadModel,
+    appsHeadModel: ProduitsModel,
 ) {
     var currentMode by remember { mutableStateOf(CE_TELEPHONE_EST._SERVEUR) }
     var showOptions by remember { mutableStateOf(false) }

@@ -31,9 +31,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.example._AppsHeadModel._1.Model.AppsHeadModel
-import com.example._AppsHeadModel._1.Model.AppsHeadModel.Companion.imagesProduitsFireBaseStorageRef
-import com.example._AppsHeadModel._1.Model.AppsHeadModel.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.Companion.imagesProduitsFireBaseStorageRef
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.Companion.imagesProduitsLocalExternalStorageBasePath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -44,14 +44,14 @@ import java.io.IOException
 
 @Composable
 fun GlobalEditesGFABs_Fragment_3(
-    appsHeadModel: AppsHeadModel,
+    appsHeadModel: ProduitsModel,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showOptions by remember { mutableStateOf(false) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
-    var pendingProduct by remember { mutableStateOf<AppsHeadModel.ProduitModel?>(null) }
+    var pendingProduct by remember { mutableStateOf<ProduitsModel.ProduitModel?>(null) }
 
     suspend fun handleImageCapture(uri: Uri) {
         try {
@@ -103,7 +103,7 @@ fun GlobalEditesGFABs_Fragment_3(
                             }
 
                             // Update in Firebase Realtime Database
-                            AppsHeadModel.produitsFireBaseRef
+                            ProduitsModel.produitsFireBaseRef
                                 .child(product.id.toString())
                                 .setValue(product)
                                 .await()

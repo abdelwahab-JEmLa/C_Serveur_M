@@ -12,13 +12,13 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example._AppsHeadModel._1.Model.AppsHeadModel
-import com.example._AppsHeadModel._2.ViewModel.InitViewModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 
 @Composable
 fun ListMain_Fragment_3(
-    produitsMainDataBase: SnapshotStateList<AppsHeadModel.ProduitModel>,
-    initViewModel: InitViewModel,
+    produitsMainDataBase: SnapshotStateList<ProduitsModel.ProduitModel>,
+    initViewModel: ViewModelProduits,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {

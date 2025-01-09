@@ -28,8 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Z_AppsFather.Kotlin._1.Model.Maps.Companion.updateMapData
-import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModel_Head
+import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Maps.Companion.updateMapData
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
 import com.example.Z_AppsFather.Kotlin._4.Modules.ArticleLoggingUtil
 
 // B_ListMain.kt
@@ -58,7 +58,7 @@ fun B_ListMainFragment_1(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Produits avec position (${viewModel_Head.maps.positionedArticles.size})".also {
+                    text = "ProduitsModel avec position (${viewModel_Head.maps.positionedArticles.size})".also {
                         ArticleLoggingUtil.logDisplayUpdate(
                             positionedCount = viewModel_Head.maps.positionedArticles.size,
                             nonPositionedCount = viewModel_Head.maps.nonPositionedArticles.size
@@ -107,7 +107,7 @@ fun B_ListMainFragment_1(
                     )
                 }
                 Text(
-                    text = "Produits sans position (${viewModel_Head.maps.nonPositionedArticles.size})",
+                    text = "ProduitsModel sans position (${viewModel_Head.maps.nonPositionedArticles.size})",
                     style = MaterialTheme.typography.titleMedium
                 )
             }

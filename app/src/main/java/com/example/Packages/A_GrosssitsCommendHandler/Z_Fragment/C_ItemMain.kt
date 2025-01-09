@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Z_AppsFather.Kotlin._1.Model.ArticleInfosModel
-import com.example.Z_AppsFather.Kotlin._1.Model.ColourEtGoutInfosModel
+import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ArticleInfosModel
+import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.ColourEtGoutInfosModel
 import com.example.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById
 
 @Composable

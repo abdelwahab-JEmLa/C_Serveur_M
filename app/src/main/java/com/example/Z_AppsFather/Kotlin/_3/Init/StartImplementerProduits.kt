@@ -1,14 +1,15 @@
-package com.example._AppsHeadModel._4.Init
+package com.example.Z_AppsFather.Kotlin._3.Init
 
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.Companion.updateProduitsFireBase
 import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.AncienResourcesDataBaseMain
-import com.example._AppsHeadModel._1.Model.AppsHeadModel
-import com.example._AppsHeadModel._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent.GetAncienDataBasesMain
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
 suspend fun initializer(
-    _appsHeadModel: AppsHeadModel,
+    _appsHeadModel: ProduitsModel,
     initializationProgress: Float,
     onInitProgress: () -> (Int, AncienResourcesDataBaseMain) -> Unit
 ) {
@@ -22,18 +23,17 @@ suspend fun initializer(
             onInitProgress(),
         )
     } else {
-      //  LoadFromFirebaseHandler.loadFromFirebase(this)
+        //  LoadFromFirebaseHandler.loadFromFirebase(this)
     }
 }
 
 
 suspend fun CreeNewStart(
-    _appsHeadModel: AppsHeadModel,
+    _appsHeadModel: ProduitsModel,
     NOMBRE_ENTRE: Int,
     onInitProgress: (Int, AncienResourcesDataBaseMain) -> Unit
 ) {
     try {
-
 
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val ancienData = GetAncienDataBasesMain()
@@ -63,7 +63,7 @@ suspend fun CreeNewStart(
 
         // Rest of your existing code, but use filteredProducts instead of ancienData.produitsDatabase
         filteredProducts.forEachIndexed { index, ancien ->
-            val depuitAncienDataBase = AppsHeadModel.ProduitModel(
+            val depuitAncienDataBase = ProduitsModel.ProduitModel(
                 id = ancien.idArticle,
                 itsTempProduit = ancien.idArticle > 2000,
                 init_nom = ancien.nomArticleFinale,
@@ -80,7 +80,7 @@ suspend fun CreeNewStart(
             ).forEach { (colorId, position) ->
                 ancienData.couleurs_List.find { it.idColore == colorId }?.let { couleur ->
                     depuitAncienDataBase.coloursEtGouts.add(
-                        AppsHeadModel.ProduitModel.ColourEtGout_Model(
+                        ProduitsModel.ProduitModel.ColourEtGout_Model(
                             position_Du_Couleur_Au_Produit = position,
                             nom = couleur.nameColore,
                             imogi = couleur.iconColore,
@@ -98,15 +98,15 @@ suspend fun CreeNewStart(
 
                 val (clientId, clientName, clientColor) = clients.random()
 
-                val bonVent = AppsHeadModel.ProduitModel.ClientBonVentModel(
-                    init_clientInformations = AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations(
+                val bonVent = ProduitsModel.ProduitModel.ClientBonVentModel(
+                    init_clientInformations = ProduitsModel.ProduitModel.ClientBonVentModel.ClientInformations(
                         id = clientId,
                         nom = clientName,
                         couleur = clientColor
                     ),
                     init_colours_achete = depuitAncienDataBase.coloursEtGouts.take((1..3).random())
                         .map { couleur ->
-                            AppsHeadModel.ProduitModel.ClientBonVentModel.ColorAchatModel(
+                            ProduitsModel.ProduitModel.ClientBonVentModel.ColorAchatModel(
                                 vidPosition = couleur.position_Du_Couleur_Au_Produit,
                                 nom = couleur.nom,
                                 quantity_Achete = (1..10).random(),
@@ -121,15 +121,15 @@ suspend fun CreeNewStart(
             repeat((1..3).random()) { currentIndex ->
                 val (clientId, clientName, clientColor) = clients.random()
 
-                val bonVent = AppsHeadModel.ProduitModel.ClientBonVentModel(
-                    init_clientInformations = AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations(
+                val bonVent = ProduitsModel.ProduitModel.ClientBonVentModel(
+                    init_clientInformations = ProduitsModel.ProduitModel.ClientBonVentModel.ClientInformations(
                         id = clientId,
                         nom = clientName,
                         couleur = clientColor
                     ),
                     init_colours_achete = depuitAncienDataBase.coloursEtGouts.take((1..3).random())
                         .map { couleur ->
-                            AppsHeadModel.ProduitModel.ClientBonVentModel.ColorAchatModel(
+                            ProduitsModel.ProduitModel.ClientBonVentModel.ColorAchatModel(
                                 vidPosition = couleur.position_Du_Couleur_Au_Produit,
                                 nom = couleur.nom,
                                 quantity_Achete = (1..10).random(),
@@ -143,9 +143,9 @@ suspend fun CreeNewStart(
             val (grossistId, grossistName, grossistColor) = grossists.random()
             val currentDate = dateFormat.format(Calendar.getInstance().time)
 
-            val grossiste = AppsHeadModel.ProduitModel.GrossistBonCommandes(
+            val grossiste = ProduitsModel.ProduitModel.GrossistBonCommandes(
                 vid = grossistId,
-                init_grossistInformations = AppsHeadModel.ProduitModel.GrossistBonCommandes.GrossistInformations(
+                init_grossistInformations = ProduitsModel.ProduitModel.GrossistBonCommandes.GrossistInformations(
                     id = grossistId,
                     nom = grossistName,
                     couleur = grossistColor
@@ -161,7 +161,7 @@ suspend fun CreeNewStart(
                 init_coloursEtGoutsCommendee = depuitAncienDataBase.coloursEtGouts
                     .take(if (depuitAncienDataBase.itsTempProduit) 1 else (1..4).random())
                     .map { couleur ->
-                        AppsHeadModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
+                        ProduitsModel.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                             id = couleur.position_Du_Couleur_Au_Produit,
                             nom = couleur.nom,
                             emoji = couleur.imogi,
@@ -185,7 +185,7 @@ suspend fun CreeNewStart(
         }
 
         // Clear and update Firebase database
-        AppsHeadModel.produitsFireBaseRef.removeValue()
+        ProduitsModel.produitsFireBaseRef.removeValue()
         _appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
 
 

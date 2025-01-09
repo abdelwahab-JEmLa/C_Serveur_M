@@ -1,10 +1,10 @@
-package com.example._AppsHeadModel._4.Init
+package com.example.Z_AppsFather.Kotlin._3.Init
 
 import android.util.Log
 import androidx.compose.runtime.toMutableStateList
-import com.example._AppsHeadModel._1.Model.AppsHeadModel
-import com.example._AppsHeadModel._1.Model.AppsHeadModel.ProduitModel
-import com.example._AppsHeadModel._2.ViewModel.InitViewModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.ProduitModel
+import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator
@@ -17,7 +17,7 @@ object LoadFromFirebaseHandler {
     private const val TAG = "LoadFromFirebaseHandler"
     private const val DEBUG_LIMIT = 7
 
-    suspend fun loadFromFirebase(initViewModel: InitViewModel) = try {
+    suspend fun loadFromFirebase(initViewModel: ViewModelProduits) = try {
         initViewModel.apply {
             _appsHeadModel.produitsMainDataBase = loadProducts()
             initializationProgress = 1f
@@ -28,7 +28,7 @@ object LoadFromFirebaseHandler {
     }
 
     private suspend fun loadProducts() = suspendCancellableCoroutine { continuation ->
-        AppsHeadModel.produitsFireBaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        ProduitsModel.produitsFireBaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) = try {
                 val products = snapshot.children
                     .mapNotNull { parseProduct(it) }

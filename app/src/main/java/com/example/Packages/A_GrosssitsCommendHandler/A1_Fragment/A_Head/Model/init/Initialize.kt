@@ -3,7 +3,7 @@ package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.
 import com.example.Apps_Head._1.Model.ProduitsAncienDataBaseMain
 import com.example.Apps_Head._4.Init.GetAncienDataBasesMain
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.GrossistInfosModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps.Companion.batchUpdate
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps.Companion.batchUpdateCompan
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.TypePosition
 
 suspend fun startImplementationViewModel(
@@ -92,7 +92,7 @@ suspend fun startImplementationViewModel(
         // 5. Mettre à jour Firebase
 
 
-        batchUpdate(firebaseData)
+        batchUpdateCompan(firebaseData)
 
         // 6. Mise à jour du progrès
         onInitProgress(100)

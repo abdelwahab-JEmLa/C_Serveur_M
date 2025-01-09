@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps.Companion.updateMapFromPositionedLists
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Modules.ArticleLoggingUtil
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 
@@ -60,6 +61,7 @@ fun B_ListMainFragment_1(
                             positionedCount = viewModel_Head.maps.positionedArticles.size,
                             nonPositionedCount = viewModel_Head.maps.nonPositionedArticles.size
                         )
+
                     },
                     style = MaterialTheme.typography.titleMedium
                 )
@@ -82,6 +84,7 @@ fun B_ListMainFragment_1(
                 onCLickOnMain = {
                     viewModel_Head.maps.positionedArticles.remove(article)
                     viewModel_Head.maps.nonPositionedArticles.add(article)
+                    updateMapFromPositionedLists(1,viewModel_Head)
                 }
             )
         }

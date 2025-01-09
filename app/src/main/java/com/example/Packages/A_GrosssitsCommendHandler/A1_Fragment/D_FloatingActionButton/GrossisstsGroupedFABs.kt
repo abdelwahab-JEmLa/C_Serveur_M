@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Modules.ArticleLoggingUtil
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.TypePosition
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
@@ -93,9 +94,8 @@ fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
                                 FloatingActionButton(
                                     onClick = {
                                         val currentList = viewModel_Head.maps.mapGroToMapPositionToProduits
-                                        if (index > 0) {
-                                            currentList.add(index - 1, currentList.removeAt(index))
-                                        }
+                                        currentList.add(index - 1, currentList.removeAt(index))
+                                        Maps.updateMapFromPositionedLists(grossist.id, viewModel_Head)
                                     },
                                     modifier = Modifier.size(32.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer

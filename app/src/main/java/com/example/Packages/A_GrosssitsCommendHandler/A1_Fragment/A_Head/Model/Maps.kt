@@ -1,6 +1,5 @@
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model
 
-
 import androidx.compose.runtime.mutableStateListOf
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 import com.google.firebase.Firebase
@@ -39,24 +38,12 @@ class Maps {
             ).await()
         }
 
-        fun updateMapFromPositionedLists(grossistId: Long, viewModel_Head: ViewModel_Head,itsDeplacement:Boolean?=false) {
+        fun updateMapFromPositionedLists(grossistId: Long, viewModel_Head: ViewModel_Head, itsDeplacement: Boolean? = false) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val _maps = viewModel_Head._maps
                     val mapGroToMapPositionToProduits = _maps.mapGroToMapPositionToProduits
-                    if (itsDeplacement == true) {
-                        _maps.positionedArticles.clear()
-                        _maps.nonPositionedArticles.clear()
 
-                        _maps.positionedArticles.addAll(
-                            mapGroToMapPositionToProduits.find { it.key.id == grossistId }
-                                ?.value?.get(TypePosition.POSITIONE) ?: mutableListOf()
-                        )
-                        _maps.nonPositionedArticles.addAll(
-                            mapGroToMapPositionToProduits.find { it.key.id == grossistId }
-                                ?.value?.get(TypePosition.NON_POSITIONE) ?: mutableListOf()
-                        )
-                    }
                     val grossistEntry =
                         mapGroToMapPositionToProduits.find { it.key.id == grossistId }
                             ?: throw IllegalStateException("Grossist with ID $grossistId not found")
@@ -70,11 +57,33 @@ class Maps {
                                     "nom" to entry.key.nom
                                 ),
                                 "products" to mapOf(
-                                    "POSITIONE" to _maps.positionedArticles.map { article ->
-                                        formatArticleForFirebase(article)
+                                    "POSITIONE" to run {
+                                        val articlesList = if (itsDeplacement == true) {
+                                            _maps.mapGroToMapPositionToProduits
+                                                .find { it.key.id == grossistId }
+                                                ?.value
+                                                ?.get(TypePosition.POSITIONE)
+                                                ?: mutableListOf()
+                                        } else {
+                                            _maps.positionedArticles
+                                        }
+                                        articlesList.map { article ->
+                                            formatArticleForFirebase(article)
+                                        }
                                     },
-                                    "NON_POSITIONE" to _maps.nonPositionedArticles.map { article ->
-                                        formatArticleForFirebase(article)
+                                    "NON_POSITIONE" to run {
+                                        val articlesList = if (itsDeplacement == true) {
+                                            _maps.mapGroToMapPositionToProduits
+                                                .find { it.key.id == grossistId }
+                                                ?.value
+                                                ?.get(TypePosition.NON_POSITIONE)
+                                                ?: mutableListOf()
+                                        } else {
+                                            _maps.nonPositionedArticles
+                                        }
+                                        articlesList.map { article ->
+                                            formatArticleForFirebase(article)
+                                        }
                                     }
                                 )
                             ) as Map<String, Any>
@@ -108,11 +117,7 @@ class Maps {
                         mapGroToMapPositionToProduits[grossistIndex] = AbstractMap.SimpleEntry(
                             grossistEntry.key,
                             updatedPositionMap
-                        )              //
-                    }
-                    if (itsDeplacement == true) {
-                        _maps.positionedArticles.clear()
-                        _maps.nonPositionedArticles.clear()
+                        )
                     }
                 } catch (e: Exception) {
                     throw e

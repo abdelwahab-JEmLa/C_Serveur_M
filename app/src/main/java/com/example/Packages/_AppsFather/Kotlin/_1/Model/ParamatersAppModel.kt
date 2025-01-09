@@ -1,5 +1,5 @@
 // ParamatersAppsModel.kt
-package com.example._AppsHeadModel.B_AppsSetingsMaster.Model
+package com.example.Packages._AppsFather.Kotlin._1.Model
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -1,4 +1,4 @@
-package com.example._AppsHeadModel._1.Model
+package com.example.Packages._AppsFather.Kotlin._1.Model
 
 data class AncienResourcesDataBaseMain(
     val produitsDatabase: List<ProduitsAncienDataBaseMain>,

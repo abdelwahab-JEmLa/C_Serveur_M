@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Packages._AppsFather.Kotlin._1.Model.ArticleInfosModel
 import com.example.Packages._AppsFather.Kotlin._1.Model.ColourEtGoutInfosModel
-import com.example._AppsHeadModel._3.Modules.Images_Handler.GlideDisplayImageById
+import com.example.Packages._AppsFather.Kotlin._4.Modules.GlideDisplayImageById
 
 @Composable
 fun C_ItemMainFragment_1(

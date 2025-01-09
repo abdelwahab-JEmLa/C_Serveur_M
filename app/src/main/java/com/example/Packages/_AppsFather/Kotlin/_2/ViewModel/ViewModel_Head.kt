@@ -14,7 +14,6 @@ import com.example.Packages._AppsFather.Kotlin._1.Model.GrossistInfosModel
 import com.example.Packages._AppsFather.Kotlin._1.Model.Maps
 import com.example.Packages._AppsFather.Kotlin._1.Model.TypePosition
 import com.example.Packages._AppsFather.Kotlin._3.Init.startImplementationViewModel
-import com.example._AppsHeadModel.B_AppsSetingsMaster.ViewModel.ParamatersAppsViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.launch

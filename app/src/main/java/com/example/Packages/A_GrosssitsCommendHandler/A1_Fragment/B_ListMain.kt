@@ -18,6 +18,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +35,8 @@ fun B_ListMainFragment_1(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+    var showSearchDialog by remember { mutableStateOf(false) }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
@@ -66,7 +72,6 @@ fun B_ListMainFragment_1(
                 modifier = Modifier.padding(4.dp),
                 position = viewModel_Head.maps.positionedArticles.indexOf(article) + 1,
                 onCLickOnMain = {
-                    // Move the article from positioned to non-positioned
                     viewModel_Head.maps.positionedArticles.remove(article)
                     viewModel_Head.maps.nonPositionedArticles.add(article)
                 }
@@ -79,7 +84,7 @@ fun B_ListMainFragment_1(
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = { showSearchDialog = true }) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
@@ -99,8 +104,24 @@ fun B_ListMainFragment_1(
         ) { article ->
             C_ItemMainFragment_1(
                 itemMainId = article,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(4.dp),
+                onCLickOnMain = {
+                    viewModel_Head.maps.positionedArticles.add(article)
+                    viewModel_Head.maps.nonPositionedArticles.remove(article)
+                }
             )
         }
+    }
+
+    if (showSearchDialog) {
+        SearchDialog(
+            viewModel_Head = viewModel_Head,
+            onDismiss = { showSearchDialog = false },
+            onItemSelected = { selectedArticle ->
+                viewModel_Head.maps.positionedArticles.add(selectedArticle)
+                viewModel_Head.maps.nonPositionedArticles.remove(selectedArticle)
+                showSearchDialog = false
+            }
+        )
     }
 }

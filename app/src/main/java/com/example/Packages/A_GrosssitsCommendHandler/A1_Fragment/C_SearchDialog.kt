@@ -1,3 +1,4 @@
+// C_SearchDialog.kt
 package com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment
 
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -28,16 +28,16 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Archives.Model_CodingWithMaps
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ArticleInfosModel
+import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ColourEtGoutInfosModel
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 import kotlinx.coroutines.delay
 
 @Composable
 fun SearchDialog(
     viewModel_Head: ViewModel_Head,
-    unpositionedItems: SnapshotStateList<Model_CodingWithMaps.Mapping.Grossist.Produits>,
     onDismiss: () -> Unit,
-    onItemSelected: (Model_CodingWithMaps.Mapping.Grossist.Produits) -> Unit
+    onItemSelected: (Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>) -> Unit
 ) {
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
@@ -84,8 +84,8 @@ fun SearchDialog(
                         .focusRequester(focusRequester)
                 )
 
-                val filteredItems = unpositionedItems.filter {
-                    it.produitId.toString().contains(searchText, ignoreCase = true)
+                val filteredItems = viewModel_Head.maps.nonPositionedArticles.filter {
+                    it.key.nom.contains(searchText, ignoreCase = true)
                 }
 
                 if (searchText.length >= 2) {
@@ -99,16 +99,15 @@ fun SearchDialog(
                     ) {
                         items(
                             items = filteredItems,
-                        ) { product ->
-                            /*C_ItemMainFragment_1(
-                                viewModel_Head = viewModel_Head,
-                                itemMainId = product,
-                                modifier = Modifier.animateItem(
-                                    fadeInSpec = null,
-                                    fadeOutSpec = null
-                                ),
-                                onCLickOnMain = { onItemSelected(product) },
-                            )      */
+                            key = { it.key.id }
+                        ) { article ->
+                            C_ItemMainFragment_1(
+                                itemMainId = article,
+                                onCLickOnMain = {
+                                    onItemSelected(article)
+                                    onDismiss()
+                                }
+                            )
                         }
                     }
                 }

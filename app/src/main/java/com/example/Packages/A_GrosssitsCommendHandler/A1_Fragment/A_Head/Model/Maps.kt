@@ -108,7 +108,7 @@ class Maps {
                         mapGroToMapPositionToProduits[grossistIndex] = AbstractMap.SimpleEntry(
                             grossistEntry.key,
                             updatedPositionMap
-                        )
+                        )              //
                     }
                     if (itsDeplacement == true) {
                         _maps.positionedArticles.clear()

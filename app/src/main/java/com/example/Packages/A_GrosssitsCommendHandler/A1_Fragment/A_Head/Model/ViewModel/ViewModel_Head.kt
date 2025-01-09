@@ -36,7 +36,7 @@ class ViewModel_Head : ViewModel() {
                 isLoading = true
                 loadingProgress = 0f
 
-                startImplementationViewModel(0) {
+                startImplementationViewModel(50) {
                     loadingProgress = it.toFloat()
                 }
                 loadingProgress = 0.5f

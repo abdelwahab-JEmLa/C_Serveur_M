@@ -9,11 +9,10 @@ import com.google.firebase.database.database
 import kotlinx.coroutines.tasks.await
 
 suspend fun startImplementationViewModel(
-    nombreEntries: Int  = 100,
+    nombreEntries: Int = 100,
     onInitProgress: (Int) -> Unit
 ) {
     try {
-        // Si nombreEntries est 0, on sort
         if (nombreEntries <= 0) return
 
         // 1. Récupérer les données anciennes
@@ -26,20 +25,34 @@ suspend fun startImplementationViewModel(
             GrossistInfosModel(3, "Grossist Gamma")
         )
 
-        // 3. Filtrer les produits
-        val halfCount = nombreEntries / 2
-        val filteredProducts = ancienData.produitsDatabase.let { products ->
-            val older = products.filter { it.idArticle < 2000 }.take(halfCount)
-            val newer = products.filter { it.idArticle > 2000 }.take(halfCount)
-            (older + newer).take(nombreEntries)
+        // 3. Filtrer et distribuer les produits
+        val allProducts = ancienData.produitsDatabase
+            .filter { it.idArticle != 0L } // Filter out invalid products
+            .shuffled() // Randomize the order for fair distribution
+
+        // Calculate products per grossist
+        val productsPerGrossist = nombreEntries / grossists.size
+
+        // Distribute products among grossists
+        val grossistProducts = List(grossists.size) { index ->
+            val startIndex = index * productsPerGrossist
+            val endIndex = if (index == grossists.size - 1) {
+                minOf(allProducts.size, nombreEntries)
+            } else {
+                startIndex + productsPerGrossist
+            }
+            allProducts.subList(startIndex, minOf(endIndex, allProducts.size))
         }
 
         // 4. Créer la structure de données pour Firebase
-        val firebaseData = grossists.map { grossist ->
+        val firebaseData = grossists.mapIndexed { grossistIndex, grossist ->
+            val products = grossistProducts[grossistIndex]
             val productsMap = mutableMapOf<String, List<Map<String, Any>>>()
-            val (positioned, nonPositioned) = filteredProducts.partition { (it.idArticle % 2).toInt() == 0 }
 
-            // Mapper les produits
+            // Partition products based on ID parity for positioning
+            val (positioned, nonPositioned) = products.partition { (it.idArticle % 2).toInt() == 0 }
+
+            // Mapper les produits avec fonction commune
             val mapProducts = { product: ProduitsAncienDataBaseMain ->
                 mapOf(
                     "articleInfo" to mapOf(
@@ -58,7 +71,7 @@ suspend fun startImplementationViewModel(
                                 "colorInfo" to mapOf(
                                     "id" to it.first,
                                     "nom" to it.second,
-                                    "imogi" to "📦"
+                                    "imogi" to it.second?.let { it1 -> getEmojiForColor(it1) }
                                 ),
                                 "quantity" to (10..50).random()
                             )
@@ -95,5 +108,25 @@ suspend fun startImplementationViewModel(
 
     } catch (e: Exception) {
         throw e
+    }
+}
+
+// Helper function to assign appropriate emojis based on color names
+private fun getEmojiForColor(colorName: String): String {
+    return when {
+        colorName.contains("chocolat", ignoreCase = true) -> "🍫"
+        colorName.contains("fraise", ignoreCase = true) -> "🍓"
+        colorName.contains("banane", ignoreCase = true) -> "🍌"
+        colorName.contains("lait", ignoreCase = true) -> "🥛"
+        colorName.contains("ceris", ignoreCase = true) -> "🍒"
+        colorName.contains("caramel", ignoreCase = true) -> "🥞"
+        colorName.contains("fruité", ignoreCase = true) -> "🍡"
+        colorName.contains("noix", ignoreCase = true) -> "🥥"
+        colorName.contains("nougat", ignoreCase = true) -> "🎇"
+        colorName.contains("oreo", ignoreCase = true) -> "🍪"
+        colorName.contains("reglize", ignoreCase = true) -> "🍙"
+        colorName.contains("standard", ignoreCase = true) -> "🎁"
+        colorName.contains("multi", ignoreCase = true) -> "🎨"
+        else -> "📦"
     }
 }

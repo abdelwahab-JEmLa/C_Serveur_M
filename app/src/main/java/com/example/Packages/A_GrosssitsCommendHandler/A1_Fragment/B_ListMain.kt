@@ -74,7 +74,9 @@ fun B_ListMainFragment_1(
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+
+                }) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",

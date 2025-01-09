@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment.D_FloatingActionButton.GrossisstsGroupedFABs
@@ -81,8 +80,4 @@ private fun logDatabaseSize(size: Int) {
     Log.d(TAG, "Database Size: $size entries")
 }
 
-@Preview
-@Composable
-private fun PreviewScreenMainFragment_1() {
-    A_ScreenMainFragment_1(modifier = Modifier.fillMaxSize())
-}
+

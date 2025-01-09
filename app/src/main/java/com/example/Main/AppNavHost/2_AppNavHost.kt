@@ -1,4 +1,4 @@
-package com.example.Main.MainScreen
+package com.example.Main.AppNavHost
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,12 +34,18 @@ fun AppNavHost(
             composable(FragmentMainScreenDestination1().route) {
                A_ScreenMainFragment_1(initViewModel=appViewModels.initViewModel)
             }
+
             composable(FragmentMainScreenDestination2().route) {
                 A_ScreenMainFragment_2(initViewModel=appViewModels.initViewModel)
             }
 
         }
     }
+}
+@Preview
+@Composable
+private fun PreviewScreenMainFragment_1() {
+    A_ScreenMainFragment_1(modifier = Modifier.fillMaxSize())
 }
 /**
  * Object used for a type safe destination to a Home screen

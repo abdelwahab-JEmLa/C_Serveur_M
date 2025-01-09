@@ -1,5 +1,5 @@
-// GrossisstsGroupedFABs.kt
-package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.D_FloatingActionButton
+// FilterScreenFab.kt
+package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.Maps
 import com.example.Z_AppsFather.Kotlin._1.Model.Z.Parent.TypePosition
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
@@ -40,7 +41,7 @@ import com.example.Z_AppsFather.Kotlin._4.Modules.ArticleLoggingUtil
 import kotlin.math.roundToInt
 
 @Composable
-fun GrossisstsGroupedFABs(viewModel_Head: ViewModel_Head) {
+fun FilterScreenFab(initViewModel: ViewModelProduits, viewModel_Head: ViewModel_Head) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }

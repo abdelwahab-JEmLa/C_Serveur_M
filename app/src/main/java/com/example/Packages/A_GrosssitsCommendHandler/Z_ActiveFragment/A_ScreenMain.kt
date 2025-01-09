@@ -13,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
-import com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.D_FloatingActionButton.GrossisstsGroupedFABs
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
 
@@ -64,9 +63,11 @@ internal fun A_ScreenMainFragment_1(
                 modifier = modifier,
             )
 
-            GrossisstsGroupedFABs(
-                viewModel_Head = viewModel_Head,
+            FilterScreenFab(
+                initViewModel= initViewModel,
+                viewModel_Head = viewModel_Head
             )
+
         }
     }
 }

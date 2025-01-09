@@ -1,16 +1,24 @@
 package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import com.example.Packages.A1_Fragment.SearchDialog
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel
 
 @Composable
 fun B_ListMainFragment_1(
@@ -27,11 +34,6 @@ fun B_ListMainFragment_1(
     modifier: Modifier = Modifier
 ) {
     val products = viewModelProduits.produitsMainDataBase.filter { it.isVisible }
-
-    // Remember previous positions for animation
-    val positionStates = remember {
-        mutableMapOf<Long, MutableState<Float>>()
-    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -60,47 +62,14 @@ fun B_ListMainFragment_1(
                 items = positionedProducts,
                 key = { it.id }
             ) { product ->
-                val positionState = remember(product.id) {
-                    positionStates.getOrPut(product.id) {
-                        mutableStateOf(product.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.toFloat() ?: 0f)
-                    }
-                }
-
-                // Animate position changes
-                LaunchedEffect(product.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit) {
-                    animate(
-                        initialValue = positionState.value,
-                        targetValue = product.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.toFloat() ?: 0f,
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessLow
-                        )
-                    ) { value, _ ->
-                        positionState.value = value
-                    }
-                }
-
-                AnimatedContent(
-                    targetState = product,
-                    transitionSpec = {
-                        slideInHorizontally(
-                            initialOffsetX = { if (targetState.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0 >
-                                (initialState.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0)) 300 else -300 }
-                        ) with slideOutHorizontally(
-                            targetOffsetX = { if (targetState.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0 >
-                                (initialState.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0)) -300 else 300 }
-                        )
-                    }
-                ) { animatedProduct ->
-                    C_ItemMainFragment_1(
-                        mainItem = animatedProduct,
-                        modifier = Modifier.animateItemPlacement(),
-                        onCLickOnMain = {
-                            animatedProduct.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
-                            viewModelProduits.updateProduct(animatedProduct)
-                        }
-                    )
-                }
+                C_ItemMainFragment_1(
+                    mainItem = product,
+                    onCLickOnMain = {
+                        product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
+                        viewModelProduits.updateProduct(product)
+                    } ,
+                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                )
             }
         }
 
@@ -124,7 +93,9 @@ fun B_ListMainFragment_1(
                         )
                     }
 
-                    IconButton(onClick = { }) {
+                    IconButton(
+                        onClick = { /* Search dialog is handled by SearchDialog component */ }
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Rechercher",
@@ -143,51 +114,31 @@ fun B_ListMainFragment_1(
                 items = unpositionedProducts,
                 key = { it.id }
             ) { product ->
-                AnimatedVisibility(
-                    visible = true,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
-                ) {
-                    C_ItemMainFragment_1(
-                        mainItem = product,
-                        modifier = Modifier.animateItemPlacement(),
-                        onCLickOnMain = {
-                            val newPosition = (positionedProducts.maxOfOrNull {
-                                it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
-                            } ?: 0) + 1
+                C_ItemMainFragment_1(
+                    mainItem = product,
+                    onCLickOnMain = {
+                        val newPosition = (positionedProducts.maxOfOrNull {
+                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+                        } ?: 0) + 1
 
-                            product.bonCommendDeCetteCota?.apply {
-                                cPositionCheyCeGrossit = true
-                                positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
-                            }
-
-                            if (product.itsTempProduit) {
-                                product.statuesBase.prePourCameraCapture = true
-                            }
-
-                            viewModelProduits.updateProduct(product)
+                        product.bonCommendDeCetteCota?.apply {
+                            cPositionCheyCeGrossit = true
+                            positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
                         }
+
+                        if (product.itsTempProduit) {
+                            product.statuesBase.prePourCameraCapture = true
+                        }
+
+                        viewModelProduits.updateProduct(product)
+                    },
+                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+
                     )
-                }
             }
         }
     }
 
+    // Include SearchDialog component
     SearchDialog(viewModelProduits)
-}
-
-// Extension function to help with animations
-private suspend fun animate(
-    initialValue: Float,
-    targetValue: Float,
-    animationSpec: AnimationSpec<Float>,
-    onUpdate: (Float, Float) -> Unit
-) {
-    val anim = Animatable(initialValue)
-    anim.animateTo(
-        targetValue = targetValue,
-        animationSpec = animationSpec,
-    ) {
-        onUpdate(value, velocity)
-    }
 }

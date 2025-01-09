@@ -120,7 +120,8 @@ fun SearchDialog(viewModelProduits: ViewModelProduits) {
                                         }
                                         viewModelProduits.updateProduct(product)
                                         showDialog = false
-                                    }
+                                    }  ,
+                                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
                                 )
                             }
                         }

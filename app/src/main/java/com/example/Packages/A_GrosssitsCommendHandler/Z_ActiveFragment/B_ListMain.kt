@@ -33,7 +33,10 @@ fun B_ListMainFragment_1(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val products = viewModelProduits.produitsMainDataBase.filter { it.isVisible }
+    val visibleProducts = viewModelProduits.produitsMainDataBase.filter { it.isVisible }
+    val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
+        it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -44,11 +47,7 @@ fun B_ListMainFragment_1(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Section des produits positionnés
-        val positionedProducts = products
-            .filter { it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true }
-            .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
-
+        // Header for positioned products
         if (positionedProducts.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Text(
@@ -59,7 +58,9 @@ fun B_ListMainFragment_1(
             }
 
             items(
-                items = positionedProducts,
+                items = positionedProducts.sortedBy {
+                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                },
                 key = { it.id }
             ) { product ->
                 C_ItemMainFragment_1(
@@ -67,17 +68,13 @@ fun B_ListMainFragment_1(
                     onCLickOnMain = {
                         product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
                         viewModelProduits.updateProduct(product)
-                    } ,
-                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                    },
+                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
             }
         }
 
-        // Section des produits non positionnés
-        val unpositionedProducts = products
-            .filter { it.bonCommendDeCetteCota?.cPositionCheyCeGrossit != true }
-            .sortedBy { it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit }
-
+        // Header for unpositioned products
         if (unpositionedProducts.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Row(
@@ -85,24 +82,20 @@ fun B_ListMainFragment_1(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    IconButton(onClick = { /* Implement drag functionality */ }) {
+                    IconButton(onClick = {}) {
                         Icon(
-                            imageVector = Icons.Default.Moving,
+                            Icons.Default.Moving,
                             contentDescription = "Déplacer",
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-
-                    IconButton(
-                        onClick = { /* Search dialog is handled by SearchDialog component */ }
-                    ) {
+                    IconButton(onClick = {}) {
                         Icon(
-                            imageVector = Icons.Default.Search,
+                            Icons.Default.Search,
                             contentDescription = "Rechercher",
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-
                     Text(
                         "Produits sans position (${unpositionedProducts.size})",
                         style = MaterialTheme.typography.titleMedium
@@ -111,7 +104,9 @@ fun B_ListMainFragment_1(
             }
 
             items(
-                items = unpositionedProducts,
+                items = unpositionedProducts.sortedBy {
+                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                },
                 key = { it.id }
             ) { product ->
                 C_ItemMainFragment_1(
@@ -125,20 +120,16 @@ fun B_ListMainFragment_1(
                             cPositionCheyCeGrossit = true
                             positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
                         }
-
                         if (product.itsTempProduit) {
                             product.statuesBase.prePourCameraCapture = true
                         }
-
                         viewModelProduits.updateProduct(product)
                     },
-                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
-
-                    )
+                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
+                )
             }
         }
     }
 
-    // Include SearchDialog component
     SearchDialog(viewModelProduits)
 }

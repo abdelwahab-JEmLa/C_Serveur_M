@@ -41,6 +41,7 @@ fun B_ListMainFragment_1(
 ) {
     var showSearchDialog by remember { mutableStateOf(false) }
 
+    // Section des produits positionnés
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = modifier
@@ -67,7 +68,6 @@ fun B_ListMainFragment_1(
                 )
             }
         }
-
         items(
             items = viewModel_Head.maps.positionedArticles.toList(),
             key = { it.key.id }

@@ -28,9 +28,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ArticleInfosModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ColourEtGoutInfosModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
+import com.example.Packages._AppsFather.Kotlin._1.Model.ArticleInfosModel
+import com.example.Packages._AppsFather.Kotlin._1.Model.ColourEtGoutInfosModel
+import com.example.Packages._AppsFather.Kotlin._2.ViewModel.ViewModel_Head
 import kotlinx.coroutines.delay
 
 @Composable

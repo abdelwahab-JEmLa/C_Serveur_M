@@ -28,9 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Maps.Companion.updateMapData
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.Modules.ArticleLoggingUtil
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
+import com.example.Packages._AppsFather.Kotlin._1.Model.Maps.Companion.updateMapData
+import com.example.Packages._AppsFather.Kotlin._2.ViewModel.ViewModel_Head
+import com.example.Packages._AppsFather.Kotlin._4.Modules.ArticleLoggingUtil
 
 // B_ListMain.kt
 @Composable

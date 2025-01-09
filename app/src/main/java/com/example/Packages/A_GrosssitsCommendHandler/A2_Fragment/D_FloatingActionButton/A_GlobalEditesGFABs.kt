@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Apps_Head._1.Model.AppsHeadModel
+import com.example._AppsHeadModel._1.Model.AppsHeadModel
 
 enum class CE_TELEPHONE_EST {
     _SERVEUR,

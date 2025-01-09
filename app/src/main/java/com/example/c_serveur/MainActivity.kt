@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Main.MainScreen.MainScreen
+import com.example._AppsHeadModel._2.ViewModel.InitViewModel
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
 

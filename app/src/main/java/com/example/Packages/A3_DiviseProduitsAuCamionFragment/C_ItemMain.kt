@@ -22,8 +22,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._2.ViewModel.InitViewModel
+import com.example._AppsHeadModel._1.Model.AppsHeadModel
+import com.example._AppsHeadModel._2.ViewModel.InitViewModel
 
 @Composable
 fun ItemMain_Fragment_3(

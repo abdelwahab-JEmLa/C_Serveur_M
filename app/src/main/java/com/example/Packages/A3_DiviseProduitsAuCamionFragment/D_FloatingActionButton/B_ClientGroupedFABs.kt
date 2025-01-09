@@ -32,9 +32,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
-import com.example.Apps_Head._2.ViewModel.InitViewModel
+import com.example._AppsHeadModel._1.Model.AppsHeadModel
+import com.example._AppsHeadModel._1.Model.AppsHeadModel.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
+import com.example._AppsHeadModel._2.ViewModel.InitViewModel
 import kotlin.math.roundToInt
 
 @Composable

@@ -13,10 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Apps_Head._2.ViewModel.InitViewModel
-import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.A_Head.Model.ViewModel.ViewModel_Head
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 import com.example.Packages.A_GrosssitsCommendHandler.A1_Fragment.D_FloatingActionButton.GrossisstsGroupedFABs
+import com.example.Packages._AppsFather.Kotlin._2.ViewModel.ViewModel_Head
+import com.example._AppsHeadModel._2.ViewModel.InitViewModel
 
 internal const val DEBUG_LIMIT = 7
 private const val TAG = "A_ScreenMainFragment_1"

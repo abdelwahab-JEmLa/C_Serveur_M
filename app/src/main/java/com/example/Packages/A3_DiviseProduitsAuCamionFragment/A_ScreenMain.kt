@@ -11,9 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Apps_Head._2.ViewModel.InitViewModel
 import com.example.Packages.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.ClientsGroupedFABs_Fragment_3
 import com.example.Packages.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.GlobalEditesGFABs_Fragment_3
+import com.example._AppsHeadModel._2.ViewModel.InitViewModel
 
 internal const val DEBUG_LIMIT_Fragment_3 = 7
 

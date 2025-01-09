@@ -36,8 +36,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.Apps_Head._1.Model.AppsHeadModel
-import com.example.Apps_Head._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
+import com.example._AppsHeadModel._1.Model.AppsHeadModel
+import com.example._AppsHeadModel._1.Model.AppsHeadModel.Companion.updateProduitsFireBase
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

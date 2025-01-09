@@ -28,8 +28,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.Z_AppsFather.Parent._1.Model.Parent.ArticleInfosModel
-import com.example.Z_AppsFather.Parent._1.Model.Parent.ColourEtGoutInfosModel
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Z_AppsFather.Parent._2.ViewModel.Parent.ViewModel_Head
 import kotlinx.coroutines.delay
 
@@ -37,11 +36,18 @@ import kotlinx.coroutines.delay
 fun SearchDialog(
     viewModel_Head: ViewModel_Head,
     onDismiss: () -> Unit,
-    onItemSelected: (Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>) -> Unit
+    onItemSelected: (ModelAppsFather.ProduitModel) -> Unit  // Changed to pass selected item
 ) {
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
+
+    // Validation constants
+    val MIN_SEARCH_LENGTH = 2
+
+    // State for loading and error handling
+    var isSearching by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         delay(100)
@@ -76,52 +82,77 @@ fun SearchDialog(
 
                 OutlinedTextField(
                     value = searchText,
-                    onValueChange = { searchText = it },
+                    onValueChange = {
+                        searchText = it.trim()
+                        errorMessage = null
+                    },
                     label = { Text("Nom du produit") },
                     singleLine = true,
+                    isError = errorMessage != null,
+                    supportingText = errorMessage?.let { { Text(it) } },
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester)
                 )
 
-                val filteredItems = viewModel_Head.maps.nonPositionedArticles.filter {
-                    it.key.nom.contains(searchText, ignoreCase = true)
+                // Improved filtering with error handling
+                val filteredItems = remember(searchText) {
+                    if (searchText.length >= MIN_SEARCH_LENGTH) {
+                        viewModel_Head.maps.nonPositionedArticles.filter {
+                            it.key.nom.contains(searchText, ignoreCase = true)
+                        }
+                    } else {
+                        emptyList()
+                    }
                 }
 
-                if (searchText.length >= 2) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(4),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(top = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(
-                            items = filteredItems,
-                            key = { it.key.id }
-                        ) { article ->
-                            C_ItemMainFragment_1(
-                                itemMainId = article,
-                                onCLickOnMain = {
-                                    onItemSelected(article)
-                                    onDismiss()
-                                }
-                            )
+                if (searchText.length >= MIN_SEARCH_LENGTH) {
+                    if (filteredItems.isEmpty() && !isSearching) {
+                        Text(
+                            "Aucun résultat trouvé",
+                            modifier = Modifier.padding(top = 16.dp),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(4),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(top = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(
+                                items = filteredItems,
+                                key = { it.key.id }
+                            ) { article ->
+                                C_ItemMainFragment_1(
+                                    mainItem = article,
+                                    onCLickOnMain = {
+                                        onItemSelected(article)
+                                        onDismiss()
+                                    }
+                                )
+                            }
                         }
                     }
                 }
 
-                TextButton(
-                    onClick = {
-                        focusManager.clearFocus()
-                        onDismiss()
-                    },
+                Row(
                     modifier = Modifier
                         .align(Alignment.End)
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text("Fermer")
+                    TextButton(
+                        onClick = {
+                            focusManager.clearFocus()
+                            onDismiss()
+                        }
+                    ) {
+                        Text("Fermer")
+                    }
                 }
             }
         }

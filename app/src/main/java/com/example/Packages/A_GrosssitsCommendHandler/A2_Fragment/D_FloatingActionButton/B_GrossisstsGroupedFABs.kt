@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduitsFireBase
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -120,7 +119,6 @@ fun GrossisstsGroupedFABsFragment_2(
                                         }
 
                                         onClickFAB(updatedList.toMutableStateList())
-                                        updatedList.toMutableStateList().updateProduitsFireBase()
                                     }
                                 },
                                 modifier = Modifier.size(48.dp),

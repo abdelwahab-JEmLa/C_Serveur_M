@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.produitsFireBaseRef
 import com.example.Z_AppsFather.Parent._1.Model.ParamatersAppsModel
-import com.example.Z_AppsFather.Parent._2.ViewModel.ParamatersAppsViewModel
 import com.example.Z_AppsFather.Parent._3.Init.initializer
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D.Actions.onClickOn_Fragment_3
 import com.google.firebase.database.DataSnapshot
@@ -17,7 +16,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class ViewModelProduits : ViewModel() {
     var _paramatersAppsViewModelModel by mutableStateOf(ParamatersAppsModel())
@@ -59,23 +57,7 @@ class ViewModelProduits : ViewModel() {
         }
     }
 
-    fun updateProduct(product: ModelAppsFather.ProduitModel) {
-        viewModelScope.launch {
-            try {
-                produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
-
-                // Update local state
-                val index = _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
-                if (index != -1) {
-                    _modelAppsFather.produitsMainDataBase[index] = product
-                }
-
-                Log.d("ViewModelProduits", "Successfully updated product ${product.id}")
-            } catch (e: Exception) {
-                Log.e("ViewModelProduits", "Failed to update product ${product.id}", e)
-            }
-        }
-    }    // Enhanced setupDataListeners function
+// Enhanced setupDataListeners function
     private fun setupDataListeners() {
         produitsFireBaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

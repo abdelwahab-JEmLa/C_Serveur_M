@@ -16,18 +16,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Z_AppsFather.Parent._1.Model.Parent.ArticleInfosModel
-import com.example.Z_AppsFather.Parent._1.Model.Parent.ColourEtGoutInfosModel
-import com.example.Z_AppsFather.Parent._4.Modules.GlideDisplayImageById
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather
+import com.example.Z_AppsFather.Parent._4.Modules.GlideDisplayImageById2
 
 @Composable
 fun C_ItemMainFragment_1(
-    itemMainId: Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>,  // Moved to be first optional parameter
+    mainItem: ModelAppsFather.ProduitModel,  // Moved to be first optional parameter
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
 ) {
-   val articleInfosModel =itemMainId.key
     Box(
         modifier = modifier  // Using the passed modifier
             .fillMaxWidth()
@@ -45,8 +43,9 @@ fun C_ItemMainFragment_1(
         contentAlignment = Alignment.Center
     ) {
 
-        GlideDisplayImageById(
-            itemMain = articleInfosModel,
+        GlideDisplayImageById2(
+            mainItem.id,
+            imageGlidReloadTigger = 0,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
@@ -55,7 +54,7 @@ fun C_ItemMainFragment_1(
 
         // Product ID
         Text(
-            text = "ID: ${articleInfosModel.id}",
+            text = "ID: ${mainItem.id}",
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(4.dp)
@@ -71,7 +70,7 @@ fun C_ItemMainFragment_1(
         )
 
         Text(
-            text = articleInfosModel.nom,
+            text = mainItem.nom,
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(4.dp)

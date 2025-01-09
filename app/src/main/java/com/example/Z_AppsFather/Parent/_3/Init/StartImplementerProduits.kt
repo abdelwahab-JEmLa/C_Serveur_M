@@ -1,7 +1,6 @@
 package com.example.Z_AppsFather.Parent._3.Init
 
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduitsFireBase
 import com.example.Z_AppsFather.Parent._1.Model.Parent.AncienResourcesDataBaseMain
 import com.example.Z_AppsFather.Parent._3.Init.Z.Parent.GetAncienDataBasesMain
 import java.text.SimpleDateFormat
@@ -186,7 +185,6 @@ suspend fun CreeNewStart(
 
         // Clear and update Firebase database
         ModelAppsFather.produitsFireBaseRef.removeValue()
-        _appsHeadModel.produitsMainDataBase.updateProduitsFireBase()
 
 
     } catch (e: Exception) {

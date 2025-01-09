@@ -7,11 +7,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.database
 import com.google.firebase.storage.storage
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.Objects
 
 @IgnoreExtraProperties
@@ -263,7 +266,6 @@ open class ModelAppsFather(
         }
     }
 
-
     companion object {
         val produitsFireBaseRef = Firebase.database
             .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
@@ -279,8 +281,7 @@ open class ModelAppsFather(
                     "/IMGs" +
                     "/BaseDonne"
 
-        fun SnapshotStateList<ModelAppsFather.ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
-
+        fun SnapshotStateList<ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
             try {
                 this.forEach { product ->
                     try {
@@ -300,23 +301,21 @@ open class ModelAppsFather(
                 throw e
             }
         }
+        fun ViewModelProduits.updateProduct(product: ProduitModel) {
+            viewModelScope.launch {
+                try {
+                    produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
 
-        fun SnapshotStateList<ProduitModel>.updateProduitsFireBase() {
-            try {
-                val updatedProducts = this.filter { it.besoinToBeUpdated }
-
-                updatedProducts.forEach { product ->
-                    try {
-                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
-                        product.besoinToBeUpdated = false
-                        Log.d("Firebase", "Successfully updated product ${product.id}")
-                    } catch (e: Exception) {
-                        Log.e("Firebase", "Failed to update product ${product.id}", e)
+                    // Update local state
+                    val index = _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
+                    if (index != -1) {
+                        _modelAppsFather.produitsMainDataBase[index] = product
                     }
+
+                    Log.d("ViewModelProduits", "Successfully updated product ${product.id}")
+                } catch (e: Exception) {
+                    Log.e("ViewModelProduits", "Failed to update product ${product.id}", e)
                 }
-            } catch (e: Exception) {
-                Log.e("Firebase", "Error updating products", e)
-                throw e
             }
         }
     }

@@ -2,8 +2,8 @@ package com.example.Z_AppsFather.Kotlin._3.Init
 
 import android.util.Log
 import androidx.compose.runtime.toMutableStateList
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.ProduitModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.ProduitModel
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,7 +28,7 @@ object LoadFromFirebaseHandler {
     }
 
     private suspend fun loadProducts() = suspendCancellableCoroutine { continuation ->
-        ProduitsModel.produitsFireBaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        ModelAppsFather.produitsFireBaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) = try {
                 val products = snapshot.children
                     .mapNotNull { parseProduct(it) }

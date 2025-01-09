@@ -31,9 +31,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.Companion.imagesProduitsFireBaseStorageRef
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -49,7 +49,7 @@ enum class DeviceMode {
 
 @Composable
 fun GlobalEditesGFABsFragment_1(
-    appsHeadModel: ProduitsModel,
+    appsHeadModel: ModelAppsFather,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -57,7 +57,7 @@ fun GlobalEditesGFABsFragment_1(
     var showOptions by remember { mutableStateOf(false) }
     var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
-    var pendingProduct by remember { mutableStateOf<ProduitsModel.ProduitModel?>(null) }
+    var pendingProduct by remember { mutableStateOf<ModelAppsFather.ProduitModel?>(null) }
 
     suspend fun handleImageCapture(uri: Uri) {
         try {
@@ -109,7 +109,7 @@ fun GlobalEditesGFABsFragment_1(
                             }
 
                             // Update in Firebase Realtime Database
-                            ProduitsModel.produitsFireBaseRef
+                            ModelAppsFather.produitsFireBaseRef
                                 .child(product.id.toString())
                                 .setValue(product)
                                 .await()

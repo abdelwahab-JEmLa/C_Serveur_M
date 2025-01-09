@@ -7,8 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.Companion.produitsFireBaseRef
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.Companion.produitsFireBaseRef
 import com.example.Z_AppsFather.Kotlin._3.Init.initializer
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D.Actions.onClickOn_Fragment_3
 import com.google.firebase.database.DataSnapshot
@@ -19,8 +19,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class ViewModelProduits : ViewModel() {
-    var _appsHeadModel by mutableStateOf(ProduitsModel())
-    val appsHeadModel: ProduitsModel get() = _appsHeadModel
+    var _appsHeadModel by mutableStateOf(ModelAppsFather())
+    val appsHeadModel: ModelAppsFather get() = _appsHeadModel
 
     val onClickOn_Fragment_3 = onClickOn_Fragment_3(this@ViewModelProduits)
 
@@ -53,7 +53,7 @@ class ViewModelProduits : ViewModel() {
         }
     }
 
-    fun updateProduct(product: ProduitsModel.ProduitModel) {
+    fun updateProduct(product: ModelAppsFather.ProduitModel) {
         viewModelScope.launch {
             try {
                 produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
@@ -75,7 +75,7 @@ class ViewModelProduits : ViewModel() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 viewModelScope.launch {
                     snapshot.children.forEach { child ->
-                        child.getValue(ProduitsModel.ProduitModel::class.java)?.let { updatedProduct ->
+                        child.getValue(ModelAppsFather.ProduitModel::class.java)?.let { updatedProduct ->
                             val index = _appsHeadModel.produitsMainDataBase.indexOfFirst { it.id == updatedProduct.id }
                             if (index != -1) {
                                 // Preserve local state that shouldn't be overwritten

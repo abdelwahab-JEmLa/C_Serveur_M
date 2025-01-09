@@ -22,12 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 
 @Composable
 fun ItemMain_Fragment_3(
-    itemMain: ProduitsModel.ProduitModel,
+    itemMain: ModelAppsFather.ProduitModel,
     onClickDelete: () -> Unit = {},
     onCLickOnMain: () -> Unit = {},
     initViewModel: ViewModelProduits,

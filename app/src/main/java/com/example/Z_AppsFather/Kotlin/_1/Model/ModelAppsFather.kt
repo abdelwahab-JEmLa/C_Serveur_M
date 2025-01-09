@@ -16,7 +16,7 @@ import com.google.firebase.storage.storage
 import java.util.Objects
 
 @IgnoreExtraProperties
-open class ProduitsModel(
+open class ModelAppsFather(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
 ) {
     @get:Exclude
@@ -233,7 +233,7 @@ open class ProduitsModel(
                     return Objects.hash(id, nom, couleur)
                 }
 
-                // ProduitsModel.kt - Companion object section
+                // ModelAppsFather.kt - Companion object section
                 companion object {
                     fun groupedProductsByClientBonVentModelClientInformations(
                         produitsMainDataBase: List<ProduitModel>

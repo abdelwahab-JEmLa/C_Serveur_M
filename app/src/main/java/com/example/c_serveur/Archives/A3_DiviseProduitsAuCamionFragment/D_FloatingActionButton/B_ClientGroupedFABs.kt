@@ -32,14 +32,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations.Companion.groupedProductsByClientBonVentModelClientInformations
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 import kotlin.math.roundToInt
 
 @Composable
 fun ClientsGroupedFABs_Fragment_3(
-    produitsMainDataBase: List<ProduitsModel.ProduitModel>,
+    produitsMainDataBase: List<ModelAppsFather.ProduitModel>,
     initViewModel: ViewModelProduits,
     modifier: Modifier = Modifier
 ) {

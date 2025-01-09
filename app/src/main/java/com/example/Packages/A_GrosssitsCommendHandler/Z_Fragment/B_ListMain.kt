@@ -58,7 +58,7 @@ fun B_ListMainFragment_1(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "ProduitsModel avec position (${viewModel_Head.maps.positionedArticles.size})".also {
+                    text = "ModelAppsFather avec position (${viewModel_Head.maps.positionedArticles.size})".also {
                         ArticleLoggingUtil.logDisplayUpdate(
                             positionedCount = viewModel_Head.maps.positionedArticles.size,
                             nonPositionedCount = viewModel_Head.maps.nonPositionedArticles.size
@@ -107,7 +107,7 @@ fun B_ListMainFragment_1(
                     )
                 }
                 Text(
-                    text = "ProduitsModel sans position (${viewModel_Head.maps.nonPositionedArticles.size})",
+                    text = "ModelAppsFather sans position (${viewModel_Head.maps.nonPositionedArticles.size})",
                     style = MaterialTheme.typography.titleMedium
                 )
             }

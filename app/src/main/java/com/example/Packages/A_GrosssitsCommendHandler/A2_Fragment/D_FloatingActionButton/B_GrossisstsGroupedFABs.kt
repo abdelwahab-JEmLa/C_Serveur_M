@@ -36,15 +36,15 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel
-import com.example.Z_AppsFather.Kotlin._1.Model.ProduitsModel.Companion.updateProduitsFireBase
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather
+import com.example.Z_AppsFather.Kotlin._1.Model.ModelAppsFather.Companion.updateProduitsFireBase
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
 fun GrossisstsGroupedFABsFragment_2(
-    onClickFAB: (SnapshotStateList<ProduitsModel.ProduitModel>) -> Unit,
-    produitsMainDataBase: List<ProduitsModel.ProduitModel>,
+    onClickFAB: (SnapshotStateList<ModelAppsFather.ProduitModel>) -> Unit,
+    produitsMainDataBase: List<ModelAppsFather.ProduitModel>,
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()

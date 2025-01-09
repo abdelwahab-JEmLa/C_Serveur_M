@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment
+package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -12,8 +12,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
-import com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment.D_FloatingActionButton.GrossisstsGroupedFABs
+import com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
+import com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.D_FloatingActionButton.GrossisstsGroupedFABs
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.ViewModelProduits
 import com.example.Z_AppsFather.Kotlin._2.ViewModel.Z.Parent.ViewModel_Head
 

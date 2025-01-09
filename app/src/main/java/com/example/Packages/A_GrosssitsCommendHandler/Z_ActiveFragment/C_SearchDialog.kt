@@ -1,5 +1,5 @@
 // C_SearchDialog.kt
-package com.example.Packages.A_GrosssitsCommendHandler.Z_Fragment
+package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

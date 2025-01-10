@@ -32,6 +32,21 @@ open class ModelAppsFather(
             produitsMainDataBase.clear()
             produitsMainDataBase.addAll(value)
         }
+    val groupedProducts: List<Pair<ProduitModel.GrossistBonCommandes.GrossistInformations, List<ProduitModel>>>
+        get() = produitsMainDataBase
+            .mapNotNull { product ->
+                product.bonCommendDeCetteCota?.grossistInformations?.let { grossistInfo ->
+                    grossistInfo to product
+                }
+            }
+            .groupBy(
+                keySelector = { it.first },
+                valueTransform = { it.second }
+            )
+            .toList()
+            .sortedBy { (grossist, _) ->
+                grossist.positionInGrossistsList
+            }
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -235,25 +250,6 @@ open class ModelAppsFather(
                     return Objects.hash(id, nom, couleur)
                 }
 
-                // ModelAppsFather.kt - Companion object section
-                companion object {
-                    fun groupedProductsByClientBonVentModelClientInformations(
-                        produitsMainDataBase: List<ProduitModel>
-                    ): Map<ClientInformations, List<ProduitModel>> {
-                        return produitsMainDataBase
-                            .flatMap { product ->
-                                product.bonsVentDeCetteCota.mapNotNull { bonVent ->
-                                    bonVent.clientInformations?.let { clientInfo ->
-                                        clientInfo to product
-                                    }
-                                }
-                            }
-                            .groupBy(
-                                keySelector = { it.first },
-                                valueTransform = { it.second }
-                            )
-                    }
-                }
             }
 
             @IgnoreExtraProperties

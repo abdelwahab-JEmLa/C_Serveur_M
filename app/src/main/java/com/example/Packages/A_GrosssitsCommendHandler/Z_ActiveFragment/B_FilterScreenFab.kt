@@ -46,24 +46,9 @@ fun FilterScreenFab(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    // Create derived state for grouped products
-    val produitsMainDataBase = viewModelProduits.produitsMainDataBase
-    val groupedProducts = remember(produitsMainDataBase) {
-        produitsMainDataBase
-            .mapNotNull { product ->
-                product.bonCommendDeCetteCota?.grossistInformations?.let { grossistInfo ->
-                    grossistInfo to product
-                }
-            }
-            .groupBy(
-                keySelector = { it.first },
-                valueTransform = { it.second }
-            )
-            .toList()
-            .sortedBy { (grossist, _) ->
-                grossist.positionInGrossistsList
-            }
-    }
+    // Access groupedProducts through the viewModel
+    val groupedProducts = viewModelProduits._modelAppsFather.groupedProducts
+    val produitsMainDataBase = viewModelProduits._modelAppsFather.produitsMainDataBase
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -126,7 +111,7 @@ fun FilterScreenFab(
                                                 }
                                             }
                                         }
-                                        updateAllProduitsUiEtFireBases(viewModelProduits,produitsMainDataBase)
+                                        updateAllProduitsUiEtFireBases(viewModelProduits, viewModelProduits.produitsMainDataBase)
                                     },
                                     modifier = Modifier.size(36.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -143,9 +128,7 @@ fun FilterScreenFab(
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        if (viewModelProduits._paramatersAppsViewModelModel
-                                                .telephoneClientParamaters.selectedGrossist == grossist
-                                        ) Color.Blue else Color.Transparent
+                                        if (grossist.auFilterFAB) Color.Blue else Color.Transparent
                                     )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium

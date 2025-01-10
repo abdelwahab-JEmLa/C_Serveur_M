@@ -33,9 +33,11 @@ fun B_ListMainFragment_1(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+
     val visibleProducts = viewModelProduits.produitsMainDataBase.filter { it.isVisible }
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
-        it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
+        it.bonCommendDeCetteCota
+            ?.cPositionCheyCeGrossit == true
     }
 
     LazyVerticalGrid(
@@ -59,14 +61,16 @@ fun B_ListMainFragment_1(
 
             items(
                 items = positionedProducts.sortedBy {
-                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    it.bonCommendDeCetteCota
+                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                 },
                 key = { it.id }
             ) { product ->
                 C_ItemMainFragment_1(
                     mainItem = product,
                     onCLickOnMain = {
-                        product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
+                        product.bonCommendDeCetteCota
+                            ?.cPositionCheyCeGrossit = false
                         viewModelProduits.updateProduct(product)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
@@ -105,7 +109,8 @@ fun B_ListMainFragment_1(
 
             items(
                 items = unpositionedProducts.sortedBy {
-                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    it.bonCommendDeCetteCota
+                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                 },
                 key = { it.id }
             ) { product ->
@@ -113,7 +118,8 @@ fun B_ListMainFragment_1(
                     mainItem = product,
                     onCLickOnMain = {
                         val newPosition = (positionedProducts.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+                            it.bonCommendDeCetteCota
+                                ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                         } ?: 0) + 1
 
                         product.bonCommendDeCetteCota?.apply {

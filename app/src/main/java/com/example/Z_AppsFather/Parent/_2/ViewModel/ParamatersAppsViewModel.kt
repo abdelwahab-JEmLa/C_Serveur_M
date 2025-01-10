@@ -9,8 +9,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Z_AppsFather.Parent._1.Model.ParamatersAppsModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -45,7 +43,7 @@ class ParamatersAppsViewModel : ViewModel() {
                 isInitializing = true
                 initializationProgress = 0f
 
-                setupListeners()
+              //  setupListeners()
                 initializationComplete = true
                 initializationProgress = 1f
             } catch (e: Exception) {
@@ -57,7 +55,7 @@ class ParamatersAppsViewModel : ViewModel() {
         }
     }
 
-    private fun setupListeners() {
+    /*private fun setupListeners() {
         // Start observing the grossistVisibleMnt value
         observeGrossistVisibleMnt()
     }
@@ -69,7 +67,7 @@ class ParamatersAppsViewModel : ViewModel() {
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val newValue = snapshot.getValue(Long::class.java) ?: 0L
-                _paramatersAppsViewModelModel.telephoneClientParamaters.selectedGrossistIndex = newValue.toInt()
+                _paramatersAppsViewModelModel.telephoneClientParamaters.selectedGrossist = newValue
 
                 viewModelScope.launch {
                     _grossistVisibleMntChangeFlow.emit(Pair(newValue, 0))
@@ -83,7 +81,7 @@ class ParamatersAppsViewModel : ViewModel() {
 
         ref.addValueEventListener(listener)
         grossistVisibleMnt[0L] = listener // Store listener for cleanup
-    }
+    }  */
 
     private fun handleInitializationError(error: Exception) {
         Log.e(TAG, "Initialization error", error)

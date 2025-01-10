@@ -24,11 +24,7 @@ class ViewModel_Head : ViewModel() {
     var _maps by mutableStateOf(Maps())
     val maps: Maps get() = _maps
     private val paramatersAppsViewModel = ParamatersAppsViewModel()
-    var selectedGrossistIndex=
-        paramatersAppsViewModel
-        ._paramatersAppsViewModelModel
-        .telephoneClientParamaters
-        .selectedGrossistIndex
+
 
     var isLoading by mutableStateOf(false)
     var loadingProgress by mutableFloatStateOf(0f)

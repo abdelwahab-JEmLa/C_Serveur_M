@@ -32,7 +32,8 @@ open class ModelAppsFather(
             produitsMainDataBase.clear()
             produitsMainDataBase.addAll(value)
         }
-    val groupedProducts: List<Pair<ProduitModel.GrossistBonCommandes.GrossistInformations, List<ProduitModel>>>
+    
+    val groupedProductsPatGrossist: List<Pair<ProduitModel.GrossistBonCommandes.GrossistInformations, List<ProduitModel>>>
         get() = produitsMainDataBase
             .mapNotNull { product ->
                 product.bonCommendDeCetteCota?.grossistInformations?.let { grossistInfo ->

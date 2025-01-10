@@ -33,7 +33,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateAllProduitsUiEtFireBases
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updatePoduitsUiEtFireBases
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import kotlin.math.roundToInt
 
@@ -47,7 +46,7 @@ fun FilterScreenFab(
     var showButtons by remember { mutableStateOf(false) }
 
     // Access groupedProducts through the viewModel
-    val groupedProducts = viewModelProduits._modelAppsFather.groupedProducts
+    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsPatGrossist
     val produitsMainDataBase = viewModelProduits._modelAppsFather.produitsMainDataBase
 
     Box(
@@ -111,7 +110,7 @@ fun FilterScreenFab(
                                                 }
                                             }
                                         }
-                                        updateAllProduitsUiEtFireBases(viewModelProduits, viewModelProduits.produitsMainDataBase)
+                                        updateAllProduitsUiEtFireBases(viewModelProduits,produitsMainDataBase)
                                     },
                                     modifier = Modifier.size(36.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -141,7 +140,7 @@ fun FilterScreenFab(
                                             bon.grossistInformations?.id == grossist.id
                                         } ?: false
                                     }
-                                    produitsMainDataBase.updatePoduitsUiEtFireBases(viewModelProduits)
+                                    updateAllProduitsUiEtFireBases(viewModelProduits, produitsMainDataBase)
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
-import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.ClientsGroupedFABs_Fragment_3
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.GlobalEditesGFABs_Fragment_3
 
 internal const val DEBUG_LIMIT_Fragment_3 = 7
@@ -63,7 +62,7 @@ internal fun ScreenMain_Fragment_3(
             modifier = modifier,
         )
 
-        ClientsGroupedFABs_Fragment_3(produitsMainDataBase ,initViewModel,modifier)
+      //  ClientsGroupedFABs_Fragment_3(produitsMainDataBase ,initViewModel,modifier)
 
     }
 }

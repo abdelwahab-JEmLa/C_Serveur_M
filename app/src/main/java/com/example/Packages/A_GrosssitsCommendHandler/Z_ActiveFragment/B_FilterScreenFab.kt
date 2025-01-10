@@ -26,13 +26,13 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateAllProduitsUiEtFireBases
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updatePoduitsUiEtFireBases
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import kotlin.math.roundToInt
@@ -47,7 +47,7 @@ fun FilterScreenFab(
     var showButtons by remember { mutableStateOf(false) }
 
     // Create derived state for grouped products
-    val produitsMainDataBase = viewModelProduits.produitsMainDataBase.toMutableStateList()
+    val produitsMainDataBase = viewModelProduits.produitsMainDataBase
     val groupedProducts = remember(produitsMainDataBase) {
         produitsMainDataBase
             .mapNotNull { product ->
@@ -111,10 +111,10 @@ fun FilterScreenFab(
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        val updatedList = groupedProducts.flatMap { (_, produits) -> produits }.toMutableStateList()
                                         val previousGrossist = groupedProducts[index - 1].first
 
-                                        updatedList.forEach { product ->
+                                        // Update positions
+                                        produitsMainDataBase.forEach { product ->
                                             product.bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                 when (currentGrossist.id) {
                                                     grossist.id -> {
@@ -126,8 +126,7 @@ fun FilterScreenFab(
                                                 }
                                             }
                                         }
-
-                                        updatedList.updatePoduitsUiEtFireBases(viewModelProduits)
+                                        updateAllProduitsUiEtFireBases(viewModelProduits,produitsMainDataBase)
                                     },
                                     modifier = Modifier.size(36.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer

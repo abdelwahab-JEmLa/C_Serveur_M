@@ -281,6 +281,25 @@ open class ModelAppsFather(
                     "/IMGs" +
                     "/BaseDonne"
 
+        fun updateAllProduitsUiEtFireBases(
+            initViewModel: ViewModelProduits,
+            produitsMainDataBase: SnapshotStateList<ProduitModel>
+        ) {
+            try {
+                initViewModel._modelAppsFather.produitsMainDataBase  = produitsMainDataBase
+                produitsMainDataBase.forEach { product ->
+                    try {
+                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
+                        Log.d("Firebase", "Successfully updated product ${product.id}")
+                    } catch (e: Exception) {
+                        Log.e("Firebase", "Failed to update product ${product.id}", e)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("Firebase", "Error updating products", e)
+                throw e
+            }
+        }
         fun SnapshotStateList<ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
             try {
                 this.forEach { product ->

@@ -34,7 +34,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updatePoduitsUiEtFireBases
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations.Companion.produitGroupeurParGrossistInfos
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import kotlin.math.roundToInt
 
@@ -46,6 +45,25 @@ fun FilterScreenFab(
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
+
+    // Create derived state for grouped products
+    val produitsMainDataBase = viewModelProduits.produitsMainDataBase.toMutableStateList()
+    val groupedProducts = remember(produitsMainDataBase) {
+        produitsMainDataBase
+            .mapNotNull { product ->
+                product.bonCommendDeCetteCota?.grossistInformations?.let { grossistInfo ->
+                    grossistInfo to product
+                }
+            }
+            .groupBy(
+                keySelector = { it.first },
+                valueTransform = { it.second }
+            )
+            .toList()
+            .sortedBy { (grossist, _) ->
+                grossist.positionInGrossistsList
+            }
+    }
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -65,7 +83,6 @@ fun FilterScreenFab(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Main FAB
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
                 modifier = Modifier.size(48.dp),
@@ -77,7 +94,6 @@ fun FilterScreenFab(
                 )
             }
 
-            // Animated content
             AnimatedVisibility(
                 visible = showButtons,
                 enter = fadeIn(),
@@ -87,21 +103,17 @@ fun FilterScreenFab(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    val produitsMainDataBase = viewModelProduits.produitsMainDataBase.toMutableStateList()
-                    val groupedProducts = produitGroupeurParGrossistInfos(produitsMainDataBase)
                     groupedProducts.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // Move Up button (show only if not first item)
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
                                         val updatedList = groupedProducts.flatMap { (_, produits) -> produits }.toMutableStateList()
                                         val previousGrossist = groupedProducts[index - 1].first
 
-                                        // Update positions
                                         updatedList.forEach { product ->
                                             product.bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                 when (currentGrossist.id) {
@@ -115,7 +127,6 @@ fun FilterScreenFab(
                                             }
                                         }
 
-                                        // Update Firebase and ViewModel
                                         updatedList.updatePoduitsUiEtFireBases(viewModelProduits)
                                     },
                                     modifier = Modifier.size(36.dp),
@@ -128,7 +139,6 @@ fun FilterScreenFab(
                                 }
                             }
 
-                            // Grossist name and count
                             Text(
                                 text = "${grossist.nom} (${produits.size})",
                                 modifier = Modifier

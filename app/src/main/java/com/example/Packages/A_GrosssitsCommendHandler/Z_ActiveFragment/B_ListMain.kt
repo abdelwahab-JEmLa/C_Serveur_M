@@ -33,7 +33,6 @@ fun B_ListMainFragment_1(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-
     val visibleProducts = viewModelProduits.produitsMainDataBase.filter { it.isVisible }
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota

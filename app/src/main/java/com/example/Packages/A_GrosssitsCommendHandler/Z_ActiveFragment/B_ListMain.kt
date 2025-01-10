@@ -33,8 +33,10 @@ fun B_ListMainFragment_1(
     modifier: Modifier = Modifier
 ) {
     val visibleProducts = viewModelProduits.produitsAvecBonsGrossist.filter {
-        it.bonCommendDeCetteCota
-            ?.grossistInformations == viewModelProduits.selectedGrossist }
+        (it.bonCommendDeCetteCota
+            ?.grossistInformations?.id ?: 0) == viewModelProduits.selectedGrossist
+    }     //-->
+            //TODO(1): pk rien  ne s affiche quand je click sut
 
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota

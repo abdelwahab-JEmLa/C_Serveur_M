@@ -45,7 +45,7 @@ internal fun A_ScreenMainFragment_1(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             Column {
-                val databaseSize = viewModelProduits.modelAppsFather.produitsMainDataBase.size
+                val databaseSize = viewModelProduits.produitsAvecBonsGrossist.size
 
                 if (databaseSize > 0) {
                     B_ListMainFragment_1(
@@ -72,8 +72,5 @@ private fun logLoadingState(isLoading: Boolean, progress: Float) {
     Log.d(TAG, "Loading State: isLoading=$isLoading, progress=${progress * 100}%")
 }
 
-private fun logDatabaseSize(size: Int) {
-    Log.d(TAG, "Database Size: $size entries")
-}
 
 

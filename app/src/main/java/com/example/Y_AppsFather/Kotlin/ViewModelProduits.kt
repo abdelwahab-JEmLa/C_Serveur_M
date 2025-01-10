@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class ViewModelProduits : ViewModel() {
-    private var _paramatersAppsViewModelModel by mutableStateOf(ParamatersAppsModel())
+    var _paramatersAppsViewModelModel by mutableStateOf(ParamatersAppsModel())
     var selectedGrossist = _paramatersAppsViewModelModel
         .telephoneClientParamaters.selectedGrossist
 

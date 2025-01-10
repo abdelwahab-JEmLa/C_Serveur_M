@@ -135,7 +135,7 @@ fun FilterScreenFab(
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        if (grossist.auFilterFAB) Color.Blue else Color.Transparent
+                                        if (viewModelProduits.selectedGrossist == grossist.id) Color.Blue else Color.Transparent
                                     )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
@@ -143,14 +143,8 @@ fun FilterScreenFab(
 
                             FloatingActionButton(
                                 onClick = {
-                                    viewModelProduits.selectedGrossist = grossist
-
-                                    produitsAvecBonsGrossist.forEach { product ->
-                                        product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
-                                            bon.grossistInformations?.id == grossist.id
-                                        } ?: false
-                                    }
-                                    updateAvecBonsProduitsUiEtFireBases(viewModelProduits, produitsAvecBonsGrossist)
+                                    viewModelProduits._paramatersAppsViewModelModel
+                                        .telephoneClientParamaters.selectedGrossist = grossist.id
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

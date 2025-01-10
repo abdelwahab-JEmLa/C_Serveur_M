@@ -27,8 +27,6 @@ internal fun A_ScreenMainFragment_1(
         logLoadingState(viewModelProduits.isLoading, viewModelProduits.loadingProgress)
     }
 
-
-
     if (viewModelProduits.isLoading) {  // Changed from !isLoading to isLoading
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -51,8 +49,9 @@ internal fun A_ScreenMainFragment_1(
 
                 if (databaseSize > 0) {
                     B_ListMainFragment_1(
-                        viewModelProduits=viewModelProduits
-                        , paddingValues,)
+                        viewModelProduits = viewModelProduits,
+                        paddingValues = paddingValues
+                    )
                 }
             }
 
@@ -62,7 +61,7 @@ internal fun A_ScreenMainFragment_1(
             )
 
             FilterScreenFab(
-                viewModelProduits= viewModelProduits,
+                viewModelProduits = viewModelProduits,
             )
 
         }

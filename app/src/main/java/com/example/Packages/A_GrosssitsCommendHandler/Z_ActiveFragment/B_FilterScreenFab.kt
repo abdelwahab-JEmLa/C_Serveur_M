@@ -32,8 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateAllProduitsUiEtFireBases
+import androidx.lifecycle.viewModelScope
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateAvecBonsProduitsUiEtFireBases
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
@@ -47,7 +49,7 @@ fun FilterScreenFab(
 
     // Access groupedProducts through the viewModel
     val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsPatGrossist
-    val produitsMainDataBase = viewModelProduits._modelAppsFather.produitsMainDataBase
+    val produitsAvecBonsGrossist = viewModelProduits .produitsAvecBonsGrossist
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -95,10 +97,15 @@ fun FilterScreenFab(
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
+                                        viewModelProduits.viewModelScope.launch {
+
                                         val previousGrossist = groupedProducts[index - 1].first
 
+                                        grossist.positionInGrossistsList--
+                                        previousGrossist.positionInGrossistsList++
+
                                         // Update positions
-                                        produitsMainDataBase.forEach { product ->
+                                        produitsAvecBonsGrossist.forEach { product ->
                                             product.bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                 when (currentGrossist.id) {
                                                     grossist.id -> {
@@ -110,7 +117,8 @@ fun FilterScreenFab(
                                                 }
                                             }
                                         }
-                                        updateAllProduitsUiEtFireBases(viewModelProduits,produitsMainDataBase)
+                                        updateAvecBonsProduitsUiEtFireBases(viewModelProduits,produitsAvecBonsGrossist)
+                                    }
                                     },
                                     modifier = Modifier.size(36.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -135,12 +143,14 @@ fun FilterScreenFab(
 
                             FloatingActionButton(
                                 onClick = {
-                                    produitsMainDataBase.forEach { product ->
+                                    viewModelProduits.selectedGrossist = grossist
+
+                                    produitsAvecBonsGrossist.forEach { product ->
                                         product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
                                             bon.grossistInformations?.id == grossist.id
                                         } ?: false
                                     }
-                                    updateAllProduitsUiEtFireBases(viewModelProduits, produitsMainDataBase)
+                                    updateAvecBonsProduitsUiEtFireBases(viewModelProduits, produitsAvecBonsGrossist)
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

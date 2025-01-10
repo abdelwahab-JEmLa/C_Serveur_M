@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages.A1_Fragment.SearchDialog
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 
 @Composable
@@ -33,7 +32,10 @@ fun B_ListMainFragment_1(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val visibleProducts = viewModelProduits.produitsMainDataBase.filter { it.isVisible }
+    val visibleProducts = viewModelProduits.produitsAvecBonsGrossist.filter {
+        it.bonCommendDeCetteCota
+            ?.grossistInformations == viewModelProduits.selectedGrossist }
+
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota
             ?.cPositionCheyCeGrossit == true
@@ -70,7 +72,8 @@ fun B_ListMainFragment_1(
                     onCLickOnMain = {
                         product.bonCommendDeCetteCota
                             ?.cPositionCheyCeGrossit = false
-                        viewModelProduits.updateProduct(product)
+
+                        viewModelProduits.updateProduct_produitsAvecBonsGrossist(product)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
@@ -128,7 +131,7 @@ fun B_ListMainFragment_1(
                         if (product.itsTempProduit) {
                             product.statuesBase.prePourCameraCapture = true
                         }
-                        viewModelProduits.updateProduct(product)
+                        viewModelProduits.updateProduct_produitsAvecBonsGrossist(product)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )

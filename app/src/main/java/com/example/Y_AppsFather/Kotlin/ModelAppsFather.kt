@@ -32,7 +32,7 @@ open class ModelAppsFather(
             produitsMainDataBase.clear()
             produitsMainDataBase.addAll(value)
         }
-    
+
     val groupedProductsPatGrossist: List<Pair<ProduitModel.GrossistBonCommandes.GrossistInformations, List<ProduitModel>>>
         get() = produitsMainDataBase
             .mapNotNull { product ->
@@ -176,7 +176,7 @@ open class ModelAppsFather(
             ) {
                 var auFilterFAB: Boolean by mutableStateOf(false)
                 var positionInGrossistsList: Int
-                    by mutableIntStateOf(0)
+                        by mutableIntStateOf(0)
 
                 override fun equals(other: Any?): Boolean {
                     if (this === other) return true
@@ -278,61 +278,57 @@ open class ModelAppsFather(
                     "/IMGs" +
                     "/BaseDonne"
 
-        fun updateAllProduitsUiEtFireBases(
-            initViewModel: ViewModelProduits,
-            produitsMainDataBase: SnapshotStateList<ProduitModel>
+        fun updateAvecBonsProduitsUiEtFireBases(
+            viewModelProduits: ViewModelProduits,
+            updatedProducts: SnapshotStateList<ProduitModel>
         ) {
-            try {
-                initViewModel._modelAppsFather.produitsMainDataBase  = produitsMainDataBase
-                produitsMainDataBase.forEach { product ->
-                    try {
-                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
-                        Log.d("Firebase", "Successfully updated product ${product.id}")
-                    } catch (e: Exception) {
-                        Log.e("Firebase", "Failed to update product ${product.id}", e)
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("Firebase", "Error updating products", e)
-                throw e
-            }
-        }
-        fun SnapshotStateList<ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
-            try {
-                this.forEach { product ->
-                    try {
-                        val index =
-                            initViewModel._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
-                        if (index != -1) {
-                            initViewModel._modelAppsFather.produitsMainDataBase[index] = product
-                        }
-                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
-                        Log.d("Firebase", "Successfully updated product ${product.id}")
-                    } catch (e: Exception) {
-                        Log.e("Firebase", "Failed to update product ${product.id}", e)
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("Firebase", "Error updating products", e)
-                throw e
-            }
-        }
-        fun ViewModelProduits.updateProduct(product: ProduitModel) {
-            viewModelScope.launch {
+            viewModelProduits.viewModelScope.launch {
                 try {
-                    produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
+                    // Update local state first
+                    viewModelProduits.produitsAvecBonsGrossist.clear()
+                    viewModelProduits.produitsAvecBonsGrossist.addAll(
+                        updatedProducts
+                    )
 
-                    // Update local state
-                    val index = _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
-                    if (index != -1) {
-                        _modelAppsFather.produitsMainDataBase[index] = product
+                    // Then update Firebase in chunks to prevent overwhelming the connection
+                    updatedProducts.chunked(5).forEach { chunk ->
+                        chunk.forEach { product ->
+                            try {
+                                produitsFireBaseRef.child(product.id.toString()).setValue(product)
+                                    .await()
+                                Log.d("Firebase", "Successfully updated product ${product.id}")
+                            } catch (e: Exception) {
+                                Log.e("Firebase", "Failed to update product ${product.id}", e)
+                            }
+                        }
                     }
-
-                    Log.d("ViewModelProduits", "Successfully updated product ${product.id}")
                 } catch (e: Exception) {
-                    Log.e("ViewModelProduits", "Failed to update product ${product.id}", e)
+                    Log.e("Firebase", "Error updating products", e)
+                    throw e
                 }
             }
         }
     }
+
+    fun SnapshotStateList<ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
+        try {
+            this.forEach { product ->
+                try {
+                    val index =
+                        initViewModel._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
+                    if (index != -1) {
+                        initViewModel._modelAppsFather.produitsMainDataBase[index] = product
+                    }
+                    produitsFireBaseRef.child(product.id.toString()).setValue(product)
+                    Log.d("Firebase", "Successfully updated product ${product.id}")
+                } catch (e: Exception) {
+                    Log.e("Firebase", "Failed to update product ${product.id}", e)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("Firebase", "Error updating products", e)
+            throw e
+        }
+    }
+
 }

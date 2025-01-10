@@ -1,4 +1,4 @@
-// ViewModel_Head.kt
+// ViewModelMaps.kt
 package com.example.Z_AppsFather.Parent._2.ViewModel.Parent
 
 import androidx.compose.runtime.getValue
@@ -20,7 +20,7 @@ import com.google.firebase.database.database
 import kotlinx.coroutines.launch
 import java.util.AbstractMap
 
-class ViewModel_Head : ViewModel() {
+class ViewModelMaps : ViewModel() {
     var _maps by mutableStateOf(Maps())
     val maps: Maps get() = _maps
     private val paramatersAppsViewModel = ParamatersAppsViewModel()

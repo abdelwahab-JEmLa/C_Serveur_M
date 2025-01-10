@@ -1,7 +1,7 @@
 package com.example.Z_AppsFather.Parent._1.Model.Parent
 
 import androidx.compose.runtime.mutableStateListOf
-import com.example.Z_AppsFather.Parent._2.ViewModel.Parent.ViewModel_Head
+import com.example.Z_AppsFather.Parent._2.ViewModel.Parent.ViewModelMaps
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +11,12 @@ import kotlinx.coroutines.tasks.await
 import java.util.AbstractMap
 
 class Maps {
-    var mapGroToMapPositionToProduits = mutableStateListOf<Map.Entry<GrossistInfosModel, Map<TypePosition, MutableList<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>>>()
+    var mapGroToMapPositionToProduits = mutableStateListOf<
+            Map.Entry<GrossistInfosModel,
+                    Map<TypePosition,
+                            MutableList<Map.Entry<ArticleInfosModel,
+                                    MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>>>>()
+
     var positionedArticles = mutableStateListOf<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>()
     var nonPositionedArticles = mutableStateListOf<Map.Entry<ArticleInfosModel, MutableList<Map.Entry<ColourEtGoutInfosModel, Double>>>>()
 
@@ -35,7 +40,7 @@ class Maps {
                 }
             }
 
-        fun updateMapData(grossistIndex: Int, viewModel_Head: ViewModel_Head, itsDeplacement: Boolean = false) {
+        fun updateMapData(grossistIndex: Int, viewModel_Head: ViewModelMaps, itsDeplacement: Boolean = false) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val maps = viewModel_Head._maps

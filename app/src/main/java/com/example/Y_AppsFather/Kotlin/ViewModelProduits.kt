@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.produitsFireBaseRef
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel
-import com.example.Z_AppsFather.Parent._1.Model.ParamatersAppsModel
-import com.example.Z_AppsFather.Parent._3.Init.initializer
+import com.example.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
+import com.example.Z_AppsFather.Kotlin._3.Init.initializer
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener

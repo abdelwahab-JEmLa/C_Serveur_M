@@ -1,0 +1,47 @@
+Index: app/src/main/java/com/example/Packages/A_GrosssitsCommendHandler/Z_ActiveFragment/B_FilterScreenFab.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/Packages/A_GrosssitsCommendHandler/Z_ActiveFragment/B_FilterScreenFab.kt b/app/src/main/java/com/example/Packages/A_GrosssitsCommendHandler/Z_ActiveFragment/B_FilterScreenFab.kt
+--- a/app/src/main/java/com/example/Packages/A_GrosssitsCommendHandler/Z_ActiveFragment/B_FilterScreenFab.kt	
++++ b/app/src/main/java/com/example/Packages/A_GrosssitsCommendHandler/Z_ActiveFragment/B_FilterScreenFab.kt	(date 1736582443489)
+@@ -41,7 +41,8 @@
+ @Composable
+ fun FilterScreenFab(
+     modifier: Modifier = Modifier,
+-    viewModelProduits: ViewModelProduits
++    viewModelProduits: ViewModelProduits,
++    onClick: (Long) -> Unit,
+ ) {
+     var offsetX by remember { mutableFloatStateOf(0f) }
+     var offsetY by remember { mutableFloatStateOf(0f) }
+@@ -134,24 +135,16 @@
+                                 text = "${grossist.nom} (${produits.size})",
+                                 modifier = Modifier
+                                     .padding(end = 8.dp)
+-                                    .background(
+-                                        if (grossist.auFilterFAB) Color.Blue else Color.Transparent
+-                                    )
++                                  //  .background(
++                                  //      if (viewModelProduits.selectedGrossist == grossist.id) Color.Blue else Color.Transparent
++                                 //   )
+                                     .padding(4.dp),
+                                 style = MaterialTheme.typography.bodyMedium
+                             )
+ 
+                             FloatingActionButton(
+                                 onClick = {
+-                                    viewModelProduits.selectedGrossist = grossist   //-->
+-                                    viewModelProduits._paramatersAppsViewModelModel.telephoneClientParamaters.selectedGrossist = grossist
+-
+-                                    produitsAvecBonsGrossist.forEach { product ->
+-                                        product.isVisible = product.bonCommendDeCetteCota?.let { bon ->
+-                                            bon.grossistInformations?.id == grossist.id
+-                                        } ?: false
+-                                    }
+-                                    updateAvecBonsProduitsUiEtFireBases(viewModelProduits, produitsAvecBonsGrossist)
++                                        onClick(grossist.id)
+                                 },
+                                 modifier = Modifier.size(48.dp),
+                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

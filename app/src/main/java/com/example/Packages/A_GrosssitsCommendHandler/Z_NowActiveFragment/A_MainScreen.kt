@@ -43,7 +43,7 @@ internal fun MainScreen_F2(
         return
     }
 
-    var selectedGrossist by remember { mutableLongStateOf(2L) }
+    var selectedGrossist by remember { mutableLongStateOf(0L) }
     val databaseSize = viewModelProduits.produitsAvecBonsGrossist.size
 
     // Use the filtered products directly from produitsAvecBonsGrossist
@@ -63,7 +63,7 @@ internal fun MainScreen_F2(
                 )
             }
         }
-          //
+        //
         GlobalEditesGFABs_F2(
             appsHeadModel = viewModelProduits.modelAppsFather,
             modifier = modifier,

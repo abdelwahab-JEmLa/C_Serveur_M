@@ -271,8 +271,8 @@ open class ModelAppsFather(
                     "/BaseDonne"
 
         fun update_produitsAvecBonsGrossist(
-            viewModelProduits: ViewModelProduits,
-            updatedProducts: SnapshotStateList<ProduitModel>
+            updatedProducts: SnapshotStateList<ProduitModel>,
+            viewModelProduits: ViewModelProduits
         ) {
             viewModelProduits.viewModelScope.launch {
                 try {
@@ -297,26 +297,29 @@ open class ModelAppsFather(
                 }
             }
         }
+        fun updateProduct_produitsAvecBonsGrossist(
+            product: ProduitModel,
+            viewModelProduits: ViewModelProduits
+        ) {
+            viewModelProduits.viewModelScope.launch {
+                try {
+                    // Update Firebase
+                    produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
 
-        fun SnapshotStateList<ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
-            try {
-                this.forEach { product ->
-                    try {
-                        val index =
-                            initViewModel._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
-                        if (index != -1) {
-                            initViewModel._modelAppsFather.produitsMainDataBase[index] = product
-                        }
-                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
-                        Log.d("Firebase", "Successfully updated product ${product.id}")
-                    } catch (e: Exception) {
-                        Log.e("Firebase", "Failed to update product ${product.id}", e)
+                    // Update _produitsAvecBonsGrossist
+                    val updatedList = viewModelProduits._produitsAvecBonsGrossist.toMutableList()
+                    val index = updatedList.indexOfFirst { it.id == product.id }
+                    if (index != -1) {
+                        updatedList[index] = product
+                        viewModelProduits._produitsAvecBonsGrossist= updatedList
                     }
+
+                    Log.d("ViewModelProduits", "Successfully updated product ${product.id}")
+                } catch (e: Exception) {
+                    Log.e("ViewModelProduits", "Failed to update product ${product.id}", e)
                 }
-            } catch (e: Exception) {
-                Log.e("Firebase", "Error updating products", e)
-                throw e
             }
         }
+
     }
 }

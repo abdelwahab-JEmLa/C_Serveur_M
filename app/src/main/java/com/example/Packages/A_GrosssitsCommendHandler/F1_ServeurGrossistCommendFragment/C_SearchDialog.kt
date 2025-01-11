@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import kotlinx.coroutines.delay
 
@@ -116,7 +117,7 @@ fun SearchDialog(viewModelProduits: ViewModelProduits) {
                                             cPositionCheyCeGrossit = true
                                             positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
                                         }
-                                        viewModelProduits.updateProduct_produitsAvecBonsGrossist(product)
+                                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
                                         showDialog = false
                                     }  ,
                                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),

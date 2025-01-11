@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 
 @Composable
@@ -70,7 +71,7 @@ fun B_ListMainFragment_1(
                         product.bonCommendDeCetteCota
                             ?.cPositionCheyCeGrossit = false
 
-                        viewModelProduits.updateProduct_produitsAvecBonsGrossist(product)
+                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
@@ -128,7 +129,7 @@ fun B_ListMainFragment_1(
                         if (product.itsTempProduit) {
                             product.statuesBase.prePourCameraCapture = true
                         }
-                        viewModelProduits.updateProduct_produitsAvecBonsGrossist(product)
+                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )

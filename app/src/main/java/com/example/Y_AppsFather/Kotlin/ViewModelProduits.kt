@@ -16,7 +16,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 class ViewModelProduits : ViewModel() {
     var _paramatersAppsViewModelModel by mutableStateOf(ParamatersAppsModel())
@@ -28,6 +27,9 @@ class ViewModelProduits : ViewModel() {
     // Changed from derivedStateOf to mutableStateOf
     var _produitsAvecBonsGrossist by mutableStateOf(emptyList<ProduitModel>())
     val produitsAvecBonsGrossist: List<ProduitModel> get() = _produitsAvecBonsGrossist
+    private fun updateProduitsAvecBonsGrossist() {
+        _produitsAvecBonsGrossist = produitsMainDataBase.filter { it.bonCommendDeCetteCota != null }
+    }
 
     var initializationProgress by mutableFloatStateOf(0f)
     var isInitializing by mutableStateOf(false)
@@ -50,7 +52,7 @@ class ViewModelProduits : ViewModel() {
                     }
                 }
                 setupDataListeners()
-                updateProduitsAvecBonsGrossist() // Initial update
+                updateProduitsAvecBonsGrossist()
                 initializationComplete = true
             } catch (e: Exception) {
                 Log.e("ViewModelProduits", "Initialization failed", e)
@@ -60,10 +62,6 @@ class ViewModelProduits : ViewModel() {
                 isInitializing = false
             }
         }
-    }
-
-    private fun updateProduitsAvecBonsGrossist() {
-        _produitsAvecBonsGrossist = produitsMainDataBase.filter { it.bonCommendDeCetteCota != null }
     }
 
     private fun setupDataListeners() {
@@ -81,7 +79,7 @@ class ViewModelProduits : ViewModel() {
                                     updatedProduct.statuesBase.imageGlidReloadTigger =
                                         currentProduct.statuesBase.imageGlidReloadTigger
                                     _modelAppsFather.produitsMainDataBase[index] = updatedProduct
-                                    updateProduitsAvecBonsGrossist() // Update filtered list
+                                    updateProduitsAvecBonsGrossist()
                                 }
                             }
                     }
@@ -94,24 +92,4 @@ class ViewModelProduits : ViewModel() {
         })
     }
 
-    fun updateProduct_produitsAvecBonsGrossist(product: ProduitModel) {
-        viewModelScope.launch {
-            try {
-                // Update Firebase
-                produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
-
-                // Update _produitsAvecBonsGrossist
-                val updatedList = _produitsAvecBonsGrossist.toMutableList()
-                val index = updatedList.indexOfFirst { it.id == product.id }
-                if (index != -1) {
-                    updatedList[index] = product
-                    _produitsAvecBonsGrossist= updatedList
-                }
-
-                Log.d("ViewModelProduits", "Successfully updated product ${product.id}")
-            } catch (e: Exception) {
-                Log.e("ViewModelProduits", "Failed to update product ${product.id}", e)
-            }
-        }
-    }
 }

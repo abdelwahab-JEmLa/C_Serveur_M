@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment.Modules
+package com.example.Packages.A_GrosssitsCommendHandler.Z_NowActiveFragment.Modules
 
 import android.Manifest
 import android.content.pm.PackageManager

@@ -14,6 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.Packages.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment.A_ScreenMainFragment_1
+import com.example.Packages.A_GrosssitsCommendHandler.Z_NowActiveFragment.MainScreen_F2
 import com.example.c_serveur.AppViewModels
 import kotlinx.serialization.Serializable
 
@@ -34,9 +35,9 @@ fun AppNavHost(
                A_ScreenMainFragment_1(viewModelProduits=appViewModels.initViewModel)
             }
 
-            composable(FragmentMainScreenDestination2().route) {
+            composable(NowActiveFragment().route) {
+                MainScreen_F2(viewModelProduits=appViewModels.initViewModel)
             }
-
         }
     }
 }
@@ -45,13 +46,18 @@ fun AppNavHost(
 private fun PreviewScreenMainFragment_1() {
     A_ScreenMainFragment_1(modifier = Modifier.fillMaxSize())
 }
+@Preview
+@Composable
+private fun PreviewNowActiveFragment() {
+    MainScreen_F2(modifier = Modifier.fillMaxSize())
+}
 /**
  * Object used for a type safe destination to a Home screen
  */
 @Serializable
 data class FragmentMainScreenDestination1(val route: String = "FragmentMainScreenDestination1") : java.io.Serializable
 @Serializable
-data class FragmentMainScreenDestination2(val route: String = "A_ScreenMainFragment_2") : java.io.Serializable
+data class NowActiveFragment(val route: String = "NowActiveFragment") : java.io.Serializable
 
 sealed class Screen(
     val route: String,
@@ -65,10 +71,10 @@ sealed class Screen(
         title = "FragmentMainScreenDestination1",
         color = Color(0xFFFF5722)
     )
-    data object FragmentMainScreen2 : Screen(
-        route = "A_ScreenMainFragment_2",
+    data object NowActiveFragment : Screen(
+        route = "NowActiveFragment",
         icon = Icons.Default.People,
-        title = "A_ScreenMainFragment_2",
+        title = "NowActiveFragment",
         color = Color(0xFF9C27B0)
     )
 
@@ -78,7 +84,7 @@ sealed class Screen(
 object NavigationItems {
     fun getItems() = listOf(
         Screen.FragmentMainScreen1,
-        Screen.FragmentMainScreen2,
+        Screen.NowActiveFragment,
     )
 }
 

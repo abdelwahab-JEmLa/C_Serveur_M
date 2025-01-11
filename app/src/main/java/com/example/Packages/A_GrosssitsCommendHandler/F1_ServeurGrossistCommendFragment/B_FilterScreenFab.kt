@@ -52,7 +52,7 @@ fun FilterScreenFab(
 
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier

@@ -2,13 +2,17 @@ package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,31 +44,46 @@ internal fun A_ScreenMainFragment_1(
         return
     }
 
+    var selectedGrossist by remember { mutableLongStateOf(2L) }
+    val databaseSize = viewModelProduits.produitsMainDataBase.size
+
+    var produitsAvecBonsGrossist =
+        viewModelProduits._modelAppsFather
+            .produitsMainDataBase.filter { it.bonCommendDeCetteCota != null }
+            .toMutableStateList()
+
+    val visibleProducts = produitsAvecBonsGrossist
+        .filter {
+        (it.bonCommendDeCetteCota
+            ?.grossistInformations?.id) == selectedGrossist
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
-            Column {
-                val databaseSize = viewModelProduits.produitsAvecBonsGrossist.size
 
-                if (databaseSize > 0) {
-                    B_ListMainFragment_1(
-                        viewModelProduits = viewModelProduits,
-                        paddingValues = paddingValues
-                    )
-                }
+            if (databaseSize > 0) {
+                B_ListMainFragment_1(
+                    visibleProducts = visibleProducts,
+                    viewModelProduits = viewModelProduits,
+                    paddingValues = paddingValues
+                )
             }
-
-            GlobalEditesGFABsFragment_1(
-                appsHeadModel = viewModelProduits.modelAppsFather,
-                modifier = modifier,
-            )
-
-            FilterScreenFab(
-                viewModelProduits = viewModelProduits,
-            )
-
         }
+
+        GlobalEditesGFABsFragment_1(
+            appsHeadModel = viewModelProduits.modelAppsFather,
+            modifier = modifier,
+        )
+
+        FilterScreenFab(
+            viewModelProduits = viewModelProduits,
+            onClick = {
+                selectedGrossist = it
+            }
+        )
+
     }
 }
 

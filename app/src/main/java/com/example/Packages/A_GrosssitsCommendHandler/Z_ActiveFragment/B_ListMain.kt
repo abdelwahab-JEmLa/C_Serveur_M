@@ -24,20 +24,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages.A1_Fragment.SearchDialog
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 
 @Composable
 fun B_ListMainFragment_1(
     viewModelProduits: ViewModelProduits,
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    visibleProducts: List<ModelAppsFather.ProduitModel>
 ) {
-    val visibleProducts = viewModelProduits.produitsAvecBonsGrossist.filter {
-        (it.bonCommendDeCetteCota
-            ?.grossistInformations?.id ?: 0) == viewModelProduits.selectedGrossist
-    }     //-->
-            //TODO(1): pk rien  ne s affiche quand je click sut
-
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota
             ?.cPositionCheyCeGrossit == true

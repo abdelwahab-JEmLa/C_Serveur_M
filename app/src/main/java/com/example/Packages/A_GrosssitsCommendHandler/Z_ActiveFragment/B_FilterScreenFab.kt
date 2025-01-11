@@ -3,7 +3,6 @@ package com.example.Packages.A_GrosssitsCommendHandler.Z_ActiveFragment
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,7 +40,8 @@ import kotlin.math.roundToInt
 @Composable
 fun FilterScreenFab(
     modifier: Modifier = Modifier,
-    viewModelProduits: ViewModelProduits
+    viewModelProduits: ViewModelProduits,
+    onClick: (Long) -> Unit,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -49,7 +49,6 @@ fun FilterScreenFab(
 
     // Access groupedProducts through the viewModel
     val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsPatGrossist
-    val produitsAvecBonsGrossist = viewModelProduits .produitsAvecBonsGrossist
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -105,7 +104,7 @@ fun FilterScreenFab(
                                         previousGrossist.positionInGrossistsList++
 
                                         // Update positions
-                                        produitsAvecBonsGrossist.forEach { product ->
+                                        viewModelProduits._modelAppsFather.produitsMainDataBase.forEach { product ->
                                             product.bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                 when (currentGrossist.id) {
                                                     grossist.id -> {
@@ -117,7 +116,7 @@ fun FilterScreenFab(
                                                 }
                                             }
                                         }
-                                        updateAvecBonsProduitsUiEtFireBases(viewModelProduits,produitsAvecBonsGrossist)
+                                        updateAvecBonsProduitsUiEtFireBases(viewModelProduits,viewModelProduits._modelAppsFather.produitsMainDataBase)
                                     }
                                     },
                                     modifier = Modifier.size(36.dp),
@@ -134,17 +133,16 @@ fun FilterScreenFab(
                                 text = "${grossist.nom} (${produits.size})",
                                 modifier = Modifier
                                     .padding(end = 8.dp)
-                                    .background(
-                                        if (viewModelProduits.selectedGrossist == grossist.id) Color.Blue else Color.Transparent
-                                    )
+                                  //  .background(
+                                  //      if (viewModelProduits.selectedGrossist == grossist.id) Color.Blue else Color.Transparent
+                                 //   )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
                             FloatingActionButton(
                                 onClick = {
-                                    viewModelProduits._paramatersAppsViewModelModel
-                                        .telephoneClientParamaters.selectedGrossist = grossist.id
+                                        onClick(grossist.id)
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

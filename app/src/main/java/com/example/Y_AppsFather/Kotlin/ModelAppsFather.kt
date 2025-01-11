@@ -25,14 +25,6 @@ open class ModelAppsFather(
     var produitsMainDataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
 
-    // Property for Firebase serialization
-    var produitsDataBaseList: List<ProduitModel>
-        get() = produitsMainDataBase.toList()
-        set(value) {
-            produitsMainDataBase.clear()
-            produitsMainDataBase.addAll(value)
-        }
-
     val groupedProductsPatGrossist: List<Pair<ProduitModel.GrossistBonCommandes.GrossistInformations, List<ProduitModel>>>
         get() = produitsMainDataBase
             .mapNotNull { product ->
@@ -285,8 +277,8 @@ open class ModelAppsFather(
             viewModelProduits.viewModelScope.launch {
                 try {
                     // Update local state first
-                    viewModelProduits.produitsAvecBonsGrossist.clear()
-                    viewModelProduits.produitsAvecBonsGrossist.addAll(
+                    viewModelProduits._modelAppsFather.produitsMainDataBase.clear()
+                    viewModelProduits._modelAppsFather.produitsMainDataBase.addAll(
                         updatedProducts
                     )
 

@@ -271,13 +271,14 @@ open class ModelAppsFather(
                     "/BaseDonne"
 
         fun update_produitsAvecBonsGrossist(
-            updatedProducts: SnapshotStateList<ProduitModel>,
+            updatedProducts: List<ProduitModel>, // Change parameter type to List
             viewModelProduits: ViewModelProduits
         ) {
             viewModelProduits.viewModelScope.launch {
                 try {
-                    // Update _produitsAvecBonsGrossist
-                    viewModelProduits._produitsAvecBonsGrossist = updatedProducts
+                    // Update local state
+                    viewModelProduits._produitsAvecBonsGrossist.clear()
+                    viewModelProduits._produitsAvecBonsGrossist.addAll(updatedProducts)
 
                     // Then update Firebase in chunks to prevent overwhelming the connection
                     updatedProducts.chunked(5).forEach { chunk ->
@@ -307,11 +308,10 @@ open class ModelAppsFather(
                     produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
 
                     // Update _produitsAvecBonsGrossist
-                    val updatedList = viewModelProduits._produitsAvecBonsGrossist.toMutableList()
-                    val index = updatedList.indexOfFirst { it.id == product.id }
+                    val index = viewModelProduits._produitsAvecBonsGrossist.indexOfFirst { it.id == product.id }
                     if (index != -1) {
-                        updatedList[index] = product
-                        viewModelProduits._produitsAvecBonsGrossist= updatedList
+                        // Direct update of the SnapshotStateList
+                        viewModelProduits._produitsAvecBonsGrossist[index] = product
                     }
 
                     Log.d("ViewModelProduits", "Successfully updated product ${product.id}")
@@ -320,6 +320,5 @@ open class ModelAppsFather(
                 }
             }
         }
-
     }
 }

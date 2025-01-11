@@ -3,8 +3,10 @@ package com.example.Y_AppsFather.Kotlin
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.produitsFireBaseRef
@@ -24,11 +26,15 @@ class ViewModelProduits : ViewModel() {
     val modelAppsFather: ModelAppsFather get() = _modelAppsFather
     val produitsMainDataBase = _modelAppsFather.produitsMainDataBase
 
-    // Changed from derivedStateOf to mutableStateOf
-    var _produitsAvecBonsGrossist by mutableStateOf(emptyList<ProduitModel>())
+    var _produitsAvecBonsGrossist = mutableStateListOf<ProduitModel>()
     val produitsAvecBonsGrossist: List<ProduitModel> get() = _produitsAvecBonsGrossist
+    // Add this getter for when we need the mutable list
+    val produitsAvecBonsGrossistMutable: SnapshotStateList<ProduitModel> get() = _produitsAvecBonsGrossist
+
+
     private fun updateProduitsAvecBonsGrossist() {
-        _produitsAvecBonsGrossist = produitsMainDataBase.filter { it.bonCommendDeCetteCota != null }
+        _produitsAvecBonsGrossist.clear()
+        _produitsAvecBonsGrossist.addAll(produitsMainDataBase.filter { it.bonCommendDeCetteCota != null })
     }
 
     var initializationProgress by mutableFloatStateOf(0f)
@@ -63,22 +69,24 @@ class ViewModelProduits : ViewModel() {
             }
         }
     }
-
     private fun setupDataListeners() {
         produitsFireBaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 viewModelScope.launch {
                     snapshot.children.forEach { child ->
-                        child.getValue(ModelAppsFather.ProduitModel::class.java)
+                        child.getValue(ProduitModel::class.java)
                             ?.let { updatedProduct ->
-                                val index =
-                                    _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == updatedProduct.id }
+                                val index = _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == updatedProduct.id }
                                 if (index != -1) {
-                                    val currentProduct =
-                                        _modelAppsFather.produitsMainDataBase[index]
-                                    updatedProduct.statuesBase.imageGlidReloadTigger =
-                                        currentProduct.statuesBase.imageGlidReloadTigger
-                                    _modelAppsFather.produitsMainDataBase[index] = updatedProduct
+                                    val currentProduct = _modelAppsFather.produitsMainDataBase[index]
+
+                                    // Merge the updated product with current product data
+                                    val mergedProduct = updatedProduct.apply {
+                                        statuesBase = currentProduct.statuesBase
+                                        bonCommendDeCetteCota = currentProduct.bonCommendDeCetteCota
+                                    }
+
+                                    _modelAppsFather.produitsMainDataBase[index] = mergedProduct
                                     updateProduitsAvecBonsGrossist()
                                 }
                             }
@@ -91,5 +99,4 @@ class ViewModelProduits : ViewModel() {
             }
         })
     }
-
 }

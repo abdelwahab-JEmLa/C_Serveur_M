@@ -97,27 +97,30 @@ fun FilterScreenFab(
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelProduits.viewModelScope.launch {
+                                            val previousGrossist = groupedProducts[index - 1].first
 
-                                        val previousGrossist = groupedProducts[index - 1].first
+                                            grossist.positionInGrossistsList--
+                                            previousGrossist.positionInGrossistsList++
 
-                                        grossist.positionInGrossistsList--
-                                        previousGrossist.positionInGrossistsList++
-
-                                        // Update positions
-                                        viewModelProduits._modelAppsFather.produitsMainDataBase.forEach { product ->
-                                            product.bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                when (currentGrossist.id) {
-                                                    grossist.id -> {
-                                                        currentGrossist.positionInGrossistsList--
-                                                    }
-                                                    previousGrossist.id -> {
-                                                        currentGrossist.positionInGrossistsList++
+                                            // Update positions using the current list
+                                            val updatedProducts = viewModelProduits.produitsAvecBonsGrossist.map { product ->
+                                                product.apply {
+                                                    bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
+                                                        when (currentGrossist.id) {
+                                                            grossist.id -> {
+                                                                currentGrossist.positionInGrossistsList--
+                                                            }
+                                                            previousGrossist.id -> {
+                                                                currentGrossist.positionInGrossistsList++
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
+
+                                            // Now pass the updated list to the update function
+                                            update_produitsAvecBonsGrossist(updatedProducts, viewModelProduits)
                                         }
-                                        update_produitsAvecBonsGrossist(viewModelProduits,viewModelProduits._modelAppsFather.produitsMainDataBase)
-                                    }
                                     },
                                     modifier = Modifier.size(36.dp),
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer

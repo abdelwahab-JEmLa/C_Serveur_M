@@ -215,7 +215,7 @@ fun GlobalEditesGFABsFragment_1(
             permissionLauncher.launch(permissions)
         } else {
             val productForCapture = appsHeadModel.produitsMainDataBase
-                .find { it.statuesBase.prePourCameraCapture }
+                .firstOrNull { it.statuesBase.prePourCameraCapture }
 
             if (productForCapture != null) {
                 pendingProduct = productForCapture

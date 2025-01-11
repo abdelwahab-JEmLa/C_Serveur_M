@@ -25,6 +25,10 @@ class ViewModelProduits : ViewModel() {
     val modelAppsFather: ModelAppsFather get() = _modelAppsFather
     val produitsMainDataBase = _modelAppsFather.produitsMainDataBase
 
+    // Changed from derivedStateOf to mutableStateOf
+    var _produitsAvecBonsGrossist by mutableStateOf(emptyList<ProduitModel>())
+    val produitsAvecBonsGrossist: List<ProduitModel> get() = _produitsAvecBonsGrossist
+
     var initializationProgress by mutableFloatStateOf(0f)
     var isInitializing by mutableStateOf(false)
     var initializationComplete by mutableStateOf(false)
@@ -46,6 +50,7 @@ class ViewModelProduits : ViewModel() {
                     }
                 }
                 setupDataListeners()
+                updateProduitsAvecBonsGrossist() // Initial update
                 initializationComplete = true
             } catch (e: Exception) {
                 Log.e("ViewModelProduits", "Initialization failed", e)
@@ -57,7 +62,10 @@ class ViewModelProduits : ViewModel() {
         }
     }
 
-    // Enhanced setupDataListeners function
+    private fun updateProduitsAvecBonsGrossist() {
+        _produitsAvecBonsGrossist = produitsMainDataBase.filter { it.bonCommendDeCetteCota != null }
+    }
+
     private fun setupDataListeners() {
         produitsFireBaseRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -68,12 +76,12 @@ class ViewModelProduits : ViewModel() {
                                 val index =
                                     _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == updatedProduct.id }
                                 if (index != -1) {
-                                    // Preserve local state that shouldn't be overwritten
                                     val currentProduct =
                                         _modelAppsFather.produitsMainDataBase[index]
                                     updatedProduct.statuesBase.imageGlidReloadTigger =
                                         currentProduct.statuesBase.imageGlidReloadTigger
                                     _modelAppsFather.produitsMainDataBase[index] = updatedProduct
+                                    updateProduitsAvecBonsGrossist() // Update filtered list
                                 }
                             }
                     }
@@ -85,16 +93,19 @@ class ViewModelProduits : ViewModel() {
             }
         })
     }
+
     fun updateProduct_produitsAvecBonsGrossist(product: ProduitModel) {
         viewModelScope.launch {
             try {
+                // Update Firebase
                 produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
 
-                // Update local state
-                val index =
-                    _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
+                // Update _produitsAvecBonsGrossist
+                val updatedList = _produitsAvecBonsGrossist.toMutableList()
+                val index = updatedList.indexOfFirst { it.id == product.id }
                 if (index != -1) {
-                    _modelAppsFather.produitsMainDataBase[index] = product
+                    updatedList[index] = product
+                    _produitsAvecBonsGrossist= updatedList
                 }
 
                 Log.d("ViewModelProduits", "Successfully updated product ${product.id}")
@@ -103,5 +114,4 @@ class ViewModelProduits : ViewModel() {
             }
         }
     }
-
 }

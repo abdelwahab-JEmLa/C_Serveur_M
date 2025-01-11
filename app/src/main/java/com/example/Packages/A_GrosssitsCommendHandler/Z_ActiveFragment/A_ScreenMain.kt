@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,7 +30,7 @@ internal fun A_ScreenMainFragment_1(
         logLoadingState(viewModelProduits.isLoading, viewModelProduits.loadingProgress)
     }
 
-    if (viewModelProduits.isLoading) {  // Changed from !isLoading to isLoading
+    if (viewModelProduits.isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
                 progress = {
@@ -45,24 +44,17 @@ internal fun A_ScreenMainFragment_1(
     }
 
     var selectedGrossist by remember { mutableLongStateOf(2L) }
-    val databaseSize = viewModelProduits.produitsMainDataBase.size
+    val databaseSize = viewModelProduits.produitsAvecBonsGrossist.size
 
-    var produitsAvecBonsGrossist =
-        viewModelProduits._modelAppsFather
-            .produitsMainDataBase.filter { it.bonCommendDeCetteCota != null }
-            .toMutableStateList()
-
-    val visibleProducts = produitsAvecBonsGrossist
-        .filter {
-        (it.bonCommendDeCetteCota
-            ?.grossistInformations?.id) == selectedGrossist
+    // Use the filtered products directly from produitsAvecBonsGrossist
+    val visibleProducts = viewModelProduits.produitsAvecBonsGrossist.filter { product ->
+        product.bonCommendDeCetteCota?.grossistInformations?.id == selectedGrossist
     }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
-
             if (databaseSize > 0) {
                 B_ListMainFragment_1(
                     visibleProducts = visibleProducts,
@@ -83,13 +75,9 @@ internal fun A_ScreenMainFragment_1(
                 selectedGrossist = it
             }
         )
-
     }
 }
 
 private fun logLoadingState(isLoading: Boolean, progress: Float) {
     Log.d(TAG, "Loading State: isLoading=$isLoading, progress=${progress * 100}%")
 }
-
-
-

@@ -32,7 +32,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateAvecBonsProduitsUiEtFireBases
+import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
 import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -116,7 +116,7 @@ fun FilterScreenFab(
                                                 }
                                             }
                                         }
-                                        updateAvecBonsProduitsUiEtFireBases(viewModelProduits,viewModelProduits._modelAppsFather.produitsMainDataBase)
+                                        update_produitsAvecBonsGrossist(viewModelProduits,viewModelProduits._modelAppsFather.produitsMainDataBase)
                                     }
                                     },
                                     modifier = Modifier.size(36.dp),

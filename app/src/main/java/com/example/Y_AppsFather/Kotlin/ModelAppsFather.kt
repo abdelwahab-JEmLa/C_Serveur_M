@@ -270,17 +270,14 @@ open class ModelAppsFather(
                     "/IMGs" +
                     "/BaseDonne"
 
-        fun updateAvecBonsProduitsUiEtFireBases(
+        fun update_produitsAvecBonsGrossist(
             viewModelProduits: ViewModelProduits,
             updatedProducts: SnapshotStateList<ProduitModel>
         ) {
             viewModelProduits.viewModelScope.launch {
                 try {
-                    // Update local state first
-                    viewModelProduits._modelAppsFather.produitsMainDataBase.clear()
-                    viewModelProduits._modelAppsFather.produitsMainDataBase.addAll(
-                        updatedProducts
-                    )
+                    // Update _produitsAvecBonsGrossist
+                    viewModelProduits._produitsAvecBonsGrossist = updatedProducts
 
                     // Then update Firebase in chunks to prevent overwhelming the connection
                     updatedProducts.chunked(5).forEach { chunk ->
@@ -300,27 +297,26 @@ open class ModelAppsFather(
                 }
             }
         }
-    }
 
-    fun SnapshotStateList<ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
-        try {
-            this.forEach { product ->
-                try {
-                    val index =
-                        initViewModel._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
-                    if (index != -1) {
-                        initViewModel._modelAppsFather.produitsMainDataBase[index] = product
+        fun SnapshotStateList<ProduitModel>.updatePoduitsUiEtFireBases(initViewModel: ViewModelProduits) {
+            try {
+                this.forEach { product ->
+                    try {
+                        val index =
+                            initViewModel._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
+                        if (index != -1) {
+                            initViewModel._modelAppsFather.produitsMainDataBase[index] = product
+                        }
+                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
+                        Log.d("Firebase", "Successfully updated product ${product.id}")
+                    } catch (e: Exception) {
+                        Log.e("Firebase", "Failed to update product ${product.id}", e)
                     }
-                    produitsFireBaseRef.child(product.id.toString()).setValue(product)
-                    Log.d("Firebase", "Successfully updated product ${product.id}")
-                } catch (e: Exception) {
-                    Log.e("Firebase", "Failed to update product ${product.id}", e)
                 }
+            } catch (e: Exception) {
+                Log.e("Firebase", "Error updating products", e)
+                throw e
             }
-        } catch (e: Exception) {
-            Log.e("Firebase", "Error updating products", e)
-            throw e
         }
     }
-
 }

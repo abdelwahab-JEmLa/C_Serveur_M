@@ -1,126 +1,110 @@
-package com.example.Packages.Z__F3_PhoneClientClient
+package com.example.Packages.Z__F3_PhoneClientClient.Modules
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewModelScope
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @Composable
-fun MainScreenFilterFAB_F3(
-    modifier: Modifier = Modifier,
+fun ClientEditePositionDialog_F3(
     viewModelProduits: ViewModelInitApp,
+    modifier: Modifier = Modifier,
 ) {
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
-    var showButtons by remember { mutableStateOf(false) }
+    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsParClients
 
-    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsPatGrossist
-
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    if (viewModelProduits
+            ._paramatersAppsViewModelModel
+            .visibilityClientEditePositionDialog
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
-                .pointerInput(Unit) {
-                    detectDragGestures { change, dragAmount ->
-                        change.consume()
-                        offsetX += dragAmount.x
-                        offsetY += dragAmount.y
-                    }
-                },
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        Dialog(
+            onDismissRequest = {
+                viewModelProduits
+                    ._paramatersAppsViewModelModel
+                    .visibilityClientEditePositionDialog = false
+            },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true
+            )
         ) {
-            FloatingActionButton(
-                onClick = { showButtons = !showButtons },
-                modifier = Modifier.size(48.dp),
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Icon(
-                    imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = if (showButtons) "Hide" else "Show"
-                )
-            }
-
-            AnimatedVisibility(
-                visible = showButtons,
-                enter = fadeIn(),
-                exit = fadeOut()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(0.9f)
+                    .background(
+                        MaterialTheme.colorScheme.surface,
+                        shape = MaterialTheme.shapes.large
+                    )
+                    .padding(16.dp)
             ) {
                 Column(
-                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    groupedProducts.forEachIndexed { index, (grossist, produits) ->
+                    Text(
+                        "Edit Client Positions",
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+
+                    groupedProducts.forEachIndexed { index, (clientInfo, produits) ->
                         Row(
+                            modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             if (index > 0) {
-                                // In your FAB implementation
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelProduits.viewModelScope.launch {
-                                            val previousGrossist = groupedProducts[index - 1].first
+                                            val previousClientInfo =
+                                                groupedProducts[index - 1].first
 
-                                            grossist.positionInGrossistsList--
-                                            previousGrossist.positionInGrossistsList++
+                                            clientInfo.positionDonClientsList--
+                                            previousClientInfo.positionDonClientsList++
 
-                                            // Update positions using the current list
                                             val updatedProducts =
                                                 viewModelProduits.produitsAvecBonsGrossist.map { product ->
                                                     product.apply {
-                                                        bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                            when (currentGrossist.id) {
-                                                                grossist.id -> {
-                                                                    currentGrossist.positionInGrossistsList--
-                                                                }
-
-                                                                previousGrossist.id -> {
-                                                                    currentGrossist.positionInGrossistsList++
+                                                        bonsVentDeCetteCota.forEach { bonVent ->
+                                                            bonVent.clientInformations?.let { currentClientInfo ->
+                                                                when (currentClientInfo.id) {
+                                                                    clientInfo.id -> {
+                                                                        val tempPosition =
+                                                                            currentClientInfo.positionDonClientsList
+                                                                        currentClientInfo.positionDonClientsList =
+                                                                            previousClientInfo.positionDonClientsList
+                                                                        previousClientInfo.positionDonClientsList =
+                                                                            tempPosition
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
 
-                                            // Now pass the updated list to the update function
                                             update_produitsAvecBonsGrossist(
                                                 updatedProducts,
                                                 viewModelProduits
@@ -138,15 +122,15 @@ fun MainScreenFilterFAB_F3(
                             }
 
                             Text(
-                                text = "${grossist.nom} (${produits.size})",
+                                text = "${clientInfo.nom} (${produits.size})",
                                 modifier = Modifier
-                                    .padding(end = 8.dp)
+                                    .weight(1f)
                                     .background(
                                         if (viewModelProduits
                                                 ._paramatersAppsViewModelModel
-                                                .phoneClientSelectedAcheteur
-                                            == grossist.id
-                                        ) Color.Blue else Color.Transparent
+                                                .telephoneClientParamaters
+                                                .selectedAcheteurForClient == clientInfo.id
+                                        ) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                                     )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
@@ -157,10 +141,10 @@ fun MainScreenFilterFAB_F3(
                                     viewModelProduits
                                         ._paramatersAppsViewModelModel
                                         .telephoneClientParamaters
-                                        .selectedGrossistForClient = grossist.id
+                                        .selectedAcheteurForClient = clientInfo.id
                                 },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))
+                                containerColor = Color(android.graphics.Color.parseColor(clientInfo.couleur))
                             ) {
                                 Text(
                                     text = produits.size.toString(),

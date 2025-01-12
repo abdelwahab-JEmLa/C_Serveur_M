@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Packages.Z__F3_PhoneClientClient.Modules.ClientEditePositionDialog_F3
 import com.example.Packages.Z__F3_PhoneClientClient.Modules.GlobalEditesGFABs_F3
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
@@ -18,8 +19,8 @@ private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
 internal fun MainScreen_F3(
-    modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
+    modifier: Modifier = Modifier,
 ) {
     // Log state changes using LaunchedEffect
     LaunchedEffect(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress) {
@@ -47,8 +48,7 @@ internal fun MainScreen_F3(
             ?.grossistInformations?.id ==
                 viewModelInitApp
                     ._paramatersAppsViewModelModel
-                    .telephoneClientParamaters
-                    .selectedGrossistForServeur
+                    .phoneClientSelectedAcheteur
     }
 
     Scaffold(
@@ -76,6 +76,9 @@ internal fun MainScreen_F3(
                 viewModelProduits = viewModelInitApp,
             )
         }
+        ClientEditePositionDialog_F3(
+            viewModelProduits = viewModelInitApp,
+        )
     }
 }
 

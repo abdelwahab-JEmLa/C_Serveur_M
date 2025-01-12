@@ -57,7 +57,6 @@ internal fun MainScreen_F2(
         }
         if (viewModelInitApp
                 ._paramatersAppsViewModelModel
-                .telephoneClientParamaters
                 .fabsVisibility
         ) {
             GlobalEditesGFABs_F2(

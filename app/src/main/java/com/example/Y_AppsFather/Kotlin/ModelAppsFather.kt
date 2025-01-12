@@ -40,6 +40,27 @@ open class ModelAppsFather(
             .sortedBy { (grossist, _) ->
                 grossist.positionInGrossistsList
             }
+    val groupedProductsParClients: List<Pair<ProduitModel.ClientBonVentModel.ClientInformations, List<ProduitModel>>>
+        get() = produitsMainDataBase
+            .filter { product ->
+                product.bonsVentDeCetteCota.isNotEmpty() &&
+                        product.bonsVentDeCetteCota.any { it.clientInformations != null }
+            }
+            .flatMap { product ->
+                product.bonsVentDeCetteCota.mapNotNull { bonVent ->
+                    bonVent.clientInformations?.let { clientInfo ->
+                        clientInfo to product
+                    }
+                }
+            }
+            .groupBy(
+                keySelector = { it.first },
+                valueTransform = { it.second }
+            )
+            .toList()
+            .sortedBy { (client, _) ->
+                client.positionDonClientsList
+            }
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -230,7 +251,8 @@ open class ModelAppsFather(
                 val couleur: String = ""
             ) {
                 var auFilterFAB: Boolean by mutableStateOf(false)
-
+                var positionDonClientsList: Int
+                        by mutableIntStateOf(0)
                 override fun equals(other: Any?): Boolean {
                     if (this === other) return true
                     if (other !is ClientInformations) return false

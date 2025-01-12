@@ -48,7 +48,7 @@ fun ClientEditePositionFAB(
     var showButtons by remember { mutableStateOf(false) }
 
     // Access groupedProducts through the viewModel
-    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsPatGrossist
+    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsParClients
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -88,7 +88,7 @@ fun ClientEditePositionFAB(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    groupedProducts.forEachIndexed { index, (grossist, produits) ->
+                    groupedProducts.forEachIndexed { index, (clientInfo, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -97,28 +97,27 @@ fun ClientEditePositionFAB(
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelProduits.viewModelScope.launch {
-                                            val previousGrossist = groupedProducts[index - 1].first
-
-                                            grossist.positionInGrossistsList--
-                                            previousGrossist.positionInGrossistsList++
+                                            val previousClientInfo = groupedProducts[index - 1].first
 
                                             // Update positions using the current list
                                             val updatedProducts = viewModelProduits.produitsAvecBonsGrossist.map { product ->
                                                 product.apply {
-                                                    bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                        when (currentGrossist.id) {
-                                                            grossist.id -> {
-                                                                currentGrossist.positionInGrossistsList--
-                                                            }
-                                                            previousGrossist.id -> {
-                                                                currentGrossist.positionInGrossistsList++
+                                                    bonsVentDeCetteCota.forEach { bonVent ->
+                                                        bonVent.clientInformations?.let { currentClientInfo ->
+                                                            when (currentClientInfo.id) {
+                                                                clientInfo.id -> {
+                                                                    // Swap positions with previous client
+                                                                    val tempPosition = currentClientInfo.positionDonClientsList
+                                                                    currentClientInfo.positionDonClientsList = previousClientInfo.positionDonClientsList
+                                                                    previousClientInfo.positionDonClientsList = tempPosition
+                                                                }
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
 
-                                            // Now pass the updated list to the update function
+                                            // Update the products in Firebase and local state
                                             update_produitsAvecBonsGrossist(updatedProducts, viewModelProduits)
                                         }
                                     },
@@ -133,14 +132,14 @@ fun ClientEditePositionFAB(
                             }
 
                             Text(
-                                text = "${grossist.nom} (${produits.size})",
+                                text = "${clientInfo.nom} (${produits.size})",
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
                                         if (viewModelProduits
                                                 ._paramatersAppsViewModelModel
                                                 .telephoneClientParamaters
-                                                .selectedGrossistForServeur == grossist.id
+                                                .selectedAcheteurForClient == clientInfo.id
                                         ) Color.Blue else Color.Transparent
                                     )
                                     .padding(4.dp),
@@ -152,10 +151,10 @@ fun ClientEditePositionFAB(
                                     viewModelProduits
                                         ._paramatersAppsViewModelModel
                                         .telephoneClientParamaters
-                                        .selectedGrossistForServeur = grossist.id
+                                        .selectedAcheteurForClient = clientInfo.id
                                 },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))
+                                containerColor = Color(android.graphics.Color.parseColor(clientInfo.couleur))
                             ) {
                                 Text(
                                     text = produits.size.toString(),

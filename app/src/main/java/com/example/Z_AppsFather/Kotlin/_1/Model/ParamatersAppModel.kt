@@ -14,7 +14,10 @@ class ParamatersAppsModel {
     class TelephoneClientParamaters {
         var selectedGrossistForClient by mutableStateOf<Long?>(null)
         var selectedGrossistForServeur by mutableStateOf<Long?>(null)
+
         var fabsVisibility by mutableStateOf(false)
+
+        var selectedAcheteurForClient by mutableStateOf<Long?>(null)
     }
 
     companion object {

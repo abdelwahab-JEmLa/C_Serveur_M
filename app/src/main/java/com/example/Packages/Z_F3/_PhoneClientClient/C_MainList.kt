@@ -68,9 +68,6 @@ fun MainList_F3(
                     product.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                         ?: Int.MAX_VALUE
                 },
-                key = { product ->
-                    "${product.id}_${product.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit}"
-                }
             ) { product ->
                 MainItem_F3(
                     mainItem = product,

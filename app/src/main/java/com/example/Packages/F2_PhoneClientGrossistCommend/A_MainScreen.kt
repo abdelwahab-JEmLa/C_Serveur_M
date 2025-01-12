@@ -1,4 +1,4 @@
-package com.example.Packages.F2_ClientGrossistCommend
+package com.example.Packages.F2_PhoneClientGrossistCommend
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -11,7 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.F2_ClientGrossistCommend.Modules.GlobalEditesGFABs_F2
+import com.example.Packages.F2_PhoneClientGrossistCommend.Modules.GlobalEditesGFABs_F2
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 private const val TAG = "A_ScreenMainFragment_1"
@@ -42,6 +42,16 @@ internal fun MainScreen_F2(
     val databaseSize = viewModelInitApp.produitsAvecBonsGrossist.size
 
     val visibleProducts = viewModelInitApp.produitsAvecBonsGrossist
+        .filter { product ->
+            product.bonCommendDeCetteCota.let {
+                it?.grossistInformations?.id ==
+                        viewModelInitApp
+                            ._paramatersAppsViewModelModel
+                            .telephoneClientParamaters
+                            .selectedGrossistForServeur
+                        && it?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0
+            }
+        }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()

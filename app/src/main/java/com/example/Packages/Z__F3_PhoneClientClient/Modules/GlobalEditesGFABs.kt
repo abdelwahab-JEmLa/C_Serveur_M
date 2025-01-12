@@ -1,4 +1,4 @@
-package com.example.Packages.F2_ClientGrossistCommend.Modules
+package com.example.Packages.Z__F3_PhoneClientClient.Modules
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -34,6 +34,7 @@ import androidx.core.content.FileProvider
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -42,13 +43,8 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-enum class DeviceMode {
-    SERVER,
-    DISPLAY
-}
-
 @Composable
-fun GlobalEditesGFABs_F2(
+fun GlobalEditesGFABs_F3(
     appsHeadModel: ModelAppsFather,
     modifier: Modifier = Modifier,
 ) {

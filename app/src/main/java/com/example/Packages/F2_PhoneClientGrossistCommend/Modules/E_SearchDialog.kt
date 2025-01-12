@@ -1,5 +1,5 @@
 // SearchDialog.kt
-package com.example.Packages.F2_ClientGrossistCommend.Modules
+package com.example.Packages.F2_PhoneClientGrossistCommend.Modules
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

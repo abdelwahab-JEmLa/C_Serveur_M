@@ -1,4 +1,4 @@
-package com.example.Packages.F2_ClientGrossistCommend
+package com.example.Packages.Z__F3_PhoneClientClient
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
 
 @Composable
-fun MainItem_F2(
+fun MainItem_F3(
     mainItem: ModelAppsFather.ProduitModel,  // Moved to be first optional parameter
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},

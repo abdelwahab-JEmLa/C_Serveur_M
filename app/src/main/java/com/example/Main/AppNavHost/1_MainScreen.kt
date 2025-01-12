@@ -8,10 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,9 +21,8 @@ fun MainScreen(
     appViewModels: AppViewModels,
 ) {
     val navController = rememberNavController()
-    val items = NavigationItems.getItems()
+    val items = NavigationItems.items  // Updated to use the items property instead of getItems()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-    var isFabVisible by remember { mutableStateOf(false) }
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -38,8 +33,8 @@ fun MainScreen(
                 Box(modifier = Modifier.weight(1f)) {
                     AppNavHost(
                         modifier = Modifier.fillMaxSize(),
-                        appViewModels,
-                        navController = navController ,
+                        appViewModels = appViewModels,
+                        navController = navController,
                     )
                 }
             }
@@ -50,7 +45,7 @@ fun MainScreen(
             ) {
                 NavigationBarWithFab(
                     items = items,
-                    initViewModel=appViewModels.initViewModel,
+                    initViewModel = appViewModels.initViewModel,
                     currentRoute = currentRoute,
                     onNavigate = { route ->
                         navController.navigate(route) {

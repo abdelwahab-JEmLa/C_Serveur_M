@@ -21,7 +21,10 @@ class ParamatersAppsModel {
 
         var selectedAcheteurForClient by mutableStateOf<Long?>(null)
     }
-
+    enum class DeviceMode {
+        SERVER,
+        DISPLAY
+    }
     companion object {
         private const val SELF_CHEMIN_BASE =
             "0_UiState_3_Host_Package_3_Prototype11Dec/ParamatersAppsModel"

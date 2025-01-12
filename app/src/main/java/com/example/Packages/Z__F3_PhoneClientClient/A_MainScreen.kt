@@ -1,4 +1,4 @@
-package com.example.Packages.F1_ServeurGrossistCommendFragment
+package com.example.Packages.Z__F3_PhoneClientClient
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -11,14 +11,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.ClientEditePositionDialog
-import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.GlobalEditesGFABs
+import com.example.Packages.Z__F3_PhoneClientClient.Modules.GlobalEditesGFABs_F3
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
-internal fun A_ScreenMainFragment_1(
+internal fun MainScreen_F3(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
@@ -42,7 +41,8 @@ internal fun A_ScreenMainFragment_1(
 
     val databaseSize = viewModelInitApp.produitsAvecBonsGrossist.size
 
-    val visibleProducts = viewModelInitApp.produitsAvecBonsGrossist.filter { product ->
+    val visibleProducts = viewModelInitApp.produitsAvecBonsGrossist
+        .filter { product ->
         product.bonCommendDeCetteCota
             ?.grossistInformations?.id ==
                 viewModelInitApp
@@ -56,31 +56,26 @@ internal fun A_ScreenMainFragment_1(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             if (databaseSize > 0) {
-                B_ListMainFragment(
+                MainList_F3(
                     visibleProducts = visibleProducts,
                     viewModelProduits = viewModelInitApp,
                     paddingValues = paddingValues
                 )
             }
         }
-
         if (viewModelInitApp
                 ._paramatersAppsViewModelModel
                 .fabsVisibility
         ) {
-            GlobalEditesGFABs(
+            GlobalEditesGFABs_F3(
                 appsHeadModel = viewModelInitApp.modelAppsFather,
-                viewModelInitApp=viewModelInitApp,
                 modifier = modifier,
             )
 
-            MainScreenFilterFAB(
+            MainScreenFilterFAB_F3(
                 viewModelProduits = viewModelInitApp,
             )
         }
-        ClientEditePositionDialog(
-            viewModelProduits = viewModelInitApp,
-        )
     }
 }
 

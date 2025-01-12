@@ -32,7 +32,7 @@ class ViewModelProduits : ViewModel() {
     val produitsAvecBonsGrossistMutable: SnapshotStateList<ProduitModel> get() = _produitsAvecBonsGrossist
 
 
-    private fun updateProduitsAvecBonsGrossist() {
+    fun updateProduitsAvecBonsGrossist() {
         _produitsAvecBonsGrossist.clear()
         _produitsAvecBonsGrossist
             .addAll(produitsMainDataBase
@@ -64,8 +64,8 @@ class ViewModelProduits : ViewModel() {
                             0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
                     }
                 }
-                setupDataListeners()
                 updateProduitsAvecBonsGrossist()
+                setupDataListeners()
                 initializationComplete = true
             } catch (e: Exception) {
                 Log.e("ViewModelProduits", "Initialization failed", e)

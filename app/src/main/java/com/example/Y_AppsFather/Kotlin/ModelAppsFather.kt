@@ -281,23 +281,28 @@ open class ModelAppsFather(
                     viewModelProduits._produitsAvecBonsGrossist.addAll(updatedProducts)
 
                     // Then update Firebase in chunks to prevent overwhelming the connection
-                    updatedProducts.chunked(5).forEach { chunk ->
-                        chunk.forEach { product ->
-                            try {
-                                produitsFireBaseRef.child(product.id.toString()).setValue(product)
-                                    .await()
-                                Log.d("Firebase", "Successfully updated product ${product.id}")
-                            } catch (e: Exception) {
-                                Log.e("Firebase", "Failed to update product ${product.id}", e)
-                            }
-                        }
-                    }
+                    UpdateFireBase(updatedProducts)
                 } catch (e: Exception) {
                     Log.e("Firebase", "Error updating products", e)
                     throw e
                 }
             }
         }
+
+         suspend fun UpdateFireBase(updatedProducts: List<ProduitModel>) {
+            updatedProducts.chunked(5).forEach { chunk ->
+                chunk.forEach { product ->
+                    try {
+                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
+                            .await()
+                        Log.d("Firebase", "Successfully updated product ${product.id}")
+                    } catch (e: Exception) {
+                        Log.e("Firebase", "Failed to update product ${product.id}", e)
+                    }
+                }
+            }
+        }
+
         fun updateProduct_produitsAvecBonsGrossist(
             product: ProduitModel,
             viewModelProduits: ViewModelProduits

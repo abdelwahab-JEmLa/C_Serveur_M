@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
+package com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

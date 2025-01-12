@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
+package com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,11 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 @Composable
 fun B_ListMainFragment_1(
-    viewModelProduits: ViewModelProduits,
+    viewModelProduits: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
     visibleProducts: List<ModelAppsFather.ProduitModel>

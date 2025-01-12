@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.Z_NowActiveFragment
+package com.example.Packages.F2_ClientGrossistCommend
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 @Composable
 fun MainList_F2(
     visibleProducts: List<ModelAppsFather.ProduitModel>,
-    viewModelProduits: ViewModelProduits,
+    viewModelProduits: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {

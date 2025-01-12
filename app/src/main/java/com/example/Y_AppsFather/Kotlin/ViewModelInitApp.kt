@@ -19,7 +19,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ViewModelProduits : ViewModel() {
+class ViewModelInitApp : ViewModel() {
     var _paramatersAppsViewModelModel by mutableStateOf(ParamatersAppsModel())
 
     var _modelAppsFather by mutableStateOf(ModelAppsFather())
@@ -58,7 +58,7 @@ class ViewModelProduits : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                initializer(this@ViewModelProduits,_modelAppsFather, initializationProgress) {
+                initializer(this@ViewModelInitApp,_modelAppsFather, initializationProgress) {
                     { index, ancienData ->
                         initializationProgress =
                             0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
@@ -68,7 +68,7 @@ class ViewModelProduits : ViewModel() {
                 setupDataListeners()
                 initializationComplete = true
             } catch (e: Exception) {
-                Log.e("ViewModelProduits", "Initialization failed", e)
+                Log.e("ViewModelInitApp", "Initialization failed", e)
                 initializationProgress = 0f
                 initializationComplete = false
             } finally {
@@ -94,7 +94,7 @@ class ViewModelProduits : ViewModel() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e("ViewModelProduits", "Firebase listener cancelled", error.toException())
+                Log.e("ViewModelInitApp", "Firebase listener cancelled", error.toException())
             }
         })
     }

@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.Z_NowActiveFragment
+package com.example.Packages.F2_ClientGrossistCommend
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -11,26 +11,26 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.A_GrosssitsCommendHandler.Z_NowActiveFragment.Modules.GlobalEditesGFABs_F2
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Packages.F2_ClientGrossistCommend.Modules.GlobalEditesGFABs_F2
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
 internal fun MainScreen_F2(
     modifier: Modifier = Modifier,
-    viewModelProduits: ViewModelProduits = viewModel(),
+    viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
     // Log state changes using LaunchedEffect
-    LaunchedEffect(viewModelProduits.isLoading, viewModelProduits.loadingProgress) {
-        logLoadingState(viewModelProduits.isLoading, viewModelProduits.loadingProgress)
+    LaunchedEffect(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress) {
+        logLoadingState(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress)
     }
 
-    if (viewModelProduits.isLoading) {
+    if (viewModelInitApp.isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
                 progress = {
-                    viewModelProduits.loadingProgress
+                    viewModelInitApp.loadingProgress
                 },
                 modifier = Modifier.align(Alignment.Center),
                 trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
@@ -39,19 +39,9 @@ internal fun MainScreen_F2(
         return
     }
 
-    val databaseSize = viewModelProduits.produitsAvecBonsGrossist.size
+    val databaseSize = viewModelInitApp.produitsAvecBonsGrossist.size
 
-    // Use the filtered products directly from produitsAvecBonsGrossist
-    val visibleProducts = viewModelProduits.produitsAvecBonsGrossist.filter { product ->
-        product.bonCommendDeCetteCota
-            ?.grossistInformations?.id ==
-                viewModelProduits
-                    ._paramatersAppsViewModelModel
-                    .telephoneClientParamaters
-                    .selectedGrossistForClient
-                && product.bonCommendDeCetteCota
-            ?.cPositionCheyCeGrossit == true
-    }
+    val visibleProducts = viewModelInitApp.produitsAvecBonsGrossist
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -60,20 +50,25 @@ internal fun MainScreen_F2(
             if (databaseSize > 0) {
                 MainList_F2(
                     visibleProducts = visibleProducts,
-                    viewModelProduits = viewModelProduits,
+                    viewModelProduits = viewModelInitApp,
                     paddingValues = paddingValues
                 )
             }
         }
+        if (viewModelInitApp
+                ._paramatersAppsViewModelModel
+                .telephoneClientParamaters
+                .fabsVisibility
+        ) {
+            GlobalEditesGFABs_F2(
+                appsHeadModel = viewModelInitApp.modelAppsFather,
+                modifier = modifier,
+            )
 
-        GlobalEditesGFABs_F2(
-            appsHeadModel = viewModelProduits.modelAppsFather,
-            modifier = modifier,
-        )
-
-        MainScreenFilterFAB_F2(
-            viewModelProduits = viewModelProduits,
-        )
+            MainScreenFilterFAB_F2(
+                viewModelProduits = viewModelInitApp,
+            )
+        }
     }
 }
 

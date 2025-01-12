@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
+package com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -11,15 +11,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
+import com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment.D_FloatingActionButton.GlobalEditesGFABsFragment_1
 
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
 internal fun A_ScreenMainFragment_1(
     modifier: Modifier = Modifier,
-    viewModelProduits: ViewModelProduits = viewModel(),
+    viewModelProduits: ViewModelInitApp = viewModel(),
 ) {
     // Log state changes using LaunchedEffect
     LaunchedEffect(viewModelProduits.isLoading, viewModelProduits.loadingProgress) {

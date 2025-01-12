@@ -26,15 +26,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ContentAlpha
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import com.example.c_serveur.R
 
 @Composable
 fun NavigationBarWithFab(
     items: List<Screen>,
+    initViewModel: ViewModelInitApp,
     currentRoute: String?,
     onNavigate: (String) -> Unit,
-    isFabVisible: Boolean,
-    onToggleFabVisibility: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -44,7 +44,7 @@ fun NavigationBarWithFab(
         NavigationBar(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(80.dp),  // Set the height to 30.dp as requested
+                .height(80.dp),
             containerColor = MaterialTheme.colorScheme.surface,
             tonalElevation = 8.dp
         ) {
@@ -76,7 +76,6 @@ fun NavigationBarWithFab(
             }
         }
 
-        // Image FAB positioned above the navigation bar
         Surface(
             modifier = Modifier
                 .offset(y = (-28).dp)
@@ -84,16 +83,21 @@ fun NavigationBarWithFab(
             shape = CircleShape,
         ) {
             Box {
+                val fabsVisibility = initViewModel
+                    ._paramatersAppsViewModelModel
+                    .telephoneClientParamaters
+                    .fabsVisibility
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_background),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable(onClick = onToggleFabVisibility),
+                        .clickable(onClick = { fabsVisibility != fabsVisibility}),
                     contentScale = ContentScale.Crop
                 )
                 Icon(
-                    imageVector = if (isFabVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                    imageVector = if (fabsVisibility
+                    ) Icons.Default.Visibility else Icons.Default.VisibilityOff,
                     contentDescription = "Toggle FAB",
                     modifier = Modifier.align(Alignment.Center),
                     tint = Color.White

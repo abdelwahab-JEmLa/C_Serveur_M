@@ -2,7 +2,7 @@ package com.example.Z_AppsFather.Kotlin._3.Init
 
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.UpdateFireBase
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import com.example.Z_AppsFather.Kotlin._1.Model.Parent.AncienResourcesDataBaseMain
 import com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent.GetAncienDataBasesMain
 import java.text.SimpleDateFormat
@@ -10,7 +10,7 @@ import java.util.Calendar
 import java.util.Locale
 
 suspend fun initializer(
-    viewModelProduits: ViewModelProduits,
+    viewModelProduits: ViewModelInitApp,
     _appsHeadModel: ModelAppsFather,
     initializationProgress: Float,
     onInitProgress: () -> (Int, AncienResourcesDataBaseMain) -> Unit

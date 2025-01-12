@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment.D_FloatingActionButton
+package com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment.D_FloatingActionButton
 
 import android.Manifest
 import android.content.pm.PackageManager

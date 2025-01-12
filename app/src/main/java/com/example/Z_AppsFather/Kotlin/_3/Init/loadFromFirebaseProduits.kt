@@ -3,7 +3,7 @@ package com.example.Z_AppsFather.Kotlin._3.Init
 import androidx.compose.runtime.toMutableStateList
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.ProduitModel
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator
@@ -15,7 +15,7 @@ import kotlin.coroutines.resumeWithException
 object LoadFromFirebaseHandler {
     private const val DEBUG_LIMIT = 7
 
-    suspend fun loadFromFirebase(initViewModel: ViewModelProduits) = try {
+    suspend fun loadFromFirebase(initViewModel: ViewModelInitApp) = try {
         val products = loadProducts()
 
         initViewModel.apply {

@@ -1,9 +1,9 @@
 // onClick.kt
 package com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D.Actions
 
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
-class onClickOn_Fragment_3(private val initViewModel: ViewModelProduits) {
+class onClickOn_Fragment_3(private val initViewModel: ViewModelInitApp) {
        fun ClientsFloatingActionButton(grpFabClientInfoId: Long) {
               /*// Get grouped products
               val groupedProducts = groupedProductsByClientBonVentModelClientInformations(

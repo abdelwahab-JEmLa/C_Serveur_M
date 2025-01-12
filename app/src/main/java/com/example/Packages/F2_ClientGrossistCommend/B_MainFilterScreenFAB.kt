@@ -1,4 +1,4 @@
-package com.example.Packages.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
+package com.example.Packages.F2_ClientGrossistCommend
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -34,20 +34,19 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun FilterScreenFab(
+fun MainScreenFilterFAB_F2(
     modifier: Modifier = Modifier,
-    viewModelProduits: ViewModelProduits,
+    viewModelProduits: ViewModelInitApp,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    // Access groupedProducts through the viewModel
     val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsPatGrossist
 
     Box(
@@ -94,6 +93,7 @@ fun FilterScreenFab(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             if (index > 0) {
+                                // In your FAB implementation
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelProduits.viewModelScope.launch {
@@ -103,23 +103,28 @@ fun FilterScreenFab(
                                             previousGrossist.positionInGrossistsList++
 
                                             // Update positions using the current list
-                                            val updatedProducts = viewModelProduits.produitsAvecBonsGrossist.map { product ->
-                                                product.apply {
-                                                    bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                        when (currentGrossist.id) {
-                                                            grossist.id -> {
-                                                                currentGrossist.positionInGrossistsList--
-                                                            }
-                                                            previousGrossist.id -> {
-                                                                currentGrossist.positionInGrossistsList++
+                                            val updatedProducts =
+                                                viewModelProduits.produitsAvecBonsGrossist.map { product ->
+                                                    product.apply {
+                                                        bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
+                                                            when (currentGrossist.id) {
+                                                                grossist.id -> {
+                                                                    currentGrossist.positionInGrossistsList--
+                                                                }
+
+                                                                previousGrossist.id -> {
+                                                                    currentGrossist.positionInGrossistsList++
+                                                                }
                                                             }
                                                         }
                                                     }
                                                 }
-                                            }
 
                                             // Now pass the updated list to the update function
-                                            update_produitsAvecBonsGrossist(updatedProducts, viewModelProduits)
+                                            update_produitsAvecBonsGrossist(
+                                                updatedProducts,
+                                                viewModelProduits
+                                            )
                                         }
                                     },
                                     modifier = Modifier.size(36.dp),
@@ -140,7 +145,7 @@ fun FilterScreenFab(
                                         if (viewModelProduits
                                                 ._paramatersAppsViewModelModel
                                                 .telephoneClientParamaters
-                                                .selectedGrossistForServeur == grossist.id
+                                                .selectedGrossistForClient == grossist.id
                                         ) Color.Blue else Color.Transparent
                                     )
                                     .padding(4.dp),
@@ -152,7 +157,7 @@ fun FilterScreenFab(
                                     viewModelProduits
                                         ._paramatersAppsViewModelModel
                                         .telephoneClientParamaters
-                                        .selectedGrossistForServeur = grossist.id
+                                        .selectedGrossistForClient = grossist.id
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

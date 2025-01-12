@@ -39,7 +39,7 @@ fun MainScreen(
                     AppNavHost(
                         modifier = Modifier.fillMaxSize(),
                         appViewModels,
-                        navController = navController
+                        navController = navController ,
                     )
                 }
             }
@@ -50,6 +50,7 @@ fun MainScreen(
             ) {
                 NavigationBarWithFab(
                     items = items,
+                    initViewModel=appViewModels.initViewModel,
                     currentRoute = currentRoute,
                     onNavigate = { route ->
                         navController.navigate(route) {
@@ -59,10 +60,6 @@ fun MainScreen(
                             launchSingleTop = true
                             restoreState = true
                         }
-                    },
-                    isFabVisible = isFabVisible,
-                    onToggleFabVisibility = {
-                        isFabVisible = !isFabVisible
                     },
                     modifier = Modifier.padding(bottom = 8.dp)
                 )

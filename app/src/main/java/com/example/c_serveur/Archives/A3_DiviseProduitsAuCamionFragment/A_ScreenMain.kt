@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.GlobalEditesGFABs_Fragment_3
 
 internal const val DEBUG_LIMIT_Fragment_3 = 7
@@ -25,7 +25,7 @@ private fun PreviewScreenMain_Fragment_3() {
 @Composable
 internal fun ScreenMain_Fragment_3(
     modifier: Modifier = Modifier,
-    initViewModel: ViewModelProduits = viewModel(),
+    initViewModel: ViewModelInitApp = viewModel(),
 ) {
     val TAG = "ScreenMainFragment"
     if (!initViewModel.initializationComplete) {

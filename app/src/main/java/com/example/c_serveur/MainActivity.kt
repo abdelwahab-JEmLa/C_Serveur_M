@@ -14,12 +14,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.Main.AppNavHost.MainScreen
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
 
 data class AppViewModels(
-    val initViewModel: ViewModelProduits,
+    val initViewModel: ViewModelInitApp,
     )
 
 // ViewModelFactory.kt
@@ -30,8 +30,8 @@ class ViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
         return when {
-            modelClass.isAssignableFrom(ViewModelProduits::class.java) ->
-                ViewModelProduits() as T
+            modelClass.isAssignableFrom(ViewModelInitApp::class.java) ->
+                ViewModelInitApp() as T
             else -> throw IllegalArgumentException("Unknown ViewModel: ${modelClass.name}")
         }
     }
@@ -40,7 +40,7 @@ class ViewModelFactory(
 class MainActivity : ComponentActivity() {
     private val permissionHandler by lazy { PermissionHandler(this) }
     private val viewModelFactory by lazy { ViewModelFactory(applicationContext, ) }
-    private val app_Initialize_ViewModel: ViewModelProduits by viewModels { viewModelFactory }
+    private val app_Initialize_ViewModel: ViewModelInitApp by viewModels { viewModelFactory }
 
 
 

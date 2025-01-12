@@ -23,14 +23,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 @Composable
 fun ItemMain_Fragment_3(
     itemMain: ModelAppsFather.ProduitModel,
     onClickDelete: () -> Unit = {},
     onCLickOnMain: () -> Unit = {},
-    initViewModel: ViewModelProduits,
+    initViewModel: ViewModelInitApp,
 ) {
     // Calculate if the product has a valid position
     val hasPosition = remember(itemMain.bonCommendDeCetteCota) {

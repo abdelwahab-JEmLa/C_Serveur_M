@@ -13,12 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
-import com.example.Y_AppsFather.Kotlin.ViewModelProduits
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 @Composable
 fun ListMain_Fragment_3(
     produitsMainDataBase: SnapshotStateList<ModelAppsFather.ProduitModel>,
-    initViewModel: ViewModelProduits,
+    initViewModel: ViewModelInitApp,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {

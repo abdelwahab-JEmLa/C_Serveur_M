@@ -272,7 +272,7 @@ open class ModelAppsFather(
 
         fun update_produitsAvecBonsGrossist(
             updatedProducts: List<ProduitModel>, // Change parameter type to List
-            viewModelProduits: ViewModelProduits
+            viewModelProduits: ViewModelInitApp
         ) {
             viewModelProduits.viewModelScope.launch {
                 try {
@@ -305,7 +305,7 @@ open class ModelAppsFather(
 
         fun updateProduct_produitsAvecBonsGrossist(
             product: ProduitModel,
-            viewModelProduits: ViewModelProduits
+            viewModelProduits: ViewModelInitApp
         ) {
             viewModelProduits.viewModelScope.launch {
                 try {
@@ -319,9 +319,9 @@ open class ModelAppsFather(
                         viewModelProduits._produitsAvecBonsGrossist[index] = product
                     }
 
-                    Log.d("ViewModelProduits", "Successfully updated product ${product.id}")
+                    Log.d("ViewModelInitApp", "Successfully updated product ${product.id}")
                 } catch (e: Exception) {
-                    Log.e("ViewModelProduits", "Failed to update product ${product.id}", e)
+                    Log.e("ViewModelInitApp", "Failed to update product ${product.id}", e)
                 }
             }
         }

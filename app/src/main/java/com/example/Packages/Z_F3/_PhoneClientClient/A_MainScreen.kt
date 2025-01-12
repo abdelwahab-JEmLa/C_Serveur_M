@@ -1,4 +1,4 @@
-package com.example.Packages.Z__F3_PhoneClientClient
+package com.example.Packages.Z_F3._PhoneClientClient
 
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -11,8 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Z__F3_PhoneClientClient.Modules.ClientEditePositionDialog_F3
-import com.example.Packages.Z__F3_PhoneClientClient.Modules.GlobalEditesGFABs_F3
+import com.example.Packages.Z_F3.Modules.GlobalEditesGFABs_F3
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 private const val TAG = "A_ScreenMainFragment_1"
@@ -44,11 +43,15 @@ internal fun MainScreen_F3(
 
     val visibleProducts = viewModelInitApp.produitsAvecBonsGrossist
         .filter { product ->
-        product.bonCommendDeCetteCota
-            ?.grossistInformations?.id ==
+        product.bonsVentDeCetteCota
+            .first()
+            .clientInformations?.id ==
                 viewModelInitApp
                     ._paramatersAppsViewModelModel
                     .phoneClientSelectedAcheteur
+                && product
+                    .bonCommendDeCetteCota
+                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! >0
     }
 
     Scaffold(
@@ -76,9 +79,6 @@ internal fun MainScreen_F3(
                 viewModelProduits = viewModelInitApp,
             )
         }
-        ClientEditePositionDialog_F3(
-            viewModelProduits = viewModelInitApp,
-        )
     }
 }
 

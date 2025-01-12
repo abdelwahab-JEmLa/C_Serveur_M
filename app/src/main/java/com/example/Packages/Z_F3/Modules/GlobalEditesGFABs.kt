@@ -1,4 +1,4 @@
-package com.example.Packages.Z__F3_PhoneClientClient.Modules
+package com.example.Packages.Z_F3.Modules
 
 import android.Manifest
 import android.content.pm.PackageManager

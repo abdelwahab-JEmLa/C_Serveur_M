@@ -1,5 +1,5 @@
 // SearchDialog.kt
-package com.example.Packages.Z__F3_PhoneClientClient.Modules
+package com.example.Packages.Z_F3.Modules
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

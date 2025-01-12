@@ -1,4 +1,4 @@
-package com.example.Packages.Z__F3_PhoneClientClient
+package com.example.Packages.Z_F3._PhoneClientClient
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -47,7 +47,7 @@ fun MainScreenFilterFAB_F3(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsPatGrossist
+    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsParClients
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -87,7 +87,7 @@ fun MainScreenFilterFAB_F3(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    groupedProducts.forEachIndexed { index, (grossist, produits) ->
+                    groupedProducts.forEachIndexed { index, (clientInfo, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -97,30 +97,32 @@ fun MainScreenFilterFAB_F3(
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelProduits.viewModelScope.launch {
-                                            val previousGrossist = groupedProducts[index - 1].first
+                                            val previousClientInfo =
+                                                groupedProducts[index - 1].first
 
-                                            grossist.positionInGrossistsList--
-                                            previousGrossist.positionInGrossistsList++
+                                            clientInfo.positionDonClientsList--
+                                            previousClientInfo.positionDonClientsList++
 
-                                            // Update positions using the current list
                                             val updatedProducts =
                                                 viewModelProduits.produitsAvecBonsGrossist.map { product ->
                                                     product.apply {
-                                                        bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                            when (currentGrossist.id) {
-                                                                grossist.id -> {
-                                                                    currentGrossist.positionInGrossistsList--
-                                                                }
-
-                                                                previousGrossist.id -> {
-                                                                    currentGrossist.positionInGrossistsList++
+                                                        bonsVentDeCetteCota.forEach { bonVent ->
+                                                            bonVent.clientInformations?.let { currentClientInfo ->
+                                                                when (currentClientInfo.id) {
+                                                                    clientInfo.id -> {
+                                                                        val tempPosition =
+                                                                            currentClientInfo.positionDonClientsList
+                                                                        currentClientInfo.positionDonClientsList =
+                                                                            previousClientInfo.positionDonClientsList
+                                                                        previousClientInfo.positionDonClientsList =
+                                                                            tempPosition
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
 
-                                            // Now pass the updated list to the update function
                                             update_produitsAvecBonsGrossist(
                                                 updatedProducts,
                                                 viewModelProduits
@@ -138,15 +140,15 @@ fun MainScreenFilterFAB_F3(
                             }
 
                             Text(
-                                text = "${grossist.nom} (${produits.size})",
+                                text = "${clientInfo.nom} (${produits.size})",
                                 modifier = Modifier
-                                    .padding(end = 8.dp)
+                                    .weight(1f)
                                     .background(
                                         if (viewModelProduits
                                                 ._paramatersAppsViewModelModel
-                                                .phoneClientSelectedAcheteur
-                                            == grossist.id
-                                        ) Color.Blue else Color.Transparent
+                                                .telephoneClientParamaters
+                                                .selectedAcheteurForClient == clientInfo.id
+                                        ) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                                     )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
@@ -157,10 +159,10 @@ fun MainScreenFilterFAB_F3(
                                     viewModelProduits
                                         ._paramatersAppsViewModelModel
                                         .telephoneClientParamaters
-                                        .selectedGrossistForClient = grossist.id
+                                        .selectedAcheteurForClient = clientInfo.id
                                 },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))
+                                containerColor = Color(android.graphics.Color.parseColor(clientInfo.couleur))
                             ) {
                                 Text(
                                     text = produits.size.toString(),

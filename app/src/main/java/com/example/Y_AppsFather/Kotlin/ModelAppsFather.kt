@@ -40,8 +40,10 @@ open class ModelAppsFather(
             .sortedBy { (grossist, _) ->
                 grossist.positionInGrossistsList
             }
+
     val groupedProductsParClients: List<Pair<ProduitModel.ClientBonVentModel.ClientInformations, List<ProduitModel>>>
         get() = produitsMainDataBase
+            .asSequence()
             .filter { product ->
                 product.bonsVentDeCetteCota.isNotEmpty() &&
                         product.bonsVentDeCetteCota.any { it.clientInformations != null }
@@ -61,6 +63,7 @@ open class ModelAppsFather(
             .sortedBy { (client, _) ->
                 client.positionDonClientsList
             }
+            .toList()
 
     @IgnoreExtraProperties
     class ProduitModel(

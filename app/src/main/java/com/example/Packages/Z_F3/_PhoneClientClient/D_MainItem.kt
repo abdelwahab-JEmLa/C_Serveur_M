@@ -1,4 +1,4 @@
-package com.example.Packages.Z__F3_PhoneClientClient
+package com.example.Packages.Z_F3._PhoneClientClient
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

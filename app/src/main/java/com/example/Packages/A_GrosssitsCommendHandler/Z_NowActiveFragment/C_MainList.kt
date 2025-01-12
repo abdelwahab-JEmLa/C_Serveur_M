@@ -31,19 +31,22 @@ fun MainList_F2(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            items = visibleProducts.sortedBy {
-                it.bonCommendDeCetteCota
+            items = visibleProducts.sortedBy { product ->
+                // Handle null cases by providing a default max value
+                product.bonCommendDeCetteCota
                     ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    ?: Int.MAX_VALUE
             },
-            key = { it.id }
+            // Ensure unique key by combining id with position if available
+            key = { product ->
+                "${product.id}_${product.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit}"
+            }
         ) { product ->
             MainItem_F2(
                 mainItem = product,
                 onCLickOnMain = {
-                    product.bonCommendDeCetteCota
-                        ?.cPositionCheyCeGrossit = false
-
-                    updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
+                    product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
+                    updateProduct_produitsAvecBonsGrossist(product, viewModelProduits)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

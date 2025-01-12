@@ -35,8 +35,7 @@ fun B_ListMainFragment_1(
     visibleProducts: List<ModelAppsFather.ProduitModel>
 ) {
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
-        it.bonCommendDeCetteCota
-            ?.cPositionCheyCeGrossit == true
+        it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
     }
 
     LazyVerticalGrid(
@@ -60,18 +59,15 @@ fun B_ListMainFragment_1(
 
             items(
                 items = positionedProducts.sortedBy {
-                    it.bonCommendDeCetteCota
-                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                 },
-                key = { it.id }
+
             ) { product ->
                 C_ItemMainFragment_1(
                     mainItem = product,
                     onCLickOnMain = {
-                        product.bonCommendDeCetteCota
-                            ?.cPositionCheyCeGrossit = false
-
-                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
+                        product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
+                        updateProduct_produitsAvecBonsGrossist(product, viewModelProduits)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
@@ -109,17 +105,15 @@ fun B_ListMainFragment_1(
 
             items(
                 items = unpositionedProducts.sortedBy {
-                    it.bonCommendDeCetteCota
-                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                 },
-                key = { it.id }
+
             ) { product ->
                 C_ItemMainFragment_1(
                     mainItem = product,
                     onCLickOnMain = {
                         val newPosition = (positionedProducts.maxOfOrNull {
-                            it.bonCommendDeCetteCota
-                                ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                         } ?: 0) + 1
 
                         product.bonCommendDeCetteCota?.apply {
@@ -129,7 +123,7 @@ fun B_ListMainFragment_1(
                         if (product.itsTempProduit) {
                             product.statuesBase.prePourCameraCapture = true
                         }
-                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
+                        updateProduct_produitsAvecBonsGrossist(product, viewModelProduits)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )

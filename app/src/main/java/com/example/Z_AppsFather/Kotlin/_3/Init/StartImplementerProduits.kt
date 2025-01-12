@@ -14,7 +14,7 @@ suspend fun initializer(
     initializationProgress: Float,
     onInitProgress: () -> (Int, AncienResourcesDataBaseMain) -> Unit
 ) {
-    val NOMBRE_ENTRE = 100
+    val NOMBRE_ENTRE = 2000
 
     if (NOMBRE_ENTRE == 0) {
         LoadFromFirebaseHandler.loadFromFirebase(viewModelProduits)
@@ -62,7 +62,7 @@ suspend fun CreeNewStart(
         }
 
         // Rest of your existing code, but use filteredProducts instead of ancienData.produitsDatabase
-        filteredProducts.forEachIndexed { index, ancien ->
+        ancienData.produitsDatabase.forEachIndexed { index, ancien ->
             val depuitAncienDataBase = ModelAppsFather.ProduitModel(
                 id = ancien.idArticle,
                 itsTempProduit = ancien.idArticle > 2000,
@@ -176,9 +176,10 @@ suspend fun CreeNewStart(
                         ?: 0) > 0
                             && pro.itsTempProduit
             }
-
-            depuitAncienDataBase.bonCommendDeCetteCota = grossiste
-            depuitAncienDataBase.historiqueBonsCommend.add(grossiste)
+            if (ancien.idArticle < 100 || ancien.idArticle > 2000) {
+                depuitAncienDataBase.bonCommendDeCetteCota = grossiste
+                depuitAncienDataBase.historiqueBonsCommend.add(grossiste)
+            }
 
             _appsHeadModel.produitsMainDataBase.add(depuitAncienDataBase)
             onInitProgress(index, ancienData)

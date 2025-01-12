@@ -8,6 +8,41 @@ import com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent.GetAncienDataBasesMain
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.random.Random
+
+// Calculate total sales quantities per color from bon vents
+private fun calculateTotalSalesQuantities(depuitAncienDataBase: ModelAppsFather.ProduitModel): Map<Long, Int> {
+    return depuitAncienDataBase.bonsVentDeCetteCota
+        .flatMap { bonVent -> bonVent.colours_Achete }
+        .groupBy { it.vidPosition }
+        .mapValues { (_, colorSales) ->
+            colorSales.sumOf { it.quantity_Achete }
+        }
+}
+
+// Distribute total quantities among grossists
+private fun distributeQuantitiesAmongGrossists(
+    totalQuantities: Map<Long, Int>,
+    colors: List<ModelAppsFather.ProduitModel.ColourEtGout_Model>,
+    grossist: Triple<Long, String, String>
+): List<ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee> {
+    return colors.map { couleur ->
+        val totalQuantity = totalQuantities[couleur.position_Du_Couleur_Au_Produit] ?: 0
+        // Add some randomness but keep it proportional to total sales
+        val quantity = if (totalQuantity > 0) {
+            (totalQuantity * (0.8 + Random.nextDouble() * 0.4)).toInt() // Random factor between 80% and 120%
+        } else {
+            Random.nextInt(10, 51) // Fallback to original random range if no sales data
+        }
+
+        ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
+            id = couleur.position_Du_Couleur_Au_Produit,
+            nom = couleur.nom,
+            emoji = couleur.imogi,
+            init_quantityAchete = quantity
+        )
+    }
+}
 
 suspend fun initializer(
     viewModelProduits: ViewModelInitApp,
@@ -35,9 +70,9 @@ suspend fun CreeNewStart(
     onInitProgress: (Int, AncienResourcesDataBaseMain) -> Unit
 ) {
     try {
-
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val ancienData = GetAncienDataBasesMain()
+
         // Predefined clients for consistent data
         val clients = listOf(
             Triple(1L, "Client Alpha", "#FF5733"),
@@ -54,15 +89,7 @@ suspend fun CreeNewStart(
             Triple(3L, "Grossist Gamma", "#5733FF")
         )
 
-        // Filter and limit the products database
-        val halfCount = NOMBRE_ENTRE / 2
-        val filteredProducts = ancienData.produitsDatabase.let { products ->
-            val olderProducts = products.filter { it.idArticle < 2000 }.take(halfCount)
-            val newerProducts = products.filter { it.idArticle > 2000 }.take(halfCount)
-            (olderProducts + newerProducts).take(NOMBRE_ENTRE)
-        }
-
-        // Rest of your existing code, but use filteredProducts instead of ancienData.produitsDatabase
+        // Process each product in the ancien database
         ancienData.produitsDatabase.forEachIndexed { index, ancien ->
             val depuitAncienDataBase = ModelAppsFather.ProduitModel(
                 id = ancien.idArticle,
@@ -92,9 +119,9 @@ suspend fun CreeNewStart(
             }
 
             // Generate sales history
-            repeat((1..5).random()) { historyIndex ->
+            repeat(Random.nextInt(1, 6)) { _ ->
                 val saleDate = Calendar.getInstance().apply {
-                    add(Calendar.DAY_OF_MONTH, -(1..30).random())
+                    add(Calendar.DAY_OF_MONTH, -Random.nextInt(1, 31))
                 }.time
 
                 val (clientId, clientName, clientColor) = clients.random()
@@ -105,12 +132,12 @@ suspend fun CreeNewStart(
                         nom = clientName,
                         couleur = clientColor
                     ),
-                    init_colours_achete = depuitAncienDataBase.coloursEtGouts.take((1..3).random())
+                    init_colours_achete = depuitAncienDataBase.coloursEtGouts.take(Random.nextInt(1, 4))
                         .map { couleur ->
                             ModelAppsFather.ProduitModel.ClientBonVentModel.ColorAchatModel(
                                 vidPosition = couleur.position_Du_Couleur_Au_Produit,
                                 nom = couleur.nom,
-                                quantity_Achete = (1..10).random(),
+                                quantity_Achete = Random.nextInt(1, 11),
                                 imogi = couleur.imogi
                             )
                         }
@@ -119,7 +146,7 @@ suspend fun CreeNewStart(
             }
 
             // Generate current sales
-            repeat((1..3).random()) { currentIndex ->
+            repeat(Random.nextInt(1, 4)) { _ ->
                 val (clientId, clientName, clientColor) = clients.random()
 
                 val bonVent = ModelAppsFather.ProduitModel.ClientBonVentModel(
@@ -128,12 +155,12 @@ suspend fun CreeNewStart(
                         nom = clientName,
                         couleur = clientColor
                     ),
-                    init_colours_achete = depuitAncienDataBase.coloursEtGouts.take((1..3).random())
+                    init_colours_achete = depuitAncienDataBase.coloursEtGouts.take(Random.nextInt(1, 4))
                         .map { couleur ->
                             ModelAppsFather.ProduitModel.ClientBonVentModel.ColorAchatModel(
                                 vidPosition = couleur.position_Du_Couleur_Au_Produit,
                                 nom = couleur.nom,
-                                quantity_Achete = (1..10).random(),
+                                quantity_Achete = Random.nextInt(1, 11),
                                 imogi = couleur.imogi
                             )
                         }
@@ -143,48 +170,53 @@ suspend fun CreeNewStart(
                 }
             }
 
-            val (grossistId, grossistName, grossistColor) = grossists.random()
-            val currentDate = dateFormat.format(Calendar.getInstance().time)
-
-            val grossiste = ModelAppsFather.ProduitModel.GrossistBonCommandes(
-                vid = grossistId,
-                init_grossistInformations = ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations(
-                    id = grossistId,
-                    nom = grossistName,
-                    couleur = grossistColor
-                ).apply {
-                    positionInGrossistsList = grossistId.toInt() - 1
-                },
-                date = currentDate,
-                date_String_Divise = currentDate.split(" ")[0],
-                time_String_Divise = currentDate.split(" ")[1],
-                currentCreditBalance = (1000..2000).random().toDouble(),
-                init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
-                if (Math.random() < 0.4) 0 else (1..10).random(),
-                init_coloursEtGoutsCommendee = depuitAncienDataBase.coloursEtGouts
-                    .take(if (depuitAncienDataBase.itsTempProduit) 1 else (1..4).random())
-                    .map { couleur ->
-                        ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
-                            id = couleur.position_Du_Couleur_Au_Produit,
-                            nom = couleur.nom,
-                            emoji = couleur.imogi,
-                            init_quantityAchete = (10..50).random()
-                        )
-                    }
-            )
-
-            depuitAncienDataBase.let { pro ->
-                pro.statuesBase.prePourCameraCapture =
-                    (pro.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                        ?: 0) > 0
-                            && pro.itsTempProduit
-            }
-
+            // Handle grossist orders
             if (ancien.idArticle < 100 || ancien.idArticle > 2000) {
+                val (grossistId, grossistName, grossistColor) = grossists.random()
+                val currentDate = dateFormat.format(Calendar.getInstance().time)
+
+                // Calculate total sales quantities and prepare colors for grossist
+                val totalSalesQuantities = calculateTotalSalesQuantities(depuitAncienDataBase)
+                val grossisteColoursToOrder = if (depuitAncienDataBase.itsTempProduit) {
+                    depuitAncienDataBase.coloursEtGouts.take(1)
+                } else {
+                    depuitAncienDataBase.coloursEtGouts.take(Random.nextInt(1, 5))
+                }
+
+                val grossiste = ModelAppsFather.ProduitModel.GrossistBonCommandes(
+                    vid = grossistId,
+                    init_grossistInformations = ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations(
+                        id = grossistId,
+                        nom = grossistName,
+                        couleur = grossistColor
+                    ).apply {
+                        positionInGrossistsList = grossistId.toInt() - 1
+                    },
+                    date = currentDate,
+                    date_String_Divise = currentDate.split(" ")[0],
+                    time_String_Divise = currentDate.split(" ")[1],
+                    currentCreditBalance = Random.nextDouble(1000.0, 2001.0),
+                    init_position_Produit_Don_Grossist_Choisi_Pour_Acheter_CeProduit =
+                    if (Random.nextDouble() < 0.4) 0 else Random.nextInt(1, 11),
+                    init_coloursEtGoutsCommendee = distributeQuantitiesAmongGrossists(
+                        totalSalesQuantities,
+                        grossisteColoursToOrder,
+                        Triple(grossistId, grossistName, grossistColor)
+                    )
+                )
+
                 depuitAncienDataBase.bonCommendDeCetteCota = grossiste
                 depuitAncienDataBase.historiqueBonsCommend.add(grossiste)
             }
 
+            // Update product status
+            depuitAncienDataBase.let { pro ->
+                pro.statuesBase.prePourCameraCapture =
+                    (pro.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                        ?: 0) > 0 && pro.itsTempProduit
+            }
+
+            // Add product to main database
             _appsHeadModel.produitsMainDataBase.add(depuitAncienDataBase)
             onInitProgress(index, ancienData)
         }
@@ -195,6 +227,5 @@ suspend fun CreeNewStart(
 
     } catch (e: Exception) {
         throw e
-    } finally {
     }
 }

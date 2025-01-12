@@ -18,12 +18,16 @@ private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
 internal fun MainScreen_F3(
-    viewModelInitApp: ViewModelInitApp = viewModel(),
     modifier: Modifier = Modifier,
+    viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
     // Log state changes using LaunchedEffect
-    LaunchedEffect(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress) {
-        logLoadingState(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress)
+    LaunchedEffect(
+        viewModelInitApp.isLoading,
+        viewModelInitApp.loadingProgress
+    ) {
+        logLoadingState(viewModelInitApp.isLoading,
+            viewModelInitApp.loadingProgress)
     }
 
     if (viewModelInitApp.isLoading) {

@@ -85,7 +85,6 @@ fun NavigationBarWithFab(
             Box {
                 val fabsVisibility = initViewModel
                     ._paramatersAppsViewModelModel
-                    .telephoneClientParamaters
                     .fabsVisibility
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -94,7 +93,6 @@ fun NavigationBarWithFab(
                         .fillMaxSize()
                         .clickable(onClick = {  initViewModel
                             ._paramatersAppsViewModelModel
-                            .telephoneClientParamaters
                             .fabsVisibility != fabsVisibility}),
                     contentScale = ContentScale.Crop
                 )

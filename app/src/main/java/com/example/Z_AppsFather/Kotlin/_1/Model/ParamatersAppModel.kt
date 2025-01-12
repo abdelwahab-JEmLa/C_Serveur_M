@@ -12,12 +12,12 @@ class ParamatersAppsModel {
     var telephoneClientParamaters by mutableStateOf(TelephoneClientParamaters())
 
     var visibilityClientEditePositionDialog by mutableStateOf(false)
+    var fabsVisibility by mutableStateOf(true)
 
     class TelephoneClientParamaters {
         var selectedGrossistForClient by mutableStateOf<Long?>(null)
         var selectedGrossistForServeur by mutableStateOf<Long?>(null)
 
-        var fabsVisibility by mutableStateOf(true)
 
         var selectedAcheteurForClient by mutableStateOf<Long?>(null)
     }

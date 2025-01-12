@@ -34,7 +34,14 @@ class ViewModelProduits : ViewModel() {
 
     private fun updateProduitsAvecBonsGrossist() {
         _produitsAvecBonsGrossist.clear()
-        _produitsAvecBonsGrossist.addAll(produitsMainDataBase.filter { it.bonCommendDeCetteCota != null })
+        _produitsAvecBonsGrossist
+            .addAll(produitsMainDataBase
+                .filter { it.bonCommendDeCetteCota != null }
+                .sortedBy {
+                    it.bonCommendDeCetteCota
+                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                }
+            )
     }
 
     var initializationProgress by mutableFloatStateOf(0f)
@@ -51,7 +58,7 @@ class ViewModelProduits : ViewModel() {
         viewModelScope.launch {
             try {
                 isInitializing = true
-                initializer(_modelAppsFather, initializationProgress) {
+                initializer(this@ViewModelProduits,_modelAppsFather, initializationProgress) {
                     { index, ancienData ->
                         initializationProgress =
                             0.1f + (0.8f * (index + 1) / ancienData.produitsDatabase.size)
@@ -78,15 +85,7 @@ class ViewModelProduits : ViewModel() {
                             ?.let { updatedProduct ->
                                 val index = _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == updatedProduct.id }
                                 if (index != -1) {
-                                    val currentProduct = _modelAppsFather.produitsMainDataBase[index]
-
-                                    // Merge the updated product with current product data
-                                    val mergedProduct = updatedProduct.apply {
-                                        statuesBase = currentProduct.statuesBase
-                                        bonCommendDeCetteCota = currentProduct.bonCommendDeCetteCota
-                                    }
-
-                                    _modelAppsFather.produitsMainDataBase[index] = mergedProduct
+                                    _modelAppsFather.produitsMainDataBase[index] = updatedProduct
                                     updateProduitsAvecBonsGrossist()
                                 }
                             }

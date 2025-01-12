@@ -1,6 +1,7 @@
 package com.example.Z_AppsFather.Kotlin._3.Init
 
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
+import com.example.Y_AppsFather.Kotlin.ViewModelProduits
 import com.example.Z_AppsFather.Kotlin._1.Model.Parent.AncienResourcesDataBaseMain
 import com.example.Z_AppsFather.Kotlin._3.Init.Z.Parent.GetAncienDataBasesMain
 import java.text.SimpleDateFormat
@@ -8,21 +9,21 @@ import java.util.Calendar
 import java.util.Locale
 
 suspend fun initializer(
+    viewModelProduits: ViewModelProduits,
     _appsHeadModel: ModelAppsFather,
     initializationProgress: Float,
     onInitProgress: () -> (Int, AncienResourcesDataBaseMain) -> Unit
 ) {
-
     val NOMBRE_ENTRE = 100
 
-    if (NOMBRE_ENTRE != 0  ) {
+    if (NOMBRE_ENTRE == 0) {
+        LoadFromFirebaseHandler.loadFromFirebase(viewModelProduits)
+    } else {
         CreeNewStart(
             _appsHeadModel,
             NOMBRE_ENTRE,
             onInitProgress(),
         )
-    } else {
-        //  LoadFromFirebaseHandler.loadFromFirebase(this)
     }
 }
 

@@ -49,6 +49,8 @@ internal fun MainScreen_F2(
     // Use the filtered products directly from produitsAvecBonsGrossist
     val visibleProducts = viewModelProduits.produitsAvecBonsGrossist.filter { product ->
         product.bonCommendDeCetteCota?.grossistInformations?.id == selectedGrossist
+                && product.bonCommendDeCetteCota
+            ?.cPositionCheyCeGrossit == true
     }
 
     Scaffold(
@@ -63,7 +65,7 @@ internal fun MainScreen_F2(
                 )
             }
         }
-        //
+
         GlobalEditesGFABs_F2(
             appsHeadModel = viewModelProduits.modelAppsFather,
             modifier = modifier,

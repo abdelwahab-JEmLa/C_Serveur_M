@@ -1,5 +1,5 @@
 // SearchDialog.kt
-package com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
+package com.example.Packages.F1_ServeurGrossistCommendFragment.Modules
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,12 +28,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.Packages.F1_ServeurGrossistCommendFragment.C_ItemMainFragment
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.delay
 
 @Composable
-fun SearchDialog(viewModelProduits: ViewModelInitApp) {
+fun SearchDialog_F1(viewModelProduits: ViewModelInitApp) {
     var showDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
@@ -103,7 +104,7 @@ fun SearchDialog(viewModelProduits: ViewModelInitApp) {
                                 items = filteredItems,
                                 key = { it.id }
                             ) { product ->
-                                C_ItemMainFragment_1(
+                                C_ItemMainFragment(
                                     mainItem = product,
                                     onCLickOnMain = {
                                         val positionedProducts = viewModelProduits.produitsMainDataBase.filter {

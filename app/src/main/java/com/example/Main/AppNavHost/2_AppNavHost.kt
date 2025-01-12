@@ -13,9 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.Packages.F1_ServeurGrossistCommendFragment.A_ScreenMainFragment_1
 import com.example.Packages.F2_ClientGrossistCommend.MainScreen_F2
 import com.example.c_serveur.AppViewModels
-import com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment.A_ScreenMainFragment_1
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -32,7 +32,7 @@ fun AppNavHost(
         ) {
 
             composable(FragmentMainScreenDestination1().route) {
-               A_ScreenMainFragment_1(viewModelProduits=appViewModels.initViewModel)
+               A_ScreenMainFragment_1(viewModelInitApp=appViewModels.initViewModel)
             }
 
             composable(NowActiveFragment().route) {

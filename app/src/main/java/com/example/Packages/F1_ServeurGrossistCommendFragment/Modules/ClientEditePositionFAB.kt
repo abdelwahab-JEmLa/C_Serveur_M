@@ -1,4 +1,4 @@
-package com.example.Packages.F1_ServeurGrossistCommendFragment
+package com.example.Packages.F1_ServeurGrossistCommendFragment.Modules
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun MainScreenFilterFAB(
+fun ClientEditePositionFAB(
     modifier: Modifier = Modifier,
     viewModelProduits: ViewModelInitApp,
 ) {

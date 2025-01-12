@@ -1,4 +1,4 @@
-package com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment.D_FloatingActionButton
+package com.example.Packages.F1_ServeurGrossistCommendFragment.Modules
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -48,7 +48,7 @@ enum class DeviceMode {
 }
 
 @Composable
-fun GlobalEditesGFABsFragment_1(
+fun GlobalEditesGFABs(
     appsHeadModel: ModelAppsFather,
     modifier: Modifier = Modifier,
 ) {

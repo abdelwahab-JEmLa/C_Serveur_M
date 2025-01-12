@@ -28,9 +28,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
-import com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment.C_ItemMainFragment_1
 import kotlinx.coroutines.delay
 
 @Composable
@@ -104,25 +102,25 @@ fun SearchDialog_F2(viewModelProduits: ViewModelInitApp) {
                                 items = filteredItems,
                                 key = { it.id }
                             ) { product ->
-                                C_ItemMainFragment_1(
-                                    mainItem = product,
-                                    onCLickOnMain = {
-                                        val positionedProducts = viewModelProduits.produitsMainDataBase.filter {
-                                            it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
-                                        }
-                                        val newPosition = (positionedProducts.maxOfOrNull {
-                                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
-                                        } ?: 0) + 1
-
-                                        product.bonCommendDeCetteCota?.apply {
-                                            cPositionCheyCeGrossit = true
-                                            positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
-                                        }
-                                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
-                                        showDialog = false
-                                    }  ,
-                                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
-                                )
+//                                C_ItemMainFragment_F2(
+//                                    mainItem = product,
+//                                    onCLickOnMain = {
+//                                        val positionedProducts = viewModelProduits.produitsMainDataBase.filter {
+//                                            it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
+//                                        }
+//                                        val newPosition = (positionedProducts.maxOfOrNull {
+//                                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+//                                        } ?: 0) + 1
+//
+//                                        product.bonCommendDeCetteCota?.apply {
+//                                            cPositionCheyCeGrossit = true
+//                                            positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
+//                                        }
+//                                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
+//                                        showDialog = false
+//                                    }  ,
+//                                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+//                                )
                             }
                         }
                     }

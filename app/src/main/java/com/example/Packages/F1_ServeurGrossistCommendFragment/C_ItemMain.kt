@@ -1,4 +1,4 @@
-package com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
+package com.example.Packages.F1_ServeurGrossistCommendFragment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
 
 @Composable
-fun C_ItemMainFragment_1(
+fun C_ItemMainFragment(
     mainItem: ModelAppsFather.ProduitModel,  // Moved to be first optional parameter
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},

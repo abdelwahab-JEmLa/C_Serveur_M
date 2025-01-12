@@ -1,4 +1,4 @@
-package com.example.z.A_GrosssitsCommendHandler.F1_ServeurGrossistCommendFragment
+package com.example.Packages.F1_ServeurGrossistCommendFragment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.SearchDialog_F1
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
 @Composable
-fun B_ListMainFragment_1(
+fun B_ListMainFragment(
     viewModelProduits: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
@@ -63,7 +64,7 @@ fun B_ListMainFragment_1(
                 },
 
             ) { product ->
-                C_ItemMainFragment_1(
+                C_ItemMainFragment(
                     mainItem = product,
                     onCLickOnMain = {
                         product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
@@ -109,7 +110,7 @@ fun B_ListMainFragment_1(
                 },
 
             ) { product ->
-                C_ItemMainFragment_1(
+                C_ItemMainFragment(
                     mainItem = product,
                     onCLickOnMain = {
                         val newPosition = (positionedProducts.maxOfOrNull {
@@ -131,5 +132,5 @@ fun B_ListMainFragment_1(
         }
     }
 
-    SearchDialog(viewModelProduits)
+    SearchDialog_F1(viewModelProduits)
 }

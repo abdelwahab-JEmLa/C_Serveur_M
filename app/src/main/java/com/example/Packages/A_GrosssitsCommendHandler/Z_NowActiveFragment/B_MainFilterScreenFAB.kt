@@ -3,6 +3,7 @@ package com.example.Packages.A_GrosssitsCommendHandler.Z_NowActiveFragment
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,7 +42,6 @@ import kotlin.math.roundToInt
 fun MainScreenFilterFAB_F2(
     modifier: Modifier = Modifier,
     viewModelProduits: ViewModelProduits,
-    onClick: (Long) -> Unit,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -104,23 +104,28 @@ fun MainScreenFilterFAB_F2(
                                             previousGrossist.positionInGrossistsList++
 
                                             // Update positions using the current list
-                                            val updatedProducts = viewModelProduits.produitsAvecBonsGrossist.map { product ->
-                                                product.apply {
-                                                    bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                        when (currentGrossist.id) {
-                                                            grossist.id -> {
-                                                                currentGrossist.positionInGrossistsList--
-                                                            }
-                                                            previousGrossist.id -> {
-                                                                currentGrossist.positionInGrossistsList++
+                                            val updatedProducts =
+                                                viewModelProduits.produitsAvecBonsGrossist.map { product ->
+                                                    product.apply {
+                                                        bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
+                                                            when (currentGrossist.id) {
+                                                                grossist.id -> {
+                                                                    currentGrossist.positionInGrossistsList--
+                                                                }
+
+                                                                previousGrossist.id -> {
+                                                                    currentGrossist.positionInGrossistsList++
+                                                                }
                                                             }
                                                         }
                                                     }
                                                 }
-                                            }
 
                                             // Now pass the updated list to the update function
-                                            update_produitsAvecBonsGrossist(updatedProducts, viewModelProduits)
+                                            update_produitsAvecBonsGrossist(
+                                                updatedProducts,
+                                                viewModelProduits
+                                            )
                                         }
                                     },
                                     modifier = Modifier.size(36.dp),
@@ -137,16 +142,23 @@ fun MainScreenFilterFAB_F2(
                                 text = "${grossist.nom} (${produits.size})",
                                 modifier = Modifier
                                     .padding(end = 8.dp)
-                                    //  .background(
-                                    //      if (viewModelProduits.selectedGrossist == grossist.id) Color.Blue else Color.Transparent
-                                    //   )
+                                    .background(
+                                        if (viewModelProduits
+                                                ._paramatersAppsViewModelModel
+                                                .telephoneClientParamaters
+                                                .selectedGrossistForClient == grossist.id
+                                        ) Color.Blue else Color.Transparent
+                                    )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
                             FloatingActionButton(
                                 onClick = {
-                                        onClick(grossist.id)
+                                    viewModelProduits
+                                        ._paramatersAppsViewModelModel
+                                        .telephoneClientParamaters
+                                        .selectedGrossistForClient = grossist.id
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

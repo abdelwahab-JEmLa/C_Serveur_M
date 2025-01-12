@@ -8,10 +8,6 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,12 +39,16 @@ internal fun A_ScreenMainFragment_1(
         return
     }
 
-    var selectedGrossist by remember { mutableLongStateOf(2L) }
     val databaseSize = viewModelProduits.produitsAvecBonsGrossist.size
 
-    // Use the filtered products directly from produitsAvecBonsGrossist
     val visibleProducts = viewModelProduits.produitsAvecBonsGrossist.filter { product ->
-        product.bonCommendDeCetteCota?.grossistInformations?.id == selectedGrossist
+        product.bonCommendDeCetteCota
+            ?.grossistInformations?.id ==
+                viewModelProduits
+                    ._paramatersAppsViewModelModel
+                    .telephoneClientParamaters
+                    .selectedGrossistForServeur
+
     }
 
     Scaffold(
@@ -71,9 +71,7 @@ internal fun A_ScreenMainFragment_1(
 
         FilterScreenFab(
             viewModelProduits = viewModelProduits,
-            onClick = {
-                selectedGrossist = it
-            }
+
         )
     }
 }

@@ -3,6 +3,7 @@ package com.example.Packages.A_GrosssitsCommendHandler.F1_ServeurGrossistCommend
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,7 +42,6 @@ import kotlin.math.roundToInt
 fun FilterScreenFab(
     modifier: Modifier = Modifier,
     viewModelProduits: ViewModelProduits,
-    onClick: (Long) -> Unit,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -136,16 +136,23 @@ fun FilterScreenFab(
                                 text = "${grossist.nom} (${produits.size})",
                                 modifier = Modifier
                                     .padding(end = 8.dp)
-                                  //  .background(
-                                  //      if (viewModelProduits.selectedGrossist == grossist.id) Color.Blue else Color.Transparent
-                                 //   )
+                                    .background(
+                                        if (viewModelProduits
+                                                ._paramatersAppsViewModelModel
+                                                .telephoneClientParamaters
+                                                .selectedGrossistForServeur == grossist.id
+                                        ) Color.Blue else Color.Transparent
+                                    )
                                     .padding(4.dp),
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
                             FloatingActionButton(
                                 onClick = {
-                                        onClick(grossist.id)
+                                    viewModelProduits
+                                        ._paramatersAppsViewModelModel
+                                        .telephoneClientParamaters
+                                        .selectedGrossistForServeur = grossist.id
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))

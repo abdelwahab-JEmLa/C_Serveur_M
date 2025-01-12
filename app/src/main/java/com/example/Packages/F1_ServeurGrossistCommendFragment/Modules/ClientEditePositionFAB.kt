@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,34 +31,8 @@ fun ClientEditePositionDialog(
     modifier: Modifier = Modifier,
     viewModelProduits: ViewModelInitApp,
 ) {
-
     // Access groupedProducts through the viewModel
     val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsParClients
-
-    // FAB to trigger dialog
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomEnd
-    ) {
-        FloatingActionButton(
-            onClick = {
-                viewModelProduits
-                    ._paramatersAppsViewModelModel
-                    .visibilityClientEditePositionDialog = !viewModelProduits
-                    ._paramatersAppsViewModelModel
-                    .visibilityClientEditePositionDialog
-            },
-            modifier = Modifier
-                .padding(16.dp)
-                .size(48.dp),
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ) {
-            Icon(
-                imageVector = Icons.Default.ExpandMore,
-                contentDescription = "Edit Positions"
-            )
-        }
-    }
 
     if (viewModelProduits
             ._paramatersAppsViewModelModel

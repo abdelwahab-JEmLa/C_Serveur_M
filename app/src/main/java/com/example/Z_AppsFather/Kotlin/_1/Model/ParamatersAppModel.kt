@@ -11,7 +11,7 @@ class ParamatersAppsModel {
     // Using proper delegate pattern with non-null initial value
     var telephoneClientParamaters by mutableStateOf(TelephoneClientParamaters())
 
-    var visibilityClientEditePositionDialog by mutableStateOf(true)
+    var visibilityClientEditePositionDialog by mutableStateOf(false)
 
     class TelephoneClientParamaters {
         var selectedGrossistForClient by mutableStateOf<Long?>(null)

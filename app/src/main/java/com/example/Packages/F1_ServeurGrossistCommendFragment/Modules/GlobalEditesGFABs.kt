@@ -35,6 +35,7 @@ import androidx.core.content.FileProvider
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -52,6 +53,7 @@ enum class DeviceMode {
 fun GlobalEditesGFABs(
     appsHeadModel: ModelAppsFather,
     modifier: Modifier = Modifier,
+    viewModelInitApp: ViewModelInitApp,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -248,7 +250,9 @@ fun GlobalEditesGFABs(
                 }
                 FloatingActionButton(
                     onClick = {
-
+                        viewModelInitApp
+                            ._paramatersAppsViewModelModel
+                            .visibilityClientEditePositionDialog =true
                     },
                     containerColor = Color(0xFFFF5722)
                 ) {

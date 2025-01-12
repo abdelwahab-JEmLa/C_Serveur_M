@@ -15,10 +15,11 @@ suspend fun initializer(
     initializationProgress: Float,
     onInitProgress: () -> (Int, AncienResourcesDataBaseMain) -> Unit
 ) {
-    val NOMBRE_ENTRE = 0
+    val NOMBRE_ENTRE = 100
 
     if (NOMBRE_ENTRE == 0) {
-        LoadFromFirebaseHandler.loadFromFirebase(viewModelProduits)
+        LoadFromFirebaseHandler
+            .loadFromFirebase(viewModelProduits)
     } else {
         CreeNewStart(
             _appsHeadModel,
@@ -27,7 +28,6 @@ suspend fun initializer(
         )
     }
 }
-
 
 suspend fun CreeNewStart(
     _appsHeadModel: ModelAppsFather,
@@ -138,7 +138,9 @@ suspend fun CreeNewStart(
                             )
                         }
                 )
-                depuitAncienDataBase.bonsVentDeCetteCota.add(bonVent)
+                if (ancien.idArticle < 100 || ancien.idArticle > 2000) {
+                    depuitAncienDataBase.bonsVentDeCetteCota.add(bonVent)
+                }
             }
 
             val (grossistId, grossistName, grossistColor) = grossists.random()
@@ -177,6 +179,7 @@ suspend fun CreeNewStart(
                         ?: 0) > 0
                             && pro.itsTempProduit
             }
+
             if (ancien.idArticle < 100 || ancien.idArticle > 2000) {
                 depuitAncienDataBase.bonCommendDeCetteCota = grossiste
                 depuitAncienDataBase.historiqueBonsCommend.add(grossiste)

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -245,7 +246,18 @@ fun GlobalEditesGFABs(
                         contentDescription = "Take Photo"
                     )
                 }
+                FloatingActionButton(
+                    onClick = {
 
+                    },
+                    containerColor = Color(0xFFFF5722)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.KeyboardDoubleArrowUp,
+                        contentDescription =
+                            "Switch to Display Mode"
+                    )
+                }
                 // Mode Toggle FAB
                 FloatingActionButton(
                     onClick = {
@@ -262,6 +274,7 @@ fun GlobalEditesGFABs(
                             "Switch to Display Mode" else "Switch to Server Mode"
                     )
                 }
+
             }
         }
 

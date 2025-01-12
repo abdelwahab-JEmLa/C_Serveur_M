@@ -11,7 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.ClientEditePositionFAB
+import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.ClientEditePositionDialog
 import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.GlobalEditesGFABs
 import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 
@@ -78,10 +78,10 @@ internal fun A_ScreenMainFragment_1(
             MainScreenFilterFAB(
                 viewModelProduits = viewModelInitApp,
             )
-            ClientEditePositionFAB(
-                viewModelProduits = viewModelInitApp,
-            )
         }
+        ClientEditePositionDialog(
+            viewModelProduits = viewModelInitApp,
+        )
     }
 }
 

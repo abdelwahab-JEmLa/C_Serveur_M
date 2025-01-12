@@ -92,7 +92,10 @@ fun NavigationBarWithFab(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable(onClick = { fabsVisibility != fabsVisibility}),
+                        .clickable(onClick = {  initViewModel
+                            ._paramatersAppsViewModelModel
+                            .telephoneClientParamaters
+                            .fabsVisibility != fabsVisibility}),
                     contentScale = ContentScale.Crop
                 )
                 Icon(

@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D_FloatingActionButton.GlobalEditesGFABs_Fragment_3
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 
 internal const val DEBUG_LIMIT_Fragment_3 = 7
 

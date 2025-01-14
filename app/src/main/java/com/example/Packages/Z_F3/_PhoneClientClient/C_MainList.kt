@@ -17,9 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

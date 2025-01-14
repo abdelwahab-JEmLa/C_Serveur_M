@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewModelScope
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.launch
 
 @Composable

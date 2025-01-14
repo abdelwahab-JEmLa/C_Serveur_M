@@ -26,8 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ContentAlpha
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
 import com.example.c_serveur.R
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 
 @Composable
 fun NavigationBarWithFab(

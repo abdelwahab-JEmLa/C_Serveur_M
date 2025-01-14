@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.delay
 
 @Composable

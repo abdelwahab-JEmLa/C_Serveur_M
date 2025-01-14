@@ -1,7 +1,7 @@
 // onClick.kt
 package com.example.c_serveur.Archives.A3_DiviseProduitsAuCamionFragment.D.Actions
 
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 
 class onClickOn_Fragment_3(private val initViewModel: ViewModelInitApp) {
        fun ClientsFloatingActionButton(grpFabClientInfoId: Long) {

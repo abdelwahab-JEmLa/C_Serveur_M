@@ -12,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 
 @Composable
 fun MainList_F2(

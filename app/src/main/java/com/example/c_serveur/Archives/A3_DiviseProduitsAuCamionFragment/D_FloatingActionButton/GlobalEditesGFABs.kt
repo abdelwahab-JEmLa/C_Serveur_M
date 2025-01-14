@@ -31,9 +31,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await

@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Y_AppsFather.Kotlin.ModelAppsFather
 import com.example.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather
 
 @Composable
 fun MainItem_F2(

@@ -12,7 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.F2_PhoneClientGrossistCommend.Modules.GlobalEditesGFABs_F2
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
+import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 
 private const val TAG = "A_ScreenMainFragment_1"
 

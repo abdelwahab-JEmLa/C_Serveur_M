@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.ClientEditePositionDialog
 import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.GlobalEditesGFABs
-import com.example.Y_AppsFather.Kotlin.ViewModelInitApp
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 
 private const val TAG = "A_ScreenMainFragment_1"
 

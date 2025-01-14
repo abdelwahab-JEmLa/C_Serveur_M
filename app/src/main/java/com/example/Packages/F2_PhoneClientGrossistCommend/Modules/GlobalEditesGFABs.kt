@@ -102,7 +102,7 @@ fun GlobalEditesGFABs_F2(
                                     imageGlidReloadTigger += 1
                                 }
                                 besoinToBeUpdated = true
-                            }                       _
+                            }
 
                             // Update in Firebase Realtime Database
                             _ModelAppsFather.produitsFireBaseRef

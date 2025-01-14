@@ -9,7 +9,7 @@ import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-open class ExtensionProduitModel {
+open class ProduitModelExtension {
     val produitsFireBaseRef = Firebase.database
         .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
         .child("produits")

@@ -33,6 +33,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import com.example.Z_MasterOfApps.Kotlin.Model.Res.groupedProductsPatGrossist
 import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
 import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
@@ -105,7 +106,7 @@ fun MainScreenFilterFAB_F2(
 
                                             // Update positions using the current list
                                             val updatedProducts =
-                                                viewModelProduits.produitsAvecBonsGrossist.map { product ->
+                                                viewModelProduits._modelAppsFather.produitsMainDataBase .map { product ->
                                                     product.apply {
                                                         bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                             when (currentGrossist.id) {

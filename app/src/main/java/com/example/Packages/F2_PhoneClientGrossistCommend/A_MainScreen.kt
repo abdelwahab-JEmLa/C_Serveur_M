@@ -39,9 +39,9 @@ internal fun MainScreen_F2(
         return
     }
 
-    val databaseSize = viewModelInitApp.produitsAvecBonsGrossist.size
+    val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 
-    val visibleProducts = viewModelInitApp.produitsAvecBonsGrossist
+    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
         .filter { product ->
             product.bonCommendDeCetteCota.let {
                 it?.grossistInformations?.id ==

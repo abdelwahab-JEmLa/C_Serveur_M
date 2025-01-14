@@ -204,7 +204,7 @@ open class _ModelAppsFather(
                 var quantityAchete: Int by mutableIntStateOf(0)
             }
 
-            companion object : ExtensionGrossistBonCommandes()
+            companion object : GrossistBonCommandesExtension()
         }
 
         @IgnoreExtraProperties
@@ -275,5 +275,5 @@ open class _ModelAppsFather(
             }
         }
     }
-    companion object : ExtensionProduitModel()
+    companion object : ProduitModelExtension()
 }

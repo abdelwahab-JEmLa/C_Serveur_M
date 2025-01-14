@@ -6,7 +6,7 @@ import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.Gro
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee
 import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 
-open class ExtensionGrossistBonCommandes {
+open class GrossistBonCommandesExtension {
     fun updateSelf(
         produit: _ModelAppsFather.ProduitModel,
         bonCommande: GrossistBonCommandes,

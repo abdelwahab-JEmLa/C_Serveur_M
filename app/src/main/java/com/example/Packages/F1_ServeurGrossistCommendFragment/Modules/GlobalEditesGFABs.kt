@@ -36,6 +36,10 @@ import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
 import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
+import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await

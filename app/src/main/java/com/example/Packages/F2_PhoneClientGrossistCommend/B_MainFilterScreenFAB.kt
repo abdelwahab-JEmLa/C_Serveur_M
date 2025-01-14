@@ -34,9 +34,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import com.example.Z_MasterOfApps.Kotlin.Model.Res.groupedProductsPatGrossist
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
-import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -123,7 +122,7 @@ fun MainScreenFilterFAB_F2(
                                                 }
 
                                             // Now pass the updated list to the update function
-                                            update_produitsAvecBonsGrossist(
+                                            update_AllProduits(
                                                 updatedProducts,
                                                 viewModelProduits
                                             )

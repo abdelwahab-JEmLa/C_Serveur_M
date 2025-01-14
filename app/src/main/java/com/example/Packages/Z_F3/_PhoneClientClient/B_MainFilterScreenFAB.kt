@@ -33,8 +33,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
-import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
+import com.example.Z_MasterOfApps.Kotlin.Model.Res.groupedProductsParClients
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
+import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -104,7 +105,7 @@ fun MainScreenFilterFAB_F3(
                                             previousClientInfo.positionDonClientsList++
 
                                             val updatedProducts =
-                                                viewModelProduits.produitsAvecBonsGrossist.map { product ->
+                                                viewModelProduits._modelAppsFather.produitsMainDataBase .map { product ->
                                                     product.apply {
                                                         bonsVentDeCetteCota.forEach { bonVent ->
                                                             bonVent.clientInformations?.let { currentClientInfo ->
@@ -123,7 +124,7 @@ fun MainScreenFilterFAB_F3(
                                                     }
                                                 }
 
-                                            update_produitsAvecBonsGrossist(
+                                            update_AllProduits(
                                                 updatedProducts,
                                                 viewModelProduits
                                             )

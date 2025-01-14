@@ -23,8 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewModelScope
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
-import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
+import com.example.Z_MasterOfApps.Kotlin.Model.Res.groupedProductsParClients
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
+import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import kotlinx.coroutines.launch
 
 @Composable
@@ -87,7 +88,7 @@ fun ClientEditePositionDialog(
                                             previousClientInfo.positionDonClientsList++
 
                                             val updatedProducts =
-                                                viewModelProduits.produitsAvecBonsGrossist.map { product ->
+                                                viewModelProduits._modelAppsFather.produitsMainDataBase.map { product ->
                                                     product.apply {
                                                         bonsVentDeCetteCota.forEach { bonVent ->
                                                             bonVent.clientInformations?.let { currentClientInfo ->
@@ -106,7 +107,7 @@ fun ClientEditePositionDialog(
                                                     }
                                                 }
 
-                                            update_produitsAvecBonsGrossist(
+                                            update_AllProduits(
                                                 updatedProducts,
                                                 viewModelProduits
                                             )

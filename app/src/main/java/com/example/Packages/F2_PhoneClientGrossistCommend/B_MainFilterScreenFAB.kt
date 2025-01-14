@@ -33,6 +33,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
+import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.update_produitsAvecBonsGrossist
 import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
 import kotlinx.coroutines.launch

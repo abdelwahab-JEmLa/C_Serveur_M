@@ -26,19 +26,14 @@ import kotlinx.coroutines.launch
 class ViewModelInitApp : ViewModel() {
     var _paramatersAppsViewModelModel by mutableStateOf(ParamatersAppsModel())
     var _modelAppsFather by mutableStateOf(_ModelAppsFather())
-    var _produitsAvecBonsGrossist = mutableStateListOf<ProduitModel>()
+
+
     val modelAppsFather: _ModelAppsFather get() = _modelAppsFather
     val produitsMainDataBase = _modelAppsFather.produitsMainDataBase
 
-    private val _productFlow = MutableStateFlow<Map<Long, ProduitModel>>(emptyMap())
     var isLoading by mutableStateOf(false)
     var loadingProgress by mutableFloatStateOf(0f)
 
-    val _bonCommandeFlow = MutableStateFlow<ProduitModel.GrossistBonCommandes?>(null)
-    val _bonVentFlow = MutableStateFlow<ProduitModel.ClientBonVentModel?>(null)
-    val bonCommandeFlow = _bonCommandeFlow.asStateFlow()
-    val _bonTypeFlow = MutableStateFlow<BonType<*>?>(null)
-    val bonTypeFlow = _bonTypeFlow.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -62,20 +57,6 @@ class ViewModelInitApp : ViewModel() {
             }
         }
     }
-    // In ViewModelInitApp.kt
-
-    fun updateProduitsAvecBonsGrossist() {
-        _produitsAvecBonsGrossist.clear()
-        _produitsAvecBonsGrossist.addAll(
-            _modelAppsFather.produitsMainDataBase
-                .filter { it.bonCommendDeCetteCota != null }
-                .onEach { it.updateBonCommande() } // Update the derived state
-                .sortedBy {
-                    it.bonCommendDeCetteCota
-                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                }
-        )
-    }
 
     private fun setupDataListeners() {
         _modelAppsFather.produitsMainDataBase.forEach { produit ->
@@ -95,7 +76,6 @@ class ViewModelInitApp : ViewModel() {
                                         }
                                         _modelAppsFather.produitsMainDataBase[index] =
                                             updatedProduct
-                                        updateProduitsAvecBonsGrossist()
                                     }
                                 }
                             } catch (e: Exception) {

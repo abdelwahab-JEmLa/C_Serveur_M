@@ -24,16 +24,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.SearchDialog_F1
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
-import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
+import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 
 @Composable
 fun B_ListMainFragment(
     viewModelProduits: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
-    visibleProducts: List<ModelAppsFather.ProduitModel>
+    visibleProducts: List<_ModelAppsFather.ProduitModel>
 ) {
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
@@ -68,7 +68,7 @@ fun B_ListMainFragment(
                     mainItem = product,
                     onCLickOnMain = {
                         product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
-                        updateProduct_produitsAvecBonsGrossist(product, viewModelProduits)
+                        updateProduit(product, viewModelProduits)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
@@ -124,7 +124,7 @@ fun B_ListMainFragment(
                         if (product.itsTempProduit) {
                             product.statuesBase.prePourCameraCapture = true
                         }
-                        updateProduct_produitsAvecBonsGrossist(product, viewModelProduits)
+                        updateProduit(product, viewModelProduits)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )

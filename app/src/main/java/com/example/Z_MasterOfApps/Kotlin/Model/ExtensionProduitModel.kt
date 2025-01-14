@@ -2,14 +2,10 @@ package com.example.Z_MasterOfApps.Kotlin.Model
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.ClientBonVentModel
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.GrossistBonCommandes
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.Extensions.BonType
 import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
 import com.google.firebase.storage.storage
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -48,15 +44,15 @@ open class ExtensionProduitModel {
         }
     }
 
-    fun update_produitsAvecBonsGrossist(
+    fun update_AllProduits(
         updatedProducts: List<_ModelAppsFather.ProduitModel>, // Change parameter type to List
         viewModelProduits: ViewModelInitApp
     ) {
         viewModelProduits.viewModelScope.launch {
             try {
                 // Update local state
-                viewModelProduits._produitsAvecBonsGrossist.clear()
-                viewModelProduits._produitsAvecBonsGrossist.addAll(updatedProducts)
+                viewModelProduits._modelAppsFather.produitsMainDataBase.clear()
+                viewModelProduits._modelAppsFather.produitsMainDataBase.addAll(updatedProducts)
 
                 // Then update Firebase in chunks to prevent overwhelming the connection
                 UpdateFireBase(updatedProducts)
@@ -76,40 +72,6 @@ open class ExtensionProduitModel {
                     Log.d("Firebase", "Successfully updated product ${product.id}")
                 } catch (e: Exception) {
                     Log.e("Firebase", "Failed to update product ${product.id}", e)
-                }
-            }
-        }
-    }
-
-    fun collectBonType(
-        viewModel: ViewModelInitApp,
-        scope: CoroutineScope
-    ) {
-        scope.launch {
-            viewModel.bonTypeFlow.collect { bonType ->
-                when (bonType) {
-                    is BonType.BonVente -> {
-                        // Handle bon vente updates
-                        val bonVente = bonType.data
-                        viewModel._modelAppsFather.produitsMainDataBase
-                            .filter { it.bonsVentDeCetteCota.any { bv -> bv.clientInformations?.id == bonVente.clientInformations?.id } }
-                            .forEach { produit ->
-                                ClientBonVentModel.updateSelf(produit, bonVente, viewModel)
-                                GrossistBonCommandes.calculeSelf(produit, viewModel)
-                            }
-                    }
-
-                    is BonType.BonCommande -> {
-                        // Handle bon commande updates
-                        val bonCommande = bonType.data
-                        viewModel._modelAppsFather.produitsMainDataBase
-                            .filter { it.bonCommendDeCetteCota?.grossistInformations?.id == bonCommande.grossistInformations?.id }
-                            .forEach { produit ->
-                                GrossistBonCommandes.updateSelf(produit, bonCommande, viewModel)
-                            }
-                    }
-
-                    null -> {}
                 }
             }
         }

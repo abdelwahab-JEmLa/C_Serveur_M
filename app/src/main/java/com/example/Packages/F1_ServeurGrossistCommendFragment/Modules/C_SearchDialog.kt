@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.Packages.F1_ServeurGrossistCommendFragment.C_ItemMainFragment
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.updateProduct_produitsAvecBonsGrossist
-import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
+import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import kotlinx.coroutines.delay
 
 @Composable
@@ -118,7 +118,7 @@ fun SearchDialog_F1(viewModelProduits: ViewModelInitApp) {
                                             cPositionCheyCeGrossit = true
                                             positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
                                         }
-                                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
+                                        updateProduit(product,viewModelProduits)
                                         showDialog = false
                                     }  ,
                                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),

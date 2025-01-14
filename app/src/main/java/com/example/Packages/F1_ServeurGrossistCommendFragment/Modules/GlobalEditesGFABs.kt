@@ -32,10 +32,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
-import com.example.com.example.Z_MasterOfApps.Kotlin.ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
-import com.example.com.example.Z_MasterOfApps.Kotlin.ViewModelInitApp
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -51,7 +51,7 @@ enum class DeviceMode {
 
 @Composable
 fun GlobalEditesGFABs(
-    appsHeadModel: ModelAppsFather,
+    appsHeadModel: _ModelAppsFather,
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp,
 ) {
@@ -60,7 +60,7 @@ fun GlobalEditesGFABs(
     var showOptions by remember { mutableStateOf(false) }
     var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
-    var pendingProduct by remember { mutableStateOf<ModelAppsFather.ProduitModel?>(null) }
+    var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
 
     suspend fun handleImageCapture(uri: Uri) {
         try {
@@ -112,7 +112,7 @@ fun GlobalEditesGFABs(
                             }
 
                             // Update in Firebase Realtime Database
-                            ModelAppsFather.produitsFireBaseRef
+                            _ModelAppsFather.produitsFireBaseRef
                                 .child(product.id.toString())
                                 .setValue(product)
                                 .await()

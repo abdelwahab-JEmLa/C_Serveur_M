@@ -1,6 +1,5 @@
 package com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 
-import Y_AppsFather.Z_AppsFather.Kotlin._3.Init.LoadFromFirebaseHandler
 import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 
 suspend fun loadCalculateurOktapuluse(viewModelInitApp: ViewModelInitApp) {
@@ -24,7 +23,6 @@ suspend fun loadCalculateurOktapuluse(viewModelInitApp: ViewModelInitApp) {
         // Update grossist and final steps - 30% of progress
         viewModelInitApp.loadingProgress = 0.7f
         viewModelInitApp.apply {
-            updateProduitsAvecBonsGrossist()
             this.loadingProgress = 0.9f
             this.loadingProgress = 1f
         }

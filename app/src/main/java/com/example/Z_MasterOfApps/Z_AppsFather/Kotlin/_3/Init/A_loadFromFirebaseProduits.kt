@@ -1,4 +1,4 @@
-package Y_AppsFather.Z_AppsFather.Kotlin._3.Init
+package com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 
 import androidx.compose.runtime.toMutableStateList
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
@@ -21,7 +21,6 @@ object LoadFromFirebaseHandler {
         initViewModel.apply {
             _modelAppsFather.produitsMainDataBase.clear()
             _modelAppsFather.produitsMainDataBase.addAll(products)
-            updateProduitsAvecBonsGrossist()
             this.loadingProgress = 1f
         }
     } catch (e: Exception) {

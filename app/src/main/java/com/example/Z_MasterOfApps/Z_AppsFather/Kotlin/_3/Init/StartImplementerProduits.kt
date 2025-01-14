@@ -1,4 +1,4 @@
-package Y_AppsFather.Z_AppsFather.Kotlin._3.Init
+package com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 
 import android.util.Log
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
@@ -21,7 +21,6 @@ suspend fun CreeNewStart(
                     init_besoin_To_Be_Updated = true
                 )
 
-                // Add colors/tastes with logging
                 var colorsAdded = 0
                 listOf(
                     ancien.idcolor1 to 1L,

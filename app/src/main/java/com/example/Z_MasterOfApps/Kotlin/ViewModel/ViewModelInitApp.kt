@@ -5,22 +5,17 @@ import Y_AppsFather.Z_AppsFather.Kotlin._3.Init.LoadFromFirebaseHandler.parsePro
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.produitsFireBaseRef
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.Extensions.BonType
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.loadCalculateurOktapuluse
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ViewModelInitApp : ViewModel() {
@@ -39,15 +34,14 @@ class ViewModelInitApp : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val nmr = 1000
-                if (nmr == 0)
+                val nombre = 0
+                if (nombre == 0)
                     loadCalculateurOktapuluse(this@ViewModelInitApp)
                 else
                     CreeNewStart(_modelAppsFather)
 
                 setupDataListeners()
 
-                _ModelAppsFather.collectBonType(this@ViewModelInitApp, viewModelScope)
 
                 isLoading = true
             } catch (e: Exception) {

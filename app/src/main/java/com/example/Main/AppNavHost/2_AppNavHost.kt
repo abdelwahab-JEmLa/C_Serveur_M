@@ -82,18 +82,18 @@ fun AppNavHost(
 
 @Preview
 @Composable
-private fun PreviewScreenMainFragment_1() {
+private fun Preview_Fragment1() {
     A_ScreenMainFragment_1(modifier = Modifier.fillMaxSize())
 }
 
 @Preview
 @Composable
-private fun PreviewMainScreen_F2() {
+private fun Preview_Fragment2() {
     MainScreen_F2(modifier = Modifier.fillMaxSize())
 }
 
 @Preview
 @Composable
-private fun PreviewMainScreen_F3() {
+private fun Preview_Fragment3() {
     MainScreen_F3(modifier = Modifier.fillMaxSize())
 }

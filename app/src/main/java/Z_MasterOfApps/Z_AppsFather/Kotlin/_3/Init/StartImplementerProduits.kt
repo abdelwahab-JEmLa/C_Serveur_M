@@ -1,9 +1,9 @@
 package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.UpdateFireBase
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.Z.Parent.GetAncienDataBasesMain
 import android.util.Log
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.UpdateFireBase
 
 suspend fun CreeNewStart(
     _appsHeadModel: _ModelAppsFather,

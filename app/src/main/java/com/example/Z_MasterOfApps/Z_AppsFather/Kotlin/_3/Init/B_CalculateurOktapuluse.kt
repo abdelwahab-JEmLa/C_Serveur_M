@@ -7,9 +7,6 @@ suspend fun loadCalculateurOktapuluse(viewModelInitApp: ViewModelInitApp) {
         viewModelInitApp.isLoading = true
         viewModelInitApp.loadingProgress = 0f
 
-        // Start Firebase load - 40% of progress
-        viewModelInitApp.loadingProgress = 0.1f
-        LoadFromFirebaseHandler.loadFromFirebase(viewModelInitApp)
         viewModelInitApp.loadingProgress = 0.4f
 
         // Process products - 30% of progress

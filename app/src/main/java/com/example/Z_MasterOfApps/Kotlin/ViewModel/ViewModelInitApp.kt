@@ -11,6 +11,7 @@ import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.produitsFireBaseRef
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.CreeNewStart
+import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFromFirebaseHandler
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFromFirebaseHandler.parseProduct
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.loadCalculateurOktapuluse
 import com.google.firebase.database.DataSnapshot
@@ -35,10 +36,12 @@ class ViewModelInitApp : ViewModel() {
             try {
                 isLoading = true
                 val nombre = 0
-                if (nombre == 0)
+                if (nombre == 0) {
+                    LoadFromFirebaseHandler.loadFromFirebase(this@ViewModelInitApp)
                     loadCalculateurOktapuluse(this@ViewModelInitApp)
-                else
-                    CreeNewStart(_modelAppsFather)
+                }
+                else                     //
+                CreeNewStart(_modelAppsFather)
 
                 setupDataListeners()
 

@@ -1,5 +1,8 @@
 package com.example.Packages.F1_ServeurGrossistCommendFragment
 
+import Z_MasterOfApps.Kotlin.Model.Res.groupedProductsPatGrossist
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -33,9 +36,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
-import com.example.Z_MasterOfApps.Kotlin.Model.Res.groupedProductsPatGrossist
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

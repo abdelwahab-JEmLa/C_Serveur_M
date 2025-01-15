@@ -1,6 +1,7 @@
 // SearchDialog.kt
 package com.example.Packages.Z_F3.Modules
 
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +29,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import kotlinx.coroutines.delay
 
 @Composable

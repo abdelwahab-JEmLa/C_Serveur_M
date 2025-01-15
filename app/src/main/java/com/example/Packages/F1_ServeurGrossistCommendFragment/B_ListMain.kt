@@ -1,5 +1,8 @@
 package com.example.Packages.F1_ServeurGrossistCommendFragment
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,9 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.SearchDialog_F1
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 
 @Composable
 fun B_ListMainFragment(

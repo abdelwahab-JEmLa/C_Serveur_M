@@ -1,5 +1,8 @@
 package com.example.Packages.F1_ServeurGrossistCommendFragment.Modules
 
+import Z_MasterOfApps.Kotlin.Model.Res.groupedProductsParClients
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,9 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewModelScope
-import com.example.Z_MasterOfApps.Kotlin.Model.Res.groupedProductsParClients
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import kotlinx.coroutines.launch
 
 @Composable

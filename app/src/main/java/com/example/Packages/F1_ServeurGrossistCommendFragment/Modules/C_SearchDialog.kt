@@ -1,6 +1,8 @@
 // SearchDialog.kt
 package com.example.Packages.F1_ServeurGrossistCommendFragment.Modules
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,8 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.example.Packages.F1_ServeurGrossistCommendFragment.C_ItemMainFragment
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import kotlinx.coroutines.delay
 
 @Composable

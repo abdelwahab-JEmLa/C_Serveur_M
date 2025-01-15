@@ -1,5 +1,10 @@
 package com.example.Packages.F2_PhoneClientGrossistCommend.Modules
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
+import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -31,10 +36,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
-import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -51,7 +52,7 @@ fun GlobalEditesGFABs_F2(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showOptions by remember { mutableStateOf(false) }
-    var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
+    var deviceMode by remember { mutableStateOf(ParamatersAppsModel.DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
 
@@ -246,7 +247,7 @@ fun GlobalEditesGFABs_F2(
                 FloatingActionButton(
                     onClick = {
                         deviceMode = when (deviceMode) {
-                            DeviceMode.SERVER -> DeviceMode.DISPLAY
+                            ParamatersAppsModel.DeviceMode.SERVER -> DeviceMode.DISPLAY
                             DeviceMode.DISPLAY -> DeviceMode.SERVER
                         }
                     },

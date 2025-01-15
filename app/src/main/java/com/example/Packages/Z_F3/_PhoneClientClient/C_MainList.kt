@@ -1,5 +1,8 @@
 package com.example.Packages.Z_F3._PhoneClientClient
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

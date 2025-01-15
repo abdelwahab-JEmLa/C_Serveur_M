@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.produitsFireBaseRef
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee.Companion.derivedStateDeBColoursGoutsCommende
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.CreeNewStart
 import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFromFirebaseHandler
@@ -40,7 +41,7 @@ class ViewModelInitApp : ViewModel() {
                     LoadFromFirebaseHandler.loadFromFirebase(this@ViewModelInitApp)
                     loadCalculateurOktapuluse(this@ViewModelInitApp)
                 }
-                else                     //
+                else
                 CreeNewStart(_modelAppsFather)
 
                 setupDataListeners()
@@ -55,6 +56,7 @@ class ViewModelInitApp : ViewModel() {
         }
     }
 
+    // In ViewModelInitApp.kt
     private fun setupDataListeners() {
         _modelAppsFather.produitsMainDataBase.forEach { produit ->
             Log.d("SetupListener", "Setting up listener for product ${produit.id}")
@@ -65,14 +67,14 @@ class ViewModelInitApp : ViewModel() {
                             try {
                                 val updatedProduct = parseProduct(snapshot)
                                 if (updatedProduct != null) {
-                                    val index =
-                                        _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == updatedProduct.id }
+                                    val index = _modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == updatedProduct.id }
                                     if (index != -1) {
-                                        if (updatedProduct.bonsVentDeCetteCota.isNotEmpty()) {
-                                            updatedProduct.updateBonCommande()
+                                        // Update the derived state for colors and quantities
+                                        updatedProduct.bonCommendDeCetteCota?.let { bonCommend ->
+                                            bonCommend.coloursEtGoutsCommendeeList =
+                                                updatedProduct.bonsVentDeCetteCota.derivedStateDeBColoursGoutsCommende()
                                         }
-                                        _modelAppsFather.produitsMainDataBase[index] =
-                                            updatedProduct
+                                        _modelAppsFather.produitsMainDataBase[index] = updatedProduct
                                     }
                                 }
                             } catch (e: Exception) {

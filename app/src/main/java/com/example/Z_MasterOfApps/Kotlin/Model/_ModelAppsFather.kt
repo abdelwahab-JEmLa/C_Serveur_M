@@ -6,8 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.GrossistBonCommandes.Companion.updateChildren
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import com.example.Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee.Companion.derivedStateDeBColoursGoutsCommende
 import com.google.firebase.database.Exclude
 import com.google.firebase.database.IgnoreExtraProperties
 import java.util.Objects
@@ -51,34 +50,6 @@ open class _ModelAppsFather(
                 coloursEtGouts.addAll(value)
             }
 
-        // Nouvelle implémentation avec derived state pour bonCommendDeCetteCota
-        private var _bonCommendDeCetteCota by mutableStateOf<GrossistBonCommandes?>(
-            init_bonCommendDeCetteCota
-        )
-
-        var bonCommendDeCetteCota: GrossistBonCommandes?
-            get() {
-                if (_bonCommendDeCetteCota == null && bonsVentDeCetteCota.isNotEmpty()) {
-                    _bonCommendDeCetteCota = createDerivedBonCommande()
-                }
-                return _bonCommendDeCetteCota
-            }
-            set(value) {
-                _bonCommendDeCetteCota = value
-            }
-
-        @get:Exclude
-        var bonsVentDeCetteCota: SnapshotStateList<ClientBonVentModel> =
-            initBonsVentDeCetteCota.toMutableStateList()
-
-        var bonsVentDeCetteCotaList: List<ClientBonVentModel>
-            get() = bonsVentDeCetteCota.toList()
-            set(value) {
-                bonsVentDeCetteCota.clear()
-                bonsVentDeCetteCota.addAll(value)
-                updateBonCommande() // Update derived state when sales data changes
-            }
-
         @get:Exclude
         var historiqueBonsVents: SnapshotStateList<ClientBonVentModel> =
             init_historiqueBonsVents.toMutableStateList()
@@ -101,51 +72,6 @@ open class _ModelAppsFather(
                 historiqueBonsCommend.addAll(value)
             }
 
-        private fun createDerivedBonCommande(): GrossistBonCommandes {
-            return GrossistBonCommandes().apply {
-                grossistInformations = GrossistBonCommandes.GrossistInformations(
-                    id = 0L,
-                    nom = "Non Defini",
-                    couleur = "#FF0000"
-                ).apply {
-                    auFilterFAB = false
-                    positionInGrossistsList = 0
-                }
-
-                val processedColors = mutableListOf<GrossistBonCommandes.ColoursGoutsCommendee>()
-
-                bonsVentDeCetteCota
-                    .flatMap { it.colours_Achete }
-                    .groupBy { it.couleurId }
-                    .forEach { (couleurId, colorList) ->
-                        colorList.firstOrNull()?.let { firstColor ->
-                            val totalQuantity = colorList.sumOf { it.quantity_Achete }
-
-                            val newCommendee = GrossistBonCommandes.ColoursGoutsCommendee(
-                                id = couleurId,
-                                nom = firstColor.nom,
-                                emoji = firstColor.imogi
-                            ).apply {
-                                quantityAchete = totalQuantity
-                            }
-
-                            if (newCommendee.quantityAchete > 0) {
-                                processedColors.add(newCommendee)
-                            }
-                        }
-                    }
-
-                coloursEtGoutsCommendee.clear()
-                coloursEtGoutsCommendee.addAll(processedColors)
-            }
-
-        }
-
-        fun updateBonCommande() {
-            _bonCommendDeCetteCota = createDerivedBonCommande()
-            updateChildren(_bonCommendDeCetteCota!!,this)
-        }
-
         @IgnoreExtraProperties
         class StatuesBase(
             var ilAUneCouleurAvecImage: Boolean = false,
@@ -159,14 +85,19 @@ open class _ModelAppsFather(
         @IgnoreExtraProperties
         class ColourEtGout_Model(
             var position_Du_Couleur_Au_Produit: Long = 0,
-            val id: Long = 0,
+            val id: Long = 1,
             var nom: String = "Non Defini",
             var imogi: String = "🎨",
             var sonImageNeExistPas: Boolean = false,
         )
 
+        // Nouvelle implémentation avec derived state pour bonCommendDeCetteCota
+        var bonCommendDeCetteCota by mutableStateOf<GrossistBonCommandes?>(
+            init_bonCommendDeCetteCota
+        )
+
         @IgnoreExtraProperties
-        open class GrossistBonCommandes(
+        class GrossistBonCommandes(
             var vid: Long = 0,
             init_grossistInformations: GrossistInformations? = null,
             var date: String = "",
@@ -175,15 +106,18 @@ open class _ModelAppsFather(
             var currentCreditBalance: Double = 0.0,
             init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
         ) {
-            var grossistInformations: GrossistInformations? by mutableStateOf(
-                init_grossistInformations
-            )
-            var cPositionCheyCeGrossit: Boolean by mutableStateOf(false)
-            var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(0)
+            var grossistInformations: GrossistInformations? by mutableStateOf(init_grossistInformations)
 
             @get:Exclude
-            var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
+            private var _coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
                 init_coloursEtGoutsCommendee.toMutableStateList()
+
+            var coloursEtGoutsCommendeeList: List<ColoursGoutsCommendee>
+                get() = _coloursEtGoutsCommendee.toList()
+                set(value) {
+                    _coloursEtGoutsCommendee.clear()
+                    _coloursEtGoutsCommendee.addAll(value)
+                }
 
             @IgnoreExtraProperties
             data class GrossistInformations(
@@ -202,10 +136,48 @@ open class _ModelAppsFather(
                 val emoji: String = "",
             ) {
                 var quantityAchete: Int by mutableIntStateOf(0)
+
+                companion object {
+                    fun List<ClientBonVentModel>.derivedStateDeBColoursGoutsCommende(): SnapshotStateList<ColoursGoutsCommendee> {
+                        val processedColors = mutableMapOf<Long, ColoursGoutsCommendee>()
+
+                        this.forEach { bonVent ->
+                            bonVent.colours_Achete.forEach { colorAchat ->
+                                val existingColor = processedColors.getOrPut(colorAchat.couleurId) {
+                                    ColoursGoutsCommendee(
+                                        id = colorAchat.couleurId,
+                                        nom = colorAchat.nom,
+                                        emoji = colorAchat.imogi
+                                    )
+                                }
+                                existingColor.quantityAchete += colorAchat.quantity_Achete
+                            }
+                        }
+
+                        return processedColors.values
+                            .filter { it.quantityAchete > 0 }
+                            .toMutableStateList()
+                    }
+                }
+            }
+        }
+
+        @get:Exclude
+        var bonsVentDeCetteCota: SnapshotStateList<ClientBonVentModel> =
+            initBonsVentDeCetteCota.toMutableStateList()
+
+        // Update the bonsVentDeCetteCotaList setter
+        var bonsVentDeCetteCotaList: List<ClientBonVentModel>
+            get() = bonsVentDeCetteCota.toList()
+            set(value) {
+                bonsVentDeCetteCota.clear()
+                bonsVentDeCetteCota.addAll(value)
+                // Update the bon commend if it exists
+                bonCommendDeCetteCota?.let { bonCommend ->
+                    bonCommend.coloursEtGoutsCommendeeList = value.derivedStateDeBColoursGoutsCommende()
+                }
             }
 
-            companion object : GrossistBonCommandesExtension()
-        }
 
         @IgnoreExtraProperties
         class ClientBonVentModel(
@@ -256,24 +228,9 @@ open class _ModelAppsFather(
                 var quantity_Achete: Int = 0,
                 var imogi: String = ""
             )
-
-            companion object {
-                fun updateSelf(
-                    produit: ProduitModel,
-                    bonVente: ClientBonVentModel,
-                    viewModelProduits: ViewModelInitApp
-                ) {
-                    produit.bonsVentDeCetteCota.removeAll { it.clientInformations?.id == bonVente.clientInformations?.id }
-                    produit.bonsVentDeCetteCota.add(bonVente)
-                    val index =
-                        viewModelProduits._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == produit.id }
-                    if (index != -1) {
-                        produit.updateBonCommande() // Update derived state after modifying sales data
-                        viewModelProduits._modelAppsFather.produitsMainDataBase[index] = produit
-                    }
-                }
-            }
         }
+        // Add extension function to handle the derived state update
+
     }
     companion object : ProduitModelExtension()
 }

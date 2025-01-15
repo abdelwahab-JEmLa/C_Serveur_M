@@ -8,7 +8,6 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
 class ParamatersAppsModel {
-    // Using proper delegate pattern with non-null initial value
     var telephoneClientParamaters by mutableStateOf(TelephoneClientParamaters())
 
     var visibilityClientEditePositionDialog by mutableStateOf(false)

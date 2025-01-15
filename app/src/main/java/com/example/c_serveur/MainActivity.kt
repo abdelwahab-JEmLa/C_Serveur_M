@@ -1,5 +1,6 @@
 package com.example.c_serveur
 
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -14,7 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.example.Main.AppNavHost.MainScreen
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
 

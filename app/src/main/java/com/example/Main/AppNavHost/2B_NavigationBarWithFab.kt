@@ -1,5 +1,6 @@
 package com.example.Main.AppNavHost
 
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,7 +27,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ContentAlpha
-import com.example.Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.example.c_serveur.R
 
 @Composable

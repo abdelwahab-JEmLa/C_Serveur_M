@@ -1,26 +1,12 @@
-package Z_MasterOfApps.Kotlin.Model
+package Z_MasterOfApps.Kotlin.Model.Extension
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.produitsFireBaseRef
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 
 open class GrossistBonCommandesExtension {
-    fun updateSelf(
-        produit: _ModelAppsFather.ProduitModel,
-        bonCommande: _ModelAppsFather.ProduitModel.GrossistBonCommandes,
-        viewModelProduits: ViewModelInitApp
-    ) {
-        produit.bonCommendDeCetteCota = bonCommande
-        val index =
-            viewModelProduits._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == produit.id }
-        if (index != -1) {
-            // Direct update of the SnapshotStateList
-            viewModelProduits._modelAppsFather.produitsMainDataBase[index] = produit
-        }
-    }
-
-    // In GrossistBonCommandes.kt
-    fun calculeSelf(product: _ModelAppsFather.ProduitModel, viewModelInitApp: ViewModelInitApp) {
+    fun calculeSelfGrossistBonCommandesExtension(product: _ModelAppsFather.ProduitModel, viewModelInitApp: ViewModelInitApp) {
         Log.d("CalculeSelf", "Starting calculeSelf for product ${product.id}")
         viewModelInitApp._modelAppsFather.produitsMainDataBase
             .filter { it.id == product.id }
@@ -28,10 +14,9 @@ open class GrossistBonCommandesExtension {
                 try {
 
                     val newBonCommande = _ModelAppsFather.ProduitModel.GrossistBonCommandes().apply {
-                        vid = System.currentTimeMillis()
 
                         grossistInformations = _ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations(
-                            id = vid,
+                            id = 1,
                             nom = "Non Defini",
                             couleur = "#FF0000"
                         ).apply {
@@ -57,7 +42,7 @@ open class GrossistBonCommandesExtension {
                                     val newCommendee = _ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
                                         id = couleurId,
                                         nom = firstColor.nom,
-                                        emoji = firstColor.imogi
+                                        emogi = firstColor.imogi
                                     ).apply {
                                         quantityAchete = totalQuantity
                                     }
@@ -73,7 +58,6 @@ open class GrossistBonCommandesExtension {
 
                     produit.bonCommendDeCetteCota = newBonCommande
 
-                    updateChildren(newBonCommande, produit)
 
                 } catch (e: Exception) {
                     Log.e("CalculeSelf", "Calculation error for product ${produit.id}", e)
@@ -83,22 +67,21 @@ open class GrossistBonCommandesExtension {
             }
     }
     fun updateChildren(
-        newBonCommande: _ModelAppsFather.ProduitModel.GrossistBonCommandes,
         produit: _ModelAppsFather.ProduitModel
     ) {
         // Create a map for Firebase update
         val updates = mapOf(
             "bonCommendDeCetteCota" to mapOf(
-                "vid" to newBonCommande.vid,
-                "grossistInformations" to newBonCommande.grossistInformations,
-                "coloursEtGoutsCommendeeList" to newBonCommande.coloursEtGoutsCommendee,
-                "date" to newBonCommande.date,
-                "date_String_Divise" to newBonCommande.date_String_Divise,
-                "time_String_Divise" to newBonCommande.time_String_Divise,
-                "currentCreditBalance" to newBonCommande.currentCreditBalance,
-                "cpositionCheyCeGrossit" to newBonCommande.cPositionCheyCeGrossit,
+                "vid" to produit.bonCommendDeCetteCota?.vid,
+                "grossistInformations" to produit.bonCommendDeCetteCota?.grossistInformations,
+                "coloursEtGoutsCommendeeList" to produit.bonCommendDeCetteCota?.coloursEtGoutsCommendee,
+                "date" to produit.bonCommendDeCetteCota?.date,
+                "date_String_Divise" to produit.bonCommendDeCetteCota?.date_String_Divise,
+                "time_String_Divise" to produit.bonCommendDeCetteCota?.time_String_Divise,
+                "currentCreditBalance" to produit.bonCommendDeCetteCota?.currentCreditBalance,
+                "cpositionCheyCeGrossit" to produit.bonCommendDeCetteCota?.cPositionCheyCeGrossit,
                 "positionProduitDonGrossistChoisiPourAcheterCeProduit" to
-                        newBonCommande.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                        produit.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
             )
         )
 

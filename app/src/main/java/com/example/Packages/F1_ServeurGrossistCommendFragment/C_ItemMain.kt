@@ -1,6 +1,7 @@
 package com.example.Packages.F1_ServeurGrossistCommendFragment
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
 
 @Composable
 fun C_ItemMainFragment(

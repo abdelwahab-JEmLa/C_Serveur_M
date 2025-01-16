@@ -1,6 +1,6 @@
 package com.example.Packages.F1_ServeurGrossistCommendFragment.Modules
 
-import Z_MasterOfApps.Kotlin.Model.Res.groupedProductsParClients
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.background

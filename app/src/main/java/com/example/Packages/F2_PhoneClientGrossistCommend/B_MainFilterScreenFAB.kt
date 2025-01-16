@@ -1,6 +1,6 @@
 package com.example.Packages.F2_PhoneClientGrossistCommend
 
-import Z_MasterOfApps.Kotlin.Model.Res.groupedProductsPatGrossist
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility

@@ -1,6 +1,6 @@
 package com.example.Packages.Z_F3._PhoneClientClient
 
-import Z_MasterOfApps.Kotlin.Model.Res.groupedProductsParClients
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility

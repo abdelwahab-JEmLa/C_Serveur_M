@@ -1,4 +1,4 @@
-package com.example.Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules
+package Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
 import android.graphics.drawable.Drawable

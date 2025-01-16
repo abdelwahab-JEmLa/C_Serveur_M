@@ -1,6 +1,8 @@
 package Z_MasterOfApps.Kotlin.Model
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee.Companion.derivedStateDeBColoursGoutsCommende
+import Z_MasterOfApps.Kotlin.Model.Extension.GrossistBonCommandesExtension
+import Z_MasterOfApps.Kotlin.Model.Extension.ProduitModelCompanion
+import Z_MasterOfApps.Kotlin.Model.Extension.ProduitModelExtension
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +39,18 @@ open class _ModelAppsFather(
         var non_Trouve: Boolean by mutableStateOf(initialNon_Trouve)
         var isVisible: Boolean by mutableStateOf(init_visible)
 
+
         var statuesBase: StatuesBase by mutableStateOf(StatuesBase())
+        @IgnoreExtraProperties
+        class StatuesBase(
+            var ilAUneCouleurAvecImage: Boolean = false,
+        ) {
+            var naAucunImage: Boolean by mutableStateOf(false)
+            var sonImageBesoinActualisation: Boolean by mutableStateOf(false)
+            var imageGlidReloadTigger: Int by mutableStateOf(0)
+            var prePourCameraCapture: Boolean by mutableStateOf(false)
+        }
+
 
         @get:Exclude
         var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
@@ -49,53 +62,29 @@ open class _ModelAppsFather(
                 coloursEtGouts.clear()
                 coloursEtGouts.addAll(value)
             }
+        @IgnoreExtraProperties
+        class ColourEtGout_Model(
+            val id: Long = 1,
+            var nom: String = "Non Defini",
+            var imogi: String = "🎨",
+            var sonImageNeExistPas: Boolean = false,
+            var position_Du_Couleur_Au_Produit: Long = 0,
+        )
 
-        @get:Exclude
-        var historiqueBonsVents: SnapshotStateList<ClientBonVentModel> =
-            init_historiqueBonsVents.toMutableStateList()
 
-        var historiqueBonsVentsList: List<ClientBonVentModel>
-            get() = historiqueBonsVents.toList()
-            set(value) {
-                historiqueBonsVents.clear()
-                historiqueBonsVents.addAll(value)
-            }
-
+        // Nouvelle implémentation avec derived state pour bonCommendDeCetteCota
+        var bonCommendDeCetteCota by mutableStateOf<GrossistBonCommandes?>(
+            init_bonCommendDeCetteCota
+        )
         @get:Exclude
         var historiqueBonsCommend: SnapshotStateList<GrossistBonCommandes> =
             init_historiqueBonsCommend.toMutableStateList()
-
         var historiqueBonsCommendList: List<GrossistBonCommandes>
             get() = historiqueBonsCommend.toList()
             set(value) {
                 historiqueBonsCommend.clear()
                 historiqueBonsCommend.addAll(value)
             }
-
-        @IgnoreExtraProperties
-        class StatuesBase(
-            var ilAUneCouleurAvecImage: Boolean = false,
-        ) {
-            var naAucunImage: Boolean by mutableStateOf(false)
-            var sonImageBesoinActualisation: Boolean by mutableStateOf(false)
-            var imageGlidReloadTigger: Int by mutableStateOf(0)
-            var prePourCameraCapture: Boolean by mutableStateOf(false)
-        }
-
-        @IgnoreExtraProperties
-        class ColourEtGout_Model(
-            var position_Du_Couleur_Au_Produit: Long = 0,
-            val id: Long = 1,
-            var nom: String = "Non Defini",
-            var imogi: String = "🎨",
-            var sonImageNeExistPas: Boolean = false,
-        )
-
-        // Nouvelle implémentation avec derived state pour bonCommendDeCetteCota
-        var bonCommendDeCetteCota by mutableStateOf<GrossistBonCommandes?>(
-            init_bonCommendDeCetteCota
-        )
-
         @IgnoreExtraProperties
         class GrossistBonCommandes(
             var vid: Long = 0,
@@ -106,65 +95,51 @@ open class _ModelAppsFather(
             var currentCreditBalance: Double = 0.0,
             init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
         ) {
-            var grossistInformations: GrossistInformations? by mutableStateOf(init_grossistInformations)
             var cPositionCheyCeGrossit: Boolean by mutableStateOf(false)
             var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(0)
+
+            var mutableBasesStates: MutableBasesStates? by mutableStateOf(MutableBasesStates())
+            @IgnoreExtraProperties
+            class MutableBasesStates {
+                var cPositionCheyCeGrossit: Boolean by mutableStateOf(false)
+                var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(0)
+            }
+
+            var grossistInformations: GrossistInformations? by mutableStateOf(
+                init_grossistInformations
+            )
+            @IgnoreExtraProperties
+            data class GrossistInformations(
+                val id: Long = 1,
+                val nom: String = "Non Defini",
+                val couleur: String = "FFFFFF"
+            ) {
+                var auFilterFAB: Boolean by mutableStateOf(false)
+                var positionInGrossistsList: Int by mutableIntStateOf(0)
+            }
 
             @get:Exclude
             var coloursEtGoutsCommendee: SnapshotStateList<ColoursGoutsCommendee> =
                 init_coloursEtGoutsCommendee.toMutableStateList()
-
             var coloursEtGoutsCommendeeList: List<ColoursGoutsCommendee>
                 get() = coloursEtGoutsCommendee.toList()
                 set(value) {
                     coloursEtGoutsCommendee.clear()
                     coloursEtGoutsCommendee.addAll(value)
                 }
-
-            @IgnoreExtraProperties
-            data class GrossistInformations(
-                val id: Long = 0,
-                val nom: String = "",
-                val couleur: String = ""
-            ) {
-                var auFilterFAB: Boolean by mutableStateOf(false)
-                var positionInGrossistsList: Int by mutableIntStateOf(0)
-            }
-
             @IgnoreExtraProperties
             class ColoursGoutsCommendee(
-                val id: Long = 0,
-                val nom: String = "",
-                val emoji: String = "",
+                val id: Long = 1,
+                var nom: String = "Non Defini",
+                var emogi: String = "🎨",
             ) {
                 var quantityAchete: Int by mutableIntStateOf(0)
-
-                companion object {
-                    fun List<ClientBonVentModel>.derivedStateDeBColoursGoutsCommende(): SnapshotStateList<ColoursGoutsCommendee> {
-                        val processedColors = mutableMapOf<Long, ColoursGoutsCommendee>()
-
-                        this.forEach { bonVent ->
-                            bonVent.colours_Achete.forEach { colorAchat ->
-                                val existingColor = processedColors.getOrPut(colorAchat.couleurId) {
-                                    ColoursGoutsCommendee(
-                                        id = colorAchat.couleurId,
-                                        nom = colorAchat.nom,
-                                        emoji = colorAchat.imogi
-                                    )
-                                }
-                                existingColor.quantityAchete += colorAchat.quantity_Achete
-                            }
-                        }
-
-                        return processedColors.values
-                            .filter { it.quantityAchete > 0 }
-                            .toMutableStateList()
-                    }
-                }
             }
 
             companion object : GrossistBonCommandesExtension()
         }
+
+
 
         @get:Exclude
         var bonsVentDeCetteCota: SnapshotStateList<ClientBonVentModel> =
@@ -176,12 +151,18 @@ open class _ModelAppsFather(
             set(value) {
                 bonsVentDeCetteCota.clear()
                 bonsVentDeCetteCota.addAll(value)
-                // Update the bon commend if it exists
-                bonCommendDeCetteCota?.let { bonCommend ->
-                    bonCommend.coloursEtGoutsCommendeeList = value.derivedStateDeBColoursGoutsCommende()
-                }
-            }
 
+            }
+        @get:Exclude
+        var historiqueBonsVents: SnapshotStateList<ClientBonVentModel> =
+            init_historiqueBonsVents.toMutableStateList()
+
+        var historiqueBonsVentsList: List<ClientBonVentModel>
+            get() = historiqueBonsVents.toList()
+            set(value) {
+                historiqueBonsVents.clear()
+                historiqueBonsVents.addAll(value)
+            }
 
         @IgnoreExtraProperties
         class ClientBonVentModel(
@@ -233,8 +214,11 @@ open class _ModelAppsFather(
                 var imogi: String = ""
             )
         }
-        // Add extension function to handle the derived state update
 
+        companion object : ProduitModelCompanion()
+
+        constructor() : this(0)
     }
+
     companion object : ProduitModelExtension()
 }

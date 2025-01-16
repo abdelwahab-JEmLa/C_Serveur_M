@@ -29,7 +29,6 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.example.Z_AppsFather.Kotlin._1.Model.Parent.ArticleInfosModel
 import com.example.c_serveur.R
-import com.example.clientjetpack.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext

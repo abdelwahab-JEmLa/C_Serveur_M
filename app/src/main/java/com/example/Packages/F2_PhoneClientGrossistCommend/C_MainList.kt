@@ -34,18 +34,23 @@ fun MainList_F2(
             items = visibleProducts.sortedBy { product ->
                 // Handle null cases by providing a default max value
                 product.bonCommendDeCetteCota
+                    ?.mutableBasesStates
                     ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                     ?: Int.MAX_VALUE
             },
             // Ensure unique key by combining id with position if available
             key = { product ->
-                "${product.id}_${product.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit}"
+                "${product.id}_${product.bonCommendDeCetteCota
+                    ?.mutableBasesStates
+                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit}"
             }
         ) { product ->
             MainItem_F2(
                 mainItem = product,
                 onCLickOnMain = {
-                    product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
+                    product.bonCommendDeCetteCota
+                        ?.mutableBasesStates
+                        ?.cPositionCheyCeGrossit = false
                     updateProduit(product, viewModelProduits)
                 },
                 modifier = Modifier

@@ -32,7 +32,8 @@ fun MainList_F3(
     // Group products by grossist
     val groupedProducts = visibleProducts
         .groupBy { product ->
-            product.bonCommendDeCetteCota?.grossistInformations
+            product.bonCommendDeCetteCota
+                ?.grossistInformations
         }
         .filterKeys { it != null }
         .toSortedMap(compareBy { it?.positionInGrossistsList })
@@ -65,14 +66,18 @@ fun MainList_F3(
             // Add items under each header
             items(
                 items = products.sortedBy { product ->
-                    product.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    product.bonCommendDeCetteCota
+                        ?.mutableBasesStates
+                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                         ?: Int.MAX_VALUE
                 },
             ) { product ->
                 MainItem_F3(
                     mainItem = product,
                     onCLickOnMain = {
-                        product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
+                        product.bonCommendDeCetteCota
+                            ?.mutableBasesStates
+                            ?.cPositionCheyCeGrossit = false
                         updateProduit(product, viewModelProduits)
                     },
                     modifier = Modifier

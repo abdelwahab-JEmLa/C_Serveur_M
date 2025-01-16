@@ -36,7 +36,7 @@ fun B_ListMainFragment(
     visibleProducts: List<_ModelAppsFather.ProduitModel>
 ) {
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
-        it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
+        it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit  == true
     }
 
     LazyVerticalGrid(
@@ -60,14 +60,14 @@ fun B_ListMainFragment(
 
             items(
                 items = positionedProducts.sortedBy {
-                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                 },
 
             ) { product ->
                 C_ItemMainFragment(
                     mainItem = product,
                     onCLickOnMain = {
-                        product.bonCommendDeCetteCota?.cPositionCheyCeGrossit = false
+                        product.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit = false
                         updateProduit(product, viewModelProduits)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
@@ -106,7 +106,7 @@ fun B_ListMainFragment(
 
             items(
                 items = unpositionedProducts.sortedBy {
-                    it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                 },
 
             ) { product ->
@@ -114,12 +114,12 @@ fun B_ListMainFragment(
                     mainItem = product,
                     onCLickOnMain = {
                         val newPosition = (positionedProducts.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+                            it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                         } ?: 0) + 1
 
                         product.bonCommendDeCetteCota?.apply {
-                            cPositionCheyCeGrossit = true
-                            positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
+                            mutableBasesStates?.cPositionCheyCeGrossit = true
+                            mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
                         }
                         if (product.itsTempProduit) {
                             product.statuesBase.prePourCameraCapture = true

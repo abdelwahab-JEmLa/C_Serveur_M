@@ -45,20 +45,19 @@ internal fun MainScreen_F3(
 
     val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 
-    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase 
+    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
         .filter { product ->
-        product.bonsVentDeCetteCota
-            .first()
-            .clientInformations?.id ==
-                viewModelInitApp
-                    ._paramatersAppsViewModelModel
-                    .phoneClientSelectedAcheteur
-                && product
+            product.bonsVentDeCetteCota.firstOrNull()?.let { bonVent ->
+                (bonVent.clientInformations?.id ==
+                        viewModelInitApp
+                            ._paramatersAppsViewModelModel
+                            .phoneClientSelectedAcheteur
+                        && (product
                     .bonCommendDeCetteCota
                     ?.mutableBasesStates
-                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! >0
-    }
-
+                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0)
+            } ?: false
+        }
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->

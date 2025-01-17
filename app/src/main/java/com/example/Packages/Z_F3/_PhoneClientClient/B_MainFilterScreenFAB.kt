@@ -149,7 +149,7 @@ fun MainScreenFilterFAB_F3(
                                         .weight(1f)
                                         .background(
                                             if (viewModelProduits._paramatersAppsViewModelModel
-                                                    .telephoneClientParamaters.selectedAcheteurForClient == clientInfo.id
+                                                    .phoneClientSelectedAcheteur == clientInfo.id
                                             ) MaterialTheme.colorScheme.primaryContainer
                                             else Color.Transparent
                                         )
@@ -164,7 +164,7 @@ fun MainScreenFilterFAB_F3(
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelProduits._paramatersAppsViewModelModel
-                                            .telephoneClientParamaters.selectedAcheteurForClient = clientInfo.id
+                                            .phoneClientSelectedAcheteur = clientInfo.id
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = containerColor

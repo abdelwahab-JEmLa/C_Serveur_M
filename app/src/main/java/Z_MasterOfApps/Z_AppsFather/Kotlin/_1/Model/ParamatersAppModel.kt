@@ -21,7 +21,6 @@ class ParamatersAppsModel {
         var selectedGrossistForClient by mutableStateOf<Long?>(0)
 
 
-        var selectedAcheteurForClient by mutableStateOf<Long?>(0)
     }
     enum class DeviceMode {
         SERVER,

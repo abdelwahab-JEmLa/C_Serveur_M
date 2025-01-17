@@ -130,8 +130,7 @@ fun ClientEditePositionDialog(
                                     .background(
                                         if (viewModelProduits
                                                 ._paramatersAppsViewModelModel
-                                                .telephoneClientParamaters
-                                                .selectedAcheteurForClient == clientInfo.id
+                                                .phoneClientSelectedAcheteur == clientInfo.id
                                         ) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
                                     )
                                     .padding(4.dp),
@@ -142,8 +141,7 @@ fun ClientEditePositionDialog(
                                 onClick = {
                                     viewModelProduits
                                         ._paramatersAppsViewModelModel
-                                        .telephoneClientParamaters
-                                        .selectedAcheteurForClient = clientInfo.id
+                                        .phoneClientSelectedAcheteur = clientInfo.id
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color(android.graphics.Color.parseColor(clientInfo.couleur))

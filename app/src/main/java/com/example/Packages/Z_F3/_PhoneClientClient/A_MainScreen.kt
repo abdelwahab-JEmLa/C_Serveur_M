@@ -47,16 +47,9 @@ internal fun MainScreen_F3(
 
     val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
         .filter { product ->
-            product.bonsVentDeCetteCota.firstOrNull()?.let { bonVent ->
-                (bonVent.clientInformations?.id ==
-                        viewModelInitApp
-                            ._paramatersAppsViewModelModel
-                            .phoneClientSelectedAcheteur
-                        && (product
-                    .bonCommendDeCetteCota
-                    ?.mutableBasesStates
-                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0) > 0)
-            } ?: false
+            product.bonsVentDeCetteCota.any { bonVent ->
+                bonVent.clientInformations?.id == viewModelInitApp._paramatersAppsViewModelModel.phoneClientSelectedAcheteur
+            }
         }
     Scaffold(
         modifier = Modifier.fillMaxSize()

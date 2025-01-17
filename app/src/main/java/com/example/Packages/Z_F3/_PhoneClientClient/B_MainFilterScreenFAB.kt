@@ -144,7 +144,7 @@ fun MainScreenFilterFAB_F3(
 
                                 // Client name and count
                                 Text(
-                                    "${clientInfo.nom} (${produits.size})",
+                                    "${clientInfo.nom} (${clientInfo.id})",
                                     modifier = Modifier
                                         .weight(1f)
                                         .background(

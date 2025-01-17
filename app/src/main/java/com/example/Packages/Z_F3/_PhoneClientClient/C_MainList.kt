@@ -29,8 +29,12 @@ fun MainList_F3(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    // Group products by grossist
     val groupedProducts = visibleProducts
+        .filter { product ->
+            product.bonCommendDeCetteCota
+                ?.mutableBasesStates
+                ?.cPositionCheyCeGrossit == true
+        }
         .groupBy { product ->
             product.bonCommendDeCetteCota
                 ?.grossistInformations

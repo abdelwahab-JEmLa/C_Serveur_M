@@ -19,6 +19,7 @@ open class _ModelAppsFather(
     @get:Exclude
     var produitsMainDataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
+
     @IgnoreExtraProperties
     class ProduitModel(
         var id: Long = 0,
@@ -54,6 +55,7 @@ open class _ModelAppsFather(
         @get:Exclude
         var coloursEtGouts: SnapshotStateList<ColourEtGout_Model> =
             init_colours_Et_Gouts.toMutableStateList()
+
         var coloursEtGoutsList: List<ColourEtGout_Model>
             get() = coloursEtGouts.toList()
             set(value) {

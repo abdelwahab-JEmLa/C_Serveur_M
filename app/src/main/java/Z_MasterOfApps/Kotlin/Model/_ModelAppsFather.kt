@@ -95,9 +95,6 @@ open class _ModelAppsFather(
             var currentCreditBalance: Double = 0.0,
             init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
         ) {
-            var cPositionCheyCeGrossit: Boolean by mutableStateOf(false)
-            var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(0)
-
             var mutableBasesStates: MutableBasesStates? by mutableStateOf(MutableBasesStates())
             @IgnoreExtraProperties
             class MutableBasesStates {

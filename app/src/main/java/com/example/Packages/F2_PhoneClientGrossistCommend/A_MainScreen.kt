@@ -49,7 +49,9 @@ internal fun MainScreen_F2(
                             ._paramatersAppsViewModelModel
                             .telephoneClientParamaters
                             .selectedGrossistForServeur
-                        && it?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0
+                        && it
+                            ?.mutableBasesStates
+                            ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0
             }
         }
 

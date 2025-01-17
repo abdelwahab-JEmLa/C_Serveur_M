@@ -40,7 +40,9 @@ fun SearchDialog_F3(viewModelProduits: ViewModelInitApp) {
 
     // Get unpositioned items
     val unpositionedItems = viewModelProduits.produitsMainDataBase.filter {
-        it.isVisible && it.bonCommendDeCetteCota?.cPositionCheyCeGrossit != true
+        it.isVisible && it.bonCommendDeCetteCota
+            ?.mutableBasesStates
+            ?.cPositionCheyCeGrossit != true
     }
 
     if (showDialog) {

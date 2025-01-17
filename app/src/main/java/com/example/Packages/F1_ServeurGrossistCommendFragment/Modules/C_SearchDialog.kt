@@ -41,7 +41,9 @@ fun SearchDialog_F1(viewModelProduits: ViewModelInitApp) {
     val focusManager = LocalFocusManager.current
 
     val unpositionedItems = viewModelProduits.produitsMainDataBase.filter {
-        it.isVisible && it.bonCommendDeCetteCota?.cPositionCheyCeGrossit != true
+        it.isVisible && it.bonCommendDeCetteCota
+            ?.mutableBasesStates
+            ?.cPositionCheyCeGrossit != true
     }
 
     if (showDialog) {
@@ -107,15 +109,21 @@ fun SearchDialog_F1(viewModelProduits: ViewModelInitApp) {
                                     mainItem = product,
                                     onCLickOnMain = {
                                         val positionedProducts = viewModelProduits.produitsMainDataBase.filter {
-                                            it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
+                                            it.bonCommendDeCetteCota
+                                                ?.mutableBasesStates
+                                                ?.cPositionCheyCeGrossit == true
                                         }
                                         val newPosition = (positionedProducts.maxOfOrNull {
-                                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+                                            it.bonCommendDeCetteCota
+                                                ?.mutableBasesStates
+                                                ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
                                         } ?: 0) + 1
 
                                         product.bonCommendDeCetteCota?.apply {
-                                            cPositionCheyCeGrossit = true
-                                            positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
+                                            mutableBasesStates
+                                                ?.cPositionCheyCeGrossit = true
+                                            mutableBasesStates
+                                                ?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
                                         }
                                         updateProduit(product,viewModelProduits)
                                         showDialog = false

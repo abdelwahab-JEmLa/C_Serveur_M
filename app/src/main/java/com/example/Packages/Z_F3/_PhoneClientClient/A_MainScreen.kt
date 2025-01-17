@@ -43,7 +43,7 @@ internal fun MainScreen_F3(
         return
     }
 
-    val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase .size
+    val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 
     val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase 
         .filter { product ->
@@ -55,6 +55,7 @@ internal fun MainScreen_F3(
                     .phoneClientSelectedAcheteur
                 && product
                     .bonCommendDeCetteCota
+                    ?.mutableBasesStates
                     ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! >0
     }
 

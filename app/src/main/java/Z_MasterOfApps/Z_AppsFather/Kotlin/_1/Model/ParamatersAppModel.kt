@@ -14,7 +14,7 @@ class ParamatersAppsModel {
 
     var fabsVisibility by mutableStateOf(true)
 
-    var phoneClientSelectedAcheteur by mutableStateOf<Long?>(0)
+    var phoneClientSelectedAcheteur by mutableStateOf<Long?>(1)
 
     class TelephoneClientParamaters {
         var selectedGrossistForServeur by mutableStateOf<Long?>(0)

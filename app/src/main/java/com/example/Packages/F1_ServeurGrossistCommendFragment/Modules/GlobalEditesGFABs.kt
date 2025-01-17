@@ -3,6 +3,7 @@ package com.example.Packages.F1_ServeurGrossistCommendFragment.Modules
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import Z_MasterOfApps.Kotlin.ViewModel.Actions._2_C_Serveur.Package_1._ServeurGrossistCommendFragment
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.pm.PackageManager
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
@@ -239,6 +241,16 @@ fun GlobalEditesGFABs(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Camera FAB
+                FloatingActionButton(
+                    onClick = { _ServeurGrossistCommendFragment(viewModelInitApp)
+                        .onClickOnGlobalFABsButton_1()},
+                    containerColor = Color(0xFF4CAF50)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = null
+                    )
+                }
                 FloatingActionButton(
                     onClick = { checkAndRequestPermissions() },
                     containerColor = Color(0xFF4CAF50)

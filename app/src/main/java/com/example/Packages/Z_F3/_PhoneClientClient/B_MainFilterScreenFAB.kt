@@ -4,8 +4,6 @@ import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -48,15 +46,12 @@ fun MainScreenFilterFAB_F3(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsParClients
-
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
                 .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
@@ -65,113 +60,84 @@ fun MainScreenFilterFAB_F3(
                         offsetY += dragAmount.y
                     }
                 },
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalAlignment = Alignment.End
         ) {
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
-                modifier = Modifier.size(48.dp),
-                containerColor = MaterialTheme.colorScheme.primaryContainer
+                modifier = Modifier.size(48.dp)
             ) {
                 Icon(
                     imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = if (showButtons) "Hide" else "Show"
+                    contentDescription = null
                 )
             }
 
-            AnimatedVisibility(
-                visible = showButtons,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    groupedProducts.forEachIndexed { index, (clientInfo, produits) ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            if (index > 0) {
-                                // In your FAB implementation
-                                FloatingActionButton(
-                                    onClick = {
-                                        viewModelProduits.viewModelScope.launch {
-                                            val previousClientInfo =
-                                                groupedProducts[index - 1].first
-
-                                            clientInfo.positionDonClientsList--
-                                            previousClientInfo.positionDonClientsList++
-
-                                            val updatedProducts =
-                                                viewModelProduits._modelAppsFather.produitsMainDataBase .map { product ->
+            AnimatedVisibility(visible = showButtons) {
+                Column(horizontalAlignment = Alignment.End) {
+                    viewModelProduits._modelAppsFather.groupedProductsParClients
+                        .forEachIndexed { index, (clientInfo, produits) ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                if (index > 0) {
+                                    FloatingActionButton(
+                                        onClick = {
+                                            viewModelProduits.viewModelScope.launch {
+                                                val previousClientInfo = viewModelProduits._modelAppsFather.groupedProductsParClients[index - 1].first
+                                                val updatedProducts = viewModelProduits._modelAppsFather.produitsMainDataBase.map { product ->
                                                     product.apply {
                                                         bonsVentDeCetteCota.forEach { bonVent ->
                                                             bonVent.clientInformations?.let { currentClientInfo ->
-                                                                when (currentClientInfo.id) {
-                                                                    clientInfo.id -> {
-                                                                        val tempPosition =
-                                                                            currentClientInfo.positionDonClientsList
-                                                                        currentClientInfo.positionDonClientsList =
-                                                                            previousClientInfo.positionDonClientsList
-                                                                        previousClientInfo.positionDonClientsList =
-                                                                            tempPosition
-                                                                    }
+                                                                if (currentClientInfo.id == clientInfo.id) {
+                                                                    val tempPosition = currentClientInfo.positionDonClientsList
+                                                                    currentClientInfo.positionDonClientsList = previousClientInfo.positionDonClientsList
+                                                                    previousClientInfo.positionDonClientsList = tempPosition
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
+                                                update_AllProduits(updatedProducts, viewModelProduits)
+                                            }
+                                        },
+                                        modifier = Modifier.size(36.dp)
+                                    ) {
+                                        Icon(Icons.Default.ExpandLess, null)
+                                    }
+                                }
 
-                                            update_AllProduits(
-                                                updatedProducts,
-                                                viewModelProduits
-                                            )
-                                        }
+                                Text(
+                                    "${clientInfo.nom} (${produits.size})",
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .background(
+                                            if (viewModelProduits._paramatersAppsViewModelModel
+                                                    .telephoneClientParamaters.selectedAcheteurForClient == clientInfo.id
+                                            ) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
+                                        )
+                                        .padding(4.dp)
+                                )
+
+                                FloatingActionButton(
+                                    onClick = {
+                                        viewModelProduits._paramatersAppsViewModelModel
+                                            .telephoneClientParamaters.selectedAcheteurForClient = clientInfo.id
                                     },
-                                    modifier = Modifier.size(36.dp),
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                                    modifier = Modifier.size(48.dp),
+                                    containerColor = try {
+                                        Color(android.graphics.Color.parseColor(
+                                            if (clientInfo.couleur.startsWith("#")) clientInfo.couleur
+                                            else "#${clientInfo.couleur}"
+                                        ))
+                                    } catch (e: Exception) {
+                                        Color(0xFFFF0000)
+                                    }
                                 ) {
-                                    Icon(
-                                        imageVector = Icons.Default.ExpandLess,
-                                        contentDescription = "Move Up"
-                                    )
+                                    Text(produits.size.toString())
                                 }
                             }
-
-                            Text(
-                                text = "${clientInfo.nom} (${produits.size})",
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .background(
-                                        if (viewModelProduits
-                                                ._paramatersAppsViewModelModel
-                                                .telephoneClientParamaters
-                                                .selectedAcheteurForClient == clientInfo.id
-                                        ) MaterialTheme.colorScheme.primaryContainer else Color.Transparent
-                                    )
-                                    .padding(4.dp),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-
-                            FloatingActionButton(
-                                onClick = {
-                                    viewModelProduits
-                                        ._paramatersAppsViewModelModel
-                                        .telephoneClientParamaters
-                                        .selectedAcheteurForClient = clientInfo.id
-                                },
-                                modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(clientInfo.couleur))
-                            ) {
-                                Text(
-                                    text = produits.size.toString(),
-                                    color = Color.White
-                                )
-                            }
                         }
-                    }
                 }
             }
         }

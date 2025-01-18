@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Moving
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,13 +34,6 @@ sealed class Screen(
     val title: String,
     val color: Color
 ) {
-    data object MainScreen_F4 : Screen(
-        route = "main_screen_f4",
-        icon = Icons.Default.Moving,
-        title = "main_screen_f4",
-        color = Color(0xFF3F51B5)
-    )
-
     data object FragmentMainScreen1 : Screen(
         route = "fragment_main_screen_1",
         icon = Icons.Default.Tab,
@@ -56,11 +50,17 @@ sealed class Screen(
 
     data object MainScreen_F3 : Screen(
         route = "main_screen_f3",
-        icon = Icons.Default.Tab,
+        icon = Icons.Default.Person,
         title = "Phone Client Client",
         color = Color(0xFFFF5722)
     )
 
+    data object MainScreen_F4 : Screen(
+        route = "main_screen_f4",
+        icon = Icons.Default.Moving,
+        title = "main_screen_f4",
+        color = Color(0xFF3F51B5)
+    )
 
 }
 

@@ -4,10 +4,18 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,27 +29,24 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun MainItem_F3(
-    mainItem: _ModelAppsFather.ProduitModel,  // Moved to be first optional parameter
+    mainItem: _ModelAppsFather.ProduitModel,
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
 ) {
     Box(
-        modifier = modifier  // Using the passed modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(80.dp)
             .background(
                 color = if (position != null)
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)                      else
-                    MaterialTheme.colorScheme.surface,
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                else MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable {
-                onCLickOnMain()
-            },
+            .clickable { onCLickOnMain() },
         contentAlignment = Alignment.Center
     ) {
-
         GlideDisplayImageById2(
             mainItem.id,
             imageGlidReloadTigger = 0,
@@ -68,20 +73,71 @@ fun MainItem_F3(
             overflow = TextOverflow.Ellipsis
         )
 
-        Text(
-            text = mainItem.nom,
+        // Calculate total quantity from all bon vents and their colors
+        val totalQuantity = mainItem.bonsVentDeCetteCota
+            .flatMap { it.colours_Achete }
+            .sumOf { it.quantity_Achete }
+
+        Row(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(4.dp)
-                .background(
-                    color = Color.LightGray.copy(alpha = 0.7f),
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .padding(4.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+                .fillMaxWidth()
+        ) {
+            Column(
+                modifier = Modifier
+                    .width(270.dp)
+                    .padding(8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = mainItem.nom,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "Total: $totalQuantity",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                ) {
+                    val colorItems = mainItem.bonsVentDeCetteCota
+                        .flatMap { it.colours_Achete }
+                        .filter { it.quantity_Achete > 0 }
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.spacedBy(0.dp),
+                        verticalArrangement = Arrangement.spacedBy(0.dp)
+                    ) {
+                        items(colorItems) { colorFlavor ->
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                val displayText = when {
+                                    colorFlavor.imogi.isNotEmpty() -> colorFlavor.imogi
+                                    else -> colorFlavor.nom.take(2)
+                                }
+                                Text(
+                                    text = "$displayText>(${colorFlavor.quantity_Achete})",
+                                    fontSize = 24.sp,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         if (position != null) {
             Box(

@@ -50,24 +50,29 @@ fun MainList_F3(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         groupedProducts.forEach { (grossist, products) ->
-            // Add sticky header for each grossist
             stickyHeader {
+                val backgroundColor = Color(android.graphics.Color.parseColor(grossist?.couleur ?: "#FFFFFF"))
+                val textColor = if (grossist?.couleur?.equals("#FFFFFF", ignoreCase = true) == true) {
+                    Color.Black
+                } else {
+                    Color.White
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(android.graphics.Color.parseColor(grossist?.couleur ?: "#FFFFFF")))
+                        .background(backgroundColor)
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Text(
                         text = grossist?.nom ?: "",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = textColor
                     )
                 }
             }
 
-            // Add items under each header
             items(
                 items = products.sortedBy { product ->
                     product.bonCommendDeCetteCota

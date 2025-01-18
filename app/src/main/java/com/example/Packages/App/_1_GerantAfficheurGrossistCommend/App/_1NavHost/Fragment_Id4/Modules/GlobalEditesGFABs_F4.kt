@@ -68,13 +68,16 @@ fun GlobalEditesGFABs_F4(
     var deviceMode by remember { mutableStateOf(ParamatersAppsModel.DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
+    var isProcessing by remember { mutableStateOf(false) }
 
     // États pour le déplacement par glisser-déposer
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
-    suspend fun handleImageCapture(uri: Uri) {   //-->
-    //TODO(1): regle ce qui il faiot
+    suspend fun handleImageCapture(uri: Uri) {
+        if (isProcessing) return
+        isProcessing = true
+
         try {
             if (uri.toString().isEmpty()) {
                 throw IllegalArgumentException("Invalid URI")
@@ -100,10 +103,14 @@ fun GlobalEditesGFABs_F4(
                             }
                         }
 
-                        // Upload vers Firebase Storage
+                        // Upload vers Firebase Storage avec gestion de la progression
                         val uploadTask = imagesProduitsFireBaseStorageRef
                             .child(fileName)
                             .putBytes(imageBytes)
+                            .addOnProgressListener { taskSnapshot ->
+                                val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
+                                Log.d("Upload", "Progress: $progress%")
+                            }
                             .await()
 
                         if (uploadTask.metadata != null) {
@@ -152,6 +159,7 @@ fun GlobalEditesGFABs_F4(
         } finally {
             pendingProduct = null
             tempImageUri = null
+            isProcessing = false
         }
     }
 
@@ -209,6 +217,7 @@ fun GlobalEditesGFABs_F4(
             null
         }
     }
+
 
     fun checkAndRequestPermissions() {
         val permissions = arrayOf(

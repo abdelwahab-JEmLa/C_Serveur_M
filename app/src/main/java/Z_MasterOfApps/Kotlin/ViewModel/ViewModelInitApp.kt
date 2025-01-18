@@ -6,12 +6,13 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.produitsFireBaseRe
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.CreeNewStart
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFireBase.LoadFromFirebaseProduits
-import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.StorageFireBaseOffline.FirebaseStorageOfflineHandler
+import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.StorageFireBaseOffline.ImageHandler
+import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.StorageFireBaseOffline.ImageHandlerResult
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -19,12 +20,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.launch
 import java.io.File
-import android.content.Context
 
 @SuppressLint("SuspiciousIndentation")
-class ViewModelInitApp(context: Context) : ViewModel() {
+class ViewModelInitApp(private val appContext: Context) : ViewModel() {
     var _paramatersAppsViewModelModel by mutableStateOf(ParamatersAppsModel())
     var _modelAppsFather by mutableStateOf(_ModelAppsFather())
 
@@ -34,6 +35,8 @@ class ViewModelInitApp(context: Context) : ViewModel() {
     var isLoading by mutableStateOf(false)
     var loadingProgress by mutableFloatStateOf(0f)
 
+    private val imageHandler by lazy { ImageHandler(appContext) }
+
     init {
         viewModelScope.launch {
             try {
@@ -41,20 +44,32 @@ class ViewModelInitApp(context: Context) : ViewModel() {
                 val nombre = 0
                 if (nombre == 0) {
                     LoadFromFirebaseProduits.loadFromFirebase(this@ViewModelInitApp)
-                 //   loadCalculateurOktapuluse(this@ViewModelInitApp)
+                    initializeProductImages()
+                } else {
+                    CreeNewStart(_modelAppsFather)
                 }
-                else
-                CreeNewStart(_modelAppsFather)
 
                 setupDataListeners()
-
-                isLoading = true
+                isLoading = false
             } catch (e: Exception) {
                 Log.e("ViewModelInitApp", "Init failed", e)
-            } finally {
                 isLoading = false
             }
         }
+    }
+
+    private suspend fun initializeProductImages() {
+        _modelAppsFather.produitsMainDataBase.forEachIndexed { index, produit ->
+            loadingProgress = index.toFloat() / _modelAppsFather.produitsMainDataBase.size
+
+            val imageRef = imagesProduitsFireBaseStorageRef.child("${produit.id}_1.jpg")
+            val localFile = File(
+                "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne/${produit.id}_1.jpg"
+            )
+
+            handleImageWithOfflineSupport(imageRef, localFile)
+        }
+        loadingProgress = 1f
     }
 
     private fun setupDataListeners() {
@@ -71,7 +86,7 @@ class ViewModelInitApp(context: Context) : ViewModel() {
                                         it.id == updatedProduct.id
                                     }
                                     if (index != -1) {
-                                       _modelAppsFather.produitsMainDataBase[index] =updatedProduct
+                                        _modelAppsFather.produitsMainDataBase[index] = updatedProduct
                                     }
                                 }
                             } catch (e: Exception) {
@@ -86,55 +101,36 @@ class ViewModelInitApp(context: Context) : ViewModel() {
                 })
         }
     }
-    // État pour gérer les uploads
-    private var pendingUploads = mutableStateListOf<String>()
-    var isUploading by mutableStateOf(false)
-    var uploadProgress by mutableFloatStateOf(0f)
 
-    // Fonction pour uploader une image de produit
-    suspend fun uploadProductImage(productId: Long, imageFile: File): Result<String> {
-        val storageRef = imagesProduitsFireBaseStorageRef
-            .child(productId.toString())
-            .child("main_image.jpg")
-
-        return try {
-            isUploading = true
-
-            FirebaseStorageOfflineHandler.uploadFileWithOfflineQueue(
-                storageRef = storageRef,
-                localFile = imageFile,
-                context = context   //->
-                //TODO(FIXME):Fix erreur Unresolved reference: context
-            ).map { result ->
-                if (result.isOffline) {
-                    pendingUploads.add(imageFile.path)
-                    "" // Return empty URL for offline case
-                } else {
-                    result.downloadUrl
-                }
-            }.also {
-                isUploading = false
-                uploadProgress = 0f
-            }
-        } catch (e: Exception) {
-            Log.e("ViewModelInitApp", "Failed to upload image", e)
-            isUploading = false
-            uploadProgress = 0f
-            Result.failure(e)
-        }
-    }
-
-    // Fonction pour retenter les uploads en attente
-    fun retryPendingUploads() {
+    suspend fun handleImageWithOfflineSupport(imageRef: StorageReference, localFile: File) {
         viewModelScope.launch {
-            pendingUploads.toList().forEach { filePath ->
-                val file = File(filePath)
-                if (file.exists()) {
-                    // Implement retry logic here
-                    pendingUploads.remove(filePath)
+            try {
+                when (val result = imageHandler.handleImage(imageRef, localFile)) {
+                    is ImageHandlerResult.Success -> {
+                        Log.d("ViewModelInitApp",
+                            if (result.isFromCache) "Using cached image: ${localFile.path}"
+                            else "Using fresh download: ${localFile.path}"
+                        )
+                    }
+                    is ImageHandlerResult.Error -> {
+                        Log.e("ViewModelInitApp", "Image handling failed", result.exception)
+                    }
                 }
+
+                when (val uploadResult = imageHandler.uploadImage(imageRef, localFile)) {
+                    is ImageHandlerResult.Success -> {
+                        Log.d("ViewModelInitApp",
+                            if (uploadResult.isFromCache) "Image queued for upload: ${localFile.path}"
+                            else "Image uploaded successfully: ${localFile.path}"
+                        )
+                    }
+                    is ImageHandlerResult.Error -> {
+                        Log.e("ViewModelInitApp", "Image upload failed", uploadResult.exception)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ViewModelInitApp", "Error in handleImageWithOfflineSupport", e)
             }
         }
     }
 }
-

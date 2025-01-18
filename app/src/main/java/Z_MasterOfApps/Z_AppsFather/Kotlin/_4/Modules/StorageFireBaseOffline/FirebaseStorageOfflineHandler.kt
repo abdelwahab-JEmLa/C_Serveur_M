@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModel
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
@@ -104,25 +103,4 @@ object FirebaseStorageOfflineHandler {
         return capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     }
 }
-// Usage example:
-class YourViewModel(private val context: Context) : ViewModel() {
-    suspend fun handleImageWithOfflineSupport(imageRef: StorageReference, localFile: File) {
-        // Download and cache
-        FirebaseStorageOfflineHandler.downloadAndCacheFile(imageRef, localFile, context)
-            .onSuccess { cachedFile ->
-                // Use cached file
-            }
-            .onFailure { error ->
-                // Handle error
-            }
 
-        // Upload with offline support
-        FirebaseStorageOfflineHandler.uploadFileWithOfflineQueue(imageRef, localFile, context)
-            .onSuccess { 
-                // Handle successful upload
-            }
-            .onFailure { error ->
-                // Handle error
-            }
-    }
-}

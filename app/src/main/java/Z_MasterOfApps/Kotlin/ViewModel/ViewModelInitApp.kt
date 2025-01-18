@@ -58,19 +58,6 @@ class ViewModelInitApp(private val appContext: Context) : ViewModel() {
         }
     }
 
-    private suspend fun initializeProductImages() {
-        _modelAppsFather.produitsMainDataBase.forEachIndexed { index, produit ->
-            loadingProgress = index.toFloat() / _modelAppsFather.produitsMainDataBase.size
-
-            val imageRef = imagesProduitsFireBaseStorageRef.child("${produit.id}_1.jpg")
-            val localFile = File(
-                "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne/${produit.id}_1.jpg"
-            )
-
-            handleImageWithOfflineSupport(imageRef, localFile)
-        }
-        loadingProgress = 1f
-    }
 
     private fun setupDataListeners() {
         _modelAppsFather.produitsMainDataBase.forEach { produit ->
@@ -101,8 +88,21 @@ class ViewModelInitApp(private val appContext: Context) : ViewModel() {
                 })
         }
     }
+    private suspend fun ViewModelInitApp.initializeProductImages() {
+        _modelAppsFather.produitsMainDataBase.forEachIndexed { index, produit ->
+            loadingProgress = index.toFloat() / _modelAppsFather.produitsMainDataBase.size
 
-    suspend fun handleImageWithOfflineSupport(imageRef: StorageReference, localFile: File) {
+            val imageRef = imagesProduitsFireBaseStorageRef.child("${produit.id}_1.jpg")
+            val localFile = File(
+                "/storage/emulated/0/Abdelwahab_jeMla.com/IMGs/BaseDonne/${produit.id}_1.jpg"
+            )
+
+            handleImageWithOfflineSupport(imageRef, localFile)
+        }
+        loadingProgress = 1f
+    }
+
+    suspend fun ViewModelInitApp.handleImageWithOfflineSupport(imageRef: StorageReference, localFile: File) {
         viewModelScope.launch {
             try {
                 when (val result = imageHandler.handleImage(imageRef, localFile)) {

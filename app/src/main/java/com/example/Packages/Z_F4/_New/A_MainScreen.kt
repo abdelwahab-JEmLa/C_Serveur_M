@@ -47,7 +47,7 @@ internal fun MainScreen_F4(
 
     val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
         .filter { product ->
-            product.bonCommendDeCetteCota != null && product.isVisible
+            product.bonCommendDeCetteCota != null
         }
 
     Scaffold(

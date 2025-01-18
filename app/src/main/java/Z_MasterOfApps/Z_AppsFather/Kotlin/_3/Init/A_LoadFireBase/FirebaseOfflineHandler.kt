@@ -1,5 +1,7 @@
 package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DataSnapshot
@@ -8,112 +10,114 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.withTimeoutOrNull
 
 object FirebaseOfflineHandler {
-    const val TAG = "FirebaseOfflineHandler"
-    private const val CACHE_SIZE_BYTES = 100 * 1024 * 1024 // 100MB
+    private const val TIMEOUT_MS = 2000L
+    private var isInitialized = false
 
     fun initializeFirebase(app: FirebaseApp) {
-        try {
-            FirebaseDatabase.getInstance().apply {
-                setPersistenceEnabled(true)
-                setPersistenceCacheSizeBytes(CACHE_SIZE_BYTES.toLong())
+        if (!isInitialized) {
+            try {
+                FirebaseDatabase.getInstance(app).apply {
+                    setPersistenceEnabled(true)
+                    setPersistenceCacheSizeBytes(100L * 1024L * 1024L) // 100MB
+                }
+                isInitialized = true
+                Log.i("Firebase", "Firebase initialized successfully")
+            } catch (e: Exception) {
+                Log.e("Firebase", "Failed to initialize Firebase", e)
+                throw e
             }
-            Log.i(TAG, "Firebase offline persistence initialized")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to initialize Firebase persistence", e)
         }
     }
 
-    fun keepSynced(ref: DatabaseReference) {
+    suspend fun loadData(
+        ref: DatabaseReference,
+        viewModel: ViewModelInitApp? = null
+    ): DataSnapshot? {
         try {
+            if (!isInitialized) {
+                Log.e("Firebase", "Firebase not initialized. Call initializeFirebase first.")
+                return null
+            }
+
             ref.keepSynced(true)
-            Log.i(TAG, "Enabled keepSynced for reference: ${ref.key}")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to enable keepSynced", e)
-        }
-    }
 
-    suspend fun loadOfflineFirst(ref: DatabaseReference): DataSnapshot? {
-        return try {
-            Log.i(TAG, "Loading offline data first")
-            val offlineSnapshot = ref.get().await()
-            setupOnlineSync(ref)
-            offlineSnapshot
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to load offline data", e)
-            null
-        }
-    }
+            // Simplified connection check using get()
+            val isOnline = try {
+                withTimeoutOrNull(TIMEOUT_MS) {
+                    val testRef = ref.child("test_connection")
+                    testRef.setValue(System.currentTimeMillis()).await()
+                    testRef.removeValue().await()
+                    true
+                } ?: false
+            } catch (e: Exception) {
+                Log.w("Firebase", "Connection test failed, assuming offline mode", e)
+                false
+            }
 
-    suspend fun <T> loadData(
-        ref: DatabaseReference,
-        parser: (DataSnapshot) -> List<T>
-    ): List<T> = suspendCancellableCoroutine { continuation ->
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                try {
-                    val items = parser(snapshot)
-                    Log.i(TAG, "Successfully loaded ${items.size} items")
-                    continuation.resume(items)
-                } catch (e: Exception) {
-                    Log.e(TAG, "Failed to parse data", e)
-                    continuation.resumeWithException(e)
+            return when (isOnline) {
+                false -> {
+                    Log.i("Firebase", "Mode offline")
+                    FirebaseDatabase.getInstance().goOffline()
+                    val data = ref.get().await()
+                    FirebaseDatabase.getInstance().goOnline()
+                    data
+                }
+                true -> {
+                    Log.i("Firebase", "Mode online")
+                    val data = ref.get().await()
+
+                    // Setup real-time listeners for all products
+                    if (viewModel != null) {
+                        setupProductListeners(viewModel)
+                    }
+
+                    data
                 }
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Data load cancelled: ${error.message}")
-                continuation.resumeWithException(error.toException())
-            }
-        })
-    }
-
-    fun setupRealtimeSync(
-        ref: DatabaseReference,
-        onDataChange: (DataSnapshot) -> Unit,
-        onError: (Exception) -> Unit
-    ): ValueEventListener {
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                try {
-                    onDataChange(snapshot)
-                    Log.i(TAG, "Real-time sync updated data")
-                } catch (e: Exception) {
-                    Log.e(TAG, "Real-time sync data processing failed", e)
-                    onError(e)
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Real-time sync cancelled: ${error.message}")
-                onError(error.toException())
-            }
+        } catch (e: Exception) {
+            Log.e("Firebase", "Erreur chargement", e)
+            return null
         }
-
-        ref.addValueEventListener(listener)
-        return listener
     }
 
-    private fun setupOnlineSync(ref: DatabaseReference) {
-        ref.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                Log.i(TAG, "Online sync received update")
-            }
+    private fun setupProductListeners(viewModel: ViewModelInitApp) {
+        val scope = CoroutineScope(Dispatchers.IO)
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Online sync failed: ${error.message}")
-            }
-        })
-    }
+        viewModel.modelAppsFather.produitsMainDataBase.forEach { produit ->
+            Log.d("SetupListener", "Setting up listener for product ${produit.id}")
 
-    fun removeListener(ref: DatabaseReference, listener: ValueEventListener) {
-        ref.removeEventListener(listener)
-        Log.i(TAG, "Removed listener from reference: ${ref.key}")
+            _ModelAppsFather.produitsFireBaseRef.child(produit.id.toString())
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        scope.launch {
+                            try {
+                                val updatedProduct = LoadFromFirebaseProduits.parseProduct(snapshot)
+                                if (updatedProduct != null) {
+                                    val index = viewModel.modelAppsFather.produitsMainDataBase.indexOfFirst {
+                                        it.id == updatedProduct.id
+                                    }
+                                    if (index != -1) {
+                                        viewModel.modelAppsFather.produitsMainDataBase[index] = updatedProduct
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                Log.e("SetupListener", "Error updating product", e)
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("SetupListener", "Database error: ${error.message}")
+                    }
+                })
+        }
     }
 
     inline fun <reified T> parseChild(
@@ -122,10 +126,11 @@ object FirebaseOfflineHandler {
         crossinline onSuccess: (List<T>) -> Unit
     ) {
         try {
-            val type = object : GenericTypeIndicator<List<T>>() {}
-            snapshot.child(path).getValue(type)?.let(onSuccess)
+            snapshot.child(path)
+                .getValue(object : GenericTypeIndicator<List<T>>() {})
+                ?.let(onSuccess)
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to parse child: $path", e)
+            Log.e("Firebase", "Erreur parse: $path", e)
         }
     }
 }

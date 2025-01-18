@@ -6,6 +6,7 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 
 object LoadFromFirebaseProduits {
@@ -16,27 +17,18 @@ object LoadFromFirebaseProduits {
         try {
             initViewModel.loadingProgress = 0.1f
 
-            // Enable persistence
-            FirebaseOfflineHandler.keepSynced(_ModelAppsFather.produitsFireBaseRef)
+            // Charger les données avec la nouvelle méthode simplifiée
+            val snapshot = FirebaseOfflineHandler.loadData(_ModelAppsFather.produitsFireBaseRef)
 
-            // Load offline data first
-            val offlineSnapshot =
-                FirebaseOfflineHandler.loadOfflineFirst(_ModelAppsFather.produitsFireBaseRef)
-            offlineSnapshot?.let { snapshot ->
-                val offlineProducts = parseSnapshot(snapshot)
-                updateViewModel(initViewModel, offlineProducts)
+            snapshot?.let {
+                // Traiter les données
+                val products = parseSnapshot(it)
+                updateViewModel(initViewModel, products)
                 initViewModel.loadingProgress = 0.5f
+
+                // Configurer la synchronisation en temps réel
+                setupRealtimeSync(initViewModel)
             }
-
-            // Load online data
-            val products = FirebaseOfflineHandler.loadData(
-                _ModelAppsFather.produitsFireBaseRef,
-                LoadFromFirebaseProduits::parseSnapshot
-            )
-            updateViewModel(initViewModel, products)
-
-            // Setup realtime sync
-            setupRealtimeSync(initViewModel)
 
             initViewModel.loadingProgress = 1.0f
         } catch (e: Exception) {
@@ -87,6 +79,7 @@ object LoadFromFirebaseProduits {
                                     mutableBasesStates = it
                                 }
 
+                            // Parser les listes avec parseChild
                             FirebaseOfflineHandler.parseChild<ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee>(
                                 "coloursEtGoutsCommendeeList",
                                 bonCommendSnapshot
@@ -95,7 +88,7 @@ object LoadFromFirebaseProduits {
                     }
                 }
 
-                // Parse Lists using FirebaseOfflineHandler
+                // Parse les autres listes
                 FirebaseOfflineHandler.parseChild<ProduitModel.ColourEtGout_Model>(
                     "coloursEtGoutsList",
                     snapshot
@@ -123,16 +116,26 @@ object LoadFromFirebaseProduits {
     }
 
     private fun setupRealtimeSync(initViewModel: ViewModelInitApp) {
-        realtimeListener = FirebaseOfflineHandler.setupRealtimeSync(
-            _ModelAppsFather.produitsFireBaseRef,
-            onDataChange = { snapshot ->
-                val products = parseSnapshot(snapshot)
-                updateViewModel(initViewModel, products)
-            },
-            onError = { error ->
-                Log.e(TAG, "Real-time sync failed", error)
+        realtimeListener?.let {
+            _ModelAppsFather.produitsFireBaseRef.removeEventListener(it)
+        }
+
+        realtimeListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                try {
+                    val products = parseSnapshot(snapshot)
+                    updateViewModel(initViewModel, products)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Real-time sync data processing failed", e)
+                }
             }
-        )
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "Real-time sync failed: ${error.message}")
+            }
+        }.also {
+            _ModelAppsFather.produitsFireBaseRef.addValueEventListener(it)
+        }
     }
 
     private fun updateViewModel(

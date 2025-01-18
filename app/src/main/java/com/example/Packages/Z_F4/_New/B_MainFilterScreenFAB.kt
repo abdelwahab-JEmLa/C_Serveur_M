@@ -38,11 +38,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-/**
- * Safely parses a color string to a Color object
- * @param colorString The color string to parse (can be with or without # prefix)
- * @return Color object, falls back to red if parsing fails
- */
+
 private fun parseColorSafely(colorString: String?): Color {
     return try {
         val normalizedColor = when {

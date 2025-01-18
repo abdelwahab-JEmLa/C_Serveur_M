@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import com.example.Packages.F1_ServeurGrossistCommendFragment.A_ScreenMainFragment_1
 import com.example.Packages.F2_PhoneClientGrossistCommend.MainScreen_F2
 import com.example.Packages.F3._PhoneClientClient.MainScreen_F3
+import com.example.Packages.Z_F4._New.MainScreen_F4
 import com.example.c_serveur.AppViewModels
 
 sealed class Screen(
@@ -43,6 +44,13 @@ sealed class Screen(
         title = "Phone Client Client",
         color = Color(0xFFFF5722)
     )
+
+    data object MainScreen_F4 : Screen(
+        route = "main_screen_f4",
+        icon = Icons.Default.Tab,
+        title = "main_screen_f4",
+        color = Color(0xFFFF5722)
+    )
 }
 
 object NavigationItems {
@@ -50,6 +58,7 @@ object NavigationItems {
         Screen.FragmentMainScreen1,
         Screen.MainScreen_F2,
         Screen.MainScreen_F3,
+        Screen.MainScreen_F4,
     )
 }
 
@@ -76,6 +85,10 @@ fun AppNavHost(
             composable(Screen.MainScreen_F3.route) {
                 MainScreen_F3(viewModelInitApp = appViewModels.initViewModel)
             }
+
+            composable(Screen.MainScreen_F4.route) {
+                MainScreen_F4(viewModelInitApp = appViewModels.initViewModel)
+            }
         }
     }
 }
@@ -96,4 +109,10 @@ private fun Preview_Fragment2() {
 @Composable
 private fun Preview_Fragment3() {
     MainScreen_F3(modifier = Modifier.fillMaxSize())
+}
+
+@Preview
+@Composable
+private fun Preview_Fragment4() {
+    MainScreen_F4(modifier = Modifier.fillMaxSize())
 }

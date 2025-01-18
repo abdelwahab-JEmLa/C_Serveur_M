@@ -46,11 +46,7 @@ internal fun MainScreen_F4(
     val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 
     val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
-        .filter { product ->
-            product.bonsVentDeCetteCota.any { bonVent ->
-                bonVent.clientInformations?.id == viewModelInitApp._paramatersAppsViewModelModel.phoneClientSelectedAcheteur
-            }
-        }
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->

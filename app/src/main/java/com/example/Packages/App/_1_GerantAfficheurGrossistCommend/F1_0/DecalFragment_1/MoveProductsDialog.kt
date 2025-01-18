@@ -2,6 +2,7 @@ package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.DecalFra
 
 import Z_MasterOfApps.Kotlin.Model.Extension.grossistsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

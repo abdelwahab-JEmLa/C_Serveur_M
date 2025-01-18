@@ -12,9 +12,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
@@ -34,7 +37,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -45,6 +50,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.math.roundToInt
 
 enum class DeviceMode {
     SERVER,
@@ -63,6 +69,10 @@ fun GlobalEditesGFABs(
     var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
+
+    // Add drag offset states
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
 
     suspend fun handleImageCapture(uri: Uri) {
         try {
@@ -232,78 +242,98 @@ fun GlobalEditesGFABs(
     }
 
     Box(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         contentAlignment = Alignment.BottomEnd
     ) {
-        if (showOptions) {
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Camera FAB
-                FloatingActionButton(
-                    onClick = { _ServeurGrossistCommendFragment(viewModelInitApp)
-                        .onClickOnGlobalFABsButton_1()},
-                    containerColor = Color(0xFF4CAF50)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null
-                    )
+        Box(
+            modifier = Modifier
+                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        offsetX += dragAmount.x
+                        offsetY += dragAmount.y
+                    }
                 }
-                FloatingActionButton(
-                    onClick = { checkAndRequestPermissions() },
-                    containerColor = Color(0xFF4CAF50)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AddAPhoto,
-                        contentDescription = "Take Photo"
-                    )
-                }
-                FloatingActionButton(
-                    onClick = {
-                        viewModelInitApp
-                            ._paramatersAppsViewModelModel
-                            .visibilityClientEditePositionDialog =true
-                    },
-                    containerColor = Color(0xFFFF5722)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardDoubleArrowUp,
-                        contentDescription =
-                            "Switch to Display Mode"
-                    )
-                }
-                // Mode Toggle FAB
-                FloatingActionButton(
-                    onClick = {
-                        deviceMode = when (deviceMode) {
-                            DeviceMode.SERVER -> DeviceMode.DISPLAY
-                            DeviceMode.DISPLAY -> DeviceMode.SERVER
-                        }
-                    },
-                    containerColor = Color(0xFFFF5722)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Upload,
-                        contentDescription = if (deviceMode == DeviceMode.SERVER)
-                            "Switch to Display Mode" else "Switch to Server Mode"
-                    )
-                }
-
-            }
-        }
-
-        // Main FAB
-        FloatingActionButton(
-            onClick = { showOptions = !showOptions },
-            containerColor = Color(0xFF3F51B5)
         ) {
-            Icon(
-                imageVector = if (showOptions) Icons.Default.ExpandLess
-                else Icons.Default.ExpandMore,
-                contentDescription = if (showOptions) "Hide Options" else "Show Options"
-            )
+            if (showOptions) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // Delete FAB
+                    FloatingActionButton(
+                        onClick = {
+                            _ServeurGrossistCommendFragment(viewModelInitApp)
+                                .onClickOnGlobalFABsButton_1()
+                        },
+                        containerColor = Color(0xFF4CAF50)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null
+                        )
+                    }
+
+                    // Camera FAB
+                    FloatingActionButton(
+                        onClick = { checkAndRequestPermissions() },
+                        containerColor = Color(0xFF4CAF50)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AddAPhoto,
+                            contentDescription = "Take Photo"
+                        )
+                    }
+
+                    // Position Edit FAB
+                    FloatingActionButton(
+                        onClick = {
+                            viewModelInitApp
+                                ._paramatersAppsViewModelModel
+                                .visibilityClientEditePositionDialog = true
+                        },
+                        containerColor = Color(0xFFFF5722)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardDoubleArrowUp,
+                            contentDescription = "Edit Position"
+                        )
+                    }
+
+                    // Mode Toggle FAB
+                    FloatingActionButton(
+                        onClick = {
+                            deviceMode = when (deviceMode) {
+                                DeviceMode.SERVER -> DeviceMode.DISPLAY
+                                DeviceMode.DISPLAY -> DeviceMode.SERVER
+                            }
+                        },
+                        containerColor = Color(0xFFFF5722)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Upload,
+                            contentDescription = if (deviceMode == DeviceMode.SERVER)
+                                "Switch to Display Mode" else "Switch to Server Mode"
+                        )
+                    }
+                }
+            }
+
+            // Main FAB
+            FloatingActionButton(
+                onClick = { showOptions = !showOptions },
+                containerColor = Color(0xFF3F51B5),
+                modifier = Modifier.align(if (showOptions) Alignment.BottomEnd else Alignment.Center)
+            ) {
+                Icon(
+                    imageVector = if (showOptions) Icons.Default.ExpandLess
+                    else Icons.Default.ExpandMore,
+                    contentDescription = if (showOptions) "Hide Options" else "Show Options"
+                )
+            }
         }
     }
 }

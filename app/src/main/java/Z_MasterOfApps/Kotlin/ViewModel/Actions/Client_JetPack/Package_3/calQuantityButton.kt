@@ -10,6 +10,8 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.LogUtils
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 fun calQuantityButton(
     quantity: Int,
@@ -19,20 +21,17 @@ fun calQuantityButton(
     viewModelInitApp: ViewModelInitApp
 ) {
     try {
-        // Previous validation code remains the same...
         if (currentSale == null || currentClient == null) {
             LogUtils.logError(LogUtils.Tags.QUANTITY_BUTTON, "Missing required data")
             return
         }
 
-        // Find product code remains the same...
         val productIndex = viewModelInitApp._modelAppsFather.produitsMainDataBase
             .indexOfFirst { it.id == currentSale.idArticle }
         val product =
             viewModelInitApp._modelAppsFather.produitsMainDataBase.getOrNull(productIndex)
                 ?: return
 
-        // Create color purchase code remains the same...
         val colorPurchase = ClientBonVentModel.ColorAchatModel(
             vidPosition = System.currentTimeMillis(),
             couleurId = colorDetails.idColore,
@@ -41,7 +40,6 @@ fun calQuantityButton(
             imogi = colorDetails.iconColore
         )
 
-        // Existing sale handling code remains the same...
         val existingSaleIndex = product.bonsVentDeCetteCota
             .indexOfFirst { it.clientInformations?.id == currentClient.idClientsSu }
 
@@ -69,8 +67,9 @@ fun calQuantityButton(
             product.bonsVentDeCetteCota.add(newSale)
         }
 
-        val currentDate = java.time.LocalDateTime.now().toString()  //-->
-        //TODO(1): fait que la date doit yyyy-mm-hh
+        // Format current date as yyyy-MM-dd
+        val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
         if (product.bonCommendDeCetteCota == null ||
             !product.historiqueBonsCommend.any { it.mutableBasesStates?.dateInString == currentDate }
         ) {
@@ -100,8 +99,8 @@ fun calQuantityButton(
                 vid = System.currentTimeMillis(),
                 init_grossistInformations = lastGrossistInfo,
                 init_coloursEtGoutsCommendee = aggregatedColors
-            ) .apply {
-                mutableBasesStates?.dateInString=currentDate
+            ).apply {
+                mutableBasesStates?.dateInString = currentDate
             }
 
             // Update current bon commande
@@ -109,7 +108,7 @@ fun calQuantityButton(
 
             // Add to history if date doesn't exist
             if (!product.historiqueBonsCommend.any { it.mutableBasesStates
-                ?.dateInString == currentDate }) {
+                    ?.dateInString == currentDate }) {
                 product.historiqueBonsCommend.add(newBonCommande)
             }
         }

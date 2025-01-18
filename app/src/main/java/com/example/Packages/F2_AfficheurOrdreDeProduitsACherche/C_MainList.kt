@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MainList_F2(
     visibleProducts: List<_ModelAppsFather.ProduitModel>,
-    viewModelProduits: ViewModelInitApp,
+    viewModelInitApp: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -47,16 +47,16 @@ fun MainList_F2(
         ) { product ->
             MainItem_F2(
                 mainItem = product,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .animateItem(fadeInSpec = null, fadeOutSpec = null),
                 onCLickOnMain = {
                     product.bonCommendDeCetteCota
                         ?.mutableBasesStates
                         ?.cPositionCheyCeGrossit = false
-                    updateProduit(product, viewModelProduits)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
-                    .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                    updateProduit(product, viewModelInitApp)
+                }
             )
         }
     }

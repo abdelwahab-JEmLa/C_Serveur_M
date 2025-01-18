@@ -62,7 +62,7 @@ internal fun MainScreen_F2(
             if (databaseSize > 0) {
                 MainList_F2(
                     visibleProducts = visibleProducts,
-                    viewModelProduits = viewModelInitApp,
+                    viewModelInitApp = viewModelInitApp,
                     paddingValues = paddingValues
                 )
             }
@@ -77,7 +77,7 @@ internal fun MainScreen_F2(
             )
 
             MainScreenFilterFAB_F2(
-                viewModelProduits = viewModelInitApp,
+                viewModelInitApp = viewModelInitApp,
             )
         }
     }

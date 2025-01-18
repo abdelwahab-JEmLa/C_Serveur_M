@@ -42,13 +42,13 @@ import kotlin.math.roundToInt
 @Composable
 fun MainScreenFilterFAB_F2(
     modifier: Modifier = Modifier,
-    viewModelProduits: ViewModelInitApp,
+    viewModelInitApp: ViewModelInitApp,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsPatGrossist
+    val groupedProducts = viewModelInitApp._modelAppsFather.groupedProductsPatGrossist
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -97,7 +97,7 @@ fun MainScreenFilterFAB_F2(
                                 // In your FAB implementation
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelProduits.viewModelScope.launch {
+                                        viewModelInitApp.viewModelScope.launch {
                                             val previousGrossist = groupedProducts[index - 1].first
 
                                             grossist.positionInGrossistsList--
@@ -105,7 +105,7 @@ fun MainScreenFilterFAB_F2(
 
                                             // Update positions using the current list
                                             val updatedProducts =
-                                                viewModelProduits._modelAppsFather.produitsMainDataBase .map { product ->
+                                                viewModelInitApp._modelAppsFather.produitsMainDataBase .map { product ->
                                                     product.apply {
                                                         bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                             when (currentGrossist.id) {
@@ -124,7 +124,7 @@ fun MainScreenFilterFAB_F2(
                                             // Now pass the updated list to the update function
                                             update_AllProduits(
                                                 updatedProducts,
-                                                viewModelProduits
+                                                viewModelInitApp
                                             )
                                         }
                                     },
@@ -143,7 +143,7 @@ fun MainScreenFilterFAB_F2(
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        if (viewModelProduits
+                                        if (viewModelInitApp
                                                 ._paramatersAppsViewModelModel
                                                 .telephoneClientParamaters
                                                 .selectedGrossistForClientF2 == grossist.id
@@ -155,7 +155,7 @@ fun MainScreenFilterFAB_F2(
 
                             FloatingActionButton(
                                 onClick = {
-                                    viewModelProduits
+                                    viewModelInitApp
                                         ._paramatersAppsViewModelModel
                                         .telephoneClientParamaters
                                         .selectedGrossistForClientF2 = grossist.id

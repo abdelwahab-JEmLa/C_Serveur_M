@@ -150,6 +150,7 @@ fun B_ListMainFragment(
     }
 
     SearchDialog_F1(
+        unpositionedProducts=unpositionedProducts,
         viewModelProduits = viewModelProduits,
         showDialog = showSearchDialog,
         onDismiss = { showSearchDialog = false }

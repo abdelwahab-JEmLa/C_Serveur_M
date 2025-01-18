@@ -1,6 +1,7 @@
 // SearchDialog.kt
 package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1.Modules
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SearchDialog_F1(
+    unpositionedItems: List<_ModelAppsFather.ProduitModel>,
     viewModelProduits: ViewModelInitApp,
     showDialog: Boolean,
     onDismiss: () -> Unit
@@ -43,11 +45,6 @@ fun SearchDialog_F1(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    val unpositionedItems = viewModelProduits.produitsMainDataBase.filter {
-        it.isVisible && it.bonCommendDeCetteCota
-            ?.mutableBasesStates
-            ?.cPositionCheyCeGrossit != true
-    }
 
     if (showDialog) {
         LaunchedEffect(Unit) {

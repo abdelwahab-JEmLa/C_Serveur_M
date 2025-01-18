@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.Modules.ClientEditePositionDialog
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.Modules.GlobalEditesGFABs
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.Modules.GlobalEditesGFABs_F1
 
 private const val TAG = "A_GerantDefinirePosition_F1"
 
@@ -68,7 +68,7 @@ internal fun A_GerantDefinirePosition_F1(
                 ._paramatersAppsViewModelModel
                 .fabsVisibility
         ) {
-            GlobalEditesGFABs(
+            GlobalEditesGFABs_F1(
                 appsHeadModel = viewModelInitApp.modelAppsFather,
                 viewModelInitApp=viewModelInitApp,
                 modifier = modifier,

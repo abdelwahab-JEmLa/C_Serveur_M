@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
 import androidx.compose.material.icons.filled.Delete
@@ -38,7 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -58,7 +59,7 @@ enum class DeviceMode {
 }
 
 @Composable
-fun GlobalEditesGFABs(
+fun GlobalEditesGFABs_F1(
     appsHeadModel: _ModelAppsFather,
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp,
@@ -70,9 +71,20 @@ fun GlobalEditesGFABs(
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
 
-    // Add drag offset states
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
+    // Get screen dimensions
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+
+    // Convert Dp to pixels for initial position
+    val density = LocalDensity.current
+    val initialX = with(density) { (screenWidth / 2).toPx() }
+    val initialY = with(density) { (screenHeight / 2).toPx() }
+
+    // Add drag offset states with initial centered position
+    var offsetX by remember { mutableStateOf(initialX) }
+    var offsetY by remember { mutableStateOf(initialY) }
+
 
     suspend fun handleImageCapture(uri: Uri) {
         try {
@@ -242,14 +254,13 @@ fun GlobalEditesGFABs(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.BottomEnd
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center  // Changed to Center
     ) {
         Box(
             modifier = Modifier
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .offset { IntOffset(offsetX.roundToInt() - with(density) { 48.dp.toPx() }.roundToInt(),
+                    offsetY.roundToInt() - with(density) { 48.dp.toPx() }.roundToInt()) }
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()

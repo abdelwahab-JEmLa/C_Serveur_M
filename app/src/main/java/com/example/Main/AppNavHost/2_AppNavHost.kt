@@ -18,7 +18,7 @@ import androidx.navigation.compose.composable
 import com.example.Packages.App.New.Fragment_1_A.MainScreen_F4
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.F1_GerantDefinirePosition.A_ScreenMainFragment_1
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.F2_AfficheurOrdreDeProduitsACherche.MainScreen_F2
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.F3.AfficheurDesProduitsDesAcheteur_F3
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.F3.A_AfficheurDesProduitsPourLeColecteur_F3
 import com.example.c_serveur.AppViewModels
 
 object NavigationItems {
@@ -92,7 +92,7 @@ fun AppNavHost(
             }
 
             composable(Screen.MainScreen_F3.route) {
-                AfficheurDesProduitsDesAcheteur_F3(viewModelInitApp = appViewModels.initViewModel)
+                A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = appViewModels.initViewModel)
             }
 
         }
@@ -114,7 +114,7 @@ private fun Preview_Fragment2() {
 @Preview
 @Composable
 private fun Preview_Fragment3() {
-    AfficheurDesProduitsDesAcheteur_F3(modifier = Modifier.fillMaxSize())
+    A_AfficheurDesProduitsPourLeColecteur_F3(modifier = Modifier.fillMaxSize())
 }
 
 @Preview

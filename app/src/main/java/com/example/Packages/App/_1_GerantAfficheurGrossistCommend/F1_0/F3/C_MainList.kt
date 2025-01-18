@@ -93,7 +93,7 @@ fun MainList_F3(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
-                        .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                        .animateItem(fadeInSpec = null, fadeOutSpec = null) ,
                 )
             }
         }

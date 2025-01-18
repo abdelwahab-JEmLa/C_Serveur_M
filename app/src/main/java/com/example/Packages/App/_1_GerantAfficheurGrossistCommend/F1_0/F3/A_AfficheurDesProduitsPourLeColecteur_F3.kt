@@ -17,7 +17,7 @@ import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.F3.Module
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
-fun AfficheurDesProduitsDesAcheteur_F3(
+fun A_AfficheurDesProduitsPourLeColecteur_F3(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {

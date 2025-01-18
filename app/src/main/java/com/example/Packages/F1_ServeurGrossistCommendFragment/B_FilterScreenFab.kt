@@ -56,6 +56,7 @@ fun MainScreenFilterFAB(
                     detectDragGestures { change, dragAmount ->
                         change.consume()
                         offsetX += dragAmount.x
+
                         offsetY += dragAmount.y
                     }
                 },

@@ -69,9 +69,10 @@ fun calQuantityButton(
             product.bonsVentDeCetteCota.add(newSale)
         }
 
-        val currentDate = java.time.LocalDateTime.now().toString()
+        val currentDate = java.time.LocalDateTime.now().toString()  //-->
+        //TODO(1): fait que la date doit yyyy-mm-hh
         if (product.bonCommendDeCetteCota == null ||
-            !product.historiqueBonsCommend.any { it.date == currentDate }
+            !product.historiqueBonsCommend.any { it.mutableBasesStates?.dateInString == currentDate }
         ) {
             // Get grossist information with fallback to default
             val lastGrossistInfo = product.historiqueBonsCommend.lastOrNull()?.grossistInformations
@@ -97,16 +98,18 @@ fun calQuantityButton(
 
             val newBonCommande = GrossistBonCommandes(
                 vid = System.currentTimeMillis(),
-                date = currentDate,
                 init_grossistInformations = lastGrossistInfo,
                 init_coloursEtGoutsCommendee = aggregatedColors
-            )
+            ) .apply {
+                mutableBasesStates?.dateInString=currentDate
+            }
 
             // Update current bon commande
             product.bonCommendDeCetteCota = newBonCommande
 
             // Add to history if date doesn't exist
-            if (!product.historiqueBonsCommend.any { it.date == currentDate }) {
+            if (!product.historiqueBonsCommend.any { it.mutableBasesStates
+                ?.dateInString == currentDate }) {
                 product.historiqueBonsCommend.add(newBonCommande)
             }
         }

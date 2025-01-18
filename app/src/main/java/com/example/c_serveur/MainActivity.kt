@@ -1,7 +1,7 @@
 package com.example.c_serveur
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFireBase.FirebaseOfflineHandler
+import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.FirebaseOfflineHandler
 import android.app.Application
 import android.content.Context
 import android.os.Build

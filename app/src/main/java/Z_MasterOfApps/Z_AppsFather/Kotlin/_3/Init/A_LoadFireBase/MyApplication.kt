@@ -1,4 +1,4 @@
-package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFireBase
+package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase
   /*
 import android.app.Application
 import com.google.firebase.FirebaseApp

@@ -1,5 +1,5 @@
 package Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.StorageFireBaseOffline
-
+        /*
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.content.Context
@@ -85,3 +85,4 @@ suspend fun ViewModelInitApp.initProductImages() {
 
     loadingProgress = 1f
 }
+      */

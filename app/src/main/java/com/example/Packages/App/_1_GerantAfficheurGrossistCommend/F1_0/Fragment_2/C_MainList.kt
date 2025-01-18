@@ -6,12 +6,9 @@ import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -45,165 +42,142 @@ fun MainList_F2(
 ) {
     var expandedItemId by remember { mutableStateOf<Long?>(null) }
 
-    Box(
-        modifier = modifier.fillMaxSize()
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xE3C85858).copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
+        contentPadding = paddingValues,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color(0xE3C85858).copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
-            contentPadding = paddingValues,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                items = visibleProducts.sortedBy { product ->
-                    product.bonCommendDeCetteCota
-                        ?.mutableBasesStates
-                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                        ?: Int.MAX_VALUE
-                },
-                key = { product ->
-                    "${product.id}_${product.bonCommendDeCetteCota
-                        ?.mutableBasesStates
-                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit}"
-                }
-            ) { product ->
-                if (expandedItemId == product.id) {
-                    ExpandedMainItem_F4(
-                        mainItem = product,
-                        onCLickOnMain = { expandedItemId = null }
-                    )
-                } else {
-                    MainItem_F2(
-                        mainItem = product,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        onCLickOnMain = { expandedItemId = product.id }
-                    )
-                }
+        items(
+            items = visibleProducts.sortedBy { product ->
+                product.bonCommendDeCetteCota
+                    ?.mutableBasesStates
+                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                    ?: Int.MAX_VALUE
+            },
+            key = { product ->
+                "${product.id}_${product.bonCommendDeCetteCota
+                    ?.mutableBasesStates
+                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit}"
+            }
+        ) { product ->
+            if (expandedItemId == product.id) {
+                ExpandedMainItem_F4(
+                    mainItem = product,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    onCLickOnMain = { expandedItemId = null }
+                )
+            } else {
+                MainItem_F2(
+                    mainItem = product,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    onCLickOnMain = { expandedItemId = product.id }
+                )
             }
         }
     }
 }
-
 @Composable
 fun ExpandedMainItem_F4(
     mainItem: _ModelAppsFather.ProduitModel,
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
 ) {
-    Box(
+    Column(
         modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 350.dp, max = 500.dp)
             .background(
                 MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
-            .clickable { onCLickOnMain() },
-        contentAlignment = Alignment.Center
+            .clickable { onCLickOnMain() }
+            .padding(8.dp)
     ) {
-        Column(
+        // Header with image and basic info
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
+                .fillMaxWidth()
+                .height(100.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Header with image and basic info
-            Row(
+            GlideDisplayImageById2(
+                mainItem.id,
+                imageGlidReloadTigger = 0,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .width(100.dp)
                     .height(100.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                GlideDisplayImageById2(
-                    mainItem.id,
-                    imageGlidReloadTigger = 0,
-                    modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp),
-                    size = 100.dp
-                )
+                size = 100.dp
+            )
 
-                Column(
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .weight(1f)
-                ) {
-                    Text(
-                        text = mainItem.nom,
-                        style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = "ID: ${mainItem.id}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            // List of buyers and their purchases
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .padding(start = 8.dp)
                     .weight(1f)
             ) {
-                LazyColumn(
+                Text(
+                    text = mainItem.nom,
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "ID: ${mainItem.id}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // List of buyers and their purchases
+        mainItem.bonsVentDeCetteCota.forEach { bonVent ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+                    .background(
+                        MaterialTheme.colorScheme.surfaceVariant,
+                        RoundedCornerShape(4.dp)
+                    )
+                    .padding(8.dp)
+            ) {
+                // Buyer info
+                Text(
+                    text = bonVent.clientInformations?.nom ?: "Unknown Client",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                // Colors grid for this buyer
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(4),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .heightIn(min = 50.dp)
+                        .padding(top = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    items(mainItem.bonsVentDeCetteCota) { bonVent ->
+                    items(bonVent.colours_Achete.filter { it.quantity_Achete > 0 }) { color ->
                         Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
-                                .fillMaxWidth()
                                 .background(
-                                    MaterialTheme.colorScheme.surfaceVariant,
+                                    MaterialTheme.colorScheme.surface,
                                     RoundedCornerShape(4.dp)
                                 )
-                                .padding(8.dp)
+                                .padding(4.dp)
                         ) {
-                            // Buyer info
                             Text(
-                                text = bonVent.clientInformations?.nom ?: "Unknown Client",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                text = color.imogi.ifEmpty { color.nom.take(2) },
+                                fontSize = 20.sp
                             )
-
-                            // Colors grid for this buyer
-                            LazyVerticalGrid(
-                                columns = GridCells.Fixed(4),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = 50.dp)
-                                    .padding(top = 4.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                items(bonVent.colours_Achete.filter { it.quantity_Achete > 0 }) { color ->
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier
-                                            .background(
-                                                MaterialTheme.colorScheme.surface,
-                                                RoundedCornerShape(4.dp)
-                                            )
-                                            .padding(4.dp)
-                                    ) {
-                                        Text(
-                                            text = color.imogi.ifEmpty { color.nom.take(2) },
-                                            fontSize = 20.sp
-                                        )
-                                        Text(
-                                            text = "${color.quantity_Achete}",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
-                                }
-                            }
+                            Text(
+                                text = "${color.quantity_Achete}",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     }
                 }

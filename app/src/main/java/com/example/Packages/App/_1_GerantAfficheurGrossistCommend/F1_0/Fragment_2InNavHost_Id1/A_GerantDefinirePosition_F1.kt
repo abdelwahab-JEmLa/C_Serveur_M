@@ -1,4 +1,4 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
@@ -12,8 +12,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1.Modules.ClientEditePositionDialog
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1.Modules.GlobalEditesGFABs
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1.Modules.ClientEditePositionDialog
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1.Modules.GlobalEditesGFABs
 
 private const val TAG = "A_GerantDefinirePosition_F1"
 

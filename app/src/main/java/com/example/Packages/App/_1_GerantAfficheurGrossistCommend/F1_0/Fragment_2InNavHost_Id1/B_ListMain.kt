@@ -1,4 +1,4 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
@@ -30,8 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1.Modules.MoveProductsDialog
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1.Modules.SearchDialog_F1
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1.Modules.MoveProductsDialog
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1.Modules.SearchDialog_F1
 
 @Composable
 fun B_ListMainFragment(

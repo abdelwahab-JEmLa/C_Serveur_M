@@ -1,5 +1,5 @@
 // SearchDialog.kt
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_3.Modules
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1InNavHost_Id4.Modules
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement
@@ -32,7 +32,7 @@ import androidx.compose.ui.window.DialogProperties
 import kotlinx.coroutines.delay
 
 @Composable
-fun SearchDialog_F3(viewModelProduits: ViewModelInitApp) {
+fun SearchDialog_F4(viewModelProduits: ViewModelInitApp) {
     var showDialog by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }

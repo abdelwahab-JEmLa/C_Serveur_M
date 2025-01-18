@@ -1,10 +1,10 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1.Modules
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1InNavHost_Id4.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
-import Z_MasterOfApps.Kotlin.ViewModel.Actions._2_C_Serveur.Package_1._ServeurGrossistCommendFragment
-import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
+import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -18,10 +18,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -46,21 +44,15 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-enum class DeviceMode {
-    SERVER,
-    DISPLAY
-}
-
 @Composable
-fun GlobalEditesGFABs(
+fun GlobalEditesGFABs_F4(
     appsHeadModel: _ModelAppsFather,
     modifier: Modifier = Modifier,
-    viewModelInitApp: ViewModelInitApp,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showOptions by remember { mutableStateOf(false) }
-    var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
+    var deviceMode by remember { mutableStateOf(ParamatersAppsModel.DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
 
@@ -242,16 +234,6 @@ fun GlobalEditesGFABs(
             ) {
                 // Camera FAB
                 FloatingActionButton(
-                    onClick = { _ServeurGrossistCommendFragment(viewModelInitApp)
-                        .onClickOnGlobalFABsButton_1()},
-                    containerColor = Color(0xFF4CAF50)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null
-                    )
-                }
-                FloatingActionButton(
                     onClick = { checkAndRequestPermissions() },
                     containerColor = Color(0xFF4CAF50)
                 ) {
@@ -260,20 +242,7 @@ fun GlobalEditesGFABs(
                         contentDescription = "Take Photo"
                     )
                 }
-                FloatingActionButton(
-                    onClick = {
-                        viewModelInitApp
-                            ._paramatersAppsViewModelModel
-                            .visibilityClientEditePositionDialog =true
-                    },
-                    containerColor = Color(0xFFFF5722)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardDoubleArrowUp,
-                        contentDescription =
-                            "Switch to Display Mode"
-                    )
-                }
+
                 // Mode Toggle FAB
                 FloatingActionButton(
                     onClick = {
@@ -290,7 +259,6 @@ fun GlobalEditesGFABs(
                             "Switch to Display Mode" else "Switch to Server Mode"
                     )
                 }
-
             }
         }
 

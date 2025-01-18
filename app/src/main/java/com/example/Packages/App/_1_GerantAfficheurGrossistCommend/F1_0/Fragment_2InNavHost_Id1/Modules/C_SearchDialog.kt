@@ -1,6 +1,7 @@
 // SearchDialog.kt
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0._1NavHost_Id4_Fragment.Modules
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1.Modules
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,16 +30,19 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2InNavHost_Id1.C_ItemMainFragment
 import kotlinx.coroutines.delay
 
 @Composable
-fun SearchDialog_F4(viewModelProduits: ViewModelInitApp) {
-    var showDialog by remember { mutableStateOf(false) }
+fun SearchDialog_F1(
+    viewModelProduits: ViewModelInitApp,
+    showDialog: Boolean,
+    onDismiss: () -> Unit
+) {
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    // Get unpositioned items
     val unpositionedItems = viewModelProduits.produitsMainDataBase.filter {
         it.isVisible && it.bonCommendDeCetteCota
             ?.mutableBasesStates
@@ -54,7 +58,7 @@ fun SearchDialog_F4(viewModelProduits: ViewModelInitApp) {
         Dialog(
             onDismissRequest = {
                 focusManager.clearFocus()
-                showDialog = false
+                onDismiss()
             },
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,
@@ -104,25 +108,31 @@ fun SearchDialog_F4(viewModelProduits: ViewModelInitApp) {
                                 items = filteredItems,
                                 key = { it.id }
                             ) { product ->
-//                                C_ItemMainFragment_F2(
-//                                    mainItem = product,
-//                                    onCLickOnMain = {
-//                                        val positionedProducts = viewModelProduits.produitsMainDataBase.filter {
-//                                            it.bonCommendDeCetteCota?.cPositionCheyCeGrossit == true
-//                                        }
-//                                        val newPosition = (positionedProducts.maxOfOrNull {
-//                                            it.bonCommendDeCetteCota?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
-//                                        } ?: 0) + 1
-//
-//                                        product.bonCommendDeCetteCota?.apply {
-//                                            cPositionCheyCeGrossit = true
-//                                            positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
-//                                        }
-//                                        updateProduct_produitsAvecBonsGrossist(product,viewModelProduits)
-//                                        showDialog = false
-//                                    }  ,
-//                                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
-//                                )
+                                C_ItemMainFragment(
+                                    mainItem = product,
+                                    onCLickOnMain = {
+                                        val positionedProducts = viewModelProduits.produitsMainDataBase.filter {
+                                            it.bonCommendDeCetteCota
+                                                ?.mutableBasesStates
+                                                ?.cPositionCheyCeGrossit == true
+                                        }
+                                        val newPosition = (positionedProducts.maxOfOrNull {
+                                            it.bonCommendDeCetteCota
+                                                ?.mutableBasesStates
+                                                ?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: 0
+                                        } ?: 0) + 1
+
+                                        product.bonCommendDeCetteCota?.apply {
+                                            mutableBasesStates
+                                                ?.cPositionCheyCeGrossit = true
+                                            mutableBasesStates
+                                                ?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
+                                        }
+                                        updateProduit(product, viewModelProduits)
+                                        onDismiss()
+                                    },
+                                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                                )
                             }
                         }
                     }
@@ -130,7 +140,7 @@ fun SearchDialog_F4(viewModelProduits: ViewModelInitApp) {
                     TextButton(
                         onClick = {
                             focusManager.clearFocus()
-                            showDialog = false
+                            onDismiss()
                         },
                         modifier = Modifier
                             .align(Alignment.End)

@@ -83,6 +83,7 @@ fun MainList_F3(
             ) { product ->
                 MainItem_F3(
                     mainItem = product,
+                    viewModelProduits=viewModelProduits,
                     onCLickOnMain = {
                         product.bonCommendDeCetteCota
                             ?.mutableBasesStates

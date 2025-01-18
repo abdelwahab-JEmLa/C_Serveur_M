@@ -1,6 +1,7 @@
 package com.example.Packages.F3._PhoneClientClient
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun MainItem_F3(
     mainItem: _ModelAppsFather.ProduitModel,
+    viewModelProduits: ViewModelInitApp,
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
@@ -72,10 +74,18 @@ fun MainItem_F3(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+        val colorAchatModelList = mainItem.bonsVentDeCetteCota
+            .filter {
+                it.clientInformations
+                    ?.id == viewModelProduits
+                    ._paramatersAppsViewModelModel
+                    .phoneClientSelectedAcheteur
+            }
+            .flatMap { it.colours_Achete }
 
         // Calculate total quantity from all bon vents and their colors
-        val totalQuantity = mainItem.bonsVentDeCetteCota
-            .flatMap { it.colours_Achete }
+        val totalQuantity = colorAchatModelList
+
             .sumOf { it.quantity_Achete }
 
         Row(
@@ -111,8 +121,7 @@ fun MainItem_F3(
                     modifier = Modifier
                         .width(200.dp)
                 ) {
-                    val colorItems = mainItem.bonsVentDeCetteCota
-                        .flatMap { it.colours_Achete }
+                    val colorItems = colorAchatModelList
                         .filter { it.quantity_Achete > 0 }
 
                     LazyVerticalGrid(

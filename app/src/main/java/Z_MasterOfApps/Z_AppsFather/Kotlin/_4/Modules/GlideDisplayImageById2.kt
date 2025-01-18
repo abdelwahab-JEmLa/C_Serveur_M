@@ -45,7 +45,8 @@ fun GlideDisplayImageById2(
     modifier: Modifier = Modifier,
     size: Dp? = null,
     onLoadComplete: () -> Unit = {}
-) {
+) { //-->
+//TODO(1): regle ce qui il faut 
     var imageFile by remember { mutableStateOf<File?>(null) }
     var forceReload by remember { mutableIntStateOf(0) }
     var reloadSuccess by remember { mutableStateOf(false) }

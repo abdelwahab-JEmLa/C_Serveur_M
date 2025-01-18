@@ -73,7 +73,8 @@ fun GlobalEditesGFABs_F4(
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
-    suspend fun handleImageCapture(uri: Uri) {
+    suspend fun handleImageCapture(uri: Uri) {   //-->
+    //TODO(1): regle ce qui il faiot
         try {
             if (uri.toString().isEmpty()) {
                 throw IllegalArgumentException("Invalid URI")

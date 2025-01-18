@@ -113,9 +113,14 @@ fun B_ListMainFragment(
             }
 
             items(
-                items = unpositionedProducts.sortedBy {
-                    it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                },
+                items = unpositionedProducts.sortedWith(compareBy(
+                    { product ->
+                        val position = product.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                        if (position == null || position == 0) null else position
+                    },
+                    // Ensuite trier par nom
+                    { it.nom.lowercase() }
+                )),
             ) { product ->
                 C_ItemMainFragment(
                     mainItem = product,

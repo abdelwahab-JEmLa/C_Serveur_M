@@ -34,8 +34,11 @@ import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_
 import kotlinx.coroutines.delay
 
 @Composable
-fun SearchDialog_F1(viewModelProduits: ViewModelInitApp) {
-    var showDialog by remember { mutableStateOf(false) }
+fun SearchDialog_F1(
+    viewModelProduits: ViewModelInitApp,
+    showDialog: Boolean,
+    onDismiss: () -> Unit
+) {
     var searchText by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -55,7 +58,7 @@ fun SearchDialog_F1(viewModelProduits: ViewModelInitApp) {
         Dialog(
             onDismissRequest = {
                 focusManager.clearFocus()
-                showDialog = false
+                onDismiss()
             },
             properties = DialogProperties(
                 usePlatformDefaultWidth = false,
@@ -125,9 +128,9 @@ fun SearchDialog_F1(viewModelProduits: ViewModelInitApp) {
                                             mutableBasesStates
                                                 ?.positionProduitDonGrossistChoisiPourAcheterCeProduit = newPosition
                                         }
-                                        updateProduit(product,viewModelProduits)
-                                        showDialog = false
-                                    }  ,
+                                        updateProduit(product, viewModelProduits)
+                                        onDismiss()
+                                    },
                                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
                                 )
                             }
@@ -137,7 +140,7 @@ fun SearchDialog_F1(viewModelProduits: ViewModelInitApp) {
                     TextButton(
                         onClick = {
                             focusManager.clearFocus()
-                            showDialog = false
+                            onDismiss()
                         },
                         modifier = Modifier
                             .align(Alignment.End)

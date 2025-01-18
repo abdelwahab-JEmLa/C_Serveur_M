@@ -41,6 +41,7 @@ fun B_ListMainFragment(
     visibleProducts: List<_ModelAppsFather.ProduitModel>
 ) {
     var showMoveDialog by remember { mutableStateOf(false) }
+    var showSearchDialog by remember { mutableStateOf(false) }
 
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true
@@ -96,7 +97,8 @@ fun B_ListMainFragment(
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                    IconButton(onClick = {}) {
+                    // Update the search icon button onClick:
+                    IconButton(onClick = { showSearchDialog = true }) {
                         Icon(
                             Icons.Default.Search,
                             contentDescription = "Rechercher",
@@ -147,5 +149,9 @@ fun B_ListMainFragment(
         )
     }
 
-    SearchDialog_F1(viewModelProduits)
+    SearchDialog_F1(
+        viewModelProduits = viewModelProduits,
+        showDialog = showSearchDialog,
+        onDismiss = { showSearchDialog = false }
+    )
 }

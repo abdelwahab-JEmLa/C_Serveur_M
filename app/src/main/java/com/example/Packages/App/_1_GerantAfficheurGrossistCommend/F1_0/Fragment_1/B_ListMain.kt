@@ -22,10 +22,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1.Modules.MoveProductsDialog
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1.Modules.SearchDialog_F1
 
 @Composable
@@ -35,8 +40,10 @@ fun B_ListMainFragment(
     modifier: Modifier = Modifier,
     visibleProducts: List<_ModelAppsFather.ProduitModel>
 ) {
+    var showMoveDialog by remember { mutableStateOf(false) }
+
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
-        it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit  == true
+        it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true
     }
 
     LazyVerticalGrid(
@@ -62,7 +69,6 @@ fun B_ListMainFragment(
                 items = positionedProducts.sortedBy {
                     it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                 },
-
             ) { product ->
                 C_ItemMainFragment(
                     mainItem = product,
@@ -83,7 +89,7 @@ fun B_ListMainFragment(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { showMoveDialog = true }) {
                         Icon(
                             Icons.Default.Moving,
                             contentDescription = "Déplacer",
@@ -108,7 +114,6 @@ fun B_ListMainFragment(
                 items = unpositionedProducts.sortedBy {
                     it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                 },
-
             ) { product ->
                 C_ItemMainFragment(
                     mainItem = product,
@@ -130,6 +135,16 @@ fun B_ListMainFragment(
                 )
             }
         }
+    }
+
+    if (showMoveDialog) {
+        MoveProductsDialog(
+            selectedProducts = unpositionedProducts,
+            currentGrossist = unpositionedProducts.firstOrNull()?.bonCommendDeCetteCota?.grossistInformations,
+            viewModelProduits = viewModelProduits,
+            onDismiss = { showMoveDialog = false },
+            onProductsMoved = { showMoveDialog = false }
+        )
     }
 
     SearchDialog_F1(viewModelProduits)

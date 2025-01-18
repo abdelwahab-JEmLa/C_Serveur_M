@@ -3,6 +3,7 @@ package com.example.Main.AppNavHost
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,12 +19,27 @@ import com.example.Packages.F3._PhoneClientClient.MainScreen_F3
 import com.example.Packages.Z_F4._DeplaceProduitsVerGrossist.MainScreen_F4
 import com.example.c_serveur.AppViewModels
 
+object NavigationItems {
+    val items = listOf(
+        Screen.MainScreen_F4,
+        Screen.FragmentMainScreen1,
+        Screen.MainScreen_F2,
+        Screen.MainScreen_F3,
+    )
+}
 sealed class Screen(
     val route: String,
     val icon: ImageVector,
     val title: String,
     val color: Color
 ) {
+    data object MainScreen_F4 : Screen(
+        route = "main_screen_f4",
+        icon = Icons.Default.Moving,
+        title = "main_screen_f4",
+        color = Color(0xFF3F51B5)
+    )
+
     data object FragmentMainScreen1 : Screen(
         route = "fragment_main_screen_1",
         icon = Icons.Default.Tab,
@@ -45,22 +61,10 @@ sealed class Screen(
         color = Color(0xFFFF5722)
     )
 
-    data object MainScreen_F4 : Screen(
-        route = "main_screen_f4",
-        icon = Icons.Default.Tab,
-        title = "main_screen_f4",
-        color = Color(0xFFFF5722)
-    )
+
 }
 
-object NavigationItems {
-    val items = listOf(
-        Screen.FragmentMainScreen1,
-        Screen.MainScreen_F2,
-        Screen.MainScreen_F3,
-        Screen.MainScreen_F4,
-    )
-}
+
 
 @Composable
 fun AppNavHost(
@@ -71,9 +75,13 @@ fun AppNavHost(
     Box(modifier = modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = Screen.FragmentMainScreen1.route,
+            startDestination = Screen.MainScreen_F4.route,
             modifier = Modifier.fillMaxSize()
         ) {
+            composable(Screen.MainScreen_F4.route) {
+                MainScreen_F4(viewModelInitApp = appViewModels.initViewModel)
+            }
+
             composable(Screen.FragmentMainScreen1.route) {
                 A_ScreenMainFragment_1(viewModelInitApp = appViewModels.initViewModel)
             }
@@ -86,9 +94,6 @@ fun AppNavHost(
                 MainScreen_F3(viewModelInitApp = appViewModels.initViewModel)
             }
 
-            composable(Screen.MainScreen_F4.route) {
-                MainScreen_F4(viewModelInitApp = appViewModels.initViewModel)
-            }
         }
     }
 }

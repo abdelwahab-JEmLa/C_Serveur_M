@@ -66,7 +66,9 @@ internal fun A_GerantDefinirePosition_F1(
 
                 // Déplacer GlobalEditesGFABs ici, à l'intérieur du Box mais en dehors du Scaffold
                 if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
-                    GlobalEditesGFABs_F1(
+                    GlobalEditesGFABs_F1( //-->
+                        //TODO(1): pk ca ne s afifche pas comme MainScreenFilterFAB 
+                        //copie les patern de drage Fabs de MainScreenFilterFAB sans enlve les functionement des buttons 
                         appsHeadModel = viewModelInitApp._modelAppsFather,
                         viewModelInitApp = viewModelInitApp,
                     )
@@ -77,7 +79,7 @@ internal fun A_GerantDefinirePosition_F1(
                 }
             }
 
-            ClientEditePositionDialog(
+            ClientEditePositionDialog(    
                 viewModelProduits = viewModelInitApp,
             )
         }

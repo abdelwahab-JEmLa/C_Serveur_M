@@ -2,11 +2,8 @@ package com.example.c_serveur
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFireBase.FirebaseOfflineHandler
-import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.StorageFireBaseOffline.FirebaseStorageOfflineHandler
 import android.app.Application
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,54 +21,21 @@ import com.example.Main.AppNavHost.MainScreen
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
 import com.google.firebase.FirebaseApp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class MyApplication : Application() {
-    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
-
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)?.let { app ->
             FirebaseOfflineHandler.initializeFirebase(app)
-            FirebaseStorageOfflineHandler.initializeStorageCache()
         }
-
-        setupNetworkCallback()
-    }
-
-    private fun setupNetworkCallback() {
-        val connectivityManager =
-            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        networkCallback = object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                // Process upload queue when connection is restored
-                CoroutineScope(Dispatchers.IO).launch {
-                    FirebaseStorageOfflineHandler.processUploadQueue(applicationContext)
-                }
-            }
-        }
-
-        connectivityManager.registerDefaultNetworkCallback(networkCallback)
-    }
-
-    override fun onTerminate() {
-        super.onTerminate()
-        val connectivityManager =
-            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 }
+
 data class AppViewModels(
     val initViewModel: ViewModelInitApp,
     )
 
-// ViewModelFactory.kt
-// Or when using ViewModelProvider
 class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ViewModelInitApp::class.java)) {

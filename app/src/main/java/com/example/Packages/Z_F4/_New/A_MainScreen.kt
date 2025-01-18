@@ -46,6 +46,9 @@ internal fun MainScreen_F4(
     val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 
     val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
+        .filter { product ->
+            product.bonCommendDeCetteCota != null && product.isVisible
+        }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()

@@ -30,11 +30,6 @@ fun MainList_F4(
     modifier: Modifier = Modifier
 ) {
     val groupedProducts = visibleProducts
-        .filter { product ->
-            product.bonCommendDeCetteCota
-                ?.mutableBasesStates
-                ?.cPositionCheyCeGrossit == true
-        }
         .groupBy { product ->
             product.bonCommendDeCetteCota
                 ?.grossistInformations

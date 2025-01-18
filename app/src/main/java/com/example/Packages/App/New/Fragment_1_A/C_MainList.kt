@@ -1,4 +1,4 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1_A
+package com.example.Packages.App.New.Fragment_1_A
 
 import Z_MasterOfApps.Kotlin.Model.Extension.grossistsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather

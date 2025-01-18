@@ -21,13 +21,36 @@ import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_3.A_AfficheurDesProduitsPourLeColecteur_F3
 import com.example.c_serveur.AppViewModels
 
-object NavigationItems {
-    val items = listOf(
-        Screen.MainScreen_F4,
-        Screen.FragmentMainScreen1,
-        Screen.MainScreen_F2,
-        Screen.MainScreen_F3,
-    )
+@Composable
+fun AppNavHost(
+    modifier: Modifier = Modifier,
+    appViewModels: AppViewModels,
+    navController: NavHostController,
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        NavHost(
+            navController = navController,
+            startDestination = Screen.MainScreen_F4.route,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            composable(Screen.MainScreen_F4.route) {
+                A_DeplaceProduitsVerGrossist_F1_Decal(viewModelInitApp = appViewModels.initViewModel)
+            }
+
+            composable(Screen.MainScreen_F1.route) {
+                A_GerantDefinirePosition_F1(viewModelInitApp = appViewModels.initViewModel)
+            }
+
+            composable(Screen.MainScreen_F2.route) {
+                A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = appViewModels.initViewModel)
+            }
+
+            composable(Screen.MainScreen_F3.route) {
+                A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = appViewModels.initViewModel)
+            }
+
+        }
+    }
 }
 sealed class Screen(
     val route: String,
@@ -35,7 +58,14 @@ sealed class Screen(
     val title: String,
     val color: Color
 ) {
-    data object FragmentMainScreen1 : Screen(
+    data object MainScreen_F4 : Screen(
+        route = "main_screen_f4",
+        icon = Icons.Default.Moving,
+        title = "main_screen_f4",
+        color = Color(0xFF3F51B5)
+    )
+
+    data object MainScreen_F1 : Screen(
         route = "fragment_main_screen_1",
         icon = Icons.Default.Tab,
         title = "Serveur Grossist",
@@ -56,47 +86,19 @@ sealed class Screen(
         color = Color(0xFFFF5722)
     )
 
-    data object MainScreen_F4 : Screen(
-        route = "main_screen_f4",
-        icon = Icons.Default.Moving,
-        title = "main_screen_f4",
-        color = Color(0xFF3F51B5)
+
+
+}
+
+
+object NavigationItems {
+    val items = listOf(
+        Screen.MainScreen_F4,
+        Screen.MainScreen_F1,
+        Screen.MainScreen_F2,
+        Screen.MainScreen_F3,
     )
-
 }
-
-@Composable
-fun AppNavHost(
-    modifier: Modifier = Modifier,
-    appViewModels: AppViewModels,
-    navController: NavHostController,
-) {
-    Box(modifier = modifier.fillMaxSize()) {
-        NavHost(
-            navController = navController,
-            startDestination = Screen.MainScreen_F4.route,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            composable(Screen.MainScreen_F4.route) {
-                A_DeplaceProduitsVerGrossist_F1_Decal(viewModelInitApp = appViewModels.initViewModel)
-            }
-
-            composable(Screen.FragmentMainScreen1.route) {
-                A_GerantDefinirePosition_F1(viewModelInitApp = appViewModels.initViewModel)
-            }
-
-            composable(Screen.MainScreen_F2.route) {
-                A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = appViewModels.initViewModel)
-            }
-
-            composable(Screen.MainScreen_F3.route) {
-                A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = appViewModels.initViewModel)
-            }
-
-        }
-    }
-}
-
 @Preview
 @Composable
 private fun Preview_Fragment1() {

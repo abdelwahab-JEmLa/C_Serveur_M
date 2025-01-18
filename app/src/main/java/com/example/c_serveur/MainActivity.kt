@@ -22,7 +22,6 @@ import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
 import com.google.firebase.FirebaseApp
 
-
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()

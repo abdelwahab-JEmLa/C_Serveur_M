@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2.Modules.GlobalEditesGFABs_F2
 
 private const val TAG = "A_GerantDefinirePosition_F1"
 
@@ -71,10 +70,6 @@ internal fun A_TravaillieurListProduitAchercheChezLeGrossist_F2(
                 ._paramatersAppsViewModelModel
                 .fabsVisibility
         ) {
-            GlobalEditesGFABs_F2(
-                appsHeadModel = viewModelInitApp.modelAppsFather,
-                modifier = modifier,
-            )
 
             MainScreenFilterFAB_F2(
                 viewModelInitApp = viewModelInitApp,

@@ -98,7 +98,6 @@ open class _ModelAppsFather(
             class MutableBasesStates {
                 var cPositionCheyCeGrossit: Boolean by mutableStateOf(false)
                 var positionProduitDonGrossistChoisiPourAcheterCeProduit: Int by mutableStateOf(0)
-
                 var dateInString by mutableStateOf("2025-01-01")
                 var currentCreditBalance by mutableStateOf(0.0)
             }

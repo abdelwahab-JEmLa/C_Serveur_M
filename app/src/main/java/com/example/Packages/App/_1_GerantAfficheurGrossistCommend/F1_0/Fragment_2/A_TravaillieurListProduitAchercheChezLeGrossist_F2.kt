@@ -50,8 +50,8 @@ internal fun A_TravaillieurListProduitAchercheChezLeGrossist_F2(
                             .telephoneClientParamaters
                             .selectedGrossistForClientF2
                         && it
-                            ?.mutableBasesStates
-                            ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0
+                    ?.mutableBasesStates
+                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0
             }
         }
 

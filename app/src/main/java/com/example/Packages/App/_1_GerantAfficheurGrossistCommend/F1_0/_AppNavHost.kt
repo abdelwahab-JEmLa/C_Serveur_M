@@ -87,10 +87,7 @@ sealed class Screen(
         color = Color(0xFFFF5722)
     )
 
-
-
 }
-
 
 object NavigationItems {
     val items = listOf(

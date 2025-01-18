@@ -1,4 +1,4 @@
-package com.example.Packages.Z_F3.Modules
+package com.example.Packages.F3.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef

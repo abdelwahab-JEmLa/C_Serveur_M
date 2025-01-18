@@ -1,5 +1,5 @@
 // SearchDialog.kt
-package com.example.Packages.Z_F3.Modules
+package com.example.Packages.F3.Modules
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement

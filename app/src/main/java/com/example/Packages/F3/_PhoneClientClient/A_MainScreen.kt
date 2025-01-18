@@ -1,4 +1,4 @@
-package com.example.Packages.Z_F3._PhoneClientClient
+package com.example.Packages.F3._PhoneClientClient
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
@@ -12,7 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Z_F3.Modules.GlobalEditesGFABs_F3
+import com.example.Packages.F3.Modules.GlobalEditesGFABs_F3
 
 private const val TAG = "A_ScreenMainFragment_1"
 

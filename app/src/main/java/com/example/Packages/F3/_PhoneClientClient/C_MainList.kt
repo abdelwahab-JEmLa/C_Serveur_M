@@ -1,4 +1,4 @@
-package com.example.Packages.Z_F3._PhoneClientClient
+package com.example.Packages.F3._PhoneClientClient
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit

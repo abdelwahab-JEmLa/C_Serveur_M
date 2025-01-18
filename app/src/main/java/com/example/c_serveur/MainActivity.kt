@@ -17,7 +17,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.Main.AppNavHost.MainScreen
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.example.clientjetpack.Modules.PermissionHandler
+import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFireBase.FirebaseOfflineHandler
+import android.app.Application
+import com.google.firebase.FirebaseApp
 
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(this)?.let { app ->
+            FirebaseOfflineHandler.initializeFirebase(app)
+        }
+    }
+}
 data class AppViewModels(
     val initViewModel: ViewModelInitApp,
     )

@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0._1NavHost_Id4_Fragment.A_DeplaceProduitsVerGrossist_F1_Decal
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_1.A_GerantDefinirePosition_F1
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_3InNavHost_Id2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_3.A_AfficheurDesProduitsPourLeColecteur_F3
 import com.example.c_serveur.AppViewModels
 

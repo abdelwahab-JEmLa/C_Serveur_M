@@ -1,4 +1,4 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2.Modules
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_3InNavHost_Id2.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef

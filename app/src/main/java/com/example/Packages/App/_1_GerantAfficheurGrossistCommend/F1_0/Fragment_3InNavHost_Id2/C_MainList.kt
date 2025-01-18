@@ -1,4 +1,4 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_2
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Fragment_3InNavHost_Id2
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
@@ -101,16 +101,16 @@ fun ExpandedMainItem_F4(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp),
+                .height(350.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             GlideDisplayImageById2(
                 mainItem.id,
                 imageGlidReloadTigger = 0,
                 modifier = Modifier
-                    .width(100.dp)
-                    .height(100.dp),
-                size = 100.dp
+                    .width(350.dp)
+                    .height(350.dp),
+                size = 350.dp
             )
 
             Column(
@@ -142,6 +142,8 @@ fun ExpandedMainItem_F4(
                         RoundedCornerShape(4.dp)
                     )
                     .padding(8.dp)
+                    .heightIn(max = 150.dp)
+
             ) {
                 // Buyer info
                 Text(
@@ -155,7 +157,6 @@ fun ExpandedMainItem_F4(
                     columns = GridCells.Fixed(4),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 50.dp)
                         .padding(top = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalArrangement = Arrangement.spacedBy(4.dp)

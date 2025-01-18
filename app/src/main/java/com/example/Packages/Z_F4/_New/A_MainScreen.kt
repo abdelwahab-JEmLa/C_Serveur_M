@@ -72,7 +72,7 @@ internal fun MainScreen_F4(
             )
 
             MainScreenFilterFAB_F4(
-                viewModelProduits = viewModelInitApp,
+                viewModelInitApp = viewModelInitApp,
             )
         }
     }

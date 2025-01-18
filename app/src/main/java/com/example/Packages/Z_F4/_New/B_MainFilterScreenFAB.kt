@@ -1,7 +1,7 @@
 package com.example.Packages.Z_F4._New
 
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -39,7 +39,7 @@ import kotlin.math.roundToInt
 @Composable
 fun MainScreenFilterFAB_F4(
     modifier: Modifier = Modifier,
-    viewModelProduits: ViewModelInitApp,
+    viewModelInitApp: ViewModelInitApp,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -56,7 +56,6 @@ fun MainScreenFilterFAB_F4(
                     detectDragGestures { change, dragAmount ->
                         change.consume()
                         offsetX += dragAmount.x
-
                         offsetY += dragAmount.y
                     }
                 },
@@ -74,7 +73,7 @@ fun MainScreenFilterFAB_F4(
 
             AnimatedVisibility(visible = showButtons) {
                 Column(horizontalAlignment = Alignment.End) {
-                    viewModelProduits._modelAppsFather.groupedProductsPatGrossist
+                    viewModelInitApp._modelAppsFather.groupedProductsPatGrossist
                         .forEachIndexed { index, (grossist, produits) ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -83,23 +82,32 @@ fun MainScreenFilterFAB_F4(
                                 if (index > 0) {
                                     FloatingActionButton(
                                         onClick = {
-                                            viewModelProduits.viewModelScope.launch {
-                                                val previousGrossist = viewModelProduits._modelAppsFather.groupedProductsPatGrossist[index - 1].first
-                                                grossist.positionInGrossistsList--
-                                                previousGrossist.positionInGrossistsList++
-                                                update_AllProduits(
-                                                    viewModelProduits.produitsMainDataBase.map { product ->
-                                                        product.apply {
-                                                            bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                                when (currentGrossist.id) {
-                                                                    grossist.id -> currentGrossist.positionInGrossistsList--
-                                                                    previousGrossist.id -> currentGrossist.positionInGrossistsList++
+                                            viewModelInitApp.viewModelScope.launch {
+                                                val groupedProductsPatGrossist = viewModelInitApp
+                                                    ._modelAppsFather
+                                                    .groupedProductsPatGrossist
+
+                                                val nonDefini = groupedProductsPatGrossist
+                                                    .find { it.first.nom == "Non Defini"}
+
+                                                // Safely handle the nullable pair and its contents
+                                                nonDefini?.let { (_, products) ->
+                                                    if (products.isNotEmpty()) {
+                                                        val product = products.first()
+                                                        viewModelInitApp._modelAppsFather.produitsMainDataBase
+                                                            .find { it.id == product.id }?.let { foundProduct ->
+                                                                // Create updated product with new grossist information
+                                                                foundProduct.bonCommendDeCetteCota?.let { bonCommande ->
+                                                                    bonCommande.grossistInformations = grossist
+                                                                    // Update the product in the database
+                                                                    updateProduit(
+                                                                        product = foundProduct,
+                                                                        viewModelProduits = viewModelInitApp
+                                                                    )
                                                                 }
                                                             }
-                                                        }
-                                                    },
-                                                    viewModelProduits
-                                                )
+                                                    }
+                                                }
                                             }
                                         },
                                         modifier = Modifier.size(36.dp)
@@ -112,7 +120,7 @@ fun MainScreenFilterFAB_F4(
                                     "${grossist.nom} (${produits.size})",
                                     modifier = Modifier
                                         .background(
-                                            if (viewModelProduits._paramatersAppsViewModelModel
+                                            if (viewModelInitApp._paramatersAppsViewModelModel
                                                     .telephoneClientParamaters.selectedGrossistForServeur == grossist.id
                                             ) Color(0xFF2196F3) else Color.Transparent
                                         )
@@ -121,7 +129,7 @@ fun MainScreenFilterFAB_F4(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelProduits._paramatersAppsViewModelModel
+                                        viewModelInitApp._paramatersAppsViewModelModel
                                             .telephoneClientParamaters.selectedGrossistForServeur = grossist.id
                                     },
                                     modifier = Modifier.size(48.dp),

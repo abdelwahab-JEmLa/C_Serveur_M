@@ -31,14 +31,12 @@ class MyApplication : Application() {
 }
 
 // Add this companion object to handle offline data
-object FirebaseOfflineHandler {         //->
-    //TODO(FIXME):Fix erreur Object "FirebaseOfflineHandler" is never used 
+object FirebaseOfflineHandler {
     fun keepSynced(ref: DatabaseReference) {
         ref.keepSynced(true)
     }
 
-    suspend fun loadOfflineFirst(ref: DatabaseReference): DataSnapshot? {    //->
-        //TODO(FIXME):Fix erreur Function "loadOfflineFirst" is never used 
+    suspend fun loadOfflineFirst(ref: DatabaseReference): DataSnapshot? {
         return try {
             // First try to load from disk cache
             val offlineSnapshot = ref.get().await()

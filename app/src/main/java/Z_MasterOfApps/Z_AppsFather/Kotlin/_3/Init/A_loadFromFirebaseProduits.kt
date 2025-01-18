@@ -5,6 +5,7 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import androidx.compose.runtime.toMutableStateList
+import com.example.c_serveur.FirebaseOfflineHandler
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.GenericTypeIndicator
@@ -21,14 +22,23 @@ object LoadFromFirebaseProduits {
             logInfo("Starting Firebase data load")
             initViewModel.loadingProgress = 0.1f
 
-            // Enable persistence for main reference
-            _ModelAppsFather.produitsFireBaseRef.keepSynced(true)
+            // Utiliser FirebaseOfflineHandler pour activer la persistence
+            FirebaseOfflineHandler.keepSynced(_ModelAppsFather.produitsFireBaseRef)
 
-            // Load data with single value event
-            val products = loadProducts()
-            updateViewModel(initViewModel, products)
+            // Charger les données hors ligne d'abord
+            val offlineSnapshot = FirebaseOfflineHandler.loadOfflineFirst(_ModelAppsFather.produitsFireBaseRef)
+            offlineSnapshot?.let { snapshot ->
+                val offlineProducts = parseSnapshot(snapshot)
+                if (offlineProducts.isNotEmpty()) {
+                    updateViewModel(initViewModel, offlineProducts)
+                    initViewModel.loadingProgress = 0.5f
+                }
+            }
 
-            // Setup real-time sync after initial load
+            // Ensuite charger/synchroniser avec les données en ligne
+            val onlineProducts = loadProducts()
+            updateViewModel(initViewModel, onlineProducts)
+
             setupRealTimeSync(initViewModel)
 
             initViewModel.loadingProgress = 1.0f
@@ -73,7 +83,7 @@ object LoadFromFirebaseProduits {
         }.toMutableStateList()
     }
 
-    private fun parseProduct(snapshot: DataSnapshot): ProduitModel? {
+    fun parseProduct(snapshot: DataSnapshot): ProduitModel? {
         val productId = snapshot.key?.toLongOrNull() ?: return null
         val productMap = snapshot.value as? Map<*, *> ?: return null
 

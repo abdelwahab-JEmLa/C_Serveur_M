@@ -51,36 +51,36 @@ internal fun A_GerantDefinirePosition_F1(
                     .selectedGrossistForServeur
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            if (databaseSize > 0) {
-                B_ListMainFragment(
-                    visibleProducts = visibleProducts,
-                    viewModelProduits = viewModelInitApp,
-                    paddingValues = paddingValues
-                )
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+        ) { paddingValues ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (databaseSize > 0) {
+                    B_ListMainFragment(
+                        visibleProducts = visibleProducts,
+                        viewModelProduits = viewModelInitApp,
+                        paddingValues = paddingValues
+                    )
+                }
+
+                // Déplacer GlobalEditesGFABs ici, à l'intérieur du Box mais en dehors du Scaffold
+                if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
+                    GlobalEditesGFABs_F1(
+                        appsHeadModel = viewModelInitApp._modelAppsFather,
+                        viewModelInitApp = viewModelInitApp,
+                    )
+
+                    MainScreenFilterFAB(
+                        viewModelProduits = viewModelInitApp,
+                    )
+                }
             }
-        }
 
-        if (viewModelInitApp
-                ._paramatersAppsViewModelModel
-                .fabsVisibility
-        ) {
-            GlobalEditesGFABs_F1(
-                appsHeadModel = viewModelInitApp.modelAppsFather,
-                viewModelInitApp=viewModelInitApp,
-                modifier = modifier,
-            )
-
-            MainScreenFilterFAB(
+            ClientEditePositionDialog(
                 viewModelProduits = viewModelInitApp,
             )
         }
-        ClientEditePositionDialog(
-            viewModelProduits = viewModelInitApp,
-        )
     }
 }
 

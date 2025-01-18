@@ -48,7 +48,7 @@ internal fun MainScreen_F2(
                         viewModelInitApp
                             ._paramatersAppsViewModelModel
                             .telephoneClientParamaters
-                            .selectedGrossistForServeur
+                            .selectedGrossistForClient
                         && it
                             ?.mutableBasesStates
                             ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0

@@ -161,7 +161,7 @@ fun MainScreenFilterFAB_F2(
                                         .selectedGrossistForClient = grossist.id
                                 },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(grossist.couleur))
+                                containerColor = Color.Black
                             ) {
                                 Text(
                                     text = produits.size.toString(),

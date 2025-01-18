@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhonelinkRing
 import androidx.compose.material.icons.filled.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -43,9 +44,9 @@ sealed class Screen(
 
     data object MainScreen_F2 : Screen(
         route = "main_screen_f2",
-        icon = Icons.Default.Tab,
+        icon = Icons.Default.PhonelinkRing,
         title = "Phone Client Grossist",
-        color = Color(0xFFFF5722)
+        color = Color(0xFFFFEB3B)
     )
 
     data object MainScreen_F3 : Screen(

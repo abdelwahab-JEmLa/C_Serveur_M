@@ -146,7 +146,7 @@ fun MainScreenFilterFAB_F2(
                                         if (viewModelProduits
                                                 ._paramatersAppsViewModelModel
                                                 .telephoneClientParamaters
-                                                .selectedGrossistForClient == grossist.id
+                                                .selectedGrossistForClientF2 == grossist.id
                                         ) Color.Blue else Color.Transparent
                                     )
                                     .padding(4.dp),
@@ -158,7 +158,7 @@ fun MainScreenFilterFAB_F2(
                                     viewModelProduits
                                         ._paramatersAppsViewModelModel
                                         .telephoneClientParamaters
-                                        .selectedGrossistForClient = grossist.id
+                                        .selectedGrossistForClientF2 = grossist.id
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color.Black

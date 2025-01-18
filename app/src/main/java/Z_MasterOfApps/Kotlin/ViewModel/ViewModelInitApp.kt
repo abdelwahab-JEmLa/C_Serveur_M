@@ -4,8 +4,7 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.produitsFireBaseRef
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.CreeNewStart
-import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFromFirebaseHandler
-import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFromFirebaseHandler.parseProduct
+import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.LoadFromFirebaseProduits
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -36,7 +35,7 @@ class ViewModelInitApp : ViewModel() {
                 isLoading = true
                 val nombre = 0
                 if (nombre == 0) {
-                    LoadFromFirebaseHandler.loadFromFirebase(this@ViewModelInitApp)
+                    LoadFromFirebaseProduits.loadFromFirebase(this@ViewModelInitApp)
                  //   loadCalculateurOktapuluse(this@ViewModelInitApp)
                 }
                 else
@@ -61,7 +60,7 @@ class ViewModelInitApp : ViewModel() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         viewModelScope.launch {
                             try {
-                                val updatedProduct = parseProduct(snapshot)
+                                val updatedProduct = LoadFromFirebaseProduits.parseProduct(snapshot)
                                 if (updatedProduct != null) {
                                     val index = _modelAppsFather.produitsMainDataBase.indexOfFirst {
                                         it.id == updatedProduct.id

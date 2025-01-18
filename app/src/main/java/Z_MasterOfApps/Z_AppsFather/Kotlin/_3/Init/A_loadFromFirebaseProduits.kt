@@ -3,6 +3,7 @@ package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import android.util.Log
 import androidx.compose.runtime.toMutableStateList
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -12,56 +13,67 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-object LoadFromFirebaseHandler {
-    private const val DEBUG_LIMIT = 7
+object LoadFromFirebaseProduits {
+    private const val TAG = "LoadFromFirebaseProduits"
 
-    suspend fun loadFromFirebase(initViewModel: ViewModelInitApp) = try {
-        FirebaseDataLogger.startLogging()
+    suspend fun loadFromFirebase(initViewModel: ViewModelInitApp) {
+        try {
+            logInfo("Starting Firebase data load")
+            initViewModel.loadingProgress = 0.1f
 
-        val products = loadProducts()
+            // Enable persistence for main reference
+            _ModelAppsFather.produitsFireBaseRef.keepSynced(true)
 
-        FirebaseDataLogger.logDataValidation(products)
+            // Load data with single value event
+            val products = loadProducts()
+            updateViewModel(initViewModel, products)
 
-        initViewModel.apply {
-            _modelAppsFather.produitsMainDataBase.clear()
-            _modelAppsFather.produitsMainDataBase.addAll(products)
-            FirebaseDataLogger.logStateUpdate(products, "Database Updated")
-            this.loadingProgress = 1f
+            // Setup real-time sync after initial load
+            setupRealTimeSync(initViewModel)
+
+            initViewModel.loadingProgress = 1.0f
+            logInfo("Firebase data load completed successfully")
+
+        } catch (e: Exception) {
+            logError("Failed to load data from Firebase", e)
+            throw e
+        }
+    }
+
+    private suspend fun loadProducts(): List<ProduitModel> =
+        suspendCancellableCoroutine { continuation ->
+            _ModelAppsFather.produitsFireBaseRef
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        try {
+                            val products = parseSnapshot(snapshot)
+                            logInfo("Loaded ${products.size} products")
+                            continuation.resume(products)
+                        } catch (e: Exception) {
+                            logError("Failed to parse data", e)
+                            continuation.resumeWithException(e)
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        logError("Data load cancelled", error.toException())
+                        continuation.resumeWithException(error.toException())
+                    }
+                })
         }
 
-        val duration = System.currentTimeMillis() - System.currentTimeMillis()
-        FirebaseDataLogger.logLoadingComplete(products.size, duration)
-
-    } catch (e: Exception) {
-        FirebaseDataLogger.logDatabaseError(e, "LoadFromFirebase")
-        throw e
-    }
-
-    private suspend fun loadProducts() = suspendCancellableCoroutine { continuation ->
-        _ModelAppsFather.produitsFireBaseRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) = try {
-                FirebaseDataLogger.logSnapshotDetails(snapshot)
-
-                val products = snapshot.children.mapNotNull { childSnapshot ->
-                    val product = parseProduct(childSnapshot)
-                    FirebaseDataLogger.logProductParsing(childSnapshot, product)
-                    product
-                }.toMutableStateList()
-
-                continuation.resume(products)
+    private fun parseSnapshot(snapshot: DataSnapshot): List<ProduitModel> {
+        return snapshot.children.mapNotNull { childSnapshot ->
+            try {
+                parseProduct(childSnapshot)
             } catch (e: Exception) {
-                FirebaseDataLogger.logDatabaseError(e, "LoadProducts")
-                continuation.resumeWithException(e)
+                logError("Failed to parse product ${childSnapshot.key}", e)
+                null
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                FirebaseDataLogger.logDatabaseError(error.toException(), "Database Operation Cancelled")
-                continuation.resumeWithException(error.toException())
-            }
-        })
+        }.toMutableStateList()
     }
 
-    fun parseProduct(snapshot: DataSnapshot): ProduitModel? {
+    private fun parseProduct(snapshot: DataSnapshot): ProduitModel? {
         val productId = snapshot.key?.toLongOrNull() ?: return null
         val productMap = snapshot.value as? Map<*, *> ?: return null
 
@@ -70,25 +82,27 @@ object LoadFromFirebaseHandler {
                 id = productId,
                 itsTempProduit = (productMap["itsTempProduit"] as? Boolean) ?: false,
                 init_nom = (productMap["nom"] as? String) ?: "",
-                init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean)
-                    ?: false,
+                init_besoin_To_Be_Updated = (productMap["besoin_To_Be_Updated"] as? Boolean) ?: false,
                 initialNon_Trouve = (productMap["non_Trouve"] as? Boolean) ?: false,
                 init_visible = false,
             ).apply {
+                // Parse StatuesBase
                 snapshot.child("statuesBase").getValue(ProduitModel.StatuesBase::class.java)?.let {
                     statuesBase = it
                     statuesBase.imageGlidReloadTigger = 0
                 }
+
+                // Parse BonCommend
                 snapshot.child("bonCommendDeCetteCota").let { bonCommendSnapshot ->
                     if (bonCommendSnapshot.exists()) {
                         bonCommendDeCetteCota = bonCommendSnapshot.getValue(ProduitModel.GrossistBonCommandes::class.java)?.apply {
-                            grossistInformations = snapshot.child("bonCommendDeCetteCota/grossistInformations")
+                            grossistInformations = bonCommendSnapshot.child("grossistInformations")
                                 .getValue(ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
 
-                            // Parse mutableBasesStates
-                            bonCommendSnapshot.child("mutableBasesStates").getValue(ProduitModel.GrossistBonCommandes.MutableBasesStates::class.java)?.let {
-                                mutableBasesStates = it
-                            }
+                            bonCommendSnapshot.child("mutableBasesStates")
+                                .getValue(ProduitModel.GrossistBonCommandes.MutableBasesStates::class.java)?.let {
+                                    mutableBasesStates = it
+                                }
 
                             parseList<ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee>(
                                 "coloursEtGoutsCommendeeList",
@@ -98,6 +112,7 @@ object LoadFromFirebaseHandler {
                     }
                 }
 
+                // Parse Lists
                 parseList<ProduitModel.ColourEtGout_Model>("coloursEtGoutsList", snapshot) {
                     coloursEtGoutsList = it
                 }
@@ -115,7 +130,7 @@ object LoadFromFirebaseHandler {
                 }
             }
         } catch (e: Exception) {
-            FirebaseDataLogger.logDatabaseError(e, "Product Parse Error: ID $productId")
+            logError("Failed to parse product ID $productId", e)
             null
         }
     }
@@ -129,7 +144,47 @@ object LoadFromFirebaseHandler {
             val type = object : GenericTypeIndicator<List<T>>() {}
             snapshot.child(path).getValue(type)?.let(onSuccess)
         } catch (e: Exception) {
-            FirebaseDataLogger.logDatabaseError(e, "Parse List Error: $path")
+            logError("Failed to parse list: $path", e)
         }
+    }
+
+    private fun setupRealTimeSync(initViewModel: ViewModelInitApp) {
+        _ModelAppsFather.produitsFireBaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                try {
+                    val products = parseSnapshot(snapshot)
+                    updateViewModel(initViewModel, products)
+                } catch (e: Exception) {
+                    logError("Real-time sync failed", e)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                logError("Real-time sync cancelled", error.toException())
+            }
+        })
+    }
+
+    private fun updateViewModel(
+        initViewModel: ViewModelInitApp,
+        products: List<ProduitModel>
+    ) {
+        try {
+            initViewModel.apply {
+                _modelAppsFather.produitsMainDataBase.clear()
+                _modelAppsFather.produitsMainDataBase.addAll(products)
+            }
+            logInfo("Updated ViewModel with ${products.size} products")
+        } catch (e: Exception) {
+            logError("Failed to update ViewModel", e)
+        }
+    }
+
+    private fun logInfo(message: String) {
+        Log.i(TAG, message)
+    }
+
+    private fun logError(message: String, error: Throwable) {
+        Log.e(TAG, message, error)
     }
 }

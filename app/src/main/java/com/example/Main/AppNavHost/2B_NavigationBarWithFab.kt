@@ -27,7 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ContentAlpha
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.F1_0.Screen
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Screen
 import com.example.c_serveur.R
 
 @Composable

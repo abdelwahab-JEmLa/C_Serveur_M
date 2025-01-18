@@ -1,7 +1,8 @@
 package com.example.Packages.Z_F4._New
 
-import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
+import Z_MasterOfApps.Kotlin.Model.Extension.grossistsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -73,79 +74,92 @@ fun MainScreenFilterFAB_F4(
 
             AnimatedVisibility(visible = showButtons) {
                 Column(horizontalAlignment = Alignment.End) {
-                    viewModelInitApp._modelAppsFather.groupedProductsPatGrossist
-                        .forEachIndexed { index, (grossist, produits) ->
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                if (index > 0) {
-                                    FloatingActionButton(
-                                        onClick = {
-                                            viewModelInitApp.viewModelScope.launch {
-                                                val groupedProductsPatGrossist = viewModelInitApp
-                                                    ._modelAppsFather
-                                                    .groupedProductsPatGrossist
-
-                                                val nonDefini = groupedProductsPatGrossist
-                                                    .find { it.first.nom == "Non Defini"}
-
-                                                // Safely handle the nullable pair and its contents
-                                                nonDefini?.let { (_, products) ->
-                                                    if (products.isNotEmpty()) {
-                                                        val product = products.first()
-                                                        viewModelInitApp._modelAppsFather.produitsMainDataBase
-                                                            .find { it.id == product.id }?.let { foundProduct ->
-                                                                // Create updated product with new grossist information
-                                                                foundProduct.bonCommendDeCetteCota?.let { bonCommande ->
-                                                                    bonCommande.grossistInformations = grossist
-                                                                    // Update the product in the database
-                                                                    updateProduit(
-                                                                        product = foundProduct,
-                                                                        viewModelProduits = viewModelInitApp
-                                                                    )
-                                                                }
-                                                            }
-                                                    }
-                                                }
-                                            }
-                                        },
-                                        modifier = Modifier.size(36.dp)
-                                    ) {
-                                        Icon(Icons.Default.ExpandLess, null)
-                                    }
-                                }
-
-                                Text(
-                                    "${grossist.nom} (${produits.size})",
-                                    modifier = Modifier
-                                        .background(
-                                            if (viewModelInitApp._paramatersAppsViewModelModel
-                                                    .telephoneClientParamaters.selectedGrossistForServeur == grossist.id
-                                            ) Color(0xFF2196F3) else Color.Transparent
-                                        )
-                                        .padding(4.dp)
-                                )
-
+                    // Afficher tous les grossists disponibles
+                    viewModelInitApp._modelAppsFather.grossistsDisponible.forEachIndexed { index, grossist ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelInitApp._paramatersAppsViewModelModel
-                                            .telephoneClientParamaters.selectedGrossistForServeur = grossist.id
+                                        viewModelInitApp.viewModelScope.launch {
+                                            val previousGrossist = viewModelInitApp._modelAppsFather.grossistsDisponible[index - 1]
+                                            grossist.positionInGrossistsList--
+                                            previousGrossist.positionInGrossistsList++
+
+                                            update_AllProduits(
+                                                viewModelInitApp.produitsMainDataBase.map { product ->
+                                                    product.apply {
+                                                        bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
+                                                            when (currentGrossist.id) {
+                                                                grossist.id -> currentGrossist.positionInGrossistsList--
+                                                                previousGrossist.id -> currentGrossist.positionInGrossistsList++
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                viewModelInitApp
+                                            )
+                                        }
                                     },
-                                    modifier = Modifier.size(48.dp),
-                                    containerColor = try {
-                                        Color(android.graphics.Color.parseColor(
-                                            if (grossist.couleur.startsWith("#")) grossist.couleur
-                                            else "#${grossist.couleur}"
-                                        ))
-                                    } catch (e: Exception) {
-                                        Color(0xFFFF0000)
-                                    }
+                                    modifier = Modifier.size(36.dp)
                                 ) {
-                                    Text(produits.size.toString())
+                                    Icon(Icons.Default.ExpandLess, null)
                                 }
                             }
+
+                            // Afficher le nom du grossist
+                            Text(
+                                grossist.nom,
+                                modifier = Modifier
+                                    .background(
+                                        if (viewModelInitApp._paramatersAppsViewModelModel
+                                                .telephoneClientParamaters.selectedGrossistForServeur == grossist.id
+                                        ) Color(0xFF2196F3) else Color.Transparent
+                                    )
+                                    .padding(4.dp)
+                            )
+
+                            FloatingActionButton(
+                                onClick = {
+                                    viewModelInitApp.viewModelScope.launch {
+                                        // Trouver le premier produit "Non Defini"
+                                        val nonDefiniProduct = viewModelInitApp.produitsMainDataBase
+                                            .firstOrNull { product ->
+                                                product.bonCommendDeCetteCota?.grossistInformations?.nom == "Non Defini"
+                                            }
+
+                                        // Si un produit "Non Defini" est trouvé, le déplacer vers le grossist sélectionné
+                                        nonDefiniProduct?.let { product ->
+                                            product.bonCommendDeCetteCota?.let { bonCommande ->
+                                                bonCommande.grossistInformations = grossist
+                                                updateProduit(
+                                                    product = product,
+                                                    viewModelProduits = viewModelInitApp
+                                                )
+                                            }
+                                        }
+                                    }
+                                },
+                                modifier = Modifier.size(48.dp),
+                                containerColor = try {
+                                    Color(android.graphics.Color.parseColor(
+                                        if (grossist.couleur.startsWith("#")) grossist.couleur
+                                        else "#${grossist.couleur}"
+                                    ))
+                                } catch (e: Exception) {
+                                    Color(0xFFFF0000)
+                                }
+                            ) {
+                                // Compter les produits pour ce grossist
+                                val productCount = viewModelInitApp.produitsMainDataBase.count { product ->
+                                    product.bonCommendDeCetteCota?.grossistInformations?.id == grossist.id
+                                }
+                                Text(productCount.toString())
+                            }
                         }
+                    }
                 }
             }
         }

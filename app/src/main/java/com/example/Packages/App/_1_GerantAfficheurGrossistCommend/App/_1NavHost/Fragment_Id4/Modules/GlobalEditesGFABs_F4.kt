@@ -1,8 +1,10 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment.Modules
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import Z_MasterOfApps.Kotlin.ViewModel.Actions._2_C_Serveur.Package_1._ServeurGrossistCommendFragment
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import android.Manifest
@@ -12,19 +14,26 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,7 +41,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -43,11 +54,13 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.math.roundToInt
 
 @Composable
 fun GlobalEditesGFABs_F4(
     appsHeadModel: _ModelAppsFather,
     modifier: Modifier = Modifier,
+    viewModelInitApp: ViewModelInitApp,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -55,6 +68,10 @@ fun GlobalEditesGFABs_F4(
     var deviceMode by remember { mutableStateOf(ParamatersAppsModel.DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
+
+    // États pour le déplacement par glisser-déposer
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
 
     suspend fun handleImageCapture(uri: Uri) {
         try {
@@ -75,27 +92,24 @@ fun GlobalEditesGFABs_F4(
                     val imageBytes = inputStream.readBytes()
 
                     try {
-                        // Save to local storage
+                        // Sauvegarde en stockage local
                         withContext(Dispatchers.IO) {
                             FileOutputStream(localFile).use { output ->
                                 output.write(imageBytes)
                             }
                         }
 
-                        // Upload to Firebase Storage
+                        // Upload vers Firebase Storage
                         val uploadTask = imagesProduitsFireBaseStorageRef
                             .child(fileName)
                             .putBytes(imageBytes)
                             .await()
 
-                        // Verify upload was successful
                         if (uploadTask.metadata != null) {
                             uploadSuccess = true
                         }
 
-                        // Only update product status if both operations succeeded
                         if (uploadSuccess && localFile.exists() && localFile.length() > 0) {
-                            // Update product status
                             product.apply {
                                 statuesBase.apply {
                                     prePourCameraCapture = false
@@ -105,36 +119,34 @@ fun GlobalEditesGFABs_F4(
                                 besoinToBeUpdated = true
                             }
 
-                            // Update in Firebase Realtime Database
                             _ModelAppsFather.produitsFireBaseRef
                                 .child(product.id.toString())
                                 .setValue(product)
                                 .await()
 
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(context, "Image uploaded successfully", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, "Image téléchargée avec succès", Toast.LENGTH_SHORT).show()
                             }
                         } else {
-                            throw IOException("Upload verification failed")
+                            throw IOException("La vérification du téléchargement a échoué")
                         }
                     } catch (e: Exception) {
-                        // Clean up local file if upload failed
                         if (localFile.exists() && !uploadSuccess) {
                             localFile.delete()
                         }
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(context, "Failed to upload image: ${e.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Échec du téléchargement de l'image: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                         throw e
                     }
-                } ?: throw IllegalStateException("Could not open input stream for image URI")
+                } ?: throw IllegalStateException("Impossible d'ouvrir le flux d'entrée pour l'URI de l'image")
 
-            } ?: throw IllegalStateException("No pending product found")
+            } ?: throw IllegalStateException("Aucun produit en attente trouvé")
 
         } catch (e: Exception) {
-            Log.e("ImageUpload", "Failed to handle image capture", e)
+            Log.e("ImageUpload", "Échec du traitement de la capture d'image", e)
             withContext(Dispatchers.Main) {
-                Toast.makeText(context, "Error handling image: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Erreur lors du traitement de l'image: ${e.message}", Toast.LENGTH_LONG).show()
             }
         } finally {
             pendingProduct = null
@@ -154,7 +166,7 @@ fun GlobalEditesGFABs_F4(
         } else {
             scope.launch {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Failed to capture image", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Échec de la capture d'image", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -173,7 +185,7 @@ fun GlobalEditesGFABs_F4(
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         context,
-                        "Permissions required for camera operation",
+                        "Permissions requises pour l'utilisation de la caméra",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -192,7 +204,7 @@ fun GlobalEditesGFABs_F4(
                 tempFile
             ).also { tempImageUri = it }
         } catch (e: IOException) {
-            Log.e("ImageCapture", "Failed to create temp file", e)
+            Log.e("ImageCapture", "Échec de la création du fichier temporaire", e)
             null
         }
     }
@@ -224,54 +236,103 @@ fun GlobalEditesGFABs_F4(
     }
 
     Box(
-        modifier = modifier.padding(16.dp),
-        contentAlignment = Alignment.BottomEnd
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        if (showOptions) {
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            modifier = Modifier
+                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .pointerInput(Unit) {
+                    detectDragGestures { change, dragAmount ->
+                        change.consume()
+                        offsetX += dragAmount.x
+                        offsetY += dragAmount.y
+                    }
+                },
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // FAB Principal
+            FloatingActionButton(
+                onClick = { showOptions = !showOptions },
+                modifier = Modifier.size(48.dp),
+                containerColor = Color(0xFF3F51B5)
             ) {
-                // Camera FAB
-                FloatingActionButton(
-                    onClick = { checkAndRequestPermissions() },
-                    containerColor = Color(0xFF4CAF50)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.AddAPhoto,
-                        contentDescription = "Take Photo"
-                    )
-                }
+                Icon(
+                    imageVector = if (showOptions) Icons.Default.ExpandLess
+                    else Icons.Default.ExpandMore,
+                    contentDescription = if (showOptions) "Masquer les options" else "Afficher les options"
+                )
+            }
 
-                // Mode Toggle FAB
-                FloatingActionButton(
-                    onClick = {
-                        deviceMode = when (deviceMode) {
-                            DeviceMode.SERVER -> DeviceMode.DISPLAY
-                            DeviceMode.DISPLAY -> DeviceMode.SERVER
-                        }
-                    },
-                    containerColor = Color(0xFFFF5722)
+            // Menu d'options
+            AnimatedVisibility(visible = showOptions) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Upload,
-                        contentDescription = if (deviceMode == DeviceMode.SERVER)
-                            "Switch to Display Mode" else "Switch to Server Mode"
-                    )
+                    // FAB Suppression
+                    FloatingActionButton(
+                        onClick = {
+                            _ServeurGrossistCommendFragment(viewModelInitApp)
+                                .onClickOnGlobalFABsButton_1()
+                        },
+                        modifier = Modifier.size(48.dp),
+                        containerColor = Color(0xFF4CAF50)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Supprimer"
+                        )
+                    }
+
+                    // FAB Caméra
+                    FloatingActionButton(
+                        onClick = { checkAndRequestPermissions() },
+                        modifier = Modifier.size(48.dp),
+                        containerColor = Color(0xFF4CAF50)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AddAPhoto,
+                            contentDescription = "Prendre une photo"
+                        )
+                    }
+
+                    // FAB Édition de position
+                    FloatingActionButton(
+                        onClick = {
+                            viewModelInitApp
+                                ._paramatersAppsViewModelModel
+                                .visibilityClientEditePositionDialog = true
+                        },
+                        modifier = Modifier.size(48.dp),
+                        containerColor = Color(0xFFFF5722)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardDoubleArrowUp,
+                            contentDescription = "Éditer la position"
+                        )
+                    }
+
+                    // FAB Basculement de mode
+                    FloatingActionButton(
+                        onClick = {
+                            deviceMode = when (deviceMode) {
+                                DeviceMode.SERVER -> DeviceMode.DISPLAY
+                                DeviceMode.DISPLAY -> DeviceMode.SERVER
+                            }
+                        },
+                        modifier = Modifier.size(48.dp),
+                        containerColor = Color(0xFFFF5722)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Upload,
+                            contentDescription = if (deviceMode == DeviceMode.SERVER)
+                                "Passer en mode Affichage" else "Passer en mode Serveur"
+                        )
+                    }
                 }
             }
-        }
-
-        // Main FAB
-        FloatingActionButton(
-            onClick = { showOptions = !showOptions },
-            containerColor = Color(0xFF3F51B5)
-        ) {
-            Icon(
-                imageVector = if (showOptions) Icons.Default.ExpandLess
-                else Icons.Default.ExpandMore,
-                contentDescription = if (showOptions) "Hide Options" else "Show Options"
-            )
         }
     }
 }

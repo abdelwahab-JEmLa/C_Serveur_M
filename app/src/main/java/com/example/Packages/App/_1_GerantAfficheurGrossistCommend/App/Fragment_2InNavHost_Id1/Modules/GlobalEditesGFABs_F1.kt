@@ -5,6 +5,8 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFire
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
 import Z_MasterOfApps.Kotlin.ViewModel.Actions._2_C_Serveur.Package_1._ServeurGrossistCommendFragment
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
+import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -54,11 +56,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import kotlin.math.roundToInt
 
-enum class DeviceMode {
-    SERVER,
-    DISPLAY
-}
-
 @Composable
 fun GlobalEditesGFABs_F1(
     appsHeadModel: _ModelAppsFather,
@@ -68,7 +65,7 @@ fun GlobalEditesGFABs_F1(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showOptions by remember { mutableStateOf(false) }
-    var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
+    var deviceMode by remember { mutableStateOf(ParamatersAppsModel.DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
 

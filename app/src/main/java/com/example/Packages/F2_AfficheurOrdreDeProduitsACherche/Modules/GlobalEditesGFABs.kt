@@ -1,4 +1,4 @@
-package com.example.Packages.Z_F4.Modules
+package com.example.Packages.F2_AfficheurOrdreDeProduitsACherche.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
@@ -45,7 +45,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 @Composable
-fun GlobalEditesGFABs_F4(
+fun GlobalEditesGFABs_F2(
     appsHeadModel: _ModelAppsFather,
     modifier: Modifier = Modifier,
 ) {
@@ -247,7 +247,7 @@ fun GlobalEditesGFABs_F4(
                 FloatingActionButton(
                     onClick = {
                         deviceMode = when (deviceMode) {
-                            DeviceMode.SERVER -> DeviceMode.DISPLAY
+                            ParamatersAppsModel.DeviceMode.SERVER -> DeviceMode.DISPLAY
                             DeviceMode.DISPLAY -> DeviceMode.SERVER
                         }
                     },

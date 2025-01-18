@@ -1,4 +1,4 @@
-package com.example.Packages.Z_F4._DeplaceProduitsVerGrossist
+package com.example.Packages.F2_AfficheurOrdreDeProduitsACherche
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageById2
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MainItem_F4(
+fun MainItem_F2(
     mainItem: _ModelAppsFather.ProduitModel,  // Moved to be first optional parameter
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
@@ -32,7 +32,8 @@ fun MainItem_F4(
             .height(80.dp)
             .background(
                 color = if (position != null)
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)                      else
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                else
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )

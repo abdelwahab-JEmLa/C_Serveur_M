@@ -1,4 +1,4 @@
-package com.example.Packages.F1_ServeurGrossistCommendFragment
+package com.example.Packages.F1_GerantDefinirePosition
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Packages.F1_ServeurGrossistCommendFragment.Modules.SearchDialog_F1
+import com.example.Packages.F1_GerantDefinirePosition.Modules.SearchDialog_F1
 
 @Composable
 fun B_ListMainFragment(

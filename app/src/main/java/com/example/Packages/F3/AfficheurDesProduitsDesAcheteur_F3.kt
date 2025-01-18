@@ -1,4 +1,4 @@
-package com.example.Packages.Z_F4._DeplaceProduitsVerGrossist
+package com.example.Packages.F3
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
@@ -12,12 +12,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Z_F4.Modules.GlobalEditesGFABs_F4
+import com.example.Packages.F3.Modules.GlobalEditesGFABs_F3
 
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
-internal fun MainScreen_F4(
+fun AfficheurDesProduitsDesAcheteur_F3(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
@@ -47,15 +47,16 @@ internal fun MainScreen_F4(
 
     val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
         .filter { product ->
-            product.bonCommendDeCetteCota != null
+            product.bonsVentDeCetteCota.any { bonVent ->
+                bonVent.clientInformations?.id == viewModelInitApp._paramatersAppsViewModelModel.phoneClientSelectedAcheteur
+            }
         }
-
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             if (databaseSize > 0) {
-                MainList_F4(
+                MainList_F3(
                     visibleProducts = visibleProducts,
                     viewModelProduits = viewModelInitApp,
                     paddingValues = paddingValues
@@ -66,13 +67,13 @@ internal fun MainScreen_F4(
                 ._paramatersAppsViewModelModel
                 .fabsVisibility
         ) {
-            GlobalEditesGFABs_F4(
+            GlobalEditesGFABs_F3(
                 appsHeadModel = viewModelInitApp.modelAppsFather,
                 modifier = modifier,
             )
 
-            MainScreenFilterFAB_F4(
-                viewModelInitApp = viewModelInitApp,
+            MainScreenFilterFAB_F3(
+                viewModelProduits = viewModelInitApp,
             )
         }
     }

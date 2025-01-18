@@ -1,5 +1,5 @@
 // SearchDialog.kt
-package com.example.Packages.F2_PhoneClientGrossistCommend.Modules
+package com.example.Packages.F2_AfficheurOrdreDeProduitsACherche.Modules
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement

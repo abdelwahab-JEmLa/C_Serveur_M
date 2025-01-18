@@ -1,6 +1,6 @@
-package com.example.Packages.F1_ServeurGrossistCommendFragment
+package com.example.Packages.F3
 
-import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
@@ -19,10 +19,10 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,104 +37,122 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun MainScreenFilterFAB(
+fun MainScreenFilterFAB_F3(
     modifier: Modifier = Modifier,
     viewModelProduits: ViewModelInitApp,
 ) {
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
+    var offset by remember { mutableStateOf(IntOffset(0, 0)) }
     var showButtons by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
             modifier = Modifier
-                .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
+                .offset { offset }
                 .pointerInput(Unit) {
                     detectDragGestures { change, dragAmount ->
                         change.consume()
-                        offsetX += dragAmount.x
-
-                        offsetY += dragAmount.y
+                        offset = IntOffset(
+                            (offset.x + dragAmount.x).roundToInt(),
+                            (offset.y + dragAmount.y).roundToInt()
+                        )
                     }
                 },
             horizontalAlignment = Alignment.End
         ) {
+            // Toggle FAB
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(
                     imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = null
+                    contentDescription = if (showButtons) "Hide" else "Show"
                 )
             }
 
+            // Client list
             AnimatedVisibility(visible = showButtons) {
-                Column(horizontalAlignment = Alignment.End) {
-                    viewModelProduits._modelAppsFather.groupedProductsPatGrossist
-                        .forEachIndexed { index, (grossist, produits) ->
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    viewModelProduits._modelAppsFather.groupedProductsParClients
+                        .forEachIndexed { index, (client, products) ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.padding(vertical = 4.dp)
                             ) {
+                                // Up button for reordering
                                 if (index > 0) {
                                     FloatingActionButton(
                                         onClick = {
                                             viewModelProduits.viewModelScope.launch {
-                                                val previousGrossist = viewModelProduits._modelAppsFather.groupedProductsPatGrossist[index - 1].first
-                                                grossist.positionInGrossistsList--
-                                                previousGrossist.positionInGrossistsList++
-                                                update_AllProduits(
-                                                    viewModelProduits.produitsMainDataBase.map { product ->
+                                                val prevClient = viewModelProduits._modelAppsFather
+                                                    .groupedProductsParClients[index - 1].first
+
+                                                val updatedProducts = viewModelProduits._modelAppsFather
+                                                    .produitsMainDataBase.map { product ->
                                                         product.apply {
-                                                            bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                                when (currentGrossist.id) {
-                                                                    grossist.id -> currentGrossist.positionInGrossistsList--
-                                                                    previousGrossist.id -> currentGrossist.positionInGrossistsList++
+                                                            bonsVentDeCetteCota.forEach { bon ->
+                                                                bon.clientInformations?.let { info ->
+                                                                    if (info.id == client.id) {
+                                                                        val temp = info.positionDonClientsList
+                                                                        info.positionDonClientsList = prevClient.positionDonClientsList
+                                                                        prevClient.positionDonClientsList = temp
+                                                                    }
                                                                 }
                                                             }
                                                         }
-                                                    },
-                                                    viewModelProduits
-                                                )
+                                                    }
+                                                update_AllProduits(updatedProducts, viewModelProduits)
                                             }
                                         },
                                         modifier = Modifier.size(36.dp)
                                     ) {
-                                        Icon(Icons.Default.ExpandLess, null)
+                                        Icon(Icons.Default.ExpandLess, "Move up")
                                     }
                                 }
 
+                                // Client info
                                 Text(
-                                    "${grossist.nom} (${produits.size})",
+                                    "${client.nom} (${client.id})",
                                     modifier = Modifier
+                                        .weight(1f)
                                         .background(
                                             if (viewModelProduits._paramatersAppsViewModelModel
-                                                    .telephoneClientParamaters.selectedGrossistForServeur == grossist.id
-                                            ) Color(0xFF2196F3) else Color.Transparent
+                                                    .phoneClientSelectedAcheteur == client.id
+                                            ) MaterialTheme.colorScheme.primaryContainer
+                                            else Color.Transparent
                                         )
                                         .padding(4.dp)
                                 )
 
+                                // Selection FAB
+                                val color = try {
+                                    Color(android.graphics.Color.parseColor(
+                                        client.couleur?.let {
+                                            if (it.startsWith("#")) it else "#$it"
+                                        } ?: "#FF0000"
+                                    ))
+                                } catch (e: Exception) {
+                                    Color.Red
+                                }
+
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelProduits._paramatersAppsViewModelModel
-                                            .telephoneClientParamaters.selectedGrossistForServeur = grossist.id
+                                            .phoneClientSelectedAcheteur = client.id
                                     },
                                     modifier = Modifier.size(48.dp),
-                                    containerColor = try {
-                                        Color(android.graphics.Color.parseColor(
-                                            if (grossist.couleur.startsWith("#")) grossist.couleur
-                                            else "#${grossist.couleur}"
-                                        ))
-                                    } catch (e: Exception) {
-                                        Color(0xFFFF0000)
-                                    }
+                                    containerColor = color
                                 ) {
-                                    Text(produits.size.toString())
+                                    Text(
+                                        products.size.toString(),
+                                        color = if (color.red * 0.299 + color.green * 0.587 +
+                                            color.blue * 0.114 > 0.5f
+                                        ) Color.Black else Color.White
+                                    )
                                 }
                             }
                         }

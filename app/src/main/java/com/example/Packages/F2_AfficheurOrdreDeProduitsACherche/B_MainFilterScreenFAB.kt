@@ -1,4 +1,4 @@
-package com.example.Packages.F2_PhoneClientGrossistCommend
+package com.example.Packages.F2_AfficheurOrdreDeProduitsACherche
 
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits

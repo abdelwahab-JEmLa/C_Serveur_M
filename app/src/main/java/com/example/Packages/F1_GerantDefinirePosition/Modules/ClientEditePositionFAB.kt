@@ -1,4 +1,4 @@
-package com.example.Packages.F1_ServeurGrossistCommendFragment.Modules
+package com.example.Packages.F1_GerantDefinirePosition.Modules
 
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits

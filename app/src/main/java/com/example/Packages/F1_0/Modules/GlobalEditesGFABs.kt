@@ -1,4 +1,4 @@
-package com.example.Packages.F2_PhoneClientGrossistCommend.Modules
+package com.example.Packages.F1_0.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
@@ -45,7 +45,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 @Composable
-fun GlobalEditesGFABs_F2(
+fun GlobalEditesGFABs_F4(
     appsHeadModel: _ModelAppsFather,
     modifier: Modifier = Modifier,
 ) {
@@ -247,7 +247,7 @@ fun GlobalEditesGFABs_F2(
                 FloatingActionButton(
                     onClick = {
                         deviceMode = when (deviceMode) {
-                            ParamatersAppsModel.DeviceMode.SERVER -> DeviceMode.DISPLAY
+                            DeviceMode.SERVER -> DeviceMode.DISPLAY
                             DeviceMode.DISPLAY -> DeviceMode.SERVER
                         }
                     },

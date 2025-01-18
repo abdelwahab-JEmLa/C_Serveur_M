@@ -1,4 +1,4 @@
-package com.example.Packages.F2_PhoneClientGrossistCommend
+package com.example.Packages.F1_GerantDefinirePosition
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
@@ -12,12 +12,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.F2_PhoneClientGrossistCommend.Modules.GlobalEditesGFABs_F2
+import com.example.Packages.F1_GerantDefinirePosition.Modules.ClientEditePositionDialog
+import com.example.Packages.F1_GerantDefinirePosition.Modules.GlobalEditesGFABs
 
 private const val TAG = "A_ScreenMainFragment_1"
 
 @Composable
-internal fun MainScreen_F2(
+internal fun A_ScreenMainFragment_1(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
@@ -41,45 +42,45 @@ internal fun MainScreen_F2(
 
     val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 
-    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
-        .filter { product ->
-            product.bonCommendDeCetteCota.let {
-                it?.grossistInformations?.id ==
-                        viewModelInitApp
-                            ._paramatersAppsViewModelModel
-                            .telephoneClientParamaters
-                            .selectedGrossistForClientF2
-                        && it
-                            ?.mutableBasesStates
-                            ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0
-            }
-        }
+    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase.filter { product ->
+        product.bonCommendDeCetteCota
+            ?.grossistInformations?.id ==
+                viewModelInitApp
+                    ._paramatersAppsViewModelModel
+                    .telephoneClientParamaters
+                    .selectedGrossistForServeur
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             if (databaseSize > 0) {
-                MainList_F2(
+                B_ListMainFragment(
                     visibleProducts = visibleProducts,
                     viewModelProduits = viewModelInitApp,
                     paddingValues = paddingValues
                 )
             }
         }
+
         if (viewModelInitApp
                 ._paramatersAppsViewModelModel
                 .fabsVisibility
         ) {
-            GlobalEditesGFABs_F2(
+            GlobalEditesGFABs(
                 appsHeadModel = viewModelInitApp.modelAppsFather,
+                viewModelInitApp=viewModelInitApp,
                 modifier = modifier,
             )
 
-            MainScreenFilterFAB_F2(
+            MainScreenFilterFAB(
                 viewModelProduits = viewModelInitApp,
             )
         }
+        ClientEditePositionDialog(
+            viewModelProduits = viewModelInitApp,
+        )
     }
 }
 

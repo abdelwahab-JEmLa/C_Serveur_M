@@ -29,18 +29,33 @@ fun MainList_F3(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val groupedProducts = visibleProducts
+    // Split products into regular and carton products
+    val (regularProducts, cartonProducts) = visibleProducts
         .filter { product ->
             product.bonCommendDeCetteCota
                 ?.mutableBasesStates
                 ?.cPositionCheyCeGrossit == true
         }
+        .partition { !it.statuesBase.seTrouveAuDernieDuCamionCarCCarton }
+
+    // Group regular products by grossist
+    val groupedRegularProducts = regularProducts
         .groupBy { product ->
             product.bonCommendDeCetteCota
                 ?.grossistInformations
         }
         .filterKeys { it != null }
         .toSortedMap(compareBy { it?.positionInGrossistsList })
+
+    // Sort carton products by grossist position then product position
+    val sortedCartonProducts = cartonProducts
+        .sortedWith(
+            compareBy<_ModelAppsFather.ProduitModel> {
+                it.bonCommendDeCetteCota?.grossistInformations?.positionInGrossistsList
+            }.thenBy {
+                it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+            }
+        )
 
     LazyColumn(
         modifier = modifier
@@ -49,7 +64,8 @@ fun MainList_F3(
         contentPadding = paddingValues,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        groupedProducts.forEach { (grossist, products) ->
+        // Regular products sections
+        groupedRegularProducts.forEach { (grossist, products) ->
             stickyHeader {
                 val backgroundColor = Color(android.graphics.Color.parseColor(grossist?.couleur ?: "#FFFFFF"))
                 val textColor = if (grossist?.couleur?.equals("#FFFFFF", ignoreCase = true) == true) {
@@ -83,7 +99,7 @@ fun MainList_F3(
             ) { product ->
                 MainItem_F3(
                     mainItem = product,
-                    viewModelProduits=viewModelProduits,
+                    viewModelProduits = viewModelProduits,
                     onCLickOnMain = {
                         product.bonCommendDeCetteCota
                             ?.mutableBasesStates
@@ -93,7 +109,45 @@ fun MainList_F3(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
-                        .animateItem(fadeInSpec = null, fadeOutSpec = null) ,
+                        .animateItem(fadeInSpec = null, fadeOutSpec = null),
+                )
+            }
+        }
+
+        // Carton products section
+        if (sortedCartonProducts.isNotEmpty()) {
+            stickyHeader {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Gray)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Text(
+                        text = "Produits Type: Carton",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+
+            items(
+                items = sortedCartonProducts,
+            ) { product ->
+                MainItem_F3(
+                    mainItem = product,
+                    viewModelProduits = viewModelProduits,
+                    onCLickOnMain = {
+                        product.bonCommendDeCetteCota
+                            ?.mutableBasesStates
+                            ?.cPositionCheyCeGrossit = false
+                        updateProduit(product, viewModelProduits)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                        .animateItem(fadeInSpec = null, fadeOutSpec = null),
                 )
             }
         }

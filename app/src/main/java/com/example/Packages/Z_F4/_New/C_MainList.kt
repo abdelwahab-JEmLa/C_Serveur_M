@@ -45,12 +45,11 @@ fun MainList_F4(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         groupedProducts.forEach { (grossist, products) ->
-            // Add sticky header for each grossist
             stickyHeader {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(android.graphics.Color.parseColor(grossist?.couleur ?: "#FFFFFF")))
+                        .background(Color(0xFF2C2C2C))  // Dark background for header
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
                     Text(
@@ -62,7 +61,6 @@ fun MainList_F4(
                 }
             }
 
-            // Add items under each header
             items(
                 items = products.sortedBy { product ->
                     product.bonCommendDeCetteCota

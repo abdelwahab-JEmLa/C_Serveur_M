@@ -110,7 +110,7 @@ fun B_ListMainFragment(
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
-            }
+            }   //
 
             items(
                 items = unpositionedProducts.sortedWith(compareBy(

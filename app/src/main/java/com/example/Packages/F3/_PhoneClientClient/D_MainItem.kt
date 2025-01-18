@@ -139,7 +139,7 @@ fun MainItem_F3(
                                 Text(
                                     text = "$displayText>(${colorFlavor.quantity_Achete})",
                                     fontSize = 24.sp,
-                                    color = Color.White
+                                    color = Color.Black
                                 )
                             }
                         }

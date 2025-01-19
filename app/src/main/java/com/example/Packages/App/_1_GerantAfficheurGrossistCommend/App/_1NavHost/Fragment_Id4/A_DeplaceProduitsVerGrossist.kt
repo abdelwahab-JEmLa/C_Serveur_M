@@ -18,7 +18,7 @@ private const val TAG = "A_GerantDefinirePosition_F1"
 
 
 @Composable
-internal fun A_F4DeplaceProduitsVerGrossist(
+internal fun A_DeplaceProduitsVerGrossist(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {

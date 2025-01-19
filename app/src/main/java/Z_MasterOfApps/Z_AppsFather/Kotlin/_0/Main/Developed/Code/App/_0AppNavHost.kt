@@ -1,4 +1,4 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.App
+package Z_MasterOfApps.Z_AppsFather.Kotlin._0.Main.Developed.Code.App
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +22,7 @@ import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App._1NavHost.
 import com.example.c_serveur.AppViewModels
 
 @Composable
-fun AppNavHost(
+fun AppHostnameDeveloped(
     modifier: Modifier = Modifier,
     appViewModels: AppViewModels,
     navController: NavHostController,
@@ -30,24 +30,14 @@ fun AppNavHost(
     Box(modifier = modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = Screen.MainScreen_F4.route,
+            startDestination = Screen.MainScreen_F5.route,
             modifier = Modifier.fillMaxSize()
         ) {
-            composable(Screen.MainScreen_F4.route) {
+            composable(Screen.MainScreen_F5.route) {
                 A_DeplaceProduitsVerGrossist(viewModelInitApp = appViewModels.initViewModel)
             }
 
-            composable(Screen.MainScreen_F1.route) {
-                A_GerantDefinirePosition_F1(viewModelInitApp = appViewModels.initViewModel)
-            }
 
-            composable(Screen.MainScreen_F2.route) {
-                A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = appViewModels.initViewModel)
-            }
-
-            composable(Screen.MainScreen_F3.route) {
-                A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = appViewModels.initViewModel)
-            }
 
         }
     }
@@ -59,10 +49,10 @@ sealed class Screen(
     val title: String,
     val color: Color
 ) {
-    data object MainScreen_F4 : Screen(
-        route = "main_screen_f4",
+    data object MainScreen_F5 : Screen(
+        route = "main_screen_F5",
         icon = Icons.Default.Moving,
-        title = "main_screen_f4",
+        title = "main_screen_F5",
         color = Color(0xFF3F51B5)
     )
 
@@ -91,7 +81,7 @@ sealed class Screen(
 
 object NavigationItems {
     val items = listOf(
-        Screen.MainScreen_F4,
+        Screen.MainScreen_F5,
         Screen.MainScreen_F1,
         Screen.MainScreen_F2,
         Screen.MainScreen_F3,

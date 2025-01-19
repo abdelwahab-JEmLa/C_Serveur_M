@@ -1,4 +1,4 @@
-package com.example.Packages.App._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.Dialogs
+package com.example.Packages.App._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.Modules.Dialogs
 
 import Z_MasterOfApps.Kotlin.Model.Extension.grossistsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
@@ -19,8 +19,7 @@ import androidx.compose.ui.window.Dialog
 
 @Composable
 fun MoveProductsDialog(
-    selectedProducts: List<_ModelAppsFather.ProduitModel>,
-    currentGrossist: _ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations?,
+    selectedProducts: List<_ModelAppsFather.ProduitModel>,    currentGrossist: _ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations?,
     viewModelProduits: ViewModelInitApp,
     onDismiss: () -> Unit,
     onProductsMoved: () -> Unit

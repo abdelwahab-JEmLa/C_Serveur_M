@@ -1,4 +1,4 @@
-package com.example.clientjetpack.Modules
+package Z_MasterOfApps.Z_AppsFather.Kotlin._0.Main.Developed.Code
 
 import android.Manifest
 import android.app.AlertDialog
@@ -19,7 +19,6 @@ class PermissionHandler(private val activity: ComponentActivity) {
         private const val ANDROID_12 = Build.VERSION_CODES.S           // API 31
         private const val ANDROID_11 = Build.VERSION_CODES.R          // API 30
         private const val ANDROID_10 = Build.VERSION_CODES.Q          // API 29
-        private const val ANDROID_9 = Build.VERSION_CODES.P           // API 28
     }
 
     // Permissions de localisation requises pour toutes les versions
@@ -147,29 +146,6 @@ class PermissionHandler(private val activity: ComponentActivity) {
                 requestPermissionLauncher.launch(permissionsToRequest)
             }
         }
-    }
-
-    fun areLocationPermissionsGranted(): Boolean = locationPermissions.all {
-        isPermissionGranted(it)
-    }
-
-    fun areWifiPermissionsGranted(): Boolean = wifiPermissions.all {
-        isPermissionGranted(it)
-    }
-
-    fun areNearbyPermissionsGranted(): Boolean = nearbyPermissions.all {
-        isPermissionGranted(it)
-    }
-
-    fun areStoragePermissionsGranted(): Boolean = storagePermissions.all {
-        isPermissionGranted(it)
-    }
-
-    private fun isPermissionGranted(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(
-            activity,
-            permission
-        ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun handlePermissionDenial() {

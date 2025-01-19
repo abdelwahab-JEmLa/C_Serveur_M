@@ -21,10 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.Modules.Dialogs.MoveProductsDialog
+import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.Modules.Dialogs.MoveProductsDialog_F5
 
 @Composable
-fun MainList_F4(
+fun MainList_F5(
     visibleProducts: List<_ModelAppsFather.ProduitModel>,
     viewModelProduits: ViewModelInitApp,
     paddingValues: PaddingValues,
@@ -40,7 +40,7 @@ fun MainList_F4(
         .toSortedMap(compareBy { it?.positionInGrossistsList })
 
     if (showMoveDialog && currentGrossist != null) {
-        MoveProductsDialog(
+        MoveProductsDialog_F5(
             selectedProducts = selectedProducts,
             currentGrossist = currentGrossist,
             viewModelProduits = viewModelProduits,
@@ -61,7 +61,7 @@ fun MainList_F4(
     ) {
         groupedProducts.forEach { (grossist, products) ->
             item(span = { GridItemSpan(3) }) {
-                GrossistHeader(
+                GrossistHeader_F5(
                     grossist = grossist,
                     selectedProductsCount = selectedProducts.size,
                     onMoveClick = {
@@ -83,7 +83,7 @@ fun MainList_F4(
                         .animateItem()
                         .padding(4.dp)
                 ) {
-                    MainItem_F4(
+                    MainItem_F5(
                         mainItem = product,
                         onCLickOnMain = {
                             selectedProducts = if (selectedProducts.contains(product)) {

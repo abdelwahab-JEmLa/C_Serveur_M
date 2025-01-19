@@ -1,6 +1,7 @@
 package com.example.c_serveur
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import Z_MasterOfApps.Z_AppsFather.Kotlin._0.Main.Developed.Code.PermissionHandler
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.FirebaseOfflineHandler
 import android.app.Application
 import android.content.Context
@@ -19,7 +20,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.Main.AppNavHost.MainScreen
 import com.example.c_serveur.ui.theme.B_ServeurTheme
-import com.example.clientjetpack.Modules.PermissionHandler
 import com.google.firebase.FirebaseApp
 
 class MyApplication : Application() {

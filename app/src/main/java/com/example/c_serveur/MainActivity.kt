@@ -1,8 +1,6 @@
 package com.example.c_serveur
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import Z_MasterOfApps.Z_AppsFather.Kotlin._0.Main.ContimentDeveloping.Code.MainScreenDEV
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,24 +14,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.Main.AppNavHost.MainScreen
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 
 data class AppViewModels(
     val initViewModel: ViewModelInitApp,
 )
 
-class ViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+class ViewModelFactory() : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ViewModelInitApp::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ViewModelInitApp(context) as T
+            return ViewModelInitApp() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
 
 class MainActivity : ComponentActivity() {
-    private val viewModelFactory by lazy { ViewModelFactory(applicationContext) }
+    private val viewModelFactory by lazy { ViewModelFactory() }
     private val app_Initialize_ViewModel: ViewModelInitApp by viewModels { viewModelFactory }
 
 
@@ -51,7 +50,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             B_ServeurTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainScreenDEV(
+                    MainScreen(
                         modifier = Modifier.padding(innerPadding),
                         appViewModels
                     )

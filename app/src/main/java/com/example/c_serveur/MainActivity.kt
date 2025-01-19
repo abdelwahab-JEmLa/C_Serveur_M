@@ -26,7 +26,6 @@ class MyApplication : Application() {
         }
     }
 }
-
 class MainActivity : ComponentActivity() {
     // Create PermissionHandler at the activity level
     private lateinit var permissionHandler: PermissionHandler

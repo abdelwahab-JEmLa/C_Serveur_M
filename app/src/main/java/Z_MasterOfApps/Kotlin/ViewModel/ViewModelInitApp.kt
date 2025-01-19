@@ -15,7 +15,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 @SuppressLint("SuspiciousIndentation")
-class ViewModelInitApp() : ViewModel() {
+class ViewModelInitApp : ViewModel() {
     var _paramatersAppsViewModelModel by mutableStateOf(ParamatersAppsModel())
     var _modelAppsFather by mutableStateOf(_ModelAppsFather())
 
@@ -30,7 +30,7 @@ class ViewModelInitApp() : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val nombre = 1000
+                val nombre = 0
                 if (nombre == 0) {
                     LoadFromFirebaseProduits.loadFromFirebase(this@ViewModelInitApp)
                 } else {

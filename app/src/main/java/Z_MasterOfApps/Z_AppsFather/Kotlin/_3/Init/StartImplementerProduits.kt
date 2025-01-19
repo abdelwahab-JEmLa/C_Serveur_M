@@ -11,9 +11,10 @@ suspend fun CreeNewStart(
     try {
         val ancienData = GetAncienDataBasesMain()
 
-        // Process products
-        ancienData.produitsDatabase.forEachIndexed { index, ancien ->
-
+        // Process products and filter out IDs above 2000
+        ancienData.produitsDatabase.forEach { ancien ->
+            // Skip products with ID > 2000
+            if (ancien.idArticle <= 2000) {
                 val depuitAncienDataBase = _ModelAppsFather.ProduitModel(
                     id = ancien.idArticle,
                     init_nom = ancien.nomArticleFinale,
@@ -43,8 +44,8 @@ suspend fun CreeNewStart(
 
                 // Add product to main database
                 _appsHeadModel.produitsMainDataBase.add(depuitAncienDataBase)
+            }
         }
-
 
         _ModelAppsFather.produitsFireBaseRef.removeValue().addOnCompleteListener { task ->
             if (task.isSuccessful) {

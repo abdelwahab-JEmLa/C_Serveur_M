@@ -30,7 +30,7 @@ class ViewModelInitApp() : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                val nombre = 0
+                val nombre = 1000
                 if (nombre == 0) {
                     LoadFromFirebaseProduits.loadFromFirebase(this@ViewModelInitApp)
                 } else {

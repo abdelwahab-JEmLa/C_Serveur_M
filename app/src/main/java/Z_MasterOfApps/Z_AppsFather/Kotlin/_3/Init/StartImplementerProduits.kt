@@ -2,12 +2,18 @@ package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.UpdateFireBase
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.Z.Parent.GetAncienDataBasesMain
 import android.util.Log
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
-suspend fun CreeNewStart(
+ fun CreeDepuitAncienDataBases(
     _appsHeadModel: _ModelAppsFather,
-) {
+    viewModelInitApp: ViewModelInitApp,
+
+    ) {
+    viewModelInitApp.viewModelScope.launch {
     try {
         val ancienData = GetAncienDataBasesMain()
 
@@ -49,16 +55,17 @@ suspend fun CreeNewStart(
 
         _ModelAppsFather.produitsFireBaseRef.removeValue().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Log.d("CreeNewStart", "Successfully cleared Firebase database")
+                Log.d("CreeDepuitAncienDataBases", "Successfully cleared Firebase database")
             } else {
-                Log.e("CreeNewStart", "Failed to clear Firebase database", task.exception)
+                Log.e("CreeDepuitAncienDataBases", "Failed to clear Firebase database", task.exception)
             }
         }
 
         UpdateFireBase(_appsHeadModel.produitsMainDataBase)
 
     } catch (e: Exception) {
-        Log.e("CreeNewStart", "Error in CreeNewStart", e)
+        Log.e("CreeDepuitAncienDataBases", "Error in CreeDepuitAncienDataBases", e)
         throw e
+    }
     }
 }

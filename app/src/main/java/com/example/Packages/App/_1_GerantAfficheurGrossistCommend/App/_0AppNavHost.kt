@@ -1,5 +1,6 @@
 package com.example.Packages.App._1_GerantAfficheurGrossistCommend.App
 
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -19,13 +20,12 @@ import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Fragment_2
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Fragment_4InNavHost_Id3.A_AfficheurDesProduitsPourLeColecteur_F3
 import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.A_DeplaceProduitsVerGrossist
-import com.example.c_serveur.AppViewModels
 
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
-    appViewModels: AppViewModels,
     navController: NavHostController,
+    viewModelInitApp: ViewModelInitApp,
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         NavHost(
@@ -34,19 +34,19 @@ fun AppNavHost(
             modifier = Modifier.fillMaxSize()
         ) {
             composable(Screen.MainScreen_F4.route) {
-                A_DeplaceProduitsVerGrossist(viewModelInitApp = appViewModels.initViewModel)
+                A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
             }
 
             composable(Screen.MainScreen_F1.route) {
-                A_GerantDefinirePosition_F1(viewModelInitApp = appViewModels.initViewModel)
+                A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp)
             }
 
             composable(Screen.MainScreen_F2.route) {
-                A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = appViewModels.initViewModel)
+                A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp)
             }
 
             composable(Screen.MainScreen_F3.route) {
-                A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = appViewModels.initViewModel)
+                A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp)
             }
 
         }

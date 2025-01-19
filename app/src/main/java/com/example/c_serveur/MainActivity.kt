@@ -1,6 +1,8 @@
 package com.example.c_serveur
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.FirebaseOfflineHandler
+import android.app.Application
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,9 +16,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.Main.AppNavHost.MainScreen
+import com.example.Main.MainScreen
 import com.example.c_serveur.ui.theme.B_ServeurTheme
+import com.google.firebase.FirebaseApp
 
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        FirebaseApp.initializeApp(this)?.let { app ->
+            FirebaseOfflineHandler.initializeFirebase(app)
+        }
+    }
+}
 data class AppViewModels(
     val initViewModel: ViewModelInitApp,
 )

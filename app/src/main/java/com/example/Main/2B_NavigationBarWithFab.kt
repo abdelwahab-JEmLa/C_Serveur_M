@@ -1,4 +1,4 @@
-package com.example.Main.AppNavHost
+package com.example.Main
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.Image

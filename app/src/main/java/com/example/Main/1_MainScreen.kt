@@ -1,4 +1,4 @@
-package com.example.Main.AppNavHost
+package com.example.Main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box

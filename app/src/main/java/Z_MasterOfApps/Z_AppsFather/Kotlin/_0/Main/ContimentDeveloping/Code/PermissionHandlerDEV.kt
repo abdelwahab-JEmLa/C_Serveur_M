@@ -1,4 +1,4 @@
-package Z_MasterOfApps.Z_AppsFather.Kotlin._0.Main.Developed.Code
+package Z_MasterOfApps.Z_AppsFather.Kotlin._0.Main.ContimentDeveloping.Code
 
 import android.Manifest
 import android.app.AlertDialog
@@ -12,10 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class PermissionHandler(private val activity: ComponentActivity) {
+class PermissionHandlerDEV(private val activity: ComponentActivity) {
     // Constantes pour les versions d'API
     companion object {
-        private const val TAG = "PermissionHandler"
+        private const val TAG = "PermissionHandlerDEV"
         private const val ANDROID_12 = Build.VERSION_CODES.S           // API 31
         private const val ANDROID_11 = Build.VERSION_CODES.R          // API 30
         private const val ANDROID_10 = Build.VERSION_CODES.Q          // API 29

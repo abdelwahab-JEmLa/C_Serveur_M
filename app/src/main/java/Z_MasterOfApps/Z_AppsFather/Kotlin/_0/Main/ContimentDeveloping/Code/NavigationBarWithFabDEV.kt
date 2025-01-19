@@ -1,4 +1,4 @@
-package Z_MasterOfApps.Z_AppsFather.Kotlin._0.Main.Developed.Code
+package Z_MasterOfApps.Z_AppsFather.Kotlin._0.Main.ContimentDeveloping.Code
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.Image
@@ -31,7 +31,7 @@ import com.example.Packages.App._1_GerantAfficheurGrossistCommend.App.Screen
 import com.example.c_serveur.R
 
 @Composable
-fun NavigationBarWithFab(
+fun NavigationBarWithFabDEV(
     items: List<Screen>,
     initViewModel: ViewModelInitApp,
     currentRoute: String?,

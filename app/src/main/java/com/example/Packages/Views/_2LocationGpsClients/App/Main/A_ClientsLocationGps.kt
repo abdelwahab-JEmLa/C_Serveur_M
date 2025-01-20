@@ -8,6 +8,7 @@ import android.content.Intent
 import android.location.LocationManager
 import android.net.Uri
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -53,35 +54,32 @@ class CustomMarkerInfoWindow(
 
     override fun onOpen(item: Any?) {
         try {
+            // Fermer toutes les autres fenêtres d'info
             closeAllInfoWindowsOn(mMapView)
 
-            if (item !is Marker) {
-                Log.e("InfoWindow", "Invalid item type for InfoWindow")
-                return
-            }
+            // Vérifier que c'est bien un marker
+            if (item !is Marker) return
 
-            mView.findViewById<TextView>(com.example.c_serveur.R.id.bubble_title)?.apply {
-                text = item.title ?: ""
-            }
+            // Créer une nouvelle vue pour l'info window
+            val inflater = mMapView.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            mView = inflater.inflate(com.example.c_serveur.R.layout.marker_info_window, null)
 
-            mView.findViewById<TextView>(com.example.c_serveur.R.id.bubble_subdescription)?.apply {
-                text = item.snippet ?: ""
-            }
+            // Mettre à jour le contenu
+            val titleView = mView.findViewById<TextView>(com.example.c_serveur.R.id.bubble_title)
+            val descView = mView.findViewById<TextView>(com.example.c_serveur.R.id.bubble_subdescription)
+            val imageView = mView.findViewById<ImageView>(com.example.c_serveur.R.id.bubble_image)
 
-            mView.findViewById<ImageView>(com.example.c_serveur.R.id.bubble_image)?.apply {
-                visibility = View.GONE
-            }
+            titleView?.text = item.title ?: ""
+            descView?.text = item.snippet ?: ""
+            imageView?.visibility = View.GONE
+
         } catch (e: Exception) {
             Log.e("InfoWindow", "Error opening InfoWindow", e)
         }
     }
 
     override fun onClose() {
-        try {
-            // Clean up resources if needed
-        } catch (e: Exception) {
-            Log.e("InfoWindow", "Error closing InfoWindow", e)
-        }
+        // Nettoyer les ressources si nécessaire
     }
 }
 
@@ -90,6 +88,7 @@ fun A_ClientsLocationGps(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel()
 ) {
+
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 

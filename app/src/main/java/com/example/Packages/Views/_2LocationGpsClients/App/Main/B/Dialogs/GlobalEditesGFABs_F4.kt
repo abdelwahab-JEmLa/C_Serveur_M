@@ -6,6 +6,7 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
 import android.location.LocationManager
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -35,17 +36,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.example.c_serveur.R
+import androidx.core.graphics.drawable.DrawableCompat
+import com.example.Packages.Views._2LocationGpsClients.App.Main.CustomMarkerInfoWindow
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
+import org.osmdroid.views.overlay.infowindow.InfoWindow
 import kotlin.math.roundToInt
 
 @Composable
@@ -114,11 +117,41 @@ fun MapControls(
                                             this.title = title
                                             this.snippet = snippet
                                             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                                            infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
+
+                                            // Utiliser CustomMarkerInfoWindow au lieu de MarkerInfoWindow
+                                            infoWindow = CustomMarkerInfoWindow(mapView)
+
+                                            // Configurer l'icône du marker avec la couleur
+                                            try {
+                                                ContextCompat.getDrawable(
+                                                    mapView.context,
+                                                    com.example.c_serveur.R.drawable.ic_location_on
+                                                )?.let { drawable ->
+                                                    val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
+                                                    DrawableCompat.setTint(
+                                                        wrappedDrawable,
+                                                        Color(android.graphics.Color.parseColor(couleur)).toArgb()
+                                                    )
+                                                    icon = wrappedDrawable
+                                                }
+                                            } catch (e: Exception) {
+                                                Log.e("Marker", "Error setting marker icon", e)
+                                            }
+
                                             setOnMarkerClickListener { marker, _ ->
+                                                InfoWindow.closeAllInfoWindowsOn(mapView)
                                                 onMarkerSelected(marker)
-                                                if (showMarkerDetails) marker.showInfoWindow()
+                                                if (showMarkerDetails) {
+                                                    marker.showInfoWindow()
+                                                }
                                                 true
+                                            }
+                                        }
+
+                                        // Ajouter le marker à la carte immédiatement
+                                        locationGpsMark?.let { marker ->
+                                            if (!mapView.overlays.contains(marker)) {
+                                                mapView.overlays.add(marker)
                                             }
                                         }
                                     }
@@ -136,9 +169,12 @@ fun MapControls(
 
                                 product.bonsVentDeCetteCota.add(newBonVent)
 
-                                // Suppression de l'ajout direct du marker car il sera géré par A_ClientsLocationGps
+                                // Afficher l'InfoWindow si nécessaire
                                 if (showMarkerDetails) {
-                                    newClient.gpsLocation.locationGpsMark?.showInfoWindow()
+                                    newClient.gpsLocation.locationGpsMark?.let { marker ->
+                                        InfoWindow.closeAllInfoWindowsOn(mapView)
+                                        marker.showInfoWindow()
+                                    }
                                 }
 
                                 mapView.invalidate()

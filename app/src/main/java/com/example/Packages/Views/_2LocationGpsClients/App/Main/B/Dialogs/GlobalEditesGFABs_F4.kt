@@ -71,8 +71,11 @@ fun OptionesControleBoutons_F1(
     val scope = rememberCoroutineScope()
     val locationHandler = remember { LocationHandler(context) }
 
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-        Column(
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
             modifier = Modifier
                 .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
                 .pointerInput(Unit) {
@@ -82,19 +85,19 @@ fun OptionesControleBoutons_F1(
                         offsetY += dragAmount.y
                     }
                 }
-                .padding(16.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Bottom
+                .padding(16.dp)
         ) {
-            // Les options animées qui apparaissent vers le haut
+            // Les boutons animés
             AnimatedVisibility(
                 visible = showOptions,
-                enter = slideInVertically(initialOffsetY = { 40 }) + expandVertically(expandFrom = Alignment.Bottom),
-                exit = slideOutVertically(targetOffsetY = { 40 }) + shrinkVertically(shrinkTowards = Alignment.Bottom)
+                enter = slideInVertically(initialOffsetY = { 0 }) + expandVertically(expandFrom = Alignment.Bottom),
+                exit = slideOutVertically(targetOffsetY = { 0 }) + shrinkVertically(shrinkTowards = Alignment.Bottom),
+                modifier = Modifier.align(Alignment.BottomStart)
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    horizontalAlignment = Alignment.Start
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalAlignment = Alignment.Start,
+                    modifier = Modifier.padding(bottom = 48.dp) // Espace pour le bouton fixe
                 ) {
                     // Add Marker FAB
                     Row(
@@ -191,6 +194,32 @@ fun OptionesControleBoutons_F1(
                         }
                     }
 
+                    // Labels toggle button
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = { showLabels = !showLabels },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFF3F51B5)
+                        ) {
+                            Icon(
+                                if (showLabels) Icons.Default.Info else Icons.Default.Info,
+                                contentDescription = if (showLabels) "Hide labels" else "Show labels"
+                            )
+                        }
+                        if (showLabels) {
+                            Text(
+                                if (showLabels) "Masquer labels" else "Afficher labels",
+                                modifier = Modifier
+                                    .background(Color(0xFF3F51B5))
+                                    .padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+
                     // Clear Data FAB
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -218,39 +247,14 @@ fun OptionesControleBoutons_F1(
                             )
                         }
                     }
-
-                    // Labels toggle button (moved into animated section)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = { showLabels = !showLabels },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF3F51B5)
-                        ) {
-                            Icon(
-                                if (showLabels) Icons.Default.Info else Icons.Default.Info,
-                                contentDescription = if (showLabels) "Hide labels" else "Show labels"
-                            )
-                        }
-                        if (showLabels) {
-                            Text(
-                                if (showLabels) "Masquer labels" else "Afficher labels",
-                                modifier = Modifier
-                                    .background(Color(0xFF3F51B5))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
                 }
             }
 
-            // Seul le bouton d'options reste fixe en bas
+            // Bouton d'options fixe
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.align(Alignment.BottomStart)
             ) {
                 FloatingActionButton(
                     onClick = { showOptions = !showOptions },

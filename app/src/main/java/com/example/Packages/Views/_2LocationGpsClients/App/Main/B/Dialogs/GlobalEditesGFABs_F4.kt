@@ -180,52 +180,56 @@ fun MapControls(
                             )
                         }
                     }
-
-                    // Bouton Labels
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = { showLabels = !showLabels },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF3F51B5)
-                        ) {
-                            Icon(Icons.Default.Info, if (showLabels) "Masquer labels" else "Afficher labels")
-                        }
-                        if (showLabels) {
-                            Text(
-                                if (showLabels) "Masquer labels" else "Afficher labels",
-                                modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
                 }
             }
 
-            // Bouton Menu Principal (toujours visible)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.align(Alignment.BottomStart)
+            Column(
+                modifier = Modifier.align(Alignment.BottomStart),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FloatingActionButton(
-                    onClick = { showMenu = !showMenu },
-                    modifier = Modifier.size(40.dp),
-                    containerColor = Color(0xFF3F51B5)
+                // Bouton Labels (maintenant séparé et toujours visible)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Icon(
-                        if (showMenu) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        if (showMenu) "Masquer menu" else "Afficher menu"
-                    )
+                    FloatingActionButton(
+                        onClick = { showLabels = !showLabels },
+                        modifier = Modifier.size(40.dp),
+                        containerColor = Color(0xFF3F51B5)
+                    ) {
+                        Icon(Icons.Default.Info, if (showLabels) "Masquer labels" else "Afficher labels")
+                    }
+                    if (showLabels) {
+                        Text(
+                            if (showLabels) "Masquer labels" else "Afficher labels",
+                            modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
+                            color = Color.White
+                        )
+                    }
                 }
-                if (showLabels) {
-                    Text(
-                        if (showMenu) "Masquer" else "Options",
-                        modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
-                        color = Color.White
-                    )
+
+                // Bouton Menu Principal
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    FloatingActionButton(
+                        onClick = { showMenu = !showMenu },
+                        modifier = Modifier.size(40.dp),
+                        containerColor = Color(0xFF3F51B5)
+                    ) {
+                        Icon(
+                            if (showMenu) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                            if (showMenu) "Masquer menu" else "Afficher menu"
+                        )
+                    }
+                    if (showLabels) {
+                        Text(
+                            if (showMenu) "Masquer" else "Options",
+                            modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
+                            color = Color.White
+                        )
+                    }
                 }
             }
         }

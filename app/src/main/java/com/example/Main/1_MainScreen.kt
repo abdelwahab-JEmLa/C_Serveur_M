@@ -1,8 +1,6 @@
 package com.example.Main
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import Z_MasterOfApps.Z.Android.Base.NavigationBarWithFabDEV
-import Z_MasterOfApps.Z.Android.Base.NavigationItems
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -21,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.AppNavHost
+import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NavigationItems
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
@@ -55,7 +54,7 @@ fun MainScreen(
                     visible = true,
                     modifier = Modifier.align(Alignment.BottomCenter)
                 ) {
-                    NavigationBarWithFabDEV(
+                    NavigationBarWithFab(
                         items = items,
                         viewModelInitApp = viewModelInitApp,
                         currentRoute = currentRoute,

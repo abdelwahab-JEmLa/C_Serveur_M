@@ -43,8 +43,8 @@ fun MainItem_F5(
     ) {
 
         GlideDisplayImageBykeyId(
-            "${mainItem.id}_1",
             imageGlidReloadTigger = 0,
+            mainItem = mainItem,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),

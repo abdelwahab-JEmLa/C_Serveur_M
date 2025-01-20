@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.layout.Box
@@ -37,67 +38,67 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 
-private const val MIN_RELOAD_INTERVAL = 500L
-private const val IMAGE_QUALITY = 3
-private const val DEFAULT_IMAGE = "logo.webp"
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun GlideDisplayImageBykeyId(
-    keyImageId: String = "null",
-    imageGlidReloadTigger: Int =0,
-    naPasDimage: Boolean = false,
+    imageGlidReloadTigger: Int = 0,
+    mainItem: _ModelAppsFather.ProduitModel? = null,
     modifier: Modifier = Modifier,
     size: Dp? = null,
     onLoadComplete: () -> Unit = {}
 ) {
     var imageFile by remember { mutableStateOf<File?>(null) }
     var forceReload by remember { mutableIntStateOf(0) }
-    var reloadSuccess by remember { mutableStateOf(false) }
-    var previousTrigger by remember { mutableIntStateOf(0) }
-    var lastReloadTimestamp by remember { mutableLongStateOf(0L) }
     var isLoading by remember { mutableStateOf(true) }
     var loadProgress by remember { mutableFloatStateOf(0f) }
-    var shouldUseDefaultImage by remember { mutableStateOf(keyImageId == "null" || naPasDimage) }
+    var lastReloadTime by remember { mutableLongStateOf(0L) }
+    var prevTrigger by remember { mutableIntStateOf(0) }
+    var reloadSuccess by remember { mutableStateOf(false) }
 
-    // Handle changes in naPasDimage
-    LaunchedEffect(naPasDimage) {
-        if (naPasDimage != shouldUseDefaultImage) {
-            shouldUseDefaultImage = naPasDimage
+    val keyImageId = if (mainItem == null) "null" else "${mainItem.id}_1"
+    var shouldUseDefaultImage by remember {
+        mutableStateOf(keyImageId == "null" || mainItem?.coloursEtGouts?.any { it.sonImageNeExistPas } == true)
+    }
+
+    // Check for image existence changes
+    LaunchedEffect(mainItem?.coloursEtGouts) {
+        val hasNoImage = mainItem?.coloursEtGouts?.any { it.sonImageNeExistPas } == true
+        if (hasNoImage != shouldUseDefaultImage) {
+            shouldUseDefaultImage = hasNoImage
             forceReload++
             isLoading = true
             reloadSuccess = true
         }
     }
 
+    // Handle reload trigger
     LaunchedEffect(keyImageId) {
         while (true) {
-            val currentTime = System.currentTimeMillis()
-            val currentTrigger = imageGlidReloadTigger
-
-            if (currentTime - lastReloadTimestamp > MIN_RELOAD_INTERVAL &&
-                currentTrigger != previousTrigger
-            ) {
-                lastReloadTimestamp = currentTime
-                previousTrigger = currentTrigger
+            val now = System.currentTimeMillis()
+            if (now - lastReloadTime > 500L && imageGlidReloadTigger != prevTrigger) {
+                lastReloadTime = now
+                prevTrigger = imageGlidReloadTigger
                 forceReload++
                 isLoading = true
                 reloadSuccess = true
             }
-            delay(MIN_RELOAD_INTERVAL)
+            delay(500L)
         }
     }
 
+    // Load image file
     LaunchedEffect(keyImageId, forceReload, shouldUseDefaultImage) {
         withContext(Dispatchers.IO) {
+            val defaultPath = "$imagesProduitsLocalExternalStorageBasePath/logo.webp"
             imageFile = when {
-                shouldUseDefaultImage -> File("$imagesProduitsLocalExternalStorageBasePath/$DEFAULT_IMAGE")
-                keyImageId == "null" -> File("$imagesProduitsLocalExternalStorageBasePath/$DEFAULT_IMAGE")
+                shouldUseDefaultImage -> File(defaultPath)
+                keyImageId == "null" -> File(defaultPath)
                 else -> {
-                    val imagePath = "$imagesProduitsLocalExternalStorageBasePath/${keyImageId}"
+                    val basePath = "$imagesProduitsLocalExternalStorageBasePath/$keyImageId"
                     listOf("jpg", "jpeg", "png", "webp")
-                        .map { File("$imagePath.$it") }
+                        .map { File("$basePath.$it") }
                         .firstOrNull { it.exists() && it.length() > 0 }
+                        ?: File(defaultPath)
                 }
             }
         }
@@ -108,7 +109,7 @@ fun GlideDisplayImageBykeyId(
         contentAlignment = Alignment.Center
     ) {
         GlideImage(
-            model = imageFile ?: File("$imagesProduitsLocalExternalStorageBasePath/$DEFAULT_IMAGE"),
+            model = imageFile ?: File("$imagesProduitsLocalExternalStorageBasePath/logo.webp"),
             contentDescription = "Product $keyImageId",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -117,7 +118,7 @@ fun GlideDisplayImageBykeyId(
         ) { builder ->
             builder
                 .downsample(com.bumptech.glide.load.resource.bitmap.DownsampleStrategy.AT_MOST)
-                .encodeQuality(IMAGE_QUALITY)
+                .encodeQuality(3)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .signature(ObjectKey("${keyImageId}_${forceReload}_${if(shouldUseDefaultImage) "default" else "custom"}"))
                 .listener(object : RequestListener<Drawable> {

@@ -47,8 +47,8 @@ fun ExpandedMainItem_F2(
             verticalAlignment = Alignment.CenterVertically
         ) {
             GlideDisplayImageBykeyId(
-                "${mainItem.id}_1",
                 imageGlidReloadTigger = 0,
+                mainItem = mainItem,
                 modifier = Modifier
                     .width(350.dp)
                     .height(350.dp),

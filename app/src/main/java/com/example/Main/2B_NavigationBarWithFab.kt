@@ -1,10 +1,9 @@
 package com.example.Main
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import androidx.compose.foundation.Image
+import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageBykeyId
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -23,17 +22,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.ContentAlpha
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Screen
-import com.example.c_serveur.R
 
 @Composable
 fun NavigationBarWithFab(
     items: List<Screen>,
-    initViewModel: ViewModelInitApp,
+    viewModelInitApp: ViewModelInitApp,
     currentRoute: String?,
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -84,20 +80,20 @@ fun NavigationBarWithFab(
             shape = CircleShape,
         ) {
             Box {
-                val fabsVisibility = initViewModel
+                val fabsVisibility = viewModelInitApp
                     ._paramatersAppsViewModelModel
                     .fabsVisibility
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                    contentDescription = null,
+                GlideDisplayImageBykeyId(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .height(60.dp)
                         .clickable(onClick = {
-                            initViewModel._paramatersAppsViewModelModel.fabsVisibility =
-                                !initViewModel._paramatersAppsViewModelModel.fabsVisibility
+                            viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility =
+                                !viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility
                         }),
-                    contentScale = ContentScale.Crop
+                    size = 100.dp
                 )
+
                 Icon(
                     imageVector = if (fabsVisibility
                     ) Icons.Default.Visibility else Icons.Default.VisibilityOff,

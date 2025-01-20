@@ -32,8 +32,10 @@ import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -244,7 +246,13 @@ fun GlobalEditesGFABs_F4(
             }
         }
     }
+    var clearDataClickCount by remember { mutableIntStateOf(0) }
 
+    LaunchedEffect(showOptions) {
+        if (!showOptions) {
+            clearDataClickCount = 0
+        }
+    }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -281,25 +289,19 @@ fun GlobalEditesGFABs_F4(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // FAB Suppression
+
                     FloatingActionButton(
                         onClick = {
-                            OnClickOn(viewModelInitApp)
-                                .onClickOnGlobalFABsButton_2()
-                        },
-                        modifier = Modifier.size(48.dp),
-                        containerColor = Color(0xFF4CAF50)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Supprimer"
-                        )
-                    }
-                    FloatingActionButton(
-                        onClick = {
-                            OnClickOn(viewModelInitApp)
-                                .onClickOnGlobalFABsButton_1()
-                        },
+                            if (clearDataClickCount == 0) {
+                                clearDataClickCount++
+                            } else {
+                                OnClickOn(viewModelInitApp)
+                                    .onClickOnGlobalFABsButton_1()
+                                clearDataClickCount = 0
+                            }
+                        } ,   //-->
+                        //TODO(1): regle pour que ca affiche le label comme don MainScreenFilterFAB_F5 et ajout un FAb au click affiche et cache les labes de tout les buttons
+                        // label = if (clearDataClickCount == 0) "clearSoldArticlesData" else "Confirm Clear",
                         modifier = Modifier.size(48.dp),
                         containerColor = Color(0xFF4CAF50)
                     ) {

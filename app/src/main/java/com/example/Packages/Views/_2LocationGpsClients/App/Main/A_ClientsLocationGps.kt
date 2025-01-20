@@ -32,15 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.SimpleMapControls
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.MapControls
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-
-
 
 @Composable
 fun A_ClientsLocationGps(
@@ -110,15 +108,15 @@ fun A_ClientsLocationGps(
         )
 
         if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
-            SimpleMapControls(
+            MapControls(
                 mapView = mapView,
                 markers = markers,
-                showMarkerDetails = showMarkerDetails,
+                showMarkerDetails = showMarkerDetails,  // Correspond maintenant au paramètre
                 onShowMarkerDetailsChange = {
                     showMarkerDetails = it
                     updateMarkersVisibility()
                 },
-                onMarkerSelected = {
+                onMarkerSelected = {  // Correspond maintenant au paramètre
                     selectedMarker = it
                     showNavigationDialog = true
                 }

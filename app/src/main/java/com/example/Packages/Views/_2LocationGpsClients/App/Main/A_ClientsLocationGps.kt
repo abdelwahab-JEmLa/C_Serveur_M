@@ -13,18 +13,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat.getCurrentLocation
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.MapControls
 import com.example.c_serveur.R
@@ -44,6 +38,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
+import kotlin.math.roundToInt
 
 @Composable
 fun A_ClientsLocationGps(
@@ -67,6 +62,9 @@ fun A_ClientsLocationGps(
         markers.clear()
         mapView.overlays.clear()
 
+        // Create marker icon using VectorDrawableCompat
+        val markerDrawable = ContextCompat.getDrawable(context, R.drawable.ic_location_on)?.mutate()
+
         viewModelInitApp._modelAppsFather.clientsDisponible.forEach { client ->
             client.gpsLocation.locationGpsMark?.let { existingMarker ->
                 // If marker already exists, update its position
@@ -89,10 +87,18 @@ fun A_ClientsLocationGps(
                     snippet = if (client.statueDeBase.cUnClientTemporaire) "Client temporaire" else "Client permanent"
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_location_on)?.apply {   //->
-                        //TODO(FIXME):Fix erreur Unresolved reference: ic_location_on
-                        setTint(Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb())
+
+                    // Set the icon using the vector drawable
+                    markerDrawable?.let { drawable ->
+                        // Create a wrapped drawable that we can tint
+                        val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
+                        DrawableCompat.setTint(
+                            wrappedDrawable,
+                            Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb()
+                        )
+                        icon = wrappedDrawable
                     }
+
                     setOnMarkerClickListener { marker, _ ->
                         selectedMarker = marker
                         showNavigationDialog = true

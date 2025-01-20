@@ -109,6 +109,7 @@ fun A_ClientsLocationGps(
 
         if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
             MapControls(
+                viewModelInitApp=viewModelInitApp,
                 mapView = mapView,
                 markers = markers,
                 showMarkerDetails = showMarkerDetails,  // Correspond maintenant au paramètre

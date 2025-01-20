@@ -1,5 +1,7 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
 import android.location.LocationManager
@@ -48,6 +50,7 @@ import kotlin.math.roundToInt
 @Composable
 fun MapControls(
     mapView: MapView,
+    viewModelInitApp: ViewModelInitApp,
     markers: MutableList<Marker>,
     showMarkerDetails: Boolean,
     onShowMarkerDetailsChange: (Boolean) -> Unit,
@@ -85,6 +88,7 @@ fun MapControls(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     // Bouton Ajouter Marqueur
+                    // Bouton Ajouter Marqueur
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -92,23 +96,61 @@ fun MapControls(
                         FloatingActionButton(
                             onClick = {
                                 val center = mapView.mapCenter
-                                // Création du marqueur
-                                Marker(mapView).apply {
-                                    position = GeoPoint(center.latitude, center.longitude)
-                                    title = "Nouveau point"
-                                    snippet = "Point ajouté"
-                                    setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                                    infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
-                                    setOnMarkerClickListener { marker, _ ->
-                                        onMarkerSelected(marker)
-                                        if (showMarkerDetails) marker.showInfoWindow()
-                                        true
+                                // Create a new client with GPS location
+                                val newClient = _ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations(
+                                    id = System.currentTimeMillis(),
+                                    nom = "Nouveau client",
+                                ).apply {
+                                    statueDeBase.cUnClientTemporaire = true
+                                    gpsLocation.apply {
+                                        // Stocker les données de position
+                                        latitude = center.latitude
+                                        longitude = center.longitude
+                                        title = "Nouveau client"
+                                        snippet = "Client temporaire"
+                                        couleur = "#2196F3"
+
+                                        // Créer le marker pour l'affichage uniquement
+                                        locationGpsMark = Marker(mapView).apply {
+                                            position = GeoPoint(latitude, longitude)
+                                            this.title = title
+                                            this.snippet = snippet
+                                            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                                            infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
+                                            setOnMarkerClickListener { marker, _ ->
+                                                onMarkerSelected(marker)
+                                                if (showMarkerDetails) marker.showInfoWindow()
+                                                true
+                                            }
+                                        }
                                     }
-                                    markers.add(this)
-                                    mapView.overlays.add(this)
-                                    if (showMarkerDetails) showInfoWindow()
-                                    mapView.invalidate()
                                 }
+
+                                // Create a new ClientBonVentModel with the client information
+                                val newBonVent = _ModelAppsFather.ProduitModel.ClientBonVentModel(
+                                    vid = System.currentTimeMillis(),
+                                    init_clientInformations = newClient
+                                )
+
+                                // Find or create product with id == 0
+                                val product = viewModelInitApp.produitsMainDataBase.find { it.id == 0L } ?:
+                                _ModelAppsFather.ProduitModel(id = 0L).also {
+                                    viewModelInitApp.produitsMainDataBase.add(it)
+                                }
+
+                                // Add the new bon vent to the product
+                                product.bonsVentDeCetteCota.add(newBonVent)
+
+                                // Add marker to the map
+                                newClient.gpsLocation.locationGpsMark?.let { marker ->
+                                    markers.add(marker)
+                                    mapView.overlays.add(marker)
+                                    if (showMarkerDetails) marker.showInfoWindow()
+                                }
+                                mapView.invalidate()
+
+                                // Update the product in the database
+                                _ModelAppsFather.updateProduit(product, viewModelInitApp)
                             },
                             modifier = Modifier.size(40.dp),
                             containerColor = Color(0xFF2196F3)
@@ -118,7 +160,9 @@ fun MapControls(
                         if (showLabels) {
                             Text(
                                 "Ajouter",
-                                modifier = Modifier.background(Color(0xFF2196F3)).padding(4.dp),
+                                modifier = Modifier
+                                    .background(Color(0xFF2196F3))
+                                    .padding(4.dp),
                                 color = Color.White
                             )
                         }

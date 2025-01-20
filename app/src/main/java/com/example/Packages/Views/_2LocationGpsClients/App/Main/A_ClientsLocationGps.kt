@@ -47,6 +47,7 @@ private fun getCurrentLocation(context: Context): Location? {
         null
     }
 }
+
 @Composable
 fun A_ClientsLocationGps(
     modifier: Modifier = Modifier,
@@ -63,7 +64,8 @@ fun A_ClientsLocationGps(
 
     // Configuration initiale
     DisposableEffect(context) {
-        Configuration.getInstance().load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
+        Configuration.getInstance()
+            .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
         mapView.setTileSource(TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
 
@@ -81,11 +83,11 @@ fun A_ClientsLocationGps(
     }
 
     // Position initiale
-    val initialLocation = remember { getCurrentLocation(context) ?:
-    Location("default").apply {
-        latitude = -34.0
-        longitude = 151.0
-    }
+    val initialLocation = remember {
+        getCurrentLocation(context) ?: Location("default").apply {
+            latitude = -34.0
+            longitude = 151.0
+        }
     }
     val geoPoint = GeoPoint(initialLocation.latitude, initialLocation.longitude)
 
@@ -108,23 +110,26 @@ fun A_ClientsLocationGps(
                 .background(Color.Red, CircleShape)
                 .align(Alignment.Center)
         )
-
-        // Moved control buttons to OptionesControleBoutons_F1
-        OptionesControleBoutons_F1(
-            viewModelInitApp = viewModelInitApp,
-            mapView = mapView,
-            markers = markers,
-            showMarkerDetails = showMarkerDetails,
-            onShowMarkerDetailsChange = {
-                showMarkerDetails = it
-                updateMarkersVisibility()
-            },
-            onMarkerSelected = { marker ->
-                selectedMarker = marker
-                showNavigationDialog = true
-            }
-        )
-
+        if (viewModelInitApp
+                ._paramatersAppsViewModelModel
+                .fabsVisibility
+        ) {
+            // Moved control buttons to OptionesControleBoutons_F1
+            OptionesControleBoutons_F1(
+                viewModelInitApp = viewModelInitApp,
+                mapView = mapView,
+                markers = markers,
+                showMarkerDetails = showMarkerDetails,
+                onShowMarkerDetailsChange = {
+                    showMarkerDetails = it
+                    updateMarkersVisibility()
+                },
+                onMarkerSelected = { marker ->
+                    selectedMarker = marker
+                    showNavigationDialog = true
+                }
+            )
+        }
         // Dialog de navigation
         if (showNavigationDialog && selectedMarker != null) {
             AlertDialog(
@@ -135,7 +140,8 @@ fun A_ClientsLocationGps(
                     Button(
                         onClick = {
                             selectedMarker?.let { marker ->
-                                val uri = Uri.parse("google.navigation:q=${marker.position.latitude},${marker.position.longitude}&mode=d")
+                                val uri =
+                                    Uri.parse("google.navigation:q=${marker.position.latitude},${marker.position.longitude}&mode=d")
                                 val mapIntent = Intent(Intent.ACTION_VIEW, uri).apply {
                                     setPackage("com.google.android.apps.maps")
                                 }

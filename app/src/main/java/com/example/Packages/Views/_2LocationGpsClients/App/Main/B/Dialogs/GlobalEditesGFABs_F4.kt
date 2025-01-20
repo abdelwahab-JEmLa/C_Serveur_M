@@ -2,6 +2,10 @@ package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -59,7 +63,7 @@ fun OptionesControleBoutons_F1(
     modifier: Modifier = Modifier,
 ) {
     var showOptions by remember { mutableStateOf(false) }
-    var showLabels by remember { mutableStateOf(true) }  // Default to showing labels
+    var showLabels by remember { mutableStateOf(true) }
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var clearDataClickCount by remember { mutableIntStateOf(0) }
@@ -67,7 +71,7 @@ fun OptionesControleBoutons_F1(
     val scope = rememberCoroutineScope()
     val locationHandler = remember { LocationHandler(context) }
 
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
         Column(
             modifier = Modifier
                 .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
@@ -77,151 +81,21 @@ fun OptionesControleBoutons_F1(
                         offsetX += dragAmount.x
                         offsetY += dragAmount.y
                     }
-                },
+                }
+                .padding(16.dp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Bottom
         ) {
-            // Control buttons at the bottom
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            // Les options animées qui apparaissent vers le haut
+            AnimatedVisibility(
+                visible = showOptions,
+                enter = slideInVertically(initialOffsetY = { 40 }) + expandVertically(expandFrom = Alignment.Bottom),
+                exit = slideOutVertically(targetOffsetY = { 40 }) + shrinkVertically(shrinkTowards = Alignment.Bottom)
             ) {
-                // Show/Hide Options Button
-                FloatingActionButton(
-                    onClick = { showOptions = !showOptions },
-                    modifier = Modifier.size(40.dp),
-                    containerColor = Color(0xFF3F51B5)
-                ) {
-                    Icon(
-                        if (showOptions) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = if (showOptions) "Hide options" else "Show options"
-                    )
-                }
-                if (showLabels) {
-                    Text(
-                        if (showOptions) "Masquer" else "Options",
-                        modifier = Modifier
-                            .background(Color(0xFF3F51B5))
-                            .padding(4.dp),
-                        color = Color.White
-                    )
-                }
-            }
-
-            // Labels visibility toggle
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                FloatingActionButton(
-                    onClick = { showLabels = !showLabels },
-                    modifier = Modifier.size(40.dp),
-                    containerColor = Color(0xFF3F51B5)
-                ) {
-                    Icon(
-                        if (showLabels) Icons.Default.Info else Icons.Default.Info,
-                        contentDescription = if (showLabels) "Hide labels" else "Show labels"
-                    )
-                }
-                if (showLabels) {
-                    Text(
-                        if (showLabels) "Masquer labels" else "Afficher labels",
-                        modifier = Modifier
-                            .background(Color(0xFF3F51B5))
-                            .padding(4.dp),
-                        color = Color.White
-                    )
-                }
-            }
-
-            // Option FABs with bottom-up animation
-            AnimatedVisibility(visible = showOptions) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    // Clear Data FAB
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = {
-                                if (clearDataClickCount == 0) clearDataClickCount++
-                                else {
-                                    // Clear data logic here
-                                }
-                            },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF4CAF50)
-                        ) {
-                            Icon(Icons.Default.Delete, null)
-                        }
-                        if (showLabels) {
-                            Text(
-                                if (clearDataClickCount == 0) "Supprimer" else "Confirmer",
-                                modifier = Modifier
-                                    .background(Color(0xFF4CAF50))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
-
-                    // Show/Hide Details FAB
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = { onShowMarkerDetailsChange(!showMarkerDetails) },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF009688)
-                        ) {
-                            Icon(Icons.Default.Info, null)
-                        }
-                        if (showLabels) {
-                            Text(
-                                if (showMarkerDetails) "Masquer détails" else "Afficher détails",
-                                modifier = Modifier
-                                    .background(Color(0xFF009688))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
-
-                    // Current Location FAB
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = {
-                                scope.launch {
-                                    locationHandler.getCurrentLocation()?.let { loc ->
-                                        mapView.controller.animateTo(
-                                            GeoPoint(loc.latitude, loc.longitude)
-                                        )
-                                    }
-                                }
-                            },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF9C27B0)
-                        ) {
-                            Icon(Icons.Default.LocationOn, "Position actuelle")
-                        }
-                        if (showLabels) {
-                            Text(
-                                "Position",
-                                modifier = Modifier
-                                    .background(Color(0xFF9C27B0))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
-
                     // Add Marker FAB
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -262,6 +136,140 @@ fun OptionesControleBoutons_F1(
                             )
                         }
                     }
+
+                    // Current Location FAB
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                scope.launch {
+                                    locationHandler.getCurrentLocation()?.let { loc ->
+                                        mapView.controller.animateTo(
+                                            GeoPoint(loc.latitude, loc.longitude)
+                                        )
+                                    }
+                                }
+                            },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFF9C27B0)
+                        ) {
+                            Icon(Icons.Default.LocationOn, "Position actuelle")
+                        }
+                        if (showLabels) {
+                            Text(
+                                "Position",
+                                modifier = Modifier
+                                    .background(Color(0xFF9C27B0))
+                                    .padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+
+                    // Show/Hide Details FAB
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = { onShowMarkerDetailsChange(!showMarkerDetails) },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFF009688)
+                        ) {
+                            Icon(Icons.Default.Info, null)
+                        }
+                        if (showLabels) {
+                            Text(
+                                if (showMarkerDetails) "Masquer détails" else "Afficher détails",
+                                modifier = Modifier
+                                    .background(Color(0xFF009688))
+                                    .padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+
+                    // Clear Data FAB
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                if (clearDataClickCount == 0) clearDataClickCount++
+                                else {
+                                    // Clear data logic here
+                                }
+                            },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFF4CAF50)
+                        ) {
+                            Icon(Icons.Default.Delete, null)
+                        }
+                        if (showLabels) {
+                            Text(
+                                if (clearDataClickCount == 0) "Supprimer" else "Confirmer",
+                                modifier = Modifier
+                                    .background(Color(0xFF4CAF50))
+                                    .padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+
+                    // Labels toggle button (moved into animated section)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = { showLabels = !showLabels },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFF3F51B5)
+                        ) {
+                            Icon(
+                                if (showLabels) Icons.Default.Info else Icons.Default.Info,
+                                contentDescription = if (showLabels) "Hide labels" else "Show labels"
+                            )
+                        }
+                        if (showLabels) {
+                            Text(
+                                if (showLabels) "Masquer labels" else "Afficher labels",
+                                modifier = Modifier
+                                    .background(Color(0xFF3F51B5))
+                                    .padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Seul le bouton d'options reste fixe en bas
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                FloatingActionButton(
+                    onClick = { showOptions = !showOptions },
+                    modifier = Modifier.size(40.dp),
+                    containerColor = Color(0xFF3F51B5)
+                ) {
+                    Icon(
+                        if (showOptions) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (showOptions) "Hide options" else "Show options"
+                    )
+                }
+                if (showLabels) {
+                    Text(
+                        if (showOptions) "Masquer" else "Options",
+                        modifier = Modifier
+                            .background(Color(0xFF3F51B5))
+                            .padding(4.dp),
+                        color = Color.White
+                    )
                 }
             }
         }

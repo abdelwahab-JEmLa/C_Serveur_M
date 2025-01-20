@@ -5,7 +5,6 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
 import android.location.LocationManager
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +32,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
@@ -60,14 +58,12 @@ fun MapControls(
     val scope = rememberCoroutineScope()
     var showMenu by remember { mutableStateOf(false) }
     var showLabels by remember { mutableStateOf(true) }
-
-    // États pour le drag
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.BottomEnd
     ) {
         Box(
             modifier = Modifier
@@ -81,36 +77,24 @@ fun MapControls(
                 }
                 .padding(16.dp)
         ) {
-            // Menu principal
-            if (showMenu) {
-                Column(
-                    modifier = Modifier.align(Alignment.BottomStart),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (showMenu) {
                     // Bouton Ajouter Marqueur
-                    // Bouton Ajouter Marqueur
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         FloatingActionButton(
                             onClick = {
                                 val center = mapView.mapCenter
-                                // Create a new client with GPS location
                                 val newClient = _ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations(
                                     id = System.currentTimeMillis(),
-                                    nom = "Nouveau client",
+                                    nom = "Nouveau client"
                                 ).apply {
                                     statueDeBase.cUnClientTemporaire = true
                                     gpsLocation.apply {
-                                        // Stocker les données de position
                                         latitude = center.latitude
                                         longitude = center.longitude
                                         title = "Nouveau client"
                                         snippet = "Client temporaire"
                                         couleur = "#2196F3"
-
-                                        // Créer le marker pour l'affichage uniquement
                                         locationGpsMark = Marker(mapView).apply {
                                             position = GeoPoint(latitude, longitude)
                                             this.title = title
@@ -126,53 +110,35 @@ fun MapControls(
                                     }
                                 }
 
-                                // Create a new ClientBonVentModel with the client information
-                                val newBonVent = _ModelAppsFather.ProduitModel.ClientBonVentModel(
-                                    vid = System.currentTimeMillis(),
-                                    init_clientInformations = newClient
+                                val product = viewModelInitApp.produitsMainDataBase.find { it.id == 0L }
+                                    ?: _ModelAppsFather.ProduitModel(id = 0L).also {
+                                        viewModelInitApp.produitsMainDataBase.add(it)
+                                    }
+
+                                product.bonsVentDeCetteCota.add(
+                                    _ModelAppsFather.ProduitModel.ClientBonVentModel(
+                                        vid = System.currentTimeMillis(),
+                                        init_clientInformations = newClient
+                                    )
                                 )
 
-                                // Find or create product with id == 0
-                                val product = viewModelInitApp.produitsMainDataBase.find { it.id == 0L } ?:
-                                _ModelAppsFather.ProduitModel(id = 0L).also {
-                                    viewModelInitApp.produitsMainDataBase.add(it)
-                                }
-
-                                // Add the new bon vent to the product
-                                product.bonsVentDeCetteCota.add(newBonVent)
-
-                                // Add marker to the map
                                 newClient.gpsLocation.locationGpsMark?.let { marker ->
                                     markers.add(marker)
                                     mapView.overlays.add(marker)
                                     if (showMarkerDetails) marker.showInfoWindow()
                                 }
                                 mapView.invalidate()
-
-                                // Update the product in the database
                                 _ModelAppsFather.updateProduit(product, viewModelInitApp)
                             },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF2196F3)
+                            modifier = Modifier.size(40.dp)
                         ) {
-                            Icon(Icons.Default.Add, "Ajouter un marqueur")
+                            Icon(Icons.Default.Add, "Ajouter")
                         }
-                        if (showLabels) {
-                            Text(
-                                "Ajouter",
-                                modifier = Modifier
-                                    .background(Color(0xFF2196F3))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
+                        if (showLabels) Text("Ajouter", modifier = Modifier.padding(4.dp))
                     }
 
-                    // Bouton Position Actuelle
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
+                    // Bouton Position
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         FloatingActionButton(
                             onClick = {
                                 scope.launch {
@@ -181,99 +147,48 @@ fun MapControls(
                                             Manifest.permission.ACCESS_FINE_LOCATION
                                         ) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
                                         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                                        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                                            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-
-                                        location?.let { loc ->
-                                            mapView.controller.animateTo(GeoPoint(loc.latitude, loc.longitude))
-                                        }
+                                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                                            ?.let { loc -> mapView.controller.animateTo(GeoPoint(loc.latitude, loc.longitude)) }
                                     }
                                 }
                             },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF9C27B0)
+                            modifier = Modifier.size(40.dp)
                         ) {
-                            Icon(Icons.Default.LocationOn, "Position actuelle")
+                            Icon(Icons.Default.LocationOn, "Position")
                         }
-                        if (showLabels) {
-                            Text(
-                                "Position",
-                                modifier = Modifier.background(Color(0xFF9C27B0)).padding(4.dp),
-                                color = Color.White
-                            )
-                        }
+                        if (showLabels) Text("Position", modifier = Modifier.padding(4.dp))
                     }
 
-                    // Bouton Afficher/Masquer Détails
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
+                    // Bouton Détails
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         FloatingActionButton(
                             onClick = { onShowMarkerDetailsChange(!showMarkerDetails) },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF009688)
+                            modifier = Modifier.size(40.dp)
                         ) {
                             Icon(Icons.Default.Info, "Détails")
                         }
-                        if (showLabels) {
-                            Text(
-                                if (showMarkerDetails) "Masquer détails" else "Afficher détails",
-                                modifier = Modifier.background(Color(0xFF009688)).padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
-                }
-            }
-
-            Column(
-                modifier = Modifier.align(Alignment.BottomStart),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Bouton Labels (maintenant séparé et toujours visible)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    FloatingActionButton(
-                        onClick = { showLabels = !showLabels },
-                        modifier = Modifier.size(40.dp),
-                        containerColor = Color(0xFF3F51B5)
-                    ) {
-                        Icon(Icons.Default.Info, if (showLabels) "Masquer labels" else "Afficher labels")
-                    }
-                    if (showLabels) {
-                        Text(
-                            if (showLabels) "Masquer labels" else "Afficher labels",
-                            modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
-                            color = Color.White
+                        if (showLabels) Text(
+                            if (showMarkerDetails) "Masquer détails" else "Afficher détails",
+                            modifier = Modifier.padding(4.dp)
                         )
                     }
                 }
 
-                // Bouton Menu Principal
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
+                // Boutons toujours visibles
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     FloatingActionButton(
                         onClick = { showMenu = !showMenu },
-                        modifier = Modifier.size(40.dp),
-                        containerColor = Color(0xFF3F51B5)
+                        modifier = Modifier.size(40.dp)
                     ) {
                         Icon(
                             if (showMenu) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                            if (showMenu) "Masquer menu" else "Afficher menu"
+                            "Menu"
                         )
                     }
-                    if (showLabels) {
-                        Text(
-                            if (showMenu) "Masquer" else "Options",
-                            modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
-                            color = Color.White
-                        )
-                    }
+                    if (showLabels) Text(
+                        if (showMenu) "Masquer" else "Options",
+                        modifier = Modifier.padding(4.dp)
+                    )
                 }
             }
         }

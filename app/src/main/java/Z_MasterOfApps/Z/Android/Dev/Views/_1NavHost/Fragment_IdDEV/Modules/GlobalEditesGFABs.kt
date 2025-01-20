@@ -299,9 +299,7 @@ fun GlobalEditesGFABs_F5(
                                     .onClickOnGlobalFABsButton_1()                               
                                 clearDataClickCount = 0
                             }
-                        } ,   //-->
-                        //TODO(1): regle pour que ca affiche le label comme don MainScreenFilterFAB_F5 et ajout un FAb au click affiche et cache les labes de tout les buttons 
-                       // label = if (clearDataClickCount == 0) "clearSoldArticlesData" else "Confirm Clear",
+                        } ,
                         modifier = Modifier.size(48.dp),
                         containerColor = Color(0xFF4CAF50)
                     ) {

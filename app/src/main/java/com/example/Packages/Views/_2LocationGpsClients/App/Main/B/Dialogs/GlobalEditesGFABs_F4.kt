@@ -1,5 +1,6 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 
+import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
@@ -51,7 +52,6 @@ import kotlin.math.roundToInt
 fun MapControls(
     mapView: MapView,
     viewModelInitApp: ViewModelInitApp,
-    markers: MutableList<Marker>,
     showMarkerDetails: Boolean,
     onShowMarkerDetailsChange: (Boolean) -> Unit,
     onMarkerSelected: (Marker) -> Unit
@@ -98,7 +98,7 @@ fun MapControls(
                                 val center = mapView.mapCenter
                                 // Create a new client with GPS location
                                 val newClient = _ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations(
-                                    id = System.currentTimeMillis(),
+                                    id = viewModelInitApp._modelAppsFather.clientsDisponible.maxOf { it.id } + 1,
                                     nom = "Nouveau client",
                                 ).apply {
                                     statueDeBase.cUnClientTemporaire = true
@@ -136,13 +136,14 @@ fun MapControls(
 
                                 product.bonsVentDeCetteCota.add(newBonVent)
 
-                                newClient.gpsLocation.locationGpsMark?.let { marker ->
-                                    markers.add(marker)
-                                    mapView.overlays.add(marker)
-                                    if (showMarkerDetails) marker.showInfoWindow()
+                                // Suppression de l'ajout direct du marker car il sera géré par A_ClientsLocationGps
+                                if (showMarkerDetails) {
+                                    newClient.gpsLocation.locationGpsMark?.showInfoWindow()
                                 }
+
                                 mapView.invalidate()
 
+                                // Mettre à jour le produit dans la base de données
                                 _ModelAppsFather.updateProduit(product, viewModelInitApp)
                             },
                             modifier = Modifier.size(40.dp),

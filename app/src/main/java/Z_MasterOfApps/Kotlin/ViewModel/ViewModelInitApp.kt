@@ -36,7 +36,8 @@ class ViewModelInitApp : ViewModel() {
                 } else {
                     CreeDepuitAncienDataBases(
                         _modelAppsFather,
-                        this@ViewModelInitApp)
+                        this@ViewModelInitApp
+                    )
                 }
 
                 isLoading = false

@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.AppNavHost
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NavigationItems
+import com.example.Packages.Views.AppNavHost
+import com.example.Packages.Views.NavigationItems
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable

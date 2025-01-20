@@ -28,7 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.GroupedControleBoutons_F1
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.OptionesControleBoutons_F1
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -109,8 +109,8 @@ fun A_ClientsLocationGps(
                 .align(Alignment.Center)
         )
 
-        // Moved control buttons to GroupedControleBoutons_F1
-        GroupedControleBoutons_F1(
+        // Moved control buttons to OptionesControleBoutons_F1
+        OptionesControleBoutons_F1(
             viewModelInitApp = viewModelInitApp,
             mapView = mapView,
             markers = markers,

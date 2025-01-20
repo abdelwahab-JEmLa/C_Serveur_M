@@ -1,7 +1,6 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import Z_MasterOfApps.Z.Android.Actions._1.C_Serveur._1NavHost.Fragment_Id4.OnClickOn
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -19,7 +18,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -51,7 +49,7 @@ import kotlin.math.roundToInt
 
 // Updated GlobalEditesGFABs_F4.kt
 @Composable
-fun GroupedControleBoutons_F1(
+fun OptionesControleBoutons_F1(
     viewModelInitApp: ViewModelInitApp,
     mapView: MapView,
     markers: SnapshotStateList<Marker>,
@@ -61,7 +59,7 @@ fun GroupedControleBoutons_F1(
     modifier: Modifier = Modifier,
 ) {
     var showOptions by remember { mutableStateOf(false) }
-    var showLabels by remember { mutableStateOf(false) }
+    var showLabels by remember { mutableStateOf(true) }  // Default to showing labels
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var clearDataClickCount by remember { mutableIntStateOf(0) }
@@ -69,7 +67,7 @@ fun GroupedControleBoutons_F1(
     val scope = rememberCoroutineScope()
     val locationHandler = remember { LocationHandler(context) }
 
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.CenterStart) {
         Column(
             modifier = Modifier
                 .offset { IntOffset(offsetX.roundToInt(), offsetY.roundToInt()) }
@@ -80,14 +78,25 @@ fun GroupedControleBoutons_F1(
                         offsetY += dragAmount.y
                     }
                 },
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Bottom
         ) {
-            // Main FAB
+            // Control buttons at the bottom
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
+                // Show/Hide Options Button
+                FloatingActionButton(
+                    onClick = { showOptions = !showOptions },
+                    modifier = Modifier.size(40.dp),
+                    containerColor = Color(0xFF3F51B5)
+                ) {
+                    Icon(
+                        if (showOptions) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (showOptions) "Hide options" else "Show options"
+                    )
+                }
                 if (showLabels) {
                     Text(
                         if (showOptions) "Masquer" else "Options",
@@ -97,35 +106,127 @@ fun GroupedControleBoutons_F1(
                         color = Color.White
                     )
                 }
+            }
+
+            // Labels visibility toggle
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 FloatingActionButton(
-                    onClick = { showOptions = !showOptions; showLabels = true },
+                    onClick = { showLabels = !showLabels },
                     modifier = Modifier.size(40.dp),
                     containerColor = Color(0xFF3F51B5)
                 ) {
                     Icon(
-                        if (showOptions) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        null
+                        if (showLabels) Icons.Default.Info else Icons.Default.Info,
+                        contentDescription = if (showLabels) "Hide labels" else "Show labels"
+                    )
+                }
+                if (showLabels) {
+                    Text(
+                        if (showLabels) "Masquer labels" else "Afficher labels",
+                        modifier = Modifier
+                            .background(Color(0xFF3F51B5))
+                            .padding(4.dp),
+                        color = Color.White
                     )
                 }
             }
 
-            // Option FABs
+            // Option FABs with bottom-up animation
             AnimatedVisibility(visible = showOptions) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    // Clear Data FAB
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                if (clearDataClickCount == 0) clearDataClickCount++
+                                else {
+                                    // Clear data logic here
+                                }
+                            },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFF4CAF50)
+                        ) {
+                            Icon(Icons.Default.Delete, null)
+                        }
+                        if (showLabels) {
+                            Text(
+                                if (clearDataClickCount == 0) "Supprimer" else "Confirmer",
+                                modifier = Modifier
+                                    .background(Color(0xFF4CAF50))
+                                    .padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+
+                    // Show/Hide Details FAB
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = { onShowMarkerDetailsChange(!showMarkerDetails) },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFF009688)
+                        ) {
+                            Icon(Icons.Default.Info, null)
+                        }
+                        if (showLabels) {
+                            Text(
+                                if (showMarkerDetails) "Masquer détails" else "Afficher détails",
+                                modifier = Modifier
+                                    .background(Color(0xFF009688))
+                                    .padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+
+                    // Current Location FAB
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = {
+                                scope.launch {
+                                    locationHandler.getCurrentLocation()?.let { loc ->
+                                        mapView.controller.animateTo(
+                                            GeoPoint(loc.latitude, loc.longitude)
+                                        )
+                                    }
+                                }
+                            },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFF9C27B0)
+                        ) {
+                            Icon(Icons.Default.LocationOn, "Position actuelle")
+                        }
+                        if (showLabels) {
+                            Text(
+                                "Position",
+                                modifier = Modifier
+                                    .background(Color(0xFF9C27B0))
+                                    .padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+
                     // Add Marker FAB
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        if (showLabels) {
-                            Text(
-                                "Ajouter",
-                                modifier = Modifier
-                                    .background(Color(0xFF2196F3))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
                         FloatingActionButton(
                             onClick = {
                                 val center = mapView.mapCenter
@@ -134,8 +235,7 @@ fun GroupedControleBoutons_F1(
                                     title = "Nouveau point"
                                     snippet = "Point ajouté"
                                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                                    infoWindow =
-                                        MarkerInfoWindow(R.layout.marker_info_window, mapView)
+                                    infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
                                     setOnMarkerClickListener { clickedMarker, _ ->
                                         onMarkerSelected(clickedMarker)
                                         if (showMarkerDetails) clickedMarker.showInfoWindow()
@@ -152,120 +252,14 @@ fun GroupedControleBoutons_F1(
                         ) {
                             Icon(Icons.Default.Add, "Ajouter un marqueur")
                         }
-                    }
-
-                    // Current Location FAB
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
                         if (showLabels) {
                             Text(
-                                "Position",
+                                "Ajouter",
                                 modifier = Modifier
-                                    .background(Color(0xFF9C27B0))
+                                    .background(Color(0xFF2196F3))
                                     .padding(4.dp),
                                 color = Color.White
                             )
-                        }
-                        FloatingActionButton(
-                            onClick = {
-                                scope.launch {
-                                    locationHandler.getCurrentLocation()?.let { loc ->
-                                        mapView.controller.animateTo(
-                                            GeoPoint(
-                                                loc.latitude,
-                                                loc.longitude
-                                            )
-                                        )
-                                    }
-                                }
-                            },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF9C27B0)
-                        ) {
-                            Icon(Icons.Default.LocationOn, "Position actuelle")
-                        }
-                    }
-
-                    // Show/Hide Details FAB
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        if (showLabels) {
-                            Text(
-                                if (showMarkerDetails) "Masquer détails" else "Afficher détails",
-                                modifier = Modifier
-                                    .background(Color(0xFF009688))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                        FloatingActionButton(
-                            onClick = { onShowMarkerDetailsChange(!showMarkerDetails) },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF009688)
-                        ) {
-                            Icon(
-                                Icons.Default.Info,
-                                if (showMarkerDetails) "Masquer les détails" else "Afficher les détails"
-                            )
-                        }
-                    }
-
-                    // Clear Data FAB
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        if (showLabels) {
-                            Text(
-                                if (clearDataClickCount == 0) "Supprimer" else "Confirmer",
-                                modifier = Modifier
-                                    .background(Color(0xFF4CAF50))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                        FloatingActionButton(
-                            onClick = {
-                                if (clearDataClickCount == 0) clearDataClickCount++
-                                else {
-                                    OnClickOn(viewModelInitApp).onClickOnGlobalFABsButton_1()
-                                    clearDataClickCount = 0
-                                }
-                            },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF4CAF50)
-                        ) {
-                            Icon(Icons.Default.Delete, null)
-                        }
-                    }
-
-                    // Edit Position FAB
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        if (showLabels) {
-                            Text(
-                                "Position",
-                                modifier = Modifier
-                                    .background(Color(0xFFFF5722))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                        FloatingActionButton(
-                            onClick = {
-                                viewModelInitApp._paramatersAppsViewModelModel.visibilityClientEditePositionDialog =
-                                    true
-                            },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFFFF5722)
-                        ) {
-                            Icon(Icons.Default.KeyboardDoubleArrowUp, null)
                         }
                     }
                 }

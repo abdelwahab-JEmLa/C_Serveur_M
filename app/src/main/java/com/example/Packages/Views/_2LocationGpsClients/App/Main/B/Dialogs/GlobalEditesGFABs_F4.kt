@@ -3,13 +3,28 @@ package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 import android.Manifest
 import android.content.Context
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,11 +55,10 @@ fun SimpleMapControls(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        contentAlignment = Alignment.BottomStart
+        contentAlignment = Alignment.Center
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (showOptions) {
-                // Actions des boutons définies comme des fonctions lambda typées
                 val actions: List<Pair<Triple<androidx.compose.ui.graphics.vector.ImageVector, String, Color>, () -> Unit>> = listOf(
                     Triple(Icons.Default.Add, "Ajouter", Color(0xFF2196F3)) to {
                         val center = mapView.mapCenter

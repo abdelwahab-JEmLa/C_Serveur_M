@@ -15,7 +15,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,13 +33,29 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.SimpleMapControls
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+
+private fun getDefaultLocation() = Location("default").apply {
+    latitude = -34.0
+    longitude = 151.0
+}
+
+private suspend fun getCurrentLocation(context: Context): Location? {
+    return if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    ) {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } else null
+}
 
 @Composable
 fun A_ClientsLocationGps(
@@ -39,12 +63,24 @@ fun A_ClientsLocationGps(
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     val currentZoom by remember { mutableStateOf(18.2) }
+
     val mapView = remember { MapView(context) }
     val markers = remember { mutableStateListOf<Marker>() }
     var selectedMarker by remember { mutableStateOf<Marker?>(null) }
     var showNavigationDialog by remember { mutableStateOf(false) }
     var showMarkerDetails by remember { mutableStateOf(true) }
+
+    var currentLocation by remember { mutableStateOf(getDefaultLocation()) }
+
+    // Effet pour charger la position initiale
+    LaunchedEffect(Unit) {
+        val location = getCurrentLocation(context)
+        if (location != null) {
+            currentLocation = location
+        }
+    }
 
     // Configuration initiale
     DisposableEffect(context) {
@@ -66,29 +102,18 @@ fun A_ClientsLocationGps(
         mapView.invalidate()
     }
 
-    // Position initiale
-    val initialLocation = remember {
-        produceState(initialValue = Location("default").apply {//->
-            //TODO(FIXME):Fix erreur Composable calls are not allowed inside the calculation parameter of inline fun <T> remember(crossinline calculation: () -> TypeVariable(T)): TypeVariable(T)
-            latitude = -34.0
-            longitude = 151.0
-        }) {
-            value = getInitialLocation(context) ?: Location("default").apply {
-                latitude = -34.0
-                longitude = 151.0
-            }
-        }.value
-    }
-    val geoPoint = GeoPoint(initialLocation.latitude, initialLocation.longitude)
+    val geoPoint = GeoPoint(currentLocation.latitude, currentLocation.longitude)
 
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { mapView }
         ) { view ->
-            view.controller.apply {
-                setCenter(geoPoint)
-                setZoom(currentZoom)
+            scope.launch {
+                view.controller.apply {
+                    setCenter(geoPoint)
+                    setZoom(currentZoom)
+                }
             }
         }
 
@@ -129,18 +154,6 @@ fun A_ClientsLocationGps(
             )
         }
     }
-}
-
-private suspend fun getInitialLocation(context: Context): Location? = withContext(Dispatchers.IO) {
-    if (ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-    ) {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-    } else null
 }
 
 @Composable

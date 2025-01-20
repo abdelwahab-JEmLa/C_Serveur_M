@@ -101,7 +101,7 @@ fun A_ClientsLocationGps(
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     // Show loading indicator while initializing
-    if (!mapInitialized || viewModelInitApp.isLoading) {
+    if (viewModelInitApp.isLoading) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.Packages.Views.AppNavHost
+import com.example.Packages.Views.ParentAppNavHost
 import com.example.Packages.Views.NavigationItems
 
 @RequiresApi(Build.VERSION_CODES.Q)
@@ -42,7 +42,7 @@ fun MainScreen(
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Box(modifier = Modifier.weight(1f)) {
-                        AppNavHost(
+                        ParentAppNavHost(
                             modifier = Modifier.fillMaxSize(),
                             viewModelInitApp = viewModelInitApp,
                             navController = navController,

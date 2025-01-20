@@ -9,13 +9,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Screens
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App._1GerantAfficheurGrossistCommendApp
 import com.example.Packages.Views._2LocationGpsClients.App.ScreensApp2
 import com.example.Packages.Views._2LocationGpsClients.App._2App
 
 @Composable
-fun AppNavHost(
+fun ParentAppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     viewModelInitApp: ViewModelInitApp,
@@ -23,15 +21,24 @@ fun AppNavHost(
     Box(modifier = modifier.fillMaxSize()) {
         NavHost(
             navController = navController,
-            startDestination = Screens.MainScreen_F4.route,
+            startDestination = ScreensApp2.Fragment1Screen.route,
             modifier = Modifier.fillMaxSize()
         ) {
-            _1GerantAfficheurGrossistCommendApp(viewModelInitApp)
             _2App(viewModelInitApp)
+            //   _1GerantAfficheurGrossistCommendApp(viewModelInitApp)
         }
     }
 }
-
+object NavigationItems {
+    val items = listOf(
+        ScreensApp2.Fragment1Screen,
+        /*
+          Screens.MainScreen_F4,
+          Screens.MainScreen_F1,
+          Screens.MainScreen_F2,
+          Screens.MainScreen_F3 */
+    )
+}
 abstract class Screen(
     val route: String,
     val icon: ImageVector,
@@ -39,12 +46,4 @@ abstract class Screen(
     val color: Color
 )
 
-object NavigationItems {
-    val items = listOf(
-        ScreensApp2.Fragment1Screen,
-        Screens.MainScreen_F4,
-        Screens.MainScreen_F1,
-        Screens.MainScreen_F2,
-        Screens.MainScreen_F3
-    )
-}
+

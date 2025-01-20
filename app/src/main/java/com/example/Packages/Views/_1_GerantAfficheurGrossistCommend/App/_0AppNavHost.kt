@@ -19,6 +19,7 @@ import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_4InNavHost_Id3.A_AfficheurDesProduitsPourLeColecteur_F3
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.A_DeplaceProduitsVerGrossist
 
+
 fun NavGraphBuilder._1GerantAfficheurGrossistCommendApp(viewModelInitApp: ViewModelInitApp) {
     composable(Screens.MainScreen_F4.route) {
         A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)

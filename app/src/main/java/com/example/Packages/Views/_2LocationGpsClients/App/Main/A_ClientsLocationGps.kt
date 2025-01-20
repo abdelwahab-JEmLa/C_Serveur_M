@@ -1,10 +1,11 @@
-// In A_ClientsLocationGps.kt
 package com.example.Packages.Views._2LocationGpsClients.App.Main
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,23 +15,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.LocationHandler
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.OptionesControleBoutons_F1
-import kotlinx.coroutines.runBlocking
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.SimpleMapControls
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -44,8 +40,6 @@ fun A_ClientsLocationGps(
 ) {
     val context = LocalContext.current
     val currentZoom by remember { mutableStateOf(18.2) }
-    val locationHandler = remember { LocationHandler(context) }
-
     val mapView = remember { MapView(context) }
     val markers = remember { mutableStateListOf<Marker>() }
     var selectedMarker by remember { mutableStateOf<Marker?>(null) }
@@ -72,19 +66,22 @@ fun A_ClientsLocationGps(
         mapView.invalidate()
     }
 
-    // Position initiale using LocationHandler
+    // Position initiale
     val initialLocation = remember {
-        runBlocking {
-            locationHandler.getCurrentLocationDev() ?: Location("default").apply {
+        produceState(initialValue = Location("default").apply {//->
+            //TODO(FIXME):Fix erreur Composable calls are not allowed inside the calculation parameter of inline fun <T> remember(crossinline calculation: () -> TypeVariable(T)): TypeVariable(T)
+            latitude = -34.0
+            longitude = 151.0
+        }) {
+            value = getInitialLocation(context) ?: Location("default").apply {
                 latitude = -34.0
                 longitude = 151.0
             }
-        }
+        }.value
     }
     val geoPoint = GeoPoint(initialLocation.latitude, initialLocation.longitude)
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Carte
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { mapView }
@@ -95,7 +92,6 @@ fun A_ClientsLocationGps(
             }
         }
 
-        // Point central rouge
         Box(
             modifier = Modifier
                 .size(8.dp)
@@ -103,13 +99,8 @@ fun A_ClientsLocationGps(
                 .align(Alignment.Center)
         )
 
-        if (viewModelInitApp
-                ._paramatersAppsViewModelModel
-                .fabsVisibility
-        ) {
-            // Moved control buttons to OptionesControleBoutons_F1
-            OptionesControleBoutons_F1(
-                viewModelInitApp = viewModelInitApp,
+        if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
+            SimpleMapControls(
                 mapView = mapView,
                 markers = markers,
                 showMarkerDetails = showMarkerDetails,
@@ -117,13 +108,13 @@ fun A_ClientsLocationGps(
                     showMarkerDetails = it
                     updateMarkersVisibility()
                 },
-                onMarkerSelected = { marker ->
-                    selectedMarker = marker
+                onMarkerSelected = {
+                    selectedMarker = it
                     showNavigationDialog = true
                 }
             )
         }
-        // Dialog de navigation
+
         if (showNavigationDialog && selectedMarker != null) {
             NavigationDialog(
                 onDismiss = { showNavigationDialog = false },
@@ -140,6 +131,18 @@ fun A_ClientsLocationGps(
     }
 }
 
+private suspend fun getInitialLocation(context: Context): Location? = withContext(Dispatchers.IO) {
+    if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    ) {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } else null
+}
+
 @Composable
 private fun NavigationDialog(
     onDismiss: () -> Unit,
@@ -151,12 +154,7 @@ private fun NavigationDialog(
         title = { Text("Navigation") },
         text = { Text("Voulez-vous démarrer la navigation vers ce point ?") },
         confirmButton = {
-            Button(
-                onClick = {
-                    onConfirm(marker)
-                    onDismiss()
-                }
-            ) {
+            Button(onClick = { onConfirm(marker); onDismiss() }) {
                 Text("Démarrer")
             }
         },

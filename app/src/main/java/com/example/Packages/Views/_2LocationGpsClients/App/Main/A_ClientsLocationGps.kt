@@ -1,5 +1,6 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main
 
+import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
@@ -27,18 +28,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.MapControls
+import com.example.c_serveur.R
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
 @Composable
 fun A_ClientsLocationGps(
@@ -57,7 +62,57 @@ fun A_ClientsLocationGps(
 
     var currentLocation by remember { mutableStateOf(getDefaultLocation()) }
 
-    // Effet pour charger la position initiale
+    // Load client markers
+    LaunchedEffect(viewModelInitApp._modelAppsFather.clientsDisponible) {
+        markers.clear()
+        mapView.overlays.clear()
+
+        viewModelInitApp._modelAppsFather.clientsDisponible.forEach { client ->
+            client.gpsLocation.locationGpsMark?.let { existingMarker ->
+                // If marker already exists, update its position
+                existingMarker.position = GeoPoint(
+                    client.gpsLocation.latitude,
+                    client.gpsLocation.longitude
+                )
+                existingMarker.title = client.nom
+                existingMarker.snippet = if (client.statueDeBase.cUnClientTemporaire) "Client temporaire" else "Client permanent"
+                markers.add(existingMarker)
+                mapView.overlays.add(existingMarker)
+            } ?: run {
+                // Create new marker if it doesn't exist
+                Marker(mapView).apply {
+                    position = GeoPoint(
+                        client.gpsLocation.latitude,
+                        client.gpsLocation.longitude
+                    )
+                    title = client.nom
+                    snippet = if (client.statueDeBase.cUnClientTemporaire) "Client temporaire" else "Client permanent"
+                    setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_location_on)?.apply {   //->
+                        //TODO(FIXME):Fix erreur Unresolved reference: ic_location_on
+                        setTint(Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb())
+                    }
+                    setOnMarkerClickListener { marker, _ ->
+                        selectedMarker = marker
+                        showNavigationDialog = true
+                        if (showMarkerDetails) marker.showInfoWindow()
+                        true
+                    }
+                    client.gpsLocation.locationGpsMark = this
+                    markers.add(this)
+                    mapView.overlays.add(this)
+                }
+            }
+        }
+
+        if (showMarkerDetails) {
+            markers.forEach { it.showInfoWindow() }
+        }
+        mapView.invalidate()
+    }
+
+    // Effect for loading initial position
     LaunchedEffect(Unit) {
         val location = getCurrentLocation(context)
         if (location != null) {
@@ -65,7 +120,7 @@ fun A_ClientsLocationGps(
         }
     }
 
-    // Configuration initiale
+    // Initial configuration
     DisposableEffect(context) {
         Configuration.getInstance()
             .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
@@ -77,7 +132,7 @@ fun A_ClientsLocationGps(
         }
     }
 
-    // Fonction pour mettre à jour l'affichage des marqueurs
+    // Function to update markers visibility
     fun updateMarkersVisibility() {
         markers.forEach { marker ->
             if (showMarkerDetails) marker.showInfoWindow() else marker.closeInfoWindow()
@@ -109,15 +164,15 @@ fun A_ClientsLocationGps(
 
         if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
             MapControls(
-                viewModelInitApp=viewModelInitApp,
+                viewModelInitApp = viewModelInitApp,
                 mapView = mapView,
                 markers = markers,
-                showMarkerDetails = showMarkerDetails,  // Correspond maintenant au paramètre
+                showMarkerDetails = showMarkerDetails,
                 onShowMarkerDetailsChange = {
                     showMarkerDetails = it
                     updateMarkersVisibility()
                 },
-                onMarkerSelected = {  // Correspond maintenant au paramètre
+                onMarkerSelected = {
                     selectedMarker = it
                     showNavigationDialog = true
                 }

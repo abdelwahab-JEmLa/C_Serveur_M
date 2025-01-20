@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -39,15 +40,16 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.core.location.LocationManagerCompat.getCurrentLocation
+import com.example.Packages.Views._2LocationGpsClients.App.Main.Utils.LocationHandler
 import com.example.c_serveur.R
+import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import kotlin.math.roundToInt
 
-// GlobalEditesGFABs_F4.kt
+// Updated GlobalEditesGFABs_F4.kt
 @Composable
 fun GroupedControleBoutons_F1(
     viewModelInitApp: ViewModelInitApp,
@@ -64,6 +66,8 @@ fun GroupedControleBoutons_F1(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var clearDataClickCount by remember { mutableIntStateOf(0) }
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val locationHandler = remember { LocationHandler(context) }
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(
@@ -80,7 +84,10 @@ fun GroupedControleBoutons_F1(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             // Main FAB
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 if (showLabels) {
                     Text(
                         if (showOptions) "Masquer" else "Options",
@@ -95,7 +102,10 @@ fun GroupedControleBoutons_F1(
                     modifier = Modifier.size(40.dp),
                     containerColor = Color(0xFF3F51B5)
                 ) {
-                    Icon(if (showOptions) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null)
+                    Icon(
+                        if (showOptions) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        null
+                    )
                 }
             }
 
@@ -103,7 +113,10 @@ fun GroupedControleBoutons_F1(
             AnimatedVisibility(visible = showOptions) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     // Add Marker FAB
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         if (showLabels) {
                             Text(
                                 "Ajouter",
@@ -121,7 +134,8 @@ fun GroupedControleBoutons_F1(
                                     title = "Nouveau point"
                                     snippet = "Point ajouté"
                                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                                    infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
+                                    infoWindow =
+                                        MarkerInfoWindow(R.layout.marker_info_window, mapView)
                                     setOnMarkerClickListener { clickedMarker, _ ->
                                         onMarkerSelected(clickedMarker)
                                         if (showMarkerDetails) clickedMarker.showInfoWindow()
@@ -141,7 +155,10 @@ fun GroupedControleBoutons_F1(
                     }
 
                     // Current Location FAB
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         if (showLabels) {
                             Text(
                                 "Position",
@@ -153,11 +170,15 @@ fun GroupedControleBoutons_F1(
                         }
                         FloatingActionButton(
                             onClick = {
-                                getCurrentLocation(context)?.let { loc ->     //->
-                                    //TODO(FIXME):Fix erreur None of the following functions can be called with the arguments supplied.
-                                    //getCurrentLocation(LocationManager, String, android.os.CancellationSignal?, Executor, Consumer<Location!>) defined in androidx.core.location.LocationManagerCompat
-                                    //getCurrentLocation(LocationManager, String, androidx.core.os.CancellationSignal?, Executor, Consumer<Location!>) defined in androidx.core.location.LocationManagerCompat
-                                    mapView.controller.animateTo(GeoPoint(loc.latitude, loc.longitude))
+                                scope.launch {
+                                    locationHandler.getCurrentLocation()?.let { loc ->
+                                        mapView.controller.animateTo(
+                                            GeoPoint(
+                                                loc.latitude,
+                                                loc.longitude
+                                            )
+                                        )
+                                    }
                                 }
                             },
                             modifier = Modifier.size(40.dp),
@@ -168,7 +189,10 @@ fun GroupedControleBoutons_F1(
                     }
 
                     // Show/Hide Details FAB
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         if (showLabels) {
                             Text(
                                 if (showMarkerDetails) "Masquer détails" else "Afficher détails",
@@ -183,12 +207,18 @@ fun GroupedControleBoutons_F1(
                             modifier = Modifier.size(40.dp),
                             containerColor = Color(0xFF009688)
                         ) {
-                            Icon(Icons.Default.Info, if (showMarkerDetails) "Masquer les détails" else "Afficher les détails")
+                            Icon(
+                                Icons.Default.Info,
+                                if (showMarkerDetails) "Masquer les détails" else "Afficher les détails"
+                            )
                         }
                     }
 
                     // Clear Data FAB
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         if (showLabels) {
                             Text(
                                 if (clearDataClickCount == 0) "Supprimer" else "Confirmer",
@@ -214,7 +244,10 @@ fun GroupedControleBoutons_F1(
                     }
 
                     // Edit Position FAB
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         if (showLabels) {
                             Text(
                                 "Position",
@@ -225,7 +258,10 @@ fun GroupedControleBoutons_F1(
                             )
                         }
                         FloatingActionButton(
-                            onClick = { viewModelInitApp._paramatersAppsViewModelModel.visibilityClientEditePositionDialog = true },
+                            onClick = {
+                                viewModelInitApp._paramatersAppsViewModelModel.visibilityClientEditePositionDialog =
+                                    true
+                            },
                             modifier = Modifier.size(40.dp),
                             containerColor = Color(0xFFFF5722)
                         ) {

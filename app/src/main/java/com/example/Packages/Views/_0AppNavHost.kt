@@ -41,7 +41,10 @@ abstract class Screen(
 
 object NavigationItems {
     val items = listOf(
-        ScreensApp2,
-        Screens,
+        ScreensApp2.Fragment1Screen,
+        Screens.MainScreen_F4,
+        Screens.MainScreen_F1,
+        Screens.MainScreen_F2,
+        Screens.MainScreen_F3
     )
 }

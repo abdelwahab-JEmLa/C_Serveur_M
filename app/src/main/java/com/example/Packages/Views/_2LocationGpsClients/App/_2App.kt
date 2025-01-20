@@ -11,7 +11,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.Packages.Views.Screen
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_4InNavHost_Id3.A_AfficheurDesProduitsPourLeColecteur_F3
 import com.example.Packages.Views._2LocationGpsClients.App.Main.A_ClientsLocationGps
 
 fun NavGraphBuilder._2App(viewModelInitApp: ViewModelInitApp) {
@@ -27,12 +26,12 @@ object ScreensApp2 {
 data object Fragment1ScreenDataObject : Screen(
     route = "Fragment1",
     icon = Icons.Default.Person,
-    title = "A_AfficheurDesProduitsPourLeColecteur_F3",
+    title = "A_ClientsLocationGps",
     color = Color(0xFFFF5722)
 )
 
 @Preview
 @Composable
-private fun Preview_App2Fragment1() {
-    A_AfficheurDesProduitsPourLeColecteur_F3(modifier = Modifier.fillMaxSize())
+private fun PreviewApp2_F1() {
+    A_ClientsLocationGps(modifier = Modifier.fillMaxSize())
 }

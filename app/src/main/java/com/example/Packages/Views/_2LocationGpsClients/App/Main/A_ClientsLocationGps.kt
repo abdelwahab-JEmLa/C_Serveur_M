@@ -40,22 +40,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 
-private fun getDefaultLocation() = Location("default").apply {
-    latitude = -34.0
-    longitude = 151.0
-}
 
-private suspend fun getCurrentLocation(context: Context): Location? {
-    return if (ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-    ) {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-    } else null
-}
 
 @Composable
 fun A_ClientsLocationGps(
@@ -156,6 +141,22 @@ fun A_ClientsLocationGps(
     }
 }
 
+private fun getDefaultLocation() = Location("default").apply {
+    latitude = -34.0
+    longitude = 151.0
+}
+
+private fun getCurrentLocation(context: Context): Location? {
+    return if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    ) {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } else null
+}
 @Composable
 private fun NavigationDialog(
     onDismiss: () -> Unit,

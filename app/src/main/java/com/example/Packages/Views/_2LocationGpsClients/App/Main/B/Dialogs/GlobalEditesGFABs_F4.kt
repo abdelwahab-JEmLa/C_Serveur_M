@@ -1,6 +1,10 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import android.Manifest
+import android.content.Context
+import android.location.Location
+import android.location.LocationManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
@@ -42,15 +46,69 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.Packages.Views._2LocationGpsClients.App.Main.Utils.LocationHandler
+import androidx.core.content.ContextCompat
 import com.example.c_serveur.R
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
+import kotlin.coroutines.resume
 import kotlin.math.roundToInt
 
+class LocationHandler(private val context: Context) {
+    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+    suspend fun getCurrentLocationDev(): Location? = suspendCancellableCoroutine { continuation ->
+        try {
+            if (!hasLocationPermission()) {
+                continuation.resume(null)
+                return@suspendCancellableCoroutine
+            }
+
+            // Try GPS provider first
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                try {
+                    val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                    if (lastKnownLocation != null) {
+                        continuation.resume(lastKnownLocation)
+                        return@suspendCancellableCoroutine
+                    }
+                } catch (e: SecurityException) {
+                    // Fall through to network provider
+                }
+            }
+
+            // Try network provider as fallback
+            if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                try {
+                    val lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                    continuation.resume(lastKnownLocation)
+                    return@suspendCancellableCoroutine
+                } catch (e: SecurityException) {
+                    continuation.resume(null)
+                    return@suspendCancellableCoroutine
+                }
+            }
+
+            continuation.resume(null)
+        } catch (e: Exception) {
+            continuation.resume(null)
+        }
+    }
+
+    private fun hasLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    }
+}
 // Updated GlobalEditesGFABs_F4.kt
 @Composable
 fun OptionesControleBoutons_F1(
@@ -148,7 +206,7 @@ fun OptionesControleBoutons_F1(
                         FloatingActionButton(
                             onClick = {
                                 scope.launch {
-                                    locationHandler.getCurrentLocation()?.let { loc ->
+                                    locationHandler.getCurrentLocationDev()?.let { loc ->
                                         mapView.controller.animateTo(
                                             GeoPoint(loc.latitude, loc.longitude)
                                         )
@@ -277,5 +335,17 @@ fun OptionesControleBoutons_F1(
                 }
             }
         }
+    }
+}
+private fun getCurrentLocationDev(context: Context): Location? {
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    return try {
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+    } catch (e: SecurityException) {
+        null
+    } ?: try {
+        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } catch (e: SecurityException) {
+        null
     }
 }

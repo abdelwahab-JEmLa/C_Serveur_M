@@ -1,10 +1,10 @@
+// In A_ClientsLocationGps.kt
 package com.example.Packages.Views._2LocationGpsClients.App.Main
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.content.Context
 import android.content.Intent
 import android.location.Location
-import android.location.LocationManager
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -28,25 +28,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.LocationHandler
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.OptionesControleBoutons_F1
+import kotlinx.coroutines.runBlocking
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-
-private fun getCurrentLocation(context: Context): Location? {
-    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    return try {
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-    } catch (e: SecurityException) {
-        null
-    } ?: try {
-        locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-    } catch (e: SecurityException) {
-        null
-    }
-}
 
 @Composable
 fun A_ClientsLocationGps(
@@ -55,6 +44,7 @@ fun A_ClientsLocationGps(
 ) {
     val context = LocalContext.current
     val currentZoom by remember { mutableStateOf(18.2) }
+    val locationHandler = remember { LocationHandler(context) }
 
     val mapView = remember { MapView(context) }
     val markers = remember { mutableStateListOf<Marker>() }
@@ -82,11 +72,13 @@ fun A_ClientsLocationGps(
         mapView.invalidate()
     }
 
-    // Position initiale
+    // Position initiale using LocationHandler
     val initialLocation = remember {
-        getCurrentLocation(context) ?: Location("default").apply {
-            latitude = -34.0
-            longitude = 151.0
+        runBlocking {
+            locationHandler.getCurrentLocationDev() ?: Location("default").apply {
+                latitude = -34.0
+                longitude = 151.0
+            }
         }
     }
     val geoPoint = GeoPoint(initialLocation.latitude, initialLocation.longitude)
@@ -110,6 +102,7 @@ fun A_ClientsLocationGps(
                 .background(Color.Red, CircleShape)
                 .align(Alignment.Center)
         )
+
         if (viewModelInitApp
                 ._paramatersAppsViewModelModel
                 .fabsVisibility
@@ -132,33 +125,45 @@ fun A_ClientsLocationGps(
         }
         // Dialog de navigation
         if (showNavigationDialog && selectedMarker != null) {
-            AlertDialog(
-                onDismissRequest = { showNavigationDialog = false },
-                title = { Text("Navigation") },
-                text = { Text("Voulez-vous démarrer la navigation vers ce point ?") },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            selectedMarker?.let { marker ->
-                                val uri =
-                                    Uri.parse("google.navigation:q=${marker.position.latitude},${marker.position.longitude}&mode=d")
-                                val mapIntent = Intent(Intent.ACTION_VIEW, uri).apply {
-                                    setPackage("com.google.android.apps.maps")
-                                }
-                                context.startActivity(mapIntent)
-                            }
-                            showNavigationDialog = false
-                        }
-                    ) {
-                        Text("Démarrer")
+            NavigationDialog(
+                onDismiss = { showNavigationDialog = false },
+                onConfirm = { marker ->
+                    val uri = Uri.parse("google.navigation:q=${marker.position.latitude},${marker.position.longitude}&mode=d")
+                    val mapIntent = Intent(Intent.ACTION_VIEW, uri).apply {
+                        setPackage("com.google.android.apps.maps")
                     }
+                    context.startActivity(mapIntent)
                 },
-                dismissButton = {
-                    Button(onClick = { showNavigationDialog = false }) {
-                        Text("Annuler")
-                    }
-                }
+                marker = selectedMarker!!
             )
         }
     }
+}
+
+@Composable
+private fun NavigationDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (Marker) -> Unit,
+    marker: Marker
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Navigation") },
+        text = { Text("Voulez-vous démarrer la navigation vers ce point ?") },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onConfirm(marker)
+                    onDismiss()
+                }
+            ) {
+                Text("Démarrer")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Annuler")
+            }
+        }
+    )
 }

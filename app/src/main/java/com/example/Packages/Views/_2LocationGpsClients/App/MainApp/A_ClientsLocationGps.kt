@@ -50,7 +50,7 @@ fun A_ClientsLocationGps(
     modifier: Modifier = Modifier,
     viewModel: ChildViewModelOfFragment = viewModel(),
 ) {
-    val viewModelInitApp =   viewModel._ViewModelHeadOfAll
+    val viewModelInitApp = viewModel.viewModelHeadOfAll
     val context = LocalContext.current
     val currentZoom by remember { mutableStateOf(18.2) }
     val mapView = remember { MapView(context) }

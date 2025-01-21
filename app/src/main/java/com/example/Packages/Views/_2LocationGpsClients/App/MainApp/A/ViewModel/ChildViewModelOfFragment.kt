@@ -13,10 +13,9 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
-class ChildViewModelOfFragment : ViewModel() {
-    val _ViewModelHeadOfAll by mutableStateOf(ViewModelInitApp())
-    val _modelAppsFather = _ViewModelHeadOfAll._modelAppsFather
-    val produitsMainDataBase = _ViewModelHeadOfAll._modelAppsFather.produitsMainDataBase
+class ChildViewModelOfFragment(val viewModelHeadOfAll: ViewModelInitApp) : ViewModel() {
+    val _modelAppsFather = viewModelHeadOfAll._modelAppsFather
+    val produitsMainDataBase = viewModelHeadOfAll._modelAppsFather.produitsMainDataBase
 
     fun onClickAddMarkerButton(
         mapView: MapView,
@@ -75,8 +74,6 @@ class ChildViewModelOfFragment : ViewModel() {
         }
         mapView.invalidate()
 
-        _ModelAppsFather.updateProduit(product, _ViewModelHeadOfAll)
+        _ModelAppsFather.updateProduit(product, viewModelProduits = viewModelHeadOfAll)
     }
 }
-
-

@@ -11,11 +11,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.Packages.Views.Screen
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.A.ViewModel.ChildViewModelOfFragment
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.A_ClientsLocationGps
 
 fun NavGraphBuilder._2App(viewModelInitApp: ViewModelInitApp) {
     composable(ScreensApp2.Fragment1Screen.route) {
-        A_ClientsLocationGps()
+        A_ClientsLocationGps(viewModel = ChildViewModelOfFragment(viewModelInitApp))
     }
 }
 

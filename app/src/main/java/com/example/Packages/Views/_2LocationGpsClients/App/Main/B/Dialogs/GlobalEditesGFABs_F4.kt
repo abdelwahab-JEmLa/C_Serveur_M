@@ -52,8 +52,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.example.Packages.Views._2LocationGpsClients.App.Main.Utils.rememberLocationTracker
 import com.example.c_serveur.R
-import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -271,35 +271,37 @@ fun MapControls(
                         }
                     }
 
+                    // In MapControls.kt, update the location button to be a toggle:
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
+                        var isTracking by remember { mutableStateOf(false) }
+                        val locationTracker = rememberLocationTracker(mapView)
+
                         FloatingActionButton(
                             onClick = {
-                                scope.launch {
-                                    if (ContextCompat.checkSelfPermission(
-                                            context,
-                                            Manifest.permission.ACCESS_FINE_LOCATION
-                                        ) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                                        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                                            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-
-                                        location?.let { loc ->
-                                            mapView.controller.animateTo(GeoPoint(loc.latitude, loc.longitude))
-                                        }
-                                    }
+                                isTracking = !isTracking
+                                if (isTracking) {
+                                    locationTracker.startTracking()
+                                } else {
+                                    locationTracker.stopTracking()
                                 }
                             },
                             modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF9C27B0)
+                            containerColor = if (isTracking) Color(0xFF4CAF50) else Color(0xFF9C27B0)
                         ) {
-                            Icon(Icons.Default.LocationOn, "Position actuelle")
+                            Icon(
+                                Icons.Default.LocationOn,
+                                contentDescription = if (isTracking) "Stop tracking" else "Start tracking"
+                            )
                         }
                         if (showLabels) {
                             Text(
-                                "Position",
-                                modifier = Modifier.background(Color(0xFF9C27B0)).padding(4.dp),
+                                if (isTracking) "Stop tracking" else "Start tracking",
+                                modifier = Modifier
+                                    .background(if (isTracking) Color(0xFF4CAF50) else Color(0xFF9C27B0))
+                                    .padding(4.dp),
                                 color = Color.White
                             )
                         }

@@ -39,7 +39,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.MapControls
 import com.example.c_serveur.R
-import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -62,54 +61,82 @@ fun A_ClientsLocationGps(
     var showNavigationDialog by remember { mutableStateOf(false) }
     var showMarkerDetails by remember { mutableStateOf(true) }
 
-    var currentLocation by remember { mutableStateOf(getDefaultLocation()) }
-    // Show loading indicator while initializing
-    if (viewModelInitApp.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(48.dp),
-                color = MaterialTheme.colorScheme.primary
+    // Structure de données pour la position
+    var mapPosition by remember {
+        mutableStateOf(
+            MapPosition(
+                latitude = DEFAULT_LATITUDE,
+                longitude = DEFAULT_LONGITUDE,
+                isInitialized = false
             )
-        }
-        return
+        )
     }
-    // Load client markers
+
+    // Configuration initiale de la carte
+    DisposableEffect(context) {
+        Configuration.getInstance()
+            .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
+        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        mapView.setMultiTouchControls(true)
+
+        onDispose {
+            mapView.overlays.clear()
+        }
+    }
+
+    // Effet pour charger la position initiale
+    LaunchedEffect(Unit) {
+        if (!mapPosition.isInitialized) {
+            val location = getCurrentLocation(context)
+            if (location != null) {
+                mapPosition = MapPosition(
+                    latitude = location.latitude,
+                    longitude = location.longitude,
+                    isInitialized = true
+                )
+            }
+
+            // Centrer la carte sur la position (par défaut ou réelle)
+            mapView.controller.apply {
+                setCenter(GeoPoint(mapPosition.latitude, mapPosition.longitude))
+                setZoom(currentZoom)
+            }
+        }
+    }
+
+    // Gestion des marqueurs
     LaunchedEffect(viewModelInitApp._modelAppsFather.clientsDisponible) {
         markers.clear()
         mapView.overlays.clear()
 
-        // Create marker icon using VectorDrawableCompat
         val markerDrawable = ContextCompat.getDrawable(context, R.drawable.ic_location_on)?.mutate()
 
         viewModelInitApp._modelAppsFather.clientsDisponible.forEach { client ->
             client.gpsLocation.locationGpsMark?.let { existingMarker ->
-                // If marker already exists, update its position
+                // Mise à jour du marqueur existant
                 existingMarker.position = GeoPoint(
                     client.gpsLocation.latitude,
                     client.gpsLocation.longitude
                 )
                 existingMarker.title = client.nom
-                existingMarker.snippet = if (client.statueDeBase.cUnClientTemporaire) "Client temporaire" else "Client permanent"
+                existingMarker.snippet = if (client.statueDeBase.cUnClientTemporaire)
+                    "Client temporaire" else "Client permanent"
                 markers.add(existingMarker)
                 mapView.overlays.add(existingMarker)
             } ?: run {
-                // Create new marker if it doesn't exist
+                // Création d'un nouveau marqueur
                 Marker(mapView).apply {
                     position = GeoPoint(
                         client.gpsLocation.latitude,
                         client.gpsLocation.longitude
                     )
                     title = client.nom
-                    snippet = if (client.statueDeBase.cUnClientTemporaire) "Client temporaire" else "Client permanent"
+                    snippet = if (client.statueDeBase.cUnClientTemporaire)
+                        "Client temporaire" else "Client permanent"
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
 
-                    // Set the icon using the vector drawable
                     markerDrawable?.let { drawable ->
-                        // Create a wrapped drawable that we can tint
                         val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
                         DrawableCompat.setTint(
                             wrappedDrawable,
@@ -134,51 +161,15 @@ fun A_ClientsLocationGps(
         if (showMarkerDetails) {
             markers.forEach { it.showInfoWindow() }
         }
+
         mapView.invalidate()
     }
-
-    // Effect for loading initial position
-    LaunchedEffect(Unit) {
-        val location = getCurrentLocation(context)
-        if (location != null) {
-            currentLocation = location
-        }
-    }
-
-    // Initial configuration
-    DisposableEffect(context) {
-        Configuration.getInstance()
-            .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
-        mapView.setTileSource(TileSourceFactory.MAPNIK)
-        mapView.setMultiTouchControls(true)
-
-        onDispose {
-            mapView.overlays.clear()
-        }
-    }
-
-    // Function to update markers visibility
-    fun updateMarkersVisibility() {
-        markers.forEach { marker ->
-            if (showMarkerDetails) marker.showInfoWindow() else marker.closeInfoWindow()
-        }
-        mapView.invalidate()
-    }
-
-    val geoPoint = GeoPoint(currentLocation.latitude, currentLocation.longitude)
 
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { mapView }
-        ) { view ->
-            scope.launch {
-                view.controller.apply {
-                    setCenter(geoPoint)
-                    setZoom(currentZoom)
-                }
-            }
-        }
+        )
 
         Box(
             modifier = Modifier
@@ -195,7 +186,11 @@ fun A_ClientsLocationGps(
                 showMarkerDetails = showMarkerDetails,
                 onShowMarkerDetailsChange = {
                     showMarkerDetails = it
-                    updateMarkersVisibility()
+                    markers.forEach { marker ->
+                        if (showMarkerDetails) marker.showInfoWindow()
+                        else marker.closeInfoWindow()
+                    }
+                    mapView.invalidate()
                 },
                 onMarkerSelected = {
                     selectedMarker = it
@@ -208,7 +203,9 @@ fun A_ClientsLocationGps(
             NavigationDialog(
                 onDismiss = { showNavigationDialog = false },
                 onConfirm = { marker ->
-                    val uri = Uri.parse("google.navigation:q=${marker.position.latitude},${marker.position.longitude}&mode=d")
+                    val uri = Uri.parse(
+                        "google.navigation:q=${marker.position.latitude},${marker.position.longitude}&mode=d"
+                    )
                     val mapIntent = Intent(Intent.ACTION_VIEW, uri).apply {
                         setPackage("com.google.android.apps.maps")
                     }
@@ -220,22 +217,6 @@ fun A_ClientsLocationGps(
     }
 }
 
-private fun getDefaultLocation() = Location("default").apply {
-    latitude = -34.0
-    longitude = 151.0
-}
-
-private fun getCurrentLocation(context: Context): Location? {
-    return if (ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-    ) {
-        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-    } else null
-}
 @Composable
 private fun NavigationDialog(
     onDismiss: () -> Unit,
@@ -257,4 +238,25 @@ private fun NavigationDialog(
             }
         }
     )
+}
+
+private data class MapPosition(
+    val latitude: Double,
+    val longitude: Double,
+    val isInitialized: Boolean
+)
+
+private const val DEFAULT_LATITUDE = 46.227638 // Paris par défaut
+private const val DEFAULT_LONGITUDE = 2.213749
+
+private fun getCurrentLocation(context: Context): Location? {
+    return if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    ) {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } else null
 }

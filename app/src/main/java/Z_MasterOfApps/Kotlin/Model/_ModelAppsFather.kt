@@ -2,6 +2,7 @@ package Z_MasterOfApps.Kotlin.Model
 
 import Z_MasterOfApps.Kotlin.Model.Extension.GrossistBonCommandesExtension
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import android.location.Location
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -17,7 +18,6 @@ import com.google.firebase.database.database
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import org.osmdroid.views.overlay.Marker
 import java.util.Objects
 
 open class _ModelAppsFather(
@@ -26,6 +26,7 @@ open class _ModelAppsFather(
     @get:Exclude
     var produitsMainDataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
+
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -218,14 +219,8 @@ open class _ModelAppsFather(
                 @IgnoreExtraProperties
                 class GpsLocation {
                     @get:Exclude
-                    var locationGpsMark: Marker? by mutableStateOf(null)
+                    var locationGeo: Location? by mutableStateOf(null)
                     var couleur by mutableStateOf("#FFFFFF")
-
-                    // Ajout des propriétés pour stocker les données du marker
-                    var latitude by mutableStateOf(0.0)
-                    var longitude by mutableStateOf(0.0)
-                    var title by mutableStateOf("")
-                    var snippet by mutableStateOf("")
                 }
 
                 override fun equals(other: Any?): Boolean {

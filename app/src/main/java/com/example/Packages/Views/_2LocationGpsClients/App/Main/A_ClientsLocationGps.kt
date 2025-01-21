@@ -58,7 +58,7 @@ fun A_ClientsLocationGps(
     var showNavigationDialog by remember { mutableStateOf(false) }
     var showMarkerDetails by remember { mutableStateOf(true) }
 
-    // Structure de données pour la position
+    // Initialize map position with current location
     var mapPosition by remember {
         mutableStateOf(
             MapPosition(
@@ -69,10 +69,9 @@ fun A_ClientsLocationGps(
         )
     }
 
-    // Configuration initiale de la carte
+    // Initial map configuration
     DisposableEffect(context) {
-        Configuration.getInstance()
-            .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
+        Configuration.getInstance().load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
         mapView.setTileSource(TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
 
@@ -81,85 +80,58 @@ fun A_ClientsLocationGps(
         }
     }
 
-    // Effet pour charger la position initiale
+    // Center map on current location when launched
     LaunchedEffect(Unit) {
-        if (!mapPosition.isInitialized) {
-            val location = getCurrentLocation(context)
-            if (location != null) {
-                mapPosition = MapPosition(
-                    latitude = location.latitude,
-                    longitude = location.longitude,
-                    isInitialized = true
-                )
-            }
-
-            // Centrer la carte sur la position (par défaut ou réelle)
+        getCurrentLocation(context)?.let { location ->
+            mapPosition = MapPosition(
+                latitude = location.latitude,
+                longitude = location.longitude,
+                isInitialized = true
+            )
             mapView.controller.apply {
-                setCenter(GeoPoint(mapPosition.latitude, mapPosition.longitude))
                 setZoom(currentZoom)
+                animateTo(GeoPoint(location.latitude, location.longitude))
             }
         }
     }
-
-    // Gestion des marqueurs
-    // Fonction d'extension pour créer un marqueur personnalisé
-    fun createCustomMarkerDrawable(context: Context, color: Int): android.graphics.drawable.Drawable {
-        // Créer un LayerDrawable pour combiner le cercle et l'icône
+     fun createCustomMarkerDrawable(context: Context, color: Int): android.graphics.drawable.Drawable {
         val layers = arrayOf(
-            // Cercle noir en arrière-plan
+            // Background circle with custom color
             android.graphics.drawable.GradientDrawable().apply {
                 shape = android.graphics.drawable.GradientDrawable.OVAL
-                setColor(android.graphics.Color.WHITE)
-                setSize(40, 40) // Taille du cercle en pixels
+                setColor(color)
+                setStroke(2, android.graphics.Color.WHITE) // White border
+                setSize(40, 40)
             },
-            // Icône du marqueur
+            // White icon on top
             ContextCompat.getDrawable(context, R.drawable.ic_location_on)?.mutate()?.apply {
-                setBounds(8, 8, 32, 32) // Position et taille de l'icône à l'intérieur du cercle
+                setTint(android.graphics.Color.WHITE)
+                setBounds(8, 8, 32, 32)
             }
         )
 
         return android.graphics.drawable.LayerDrawable(layers).apply {
-            setLayerInset(0, 0, 0, 0, 0) // Pas d'inset pour le cercle
-            setLayerInset(1, 4, 4, 4, 4) // Insets pour centrer l'icône
+            setLayerInset(0, 0, 0, 0, 0)
+            setLayerInset(1, 4, 4, 4, 4)
         }
     }
 
-    // Dans le LaunchedEffect pour la gestion des marqueurs
+// Dans LaunchedEffect
     LaunchedEffect(viewModelInitApp._modelAppsFather.clientsDisponible) {
         markers.clear()
         mapView.overlays.clear()
 
         viewModelInitApp._modelAppsFather.clientsDisponible.forEach { client ->
-            client.gpsLocation.locationGpsMark?.let { existingMarker ->
-                // Mise à jour du marqueur existant
-                existingMarker.position = GeoPoint(
-                    client.gpsLocation.latitude,
-                    client.gpsLocation.longitude
-                )
-                existingMarker.title = client.nom
-                existingMarker.snippet = if (client.statueDeBase.cUnClientTemporaire)
-                    "Client temporaire" else "Client permanent"
-
-                // Mise à jour de l'icône avec le cercle en arrière-plan
-                val markerColor = Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb()
-                existingMarker.icon = createCustomMarkerDrawable(context, markerColor)
-
-                markers.add(existingMarker)
-                mapView.overlays.add(existingMarker)
-            } ?: run {
-                // Création d'un nouveau marqueur
+            client.gpsLocation.locationGeo?.let { location ->
                 Marker(mapView).apply {
-                    position = GeoPoint(
-                        client.gpsLocation.latitude,
-                        client.gpsLocation.longitude
-                    )
+                    position = GeoPoint(location.latitude, location.longitude)
                     title = client.nom
                     snippet = if (client.statueDeBase.cUnClientTemporaire)
                         "Client temporaire" else "Client permanent"
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
 
-                    // Application du nouveau style avec cercle en arrière-plan
+                    // Style du marqueur personnalisé
                     val markerColor = Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb()
                     icon = createCustomMarkerDrawable(context, markerColor)
 
@@ -169,17 +141,17 @@ fun A_ClientsLocationGps(
                         if (showMarkerDetails) marker.showInfoWindow()
                         true
                     }
-                    client.gpsLocation.locationGpsMark = this
+
+                    // Ajouter à la carte et aux listes
                     markers.add(this)
                     mapView.overlays.add(this)
+
+                    if (showMarkerDetails) {
+                        showInfoWindow()
+                    }
                 }
             }
         }
-
-        if (showMarkerDetails) {
-            markers.forEach { it.showInfoWindow() }
-        }
-
         mapView.invalidate()
     }
 
@@ -189,6 +161,7 @@ fun A_ClientsLocationGps(
             factory = { mapView }
         )
 
+        // Center crosshair
         Box(
             modifier = Modifier
                 .size(8.dp)
@@ -196,27 +169,43 @@ fun A_ClientsLocationGps(
                 .align(Alignment.Center)
         )
 
+        // Map controls
         if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
             MapControls(
                 viewModelInitApp = viewModelInitApp,
                 mapView = mapView,
                 markers = markers,
                 showMarkerDetails = showMarkerDetails,
-                onShowMarkerDetailsChange = {
-                    showMarkerDetails = it
+                onShowMarkerDetailsChange = { show ->
+                    showMarkerDetails = show
                     markers.forEach { marker ->
-                        if (showMarkerDetails) marker.showInfoWindow()
+                        if (show) marker.showInfoWindow()
                         else marker.closeInfoWindow()
                     }
                     mapView.invalidate()
                 },
-                onMarkerSelected = {
-                    selectedMarker = it
+                onMarkerSelected = { marker ->
+                    selectedMarker = marker
                     showNavigationDialog = true
+                },
+                onAddNewMarker = { location ->
+                    Marker(mapView).apply {
+                        position = GeoPoint(location.latitude, location.longitude)
+                        title = "Nouveau client"
+                        snippet = "Client temporaire"
+                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
+
+                        markers.add(this)
+                        mapView.overlays.add(this)
+                        if (showMarkerDetails) showInfoWindow()
+                        mapView.invalidate()
+                    }
                 }
             )
         }
 
+        // Navigation dialog
         if (showNavigationDialog && selectedMarker != null) {
             NavigationDialog(
                 onDismiss = { showNavigationDialog = false },

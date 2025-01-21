@@ -1,11 +1,9 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 
-import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
-import android.location.Location
 import android.location.LocationManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -41,10 +39,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.example.c_serveur.R
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import kotlin.math.roundToInt
 
 @Composable
@@ -54,13 +54,14 @@ fun MapControls(
     markers: MutableList<Marker>,
     showMarkerDetails: Boolean,
     onShowMarkerDetailsChange: (Boolean) -> Unit,
-    onMarkerSelected: (Marker) -> Unit,
-    onAddNewMarker: (Location) -> Unit,
+    onMarkerSelected: (Marker) -> Unit
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showMenu by remember { mutableStateOf(false) }
     var showLabels by remember { mutableStateOf(true) }
+
+    // États pour le drag
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
@@ -80,12 +81,14 @@ fun MapControls(
                 }
                 .padding(16.dp)
         ) {
+            // Single Column for all controls
             Column(
                 modifier = Modifier.align(Alignment.BottomStart),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                // Main menu options
                 if (showMenu) {
-                    // Add Marker Button
+                    // Bouton Ajouter Marqueur
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -93,40 +96,53 @@ fun MapControls(
                         FloatingActionButton(
                             onClick = {
                                 val center = mapView.mapCenter
-                                val newLocation = Location("").apply {
-                                    latitude = center.latitude
-                                    longitude = center.longitude
-                                    time = System.currentTimeMillis()
-                                }
-
-                                // Create new client
-                                val newID = viewModelInitApp._modelAppsFather.clientsDisponible
-                                    .maxOf { it.id } + 1
+                                // Create a new client with GPS location
                                 val newClient = _ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations(
-                                    id = newID,
-                                    nom = "Nouveau client *$newID",
+                                    id = System.currentTimeMillis(),
+                                    nom = "Nouveau client",
                                 ).apply {
                                     statueDeBase.cUnClientTemporaire = true
                                     gpsLocation.apply {
+                                        latitude = center.latitude
+                                        longitude = center.longitude
+                                        title = "Nouveau client"
+                                        snippet = "Client temporaire"
                                         couleur = "#2196F3"
-                                        locationGeo = newLocation
+
+                                        locationGpsMark = Marker(mapView).apply {
+                                            position = GeoPoint(latitude, longitude)
+                                            this.title = title
+                                            this.snippet = snippet
+                                            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                                            infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
+                                            setOnMarkerClickListener { marker, _ ->
+                                                onMarkerSelected(marker)
+                                                if (showMarkerDetails) marker.showInfoWindow()
+                                                true
+                                            }
+                                        }
                                     }
                                 }
 
-                                // Create new bon vent
                                 val newBonVent = _ModelAppsFather.ProduitModel.ClientBonVentModel(
                                     vid = System.currentTimeMillis(),
                                     init_clientInformations = newClient
                                 )
 
-                                // Add to product
-                                val product = viewModelInitApp.produitsMainDataBase.find { it.id == 0L }
-                                    ?: _ModelAppsFather.ProduitModel(id = 0L).also {
-                                        viewModelInitApp.produitsMainDataBase.add(it)
-                                    }
+                                val product = viewModelInitApp.produitsMainDataBase.find { it.id == 0L } ?:
+                                _ModelAppsFather.ProduitModel(id = 0L).also {
+                                    viewModelInitApp.produitsMainDataBase.add(it)
+                                }
 
-                                product.historiqueBonsVents.add(newBonVent)
-                                onAddNewMarker(newLocation)
+                                product.bonsVentDeCetteCota.add(newBonVent)
+
+                                newClient.gpsLocation.locationGpsMark?.let { marker ->
+                                    markers.add(marker)
+                                    mapView.overlays.add(marker)
+                                    if (showMarkerDetails) marker.showInfoWindow()
+                                }
+                                mapView.invalidate()
+
                                 _ModelAppsFather.updateProduit(product, viewModelInitApp)
                             },
                             modifier = Modifier.size(40.dp),

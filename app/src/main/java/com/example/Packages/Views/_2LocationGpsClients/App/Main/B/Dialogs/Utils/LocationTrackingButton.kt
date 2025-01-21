@@ -1,7 +1,6 @@
-package com.example.Packages.Views._2LocationGpsClients.App.Main.Utils
+package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils
 
 import android.content.Context
-import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -11,23 +10,53 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.ControlButton
 import com.example.c_serveur.R
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
 
+@Composable
+ fun LocationTrackingButton(
+    showLabels: Boolean,
+    mapView: MapView,
+    proximiteMeter: Double
+) {
+    var isTracking by remember { mutableStateOf(false) }
+    val locationTracker = rememberLocationTracker(mapView, proximiteMeter)
+
+    ControlButton(
+        onClick = {
+            isTracking = !isTracking
+            if (isTracking) {
+                locationTracker.startTracking()
+            } else {
+                locationTracker.stopTracking()
+            }
+        },
+        icon = Icons.Default.LocationOn,
+        contentDescription = if (isTracking) "Stop tracking" else "Start tracking",
+        showLabels = showLabels,
+        labelText = if (isTracking) "Stop tracking" else "Start tracking",
+        containerColor = if (isTracking) Color(0xFF4CAF50) else Color(0xFF9C27B0)
+    )
+}
+
 class LocationTracker(
     private val context: Context,
-    private val mapView: MapView ,
+    private val mapView: MapView,
     private val radius: Double
 ) : SensorEventListener, LocationListener {
 
@@ -64,8 +93,9 @@ class LocationTracker(
 
         return Polygon(mapView).apply {
             this.points = points
-            fillColor = Color.argb(40, 33, 150, 243) // Bleu transparent
-            strokeColor = Color.argb(128, 33, 150, 243) // Bleu plus opaque pour le contour
+            fillColor = android.graphics.Color.argb(40, 33, 150, 243) // Bleu transparent
+            strokeColor =
+                android.graphics.Color.argb(128, 33, 150, 243) // Bleu plus opaque pour le contour
             strokeWidth = 3f
         }
     }
@@ -123,7 +153,7 @@ class LocationTracker(
             directionMarker = Marker(mapView).apply {
                 icon = ContextCompat.getDrawable(context, R.drawable.location_arrow)
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-                icon?.setTint(Color.BLUE) // Rendre l'icône plus visible
+                icon?.setTint(android.graphics.Color.BLUE) // Rendre l'icône plus visible
             }
 
             // Ajouter le marker initial
@@ -198,11 +228,12 @@ class LocationTracker(
         private const val LOCATION_UPDATE_INTERVAL = 1000L // 1 second
         private const val LOCATION_UPDATE_DISTANCE = 1f    // 1 meter
     }
-}    
+}
+
 @Composable
 fun rememberLocationTracker(mapView: MapView, proxim: Double): LocationTracker {
     val context = LocalContext.current
-    val locationTracker = remember { LocationTracker(context, mapView,proxim) }
+    val locationTracker = remember { LocationTracker(context, mapView, proxim) }
 
     DisposableEffect(locationTracker) {
         onDispose {

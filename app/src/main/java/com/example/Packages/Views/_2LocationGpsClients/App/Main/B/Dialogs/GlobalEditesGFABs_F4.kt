@@ -79,7 +79,7 @@ fun NearbyMarkersDialog(
 
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Markers Within 10 Meters") },
+            title = { Text("Markers Within $proxim Meters") },
             text = {
                 LazyColumn(
                     modifier = Modifier
@@ -108,7 +108,7 @@ fun NearbyMarkersDialog(
                     }
                     if (nearbyMarkers.isEmpty()) {
                         item {
-                            Text("No markers found within 10 meters")
+                            Text("No markers found within $proxim meters")
                         }
                     }
                 }
@@ -135,7 +135,7 @@ fun MapControls(
     val scope = rememberCoroutineScope()
     var showMenu by remember { mutableStateOf(false) }
     var showLabels by remember { mutableStateOf(false) }
-    val proxim=20.toDouble()
+    val proximiteMeter= 50.toDouble()
 
     // États pour le drag
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -278,7 +278,7 @@ fun MapControls(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         var isTracking by remember { mutableStateOf(false) }
-                        val locationTracker = rememberLocationTracker(mapView,proxim)
+                        val locationTracker = rememberLocationTracker(mapView,proximiteMeter)
 
                         FloatingActionButton(
                             onClick = {
@@ -384,7 +384,7 @@ fun MapControls(
                 onDismiss = { showNearbyMarkersDialog = false },
                 markers = markers,
                 currentLocation = currentLocation  ,
-                proxim=proxim
+                proxim=proximiteMeter
             )
         }
     }

@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,7 +33,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.MapControls
 import com.example.c_serveur.R
@@ -105,11 +102,32 @@ fun A_ClientsLocationGps(
     }
 
     // Gestion des marqueurs
+    // Fonction d'extension pour créer un marqueur personnalisé
+    fun createCustomMarkerDrawable(context: Context, color: Int): android.graphics.drawable.Drawable {
+        // Créer un LayerDrawable pour combiner le cercle et l'icône
+        val layers = arrayOf(
+            // Cercle noir en arrière-plan
+            android.graphics.drawable.GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.OVAL
+                setColor(android.graphics.Color.WHITE)
+                setSize(40, 40) // Taille du cercle en pixels
+            },
+            // Icône du marqueur
+            ContextCompat.getDrawable(context, R.drawable.ic_location_on)?.mutate()?.apply {
+                setBounds(8, 8, 32, 32) // Position et taille de l'icône à l'intérieur du cercle
+            }
+        )
+
+        return android.graphics.drawable.LayerDrawable(layers).apply {
+            setLayerInset(0, 0, 0, 0, 0) // Pas d'inset pour le cercle
+            setLayerInset(1, 4, 4, 4, 4) // Insets pour centrer l'icône
+        }
+    }
+
+    // Dans le LaunchedEffect pour la gestion des marqueurs
     LaunchedEffect(viewModelInitApp._modelAppsFather.clientsDisponible) {
         markers.clear()
         mapView.overlays.clear()
-
-        val markerDrawable = ContextCompat.getDrawable(context, R.drawable.ic_location_on)?.mutate()
 
         viewModelInitApp._modelAppsFather.clientsDisponible.forEach { client ->
             client.gpsLocation.locationGpsMark?.let { existingMarker ->
@@ -121,6 +139,11 @@ fun A_ClientsLocationGps(
                 existingMarker.title = client.nom
                 existingMarker.snippet = if (client.statueDeBase.cUnClientTemporaire)
                     "Client temporaire" else "Client permanent"
+
+                // Mise à jour de l'icône avec le cercle en arrière-plan
+                val markerColor = Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb()
+                existingMarker.icon = createCustomMarkerDrawable(context, markerColor)
+
                 markers.add(existingMarker)
                 mapView.overlays.add(existingMarker)
             } ?: run {
@@ -136,14 +159,9 @@ fun A_ClientsLocationGps(
                     setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                     infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
 
-                    markerDrawable?.let { drawable ->
-                        val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
-                        DrawableCompat.setTint(
-                            wrappedDrawable,
-                            Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb()
-                        )
-                        icon = wrappedDrawable
-                    }
+                    // Application du nouveau style avec cercle en arrière-plan
+                    val markerColor = Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb()
+                    icon = createCustomMarkerDrawable(context, markerColor)
 
                     setOnMarkerClickListener { marker, _ ->
                         selectedMarker = marker
@@ -246,8 +264,8 @@ private data class MapPosition(
     val isInitialized: Boolean
 )
 
-private const val DEFAULT_LATITUDE = 46.227638 // Paris par défaut
-private const val DEFAULT_LONGITUDE = 2.213749
+private const val DEFAULT_LATITUDE = 36.7389350566438
+private const val DEFAULT_LONGITUDE = 3.1720169070695476
 
 private fun getCurrentLocation(context: Context): Location? {
     return if (ContextCompat.checkSelfPermission(

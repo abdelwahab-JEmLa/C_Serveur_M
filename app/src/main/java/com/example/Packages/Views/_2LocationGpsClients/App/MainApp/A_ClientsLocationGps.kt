@@ -1,7 +1,6 @@
-package com.example.Packages.Views._2LocationGpsClients.App.Main
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp
 
 import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
-import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -34,7 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.MapControls
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.A.ViewModel.ChildViewModelOfFragment
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.MapControls
 import com.example.c_serveur.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -48,8 +48,9 @@ import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 @Composable
 fun A_ClientsLocationGps(
     modifier: Modifier = Modifier,
-    viewModelInitApp: ViewModelInitApp = viewModel(),
+    viewModel: ChildViewModelOfFragment = viewModel(),
 ) {
+    val viewModelInitApp =   viewModel._ViewModelHeadOfAll
     val context = LocalContext.current
     val currentZoom by remember { mutableStateOf(18.2) }
     val mapView = remember { MapView(context) }
@@ -199,6 +200,7 @@ fun A_ClientsLocationGps(
         if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
             MapControls(
                 viewModelInitApp = viewModelInitApp,
+                viewModel=viewModel,
                 mapView = mapView,
                 markers = markers,
                 showMarkerDetails = showMarkerDetails,

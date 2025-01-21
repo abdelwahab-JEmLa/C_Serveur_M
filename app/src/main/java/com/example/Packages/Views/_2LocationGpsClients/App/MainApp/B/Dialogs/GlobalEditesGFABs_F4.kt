@@ -1,4 +1,4 @@
-package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
@@ -32,12 +32,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.AddMarkerButton
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.LabelsButton
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.LocationTrackingButton
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.MenuButton
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.NearbyMarkersButton
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.ShowLocationsInfoBubble
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.A.ViewModel.ChildViewModelOfFragment
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AddMarkerButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LabelsButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LocationTrackingButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.MenuButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.NearbyMarkersButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ShowLocationsInfoBubble
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import kotlin.math.roundToInt
@@ -46,6 +47,7 @@ import kotlin.math.roundToInt
 fun MapControls(
     mapView: MapView,
     viewModelInitApp: ViewModelInitApp,
+    viewModel: ChildViewModelOfFragment,
     markers: MutableList<Marker>,
     showMarkerDetails: Boolean,
     onShowMarkerDetailsChange: (Boolean) -> Unit,
@@ -102,10 +104,10 @@ fun MapControls(
                     )
 
                     AddMarkerButton(
+                        markers = markers,
+                        viewModel=viewModel,
                         showLabels = showLabels,
                         mapView = mapView,
-                        viewModelInitApp = viewModelInitApp,
-                        markers = markers,
                         showMarkerDetails = showMarkerDetails,
                         onMarkerSelected = onMarkerSelected
                     )

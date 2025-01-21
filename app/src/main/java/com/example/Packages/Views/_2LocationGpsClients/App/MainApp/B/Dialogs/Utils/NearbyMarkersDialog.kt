@@ -1,4 +1,4 @@
-package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils
 
 import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather

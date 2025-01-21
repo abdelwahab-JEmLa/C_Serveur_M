@@ -1,4 +1,4 @@
-package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.location.Location
@@ -10,7 +10,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.ControlButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 

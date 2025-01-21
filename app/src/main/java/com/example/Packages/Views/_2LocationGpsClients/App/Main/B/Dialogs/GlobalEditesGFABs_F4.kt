@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +52,6 @@ fun MapControls(
     onMarkerSelected: (Marker) -> Unit
 ) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     var showMenu by remember { mutableStateOf(false) }
     var showLabels by remember { mutableStateOf(false) }
     val proximiteMeter = 50.0
@@ -138,8 +136,6 @@ fun MapControls(
                 )
             }
         }
-
-
     }
 }
 

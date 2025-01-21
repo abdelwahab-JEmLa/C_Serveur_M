@@ -21,7 +21,7 @@ import com.example.Packages.Views._2LocationGpsClients.App._2App
 fun ParentAppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModelInitApp: ViewModelInitApp,
+    viewModelInitApp: ViewModelInitApp ,
 ) {
     // Show loading indicator while initializing
     if (viewModelInitApp.isLoading) {

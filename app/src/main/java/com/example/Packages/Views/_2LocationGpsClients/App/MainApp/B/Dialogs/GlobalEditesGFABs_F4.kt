@@ -32,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.A.ViewModel.ChildViewModelOfFragment
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AddMarkerButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LabelsButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LocationTrackingButton
@@ -47,7 +46,6 @@ import kotlin.math.roundToInt
 fun MapControls(
     mapView: MapView,
     viewModelInitApp: ViewModelInitApp,
-    viewModel: ChildViewModelOfFragment,
     markers: MutableList<Marker>,
     showMarkerDetails: Boolean,
     onShowMarkerDetailsChange: (Boolean) -> Unit,
@@ -104,10 +102,10 @@ fun MapControls(
                     )
 
                     AddMarkerButton(
-                        markers = markers,
-                        viewModel=viewModel,
                         showLabels = showLabels,
                         mapView = mapView,
+                        viewModelInitApp = viewModelInitApp,
+                        markers = markers,
                         showMarkerDetails = showMarkerDetails,
                         onMarkerSelected = onMarkerSelected
                     )

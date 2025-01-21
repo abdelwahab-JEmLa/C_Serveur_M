@@ -6,26 +6,19 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
 import android.location.LocationManager
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.NearMe
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -41,7 +34,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.ControlButton
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.LabelsButton
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.NearbyMarkersDialog
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.ShowDetailsButton
 import com.example.Packages.Views._2LocationGpsClients.App.Main.Utils.rememberLocationTracker
 import com.example.c_serveur.R
 import org.osmdroid.util.GeoPoint
@@ -49,7 +45,6 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import kotlin.math.roundToInt
-
 @Composable
 fun MapControls(
     mapView: MapView,
@@ -102,206 +97,44 @@ fun MapControls(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (showMenu) {
-                    // Nearby markers button
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = { showNearbyMarkersDialog = true },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFFFF5722)
-                        ) {
-                            Icon(Icons.Default.NearMe, "Show nearby markers")
-                        }
-                        if (showLabels) {
-                            Text(
-                                "Nearby",
-                                modifier = Modifier.background(Color(0xFFFF5722)).padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
+                    NearbyMarkersButton(
+                        showLabels = showLabels,
+                        onShowNearbyMarkersDialog = { showNearbyMarkersDialog = true }
+                    )
 
-                    // Add marker button
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = {
-                                val center = mapView.mapCenter
-                                val newID = viewModelInitApp._modelAppsFather.clientsDisponible
-                                    .maxOf { it.id } + 1
-                                val newnom = "Nouveau client *$newID"
+                    AddMarkerButton(
+                        showLabels = showLabels,
+                        mapView = mapView,
+                        viewModelInitApp = viewModelInitApp,
+                        markers = markers,
+                        showMarkerDetails = showMarkerDetails,
+                        onMarkerSelected = onMarkerSelected
+                    )
 
-                                val newClient = _ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations(
-                                    id = newID,
-                                    nom = newnom,
-                                ).apply {
-                                    statueDeBase.cUnClientTemporaire = true
-                                    gpsLocation.apply {
-                                        latitude = center.latitude
-                                        longitude = center.longitude
-                                        title = newnom
-                                        snippet = "Client temporaire"
-                                        couleur = "#2196F3"
+                    LocationTrackingButton(
+                        showLabels = showLabels,
+                        mapView = mapView,
+                        proximiteMeter = proximiteMeter
+                    )
 
-                                        locationGpsMark = Marker(mapView).apply {
-                                            position = GeoPoint(latitude, longitude)
-                                            this.title = title
-                                            this.snippet = snippet
-                                            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                                            infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
-                                            setOnMarkerClickListener { marker, _ ->
-                                                onMarkerSelected(marker)
-                                                if (showMarkerDetails) marker.showInfoWindow()
-                                                true
-                                            }
-                                        }
-                                    }
-                                }
-
-                                val newBonVent = _ModelAppsFather.ProduitModel.ClientBonVentModel(
-                                    vid = System.currentTimeMillis(),
-                                    init_clientInformations = newClient
-                                )
-
-                                val product = viewModelInitApp.produitsMainDataBase.find { it.id == 0L } ?:
-                                _ModelAppsFather.ProduitModel(id = 0L).also {
-                                    viewModelInitApp.produitsMainDataBase.add(it)
-                                }
-
-                                product.bonsVentDeCetteCota.add(newBonVent)
-
-                                newClient.gpsLocation.locationGpsMark?.let { marker ->
-                                    markers.add(marker)
-                                    mapView.overlays.add(marker)
-                                    if (showMarkerDetails) marker.showInfoWindow()
-                                }
-                                mapView.invalidate()
-
-                                _ModelAppsFather.updateProduit(product, viewModelInitApp)
-                            },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF2196F3)
-                        ) {
-                            Icon(Icons.Default.Add, "Add marker")
-                        }
-                        if (showLabels) {
-                            Text(
-                                "Add",
-                                modifier = Modifier
-                                    .background(Color(0xFF2196F3))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
-
-                    // Location tracking toggle
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        var isTracking by remember { mutableStateOf(false) }
-                        val locationTracker = rememberLocationTracker(mapView, proximiteMeter)
-
-                        FloatingActionButton(
-                            onClick = {
-                                isTracking = !isTracking
-                                if (isTracking) {
-                                    locationTracker.startTracking()
-                                } else {
-                                    locationTracker.stopTracking()
-                                }
-                            },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = if (isTracking) Color(0xFF4CAF50) else Color(0xFF9C27B0)
-                        ) {
-                            Icon(
-                                Icons.Default.LocationOn,
-                                contentDescription = if (isTracking) "Stop tracking" else "Start tracking"
-                            )
-                        }
-                        if (showLabels) {
-                            Text(
-                                if (isTracking) "Stop tracking" else "Start tracking",
-                                modifier = Modifier
-                                    .background(if (isTracking) Color(0xFF4CAF50) else Color(0xFF9C27B0))
-                                    .padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
-
-                    // Show/Hide Details button
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        FloatingActionButton(
-                            onClick = { onShowMarkerDetailsChange(!showMarkerDetails) },
-                            modifier = Modifier.size(40.dp),
-                            containerColor = Color(0xFF009688)
-                        ) {
-                            Icon(Icons.Default.Info, "Details")
-                        }
-                        if (showLabels) {
-                            Text(
-                                if (showMarkerDetails) "Hide details" else "Show details",
-                                modifier = Modifier.background(Color(0xFF009688)).padding(4.dp),
-                                color = Color.White
-                            )
-                        }
-                    }
+                    ShowDetailsButton(
+                        showLabels = showLabels,
+                        showMarkerDetails = showMarkerDetails,
+                        onShowMarkerDetailsChange = onShowMarkerDetailsChange
+                    )
                 }
 
                 // Always visible controls
-                // Labels button
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    FloatingActionButton(
-                        onClick = { showLabels = !showLabels },
-                        modifier = Modifier.size(40.dp),
-                        containerColor = Color(0xFF3F51B5)
-                    ) {
-                        Icon(Icons.Default.Info, if (showLabels) "Hide labels" else "Show labels")
-                    }
-                    if (showLabels) {
-                        Text(
-                            if (showLabels) "Hide labels" else "Show labels",
-                            modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
-                            color = Color.White
-                        )
-                    }
-                }
+                LabelsButton(
+                    showLabels = showLabels,
+                    onShowLabelsChange = { showLabels = it }
+                )
 
-                // Main menu button
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    FloatingActionButton(
-                        onClick = { showMenu = !showMenu },
-                        modifier = Modifier.size(40.dp),
-                        containerColor = Color(0xFF3F51B5)
-                    ) {
-                        Icon(
-                            if (showMenu) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                            if (showMenu) "Hide menu" else "Show menu"
-                        )
-                    }
-                    if (showLabels) {
-                        Text(
-                            if (showMenu) "Hide" else "Options",
-                            modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
-                            color = Color.White
-                        )
-                    }
-                }
+                MenuButton(
+                    showLabels = showLabels,
+                    showMenu = showMenu,
+                    onShowMenuChange = { showMenu = it }
+                )
             }
         }
 
@@ -319,3 +152,133 @@ fun MapControls(
         }
     }
 }
+
+@Composable
+private fun NearbyMarkersButton(
+    showLabels: Boolean,
+    onShowNearbyMarkersDialog: () -> Unit
+) {
+    ControlButton(
+        onClick = onShowNearbyMarkersDialog,
+        icon = Icons.Default.NearMe,
+        contentDescription = "Show nearby markers",
+        showLabels = showLabels,
+        labelText = "Nearby",
+        containerColor = Color(0xFFFF5722)
+    )
+}
+
+@Composable
+private fun AddMarkerButton(
+    showLabels: Boolean,
+    mapView: MapView,
+    viewModelInitApp: ViewModelInitApp,
+    markers: MutableList<Marker>,
+    showMarkerDetails: Boolean,
+    onMarkerSelected: (Marker) -> Unit
+) {
+    ControlButton(
+        onClick = {
+            val center = mapView.mapCenter
+            val newID = viewModelInitApp._modelAppsFather.clientsDisponible
+                .maxOf { it.id } + 1
+            val newnom = "Nouveau client *$newID"
+
+            val newClient = _ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations(
+                id = newID,
+                nom = newnom,
+            ).apply {
+                statueDeBase.cUnClientTemporaire = true
+                gpsLocation.apply {
+                    latitude = center.latitude
+                    longitude = center.longitude
+                    title = newnom
+                    snippet = "Client temporaire"
+                    couleur = "#2196F3"
+
+                    locationGpsMark = Marker(mapView).apply {
+                        position = GeoPoint(latitude, longitude)
+                        this.title = title
+                        this.snippet = snippet
+                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                        infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
+                        setOnMarkerClickListener { marker, _ ->
+                            onMarkerSelected(marker)
+                            if (showMarkerDetails) marker.showInfoWindow()
+                            true
+                        }
+                    }
+                }
+            }
+
+            val newBonVent = _ModelAppsFather.ProduitModel.ClientBonVentModel(
+                vid = System.currentTimeMillis(),
+                init_clientInformations = newClient
+            )
+
+            val product = viewModelInitApp.produitsMainDataBase.find { it.id == 0L } ?:
+            _ModelAppsFather.ProduitModel(id = 0L).also {
+                viewModelInitApp.produitsMainDataBase.add(it)
+            }
+
+            product.bonsVentDeCetteCota.add(newBonVent)
+
+            newClient.gpsLocation.locationGpsMark?.let { marker ->
+                markers.add(marker)
+                mapView.overlays.add(marker)
+                if (showMarkerDetails) marker.showInfoWindow()
+            }
+            mapView.invalidate()
+
+            _ModelAppsFather.updateProduit(product, viewModelInitApp)
+        },
+        icon = Icons.Default.Add,
+        contentDescription = "Add marker",
+        showLabels = showLabels,
+        labelText = "Add",
+        containerColor = Color(0xFF2196F3)
+    )
+}
+
+@Composable
+private fun LocationTrackingButton(
+    showLabels: Boolean,
+    mapView: MapView,
+    proximiteMeter: Double
+) {
+    var isTracking by remember { mutableStateOf(false) }
+    val locationTracker = rememberLocationTracker(mapView, proximiteMeter)
+
+    ControlButton(
+        onClick = {
+            isTracking = !isTracking
+            if (isTracking) {
+                locationTracker.startTracking()
+            } else {
+                locationTracker.stopTracking()
+            }
+        },
+        icon = Icons.Default.LocationOn,
+        contentDescription = if (isTracking) "Stop tracking" else "Start tracking",
+        showLabels = showLabels,
+        labelText = if (isTracking) "Stop tracking" else "Start tracking",
+        containerColor = if (isTracking) Color(0xFF4CAF50) else Color(0xFF9C27B0)
+    )
+}
+
+@Composable
+private fun MenuButton(
+    showLabels: Boolean,
+    showMenu: Boolean,
+    onShowMenuChange: (Boolean) -> Unit
+) {
+    ControlButton(
+        onClick = { onShowMenuChange(!showMenu) },
+        icon = if (showMenu) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+        contentDescription = if (showMenu) "Hide menu" else "Show menu",
+        showLabels = showLabels,
+        labelText = if (showMenu) "Hide" else "Options",
+        containerColor = Color(0xFF3F51B5)
+    )
+}
+

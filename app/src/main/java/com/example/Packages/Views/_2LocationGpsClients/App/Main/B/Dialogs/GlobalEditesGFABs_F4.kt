@@ -5,6 +5,7 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
+import android.location.Location
 import android.location.LocationManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -12,19 +13,30 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.NearMe
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -47,6 +59,67 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import kotlin.math.roundToInt
+
+@Composable
+fun NearbyMarkersDialog(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    markers: List<Marker>,
+    currentLocation: Location?
+) {
+    if (showDialog && currentLocation != null) {
+        val nearbyMarkers = markers.filter { marker ->
+            val markerLocation = Location("").apply {
+                latitude = marker.position.latitude
+                longitude = marker.position.longitude
+            }
+            currentLocation.distanceTo(markerLocation) <= 10 // 10 meters
+        }
+
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            title = { Text("Markers Within 10 Meters") },
+            text = {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 300.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(nearbyMarkers) { marker ->
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(8.dp)
+                            ) {
+                                Text(
+                                    text = marker.title ?: "Unnamed Location",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = marker.snippet ?: "",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                    }
+                    if (nearbyMarkers.isEmpty()) {
+                        item {
+                            Text("No markers found within 10 meters")
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = onDismiss) {
+                    Text("Close")
+                }
+            }
+        )
+    }
+}
 
 @Composable
 fun MapControls(
@@ -75,6 +148,7 @@ fun MapControls(
             ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
     } else null
 
+    var showNearbyMarkersDialog by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -98,6 +172,28 @@ fun MapControls(
             ) {
                 // Main menu options
                 if (showMenu) {
+                    // Add the nearby markers button
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        FloatingActionButton(
+                            onClick = { showNearbyMarkersDialog = true },
+                            modifier = Modifier.size(40.dp),
+                            containerColor = Color(0xFFFF5722)
+                        ) {
+                            Icon(Icons.Default.NearMe, "Show nearby markers")
+                        }
+                        if (showLabels) {
+                            Text(
+                                "Nearby",
+                                modifier = Modifier.background(Color(0xFFFF5722)).padding(4.dp),
+                                color = Color.White
+                            )
+                        }
+                    }
+
+
                     // Bouton Ajouter Marqueur
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -175,7 +271,6 @@ fun MapControls(
                         }
                     }
 
-                    // Bouton Position Actuelle
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -187,7 +282,6 @@ fun MapControls(
                                             context,
                                             Manifest.permission.ACCESS_FINE_LOCATION
                                         ) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
-                                        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
                                         val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
                                             ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
 
@@ -279,6 +373,15 @@ fun MapControls(
                     }
                 }
             }
+        }
+        // Add the dialog
+        if (showMenu) {
+            NearbyMarkersDialog(
+                showDialog = showNearbyMarkersDialog,
+                onDismiss = { showNearbyMarkersDialog = false },
+                markers = markers,
+                currentLocation = currentLocation
+            )
         }
     }
 }

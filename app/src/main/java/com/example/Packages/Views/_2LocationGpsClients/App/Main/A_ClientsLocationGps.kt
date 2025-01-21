@@ -5,6 +5,7 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
@@ -23,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +36,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.MapControls
 import com.example.c_serveur.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -47,27 +49,46 @@ import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 fun A_ClientsLocationGps(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
-) {        //-->
-//TODO(1): fait que au debut  start est centre  est getCurrentLocation 
+) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val currentZoom by remember { mutableStateOf(18.2) }
-
     val mapView = remember { MapView(context) }
     val markers = remember { mutableStateListOf<Marker>() }
     var selectedMarker by remember { mutableStateOf<Marker?>(null) }
     var showNavigationDialog by remember { mutableStateOf(false) }
     var showMarkerDetails by remember { mutableStateOf(true) }
 
-    // Structure de données pour la position
-    var mapPosition by remember {
-        mutableStateOf(
+    // Initialize map position with current location
+    LaunchedEffect(Unit) {
+        val location = getCurrentLocation(context)
+
+        // Set initial position
+        val initialPosition = if (location != null) {
+            MapPosition(
+                latitude = location.latitude,
+                longitude = location.longitude,
+                isInitialized = true
+            )
+        } else {
             MapPosition(
                 latitude = DEFAULT_LATITUDE,
                 longitude = DEFAULT_LONGITUDE,
-                isInitialized = false
+                isInitialized = true
             )
-        )
+        }
+
+        // Animate to position immediately
+        mapView.controller.apply {
+            setZoom(currentZoom)
+            animateTo(GeoPoint(initialPosition.latitude, initialPosition.longitude))
+        }
+
+        // Configure map settings
+        mapView.apply {
+            setMultiTouchControls(true)
+            setTileSource(TileSourceFactory.MAPNIK)
+            controller.setCenter(GeoPoint(initialPosition.latitude, initialPosition.longitude))
+        }
     }
 
     // Configuration initiale de la carte
@@ -82,33 +103,6 @@ fun A_ClientsLocationGps(
         }
     }
 
-    LaunchedEffect(Unit) {
-        // Get current location first
-            val location = getCurrentLocation(context)
-
-        // Update map position with either current location or default
-        mapPosition = if (location != null) {
-            MapPosition(
-                    latitude = location.latitude,
-                    longitude = location.longitude,
-                    isInitialized = true
-            )
-        } else {
-            MapPosition(
-                latitude = DEFAULT_LATITUDE,
-                longitude = DEFAULT_LONGITUDE,
-                isInitialized = true
-                )
-            }
-
-        // Immediately center and zoom the map
-            mapView.controller.apply {
-                setZoom(currentZoom)
-            animateTo(GeoPoint(mapPosition.latitude, mapPosition.longitude))
-        }
-    }
-
-    // Gestion des marqueurs
     // Fonction d'extension pour créer un marqueur personnalisé
     fun createCustomMarkerDrawable(context: Context, color: Int): android.graphics.drawable.Drawable {
         // Créer un LayerDrawable pour combiner le cercle et l'icône
@@ -273,14 +267,16 @@ private data class MapPosition(
 private const val DEFAULT_LATITUDE = 36.7389350566438
 private const val DEFAULT_LONGITUDE = 3.1720169070695476
 
-private fun getCurrentLocation(context: Context): Location? {
-    return if (ContextCompat.checkSelfPermission(
+// Update getCurrentLocation function to be suspend
+private suspend fun getCurrentLocation(context: Context): Location? = withContext(Dispatchers.IO) {
+    if (ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) == PackageManager.PERMISSION_GRANTED
     ) {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        return@withContext locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-    } else null
+    }
+    return@withContext null
 }

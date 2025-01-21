@@ -5,7 +5,6 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
-import android.location.Location
 import android.location.LocationManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -13,33 +12,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.NearMe
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -55,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.Utils.NearbyMarkersDialog
 import com.example.Packages.Views._2LocationGpsClients.App.Main.Utils.rememberLocationTracker
 import com.example.c_serveur.R
 import org.osmdroid.util.GeoPoint
@@ -62,158 +49,6 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import kotlin.math.roundToInt
-
-
-@Composable
-fun NearbyMarkersDialog(
-    showDialog: Boolean,
-    onDismiss: () -> Unit,
-    markers: List<Marker>,
-    currentLocation: Location?,
-    proxim: Double,
-    mapView: MapView,
-    viewModelInitApp: ViewModelInitApp
-) {
-    if (showDialog) {
-        val referenceLocation = if (currentLocation != null) {
-            currentLocation
-        } else {
-            val mapCenter = mapView.mapCenter
-            Location("map_center").apply {
-                latitude = mapCenter.latitude
-                longitude = mapCenter.longitude
-            }
-        }
-
-        val nearbyMarkers = markers.filter { marker ->
-            val markerLocation = Location("marker").apply {
-                latitude = marker.position.latitude
-                longitude = marker.position.longitude
-            }
-            referenceLocation.distanceTo(markerLocation) <= proxim
-        }
-
-        var showEditDialog by remember { mutableStateOf(false) }
-        var selectedMarker by remember { mutableStateOf<Marker?>(null) }
-        var editedName by remember { mutableStateOf("") }
-
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            title = { Text("Markers Within $proxim Meters") },
-            text = {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 300.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(nearbyMarkers) { marker ->
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Column(
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(
-                                        text = marker.title ?: "Unnamed Location",
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                    Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
-                                        text = marker.snippet ?: "",
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                }
-                                IconButton(
-                                    onClick = {
-                                        selectedMarker = marker
-                                        editedName = marker.title ?: ""
-                                        showEditDialog = true
-                                    }
-                                ) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Edit name")
-                                }
-                            }
-                        }
-                    }
-                    if (nearbyMarkers.isEmpty()) {
-                        item {
-                            Text("No markers found within $proxim meters")
-                        }
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = onDismiss) {
-                    Text("Close")
-                }
-            }
-        )
-
-        if (showEditDialog && selectedMarker != null) {
-            AlertDialog(
-                onDismissRequest = { showEditDialog = false },
-                title = { Text("Edit Name") },
-                text = {
-                    OutlinedTextField(
-                        value = editedName,
-                        onValueChange = { editedName = it },
-                        label = { Text("Location Name") },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            selectedMarker?.let { marker ->
-                                // Update marker title
-                                marker.title = editedName
-
-                                // Find and update the corresponding client in the database
-                                val client = viewModelInitApp._modelAppsFather.clientsDisponible
-                                    .find { it.gpsLocation.locationGpsMark == marker }
-
-                                client?.let { foundClient ->
-                                    // Update client name
-                                    foundClient.nom = editedName
-
-                                    // Find and update the product containing this client
-                                    val product = viewModelInitApp.produitsMainDataBase.find { produit ->
-                                        produit.bonsVentDeCetteCota.any { bonVent ->
-                                            bonVent.clientInformations?.id == foundClient.id
-                                        }
-                                    }
-
-                                    product?.let { foundProduct ->
-                                        // Update the product in the database
-                                        _ModelAppsFather.updateProduit(foundProduct, viewModelInitApp)
-                                    }
-                                }
-
-                                mapView.invalidate()
-                            }
-                            showEditDialog = false
-                        }
-                    ) {
-                        Text("OK")
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = { showEditDialog = false }
-                    ) {
-                        Text("Cancel")
-                    }
-                }
-            )
-        }
-    }
-}
 
 @Composable
 fun MapControls(

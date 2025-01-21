@@ -65,7 +65,8 @@ fun NearbyMarkersDialog(
     showDialog: Boolean,
     onDismiss: () -> Unit,
     markers: List<Marker>,
-    currentLocation: Location?
+    currentLocation: Location?,
+    proxim: Double
 ) {
     if (showDialog && currentLocation != null) {
         val nearbyMarkers = markers.filter { marker ->
@@ -73,7 +74,7 @@ fun NearbyMarkersDialog(
                 latitude = marker.position.latitude
                 longitude = marker.position.longitude
             }
-            currentLocation.distanceTo(markerLocation) <= 10 // 10 meters
+            currentLocation.distanceTo(markerLocation) <= proxim // 10 meters
         }
 
         AlertDialog(
@@ -133,7 +134,8 @@ fun MapControls(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var showMenu by remember { mutableStateOf(false) }
-    var showLabels by remember { mutableStateOf(true) }
+    var showLabels by remember { mutableStateOf(false) }
+    val proxim=20.toDouble()
 
     // États pour le drag
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -270,14 +272,13 @@ fun MapControls(
                             )
                         }
                     }
-
                     // In MapControls.kt, update the location button to be a toggle:
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         var isTracking by remember { mutableStateOf(false) }
-                        val locationTracker = rememberLocationTracker(mapView)
+                        val locationTracker = rememberLocationTracker(mapView,proxim)
 
                         FloatingActionButton(
                             onClick = {
@@ -382,7 +383,8 @@ fun MapControls(
                 showDialog = showNearbyMarkersDialog,
                 onDismiss = { showNearbyMarkersDialog = false },
                 markers = markers,
-                currentLocation = currentLocation
+                currentLocation = currentLocation  ,
+                proxim=proxim
             )
         }
     }

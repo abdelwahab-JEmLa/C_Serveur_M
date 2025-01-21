@@ -1,6 +1,7 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main.Utils
 
 import android.content.Context
+import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -8,6 +9,7 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Handler
 import android.os.Looper
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -21,13 +23,12 @@ import com.example.c_serveur.R
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
-import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
-import android.os.Handler
+import org.osmdroid.views.overlay.Polygon
 
 class LocationTracker(
     private val context: Context,
-    private val mapView: MapView
+    private val mapView: MapView ,
+    private val radius: Double
 ) : SensorEventListener, LocationListener {
 
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -35,8 +36,8 @@ class LocationTracker(
     private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     private val rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
 
-    private var locationOverlay: MyLocationNewOverlay? = null
     private var directionMarker: Marker? = null
+    private var proximityCircle: Polygon? = null
     private var isTracking = false
     private var followLocation = true
 
@@ -46,128 +47,55 @@ class LocationTracker(
     var currentLocation by mutableStateOf<Location?>(null)
         private set
 
+    private fun createProximityCircle(center: GeoPoint): Polygon {
+        val points = mutableListOf<GeoPoint>()
+        val numberOfPoints = 60 // Points pour faire le cercle
+
+        for (i in 0..numberOfPoints) {
+            val angle = Math.PI * 2 * i / numberOfPoints
+            // Calculer la distance en degrés (conversion depuis mètres)
+            val latRadius = radius / 111320.0 // 1 degré = environ 111.32 km
+            val lonRadius = radius / (111320.0 * Math.cos(Math.toRadians(center.latitude)))
+
+            val lat = center.latitude + latRadius * Math.sin(angle)
+            val lon = center.longitude + lonRadius * Math.cos(angle)
+            points.add(GeoPoint(lat, lon))
+        }
+
+        return Polygon(mapView).apply {
+            this.points = points
+            fillColor = Color.argb(40, 33, 150, 243) // Bleu transparent
+            strokeColor = Color.argb(128, 33, 150, 243) // Bleu plus opaque pour le contour
+            strokeWidth = 3f
+        }
+    }
+
     override fun onLocationChanged(location: Location) {
         currentLocation = location
         val geoPoint = GeoPoint(location.latitude, location.longitude)
 
-        // Ensure UI updates happen on the main thread
         mainHandler.post {
-            // Update direction marker position
-            directionMarker?.position = geoPoint
+            // Supprimer les anciens overlays
+            mapView.overlays.remove(proximityCircle)
+            mapView.overlays.remove(directionMarker)
 
-            // Update location overlay
-            locationOverlay?.let { overlay ->
-                if (!overlay.isFollowLocationEnabled) {
-                    mapView.overlays.remove(overlay)
-                    locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), mapView).apply {
-                        enableMyLocation()
-                        runOnFirstFix {
-                            // Ensure animation runs on main thread
-                            mainHandler.post {
-                                mapView.controller.animateTo(geoPoint)
-                            }
-                        }
-                    }
-                    locationOverlay?.let { mapView.overlays.add(it) }
-                } else {
-                    // Animate to new position on main thread
-                    mapView.controller.animateTo(geoPoint)
-                }
+            // Créer et ajouter le nouveau cercle de proximité
+            proximityCircle = createProximityCircle(geoPoint).also {
+                mapView.overlays.add(it)
+            }
+
+            // Mettre à jour et ajouter le marker de direction
+            directionMarker?.let { marker ->
+                marker.position = geoPoint
+                marker.rotation = currentBearing
+                mapView.overlays.add(marker)
+            }
+
+            if (followLocation) {
+                mapView.controller.animateTo(geoPoint)
             }
 
             mapView.invalidate()
-        }
-    }
-    fun startTracking() {
-        if (!isTracking) {
-            // Initialize direction marker with custom arrow drawable
-            directionMarker = Marker(mapView).apply {
-                icon = ContextCompat.getDrawable(context, R.drawable.location_arrow)
-                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
-            }
-
-            // Initialize location overlay with GPS provider
-            locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), mapView).apply {
-                enableMyLocation()
-                if (followLocation) {
-                    enableFollowLocation()
-                }
-            }
-
-            // Add overlays to map
-            mapView.overlays.apply {
-                locationOverlay?.let { add(it) }
-                directionMarker?.let { add(it) }
-            }
-
-            // Start sensor updates
-            sensorManager.registerListener(
-                this,
-                rotationSensor,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-
-            try {
-                // Request location updates
-                locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    LOCATION_UPDATE_INTERVAL,
-                    LOCATION_UPDATE_DISTANCE,
-                    this
-                )
-                
-                // Fallback to network provider if GPS is unavailable
-                locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    LOCATION_UPDATE_INTERVAL,
-                    LOCATION_UPDATE_DISTANCE,
-                    this
-                )
-            } catch (e: SecurityException) {
-                // Handle permission not granted
-                e.printStackTrace()
-            }
-
-            isTracking = true
-        }
-    }
-
-    fun stopTracking() {
-        if (isTracking) {
-            // Unregister listeners
-            sensorManager.unregisterListener(this)
-            try {
-                locationManager.removeUpdates(this)
-            } catch (e: SecurityException) {
-                e.printStackTrace()
-            }
-
-            // Clean up overlays
-            locationOverlay?.let {
-                it.disableMyLocation()
-                it.disableFollowLocation()
-                mapView.overlays.remove(it)
-            }
-            directionMarker?.let {
-                mapView.overlays.remove(it)
-            }
-
-            // Reset states
-            locationOverlay = null
-            directionMarker = null
-            isTracking = false
-            currentLocation = null
-        }
-    }
-
-    fun toggleFollowLocation() {
-        followLocation = !followLocation
-        locationOverlay?.let {
-            if (followLocation) {
-                it.enableFollowLocation()
-            } else {
-                it.disableFollowLocation()
-            }
         }
     }
 
@@ -176,22 +104,94 @@ class LocationTracker(
             val rotationMatrix = FloatArray(9)
             val orientationValues = FloatArray(3)
 
-            // Convert rotation vector to orientation
             SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
             SensorManager.getOrientation(rotationMatrix, orientationValues)
 
-            // Convert radians to degrees and normalize
             val azimuth = Math.toDegrees(orientationValues[0].toDouble()).toFloat()
             currentBearing = (azimuth + 360) % 360
 
-            // Update marker rotation and map
-            directionMarker?.rotation = currentBearing
+            mainHandler.post {
+                directionMarker?.rotation = currentBearing
+                mapView.invalidate()
+            }
+        }
+    }
+
+    fun startTracking() {
+        if (!isTracking) {
+            // Créer le marker de direction avec l'icône personnalisée
+            directionMarker = Marker(mapView).apply {
+                icon = ContextCompat.getDrawable(context, R.drawable.location_arrow)
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+                icon?.setTint(Color.BLUE) // Rendre l'icône plus visible
+            }
+
+            // Ajouter le marker initial
+            currentLocation?.let { location ->
+                val geoPoint = GeoPoint(location.latitude, location.longitude)
+                directionMarker?.position = geoPoint
+                proximityCircle = createProximityCircle(geoPoint)
+                mapView.overlays.add(proximityCircle)
+                mapView.overlays.add(directionMarker)
+            }
+
+            // Démarrer les mises à jour du capteur
+            sensorManager.registerListener(
+                this,
+                rotationSensor,
+                SensorManager.SENSOR_DELAY_NORMAL
+            )
+
+            try {
+                // Demander les mises à jour de localisation
+                locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    LOCATION_UPDATE_INTERVAL,
+                    LOCATION_UPDATE_DISTANCE,
+                    this
+                )
+
+                locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    LOCATION_UPDATE_INTERVAL,
+                    LOCATION_UPDATE_DISTANCE,
+                    this
+                )
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
+
+            isTracking = true
+            mapView.invalidate()
+        }
+    }
+
+    fun stopTracking() {
+        if (isTracking) {
+            // Arrêter les listeners
+            sensorManager.unregisterListener(this)
+            try {
+                locationManager.removeUpdates(this)
+            } catch (e: SecurityException) {
+                e.printStackTrace()
+            }
+
+            // Nettoyer les overlays
+            mapView.overlays.remove(proximityCircle)
+            mapView.overlays.remove(directionMarker)
+
+            // Réinitialiser les états
+            directionMarker = null
+            proximityCircle = null
+            isTracking = false
+            currentLocation = null
+
             mapView.invalidate()
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        // Not needed for this implementation
+        // Non utilisé
     }
 
     companion object {
@@ -200,9 +200,9 @@ class LocationTracker(
     }
 }    
 @Composable
-fun rememberLocationTracker(mapView: MapView): LocationTracker {
+fun rememberLocationTracker(mapView: MapView, proxim: Double): LocationTracker {
     val context = LocalContext.current
-    val locationTracker = remember { LocationTracker(context, mapView) }
+    val locationTracker = remember { LocationTracker(context, mapView,proxim) }
 
     DisposableEffect(locationTracker) {
         onDispose {

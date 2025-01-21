@@ -1,5 +1,6 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 
+import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
@@ -64,6 +65,15 @@ fun MapControls(
     // États pour le drag
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    val currentLocation = if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    ) {
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } else null
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -97,15 +107,19 @@ fun MapControls(
                             onClick = {
                                 val center = mapView.mapCenter
                                 // Create a new client with GPS location
+                                val newID = viewModelInitApp._modelAppsFather.clientsDisponible
+                                    .maxOf { it.id } + 1
+                                val newnom = "Nouveau client *$newID"
+
                                 val newClient = _ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations(
-                                    id = System.currentTimeMillis(),
-                                    nom = "Nouveau client",
+                                    id = newID,
+                                    nom = newnom,
                                 ).apply {
                                     statueDeBase.cUnClientTemporaire = true
                                     gpsLocation.apply {
                                         latitude = center.latitude
                                         longitude = center.longitude
-                                        title = "Nouveau client"
+                                        title = newnom
                                         snippet = "Client temporaire"
                                         couleur = "#2196F3"
 

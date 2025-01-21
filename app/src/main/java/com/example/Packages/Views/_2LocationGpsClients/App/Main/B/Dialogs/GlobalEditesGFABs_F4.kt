@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Info
@@ -34,7 +35,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -60,22 +63,39 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import kotlin.math.roundToInt
 
+
 @Composable
 fun NearbyMarkersDialog(
     showDialog: Boolean,
     onDismiss: () -> Unit,
     markers: List<Marker>,
     currentLocation: Location?,
-    proxim: Double
+    proxim: Double,
+    mapView: MapView,
+    viewModelInitApp: ViewModelInitApp
 ) {
-    if (showDialog && currentLocation != null) {
+    if (showDialog) {
+        val referenceLocation = if (currentLocation != null) {
+            currentLocation
+        } else {
+            val mapCenter = mapView.mapCenter
+            Location("map_center").apply {
+                latitude = mapCenter.latitude
+                longitude = mapCenter.longitude
+            }
+        }
+
         val nearbyMarkers = markers.filter { marker ->
-            val markerLocation = Location("").apply {
+            val markerLocation = Location("marker").apply {
                 latitude = marker.position.latitude
                 longitude = marker.position.longitude
             }
-            currentLocation.distanceTo(markerLocation) <= proxim // 10 meters
+            referenceLocation.distanceTo(markerLocation) <= proxim
         }
+
+        var showEditDialog by remember { mutableStateOf(false) }
+        var selectedMarker by remember { mutableStateOf<Marker?>(null) }
+        var editedName by remember { mutableStateOf("") }
 
         AlertDialog(
             onDismissRequest = onDismiss,
@@ -91,18 +111,33 @@ fun NearbyMarkersDialog(
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Column(
-                                modifier = Modifier.padding(8.dp)
+                            Row(
+                                modifier = Modifier.padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = marker.title ?: "Unnamed Location",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = marker.snippet ?: "",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                Column(
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        text = marker.title ?: "Unnamed Location",
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = marker.snippet ?: "",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {
+                                        selectedMarker = marker
+                                        editedName = marker.title ?: ""
+                                        showEditDialog = true
+                                    }
+                                ) {
+                                    Icon(Icons.Default.Edit, contentDescription = "Edit name")
+                                }
                             }
                         }
                     }
@@ -119,6 +154,64 @@ fun NearbyMarkersDialog(
                 }
             }
         )
+
+        if (showEditDialog && selectedMarker != null) {
+            AlertDialog(
+                onDismissRequest = { showEditDialog = false },
+                title = { Text("Edit Name") },
+                text = {
+                    OutlinedTextField(
+                        value = editedName,
+                        onValueChange = { editedName = it },
+                        label = { Text("Location Name") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            selectedMarker?.let { marker ->
+                                // Update marker title
+                                marker.title = editedName
+
+                                // Find and update the corresponding client in the database
+                                val client = viewModelInitApp._modelAppsFather.clientsDisponible
+                                    .find { it.gpsLocation.locationGpsMark == marker }
+
+                                client?.let { foundClient ->
+                                    // Update client name
+                                    foundClient.nom = editedName
+
+                                    // Find and update the product containing this client
+                                    val product = viewModelInitApp.produitsMainDataBase.find { produit ->
+                                        produit.bonsVentDeCetteCota.any { bonVent ->
+                                            bonVent.clientInformations?.id == foundClient.id
+                                        }
+                                    }
+
+                                    product?.let { foundProduct ->
+                                        // Update the product in the database
+                                        _ModelAppsFather.updateProduit(foundProduct, viewModelInitApp)
+                                    }
+                                }
+
+                                mapView.invalidate()
+                            }
+                            showEditDialog = false
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { showEditDialog = false }
+                    ) {
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -135,11 +228,12 @@ fun MapControls(
     val scope = rememberCoroutineScope()
     var showMenu by remember { mutableStateOf(false) }
     var showLabels by remember { mutableStateOf(false) }
-    val proximiteMeter= 50.toDouble()
+    val proximiteMeter = 50.0
 
     // États pour le drag
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
+
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     val currentLocation = if (ContextCompat.checkSelfPermission(
             context,
@@ -151,6 +245,7 @@ fun MapControls(
     } else null
 
     var showNearbyMarkersDialog by remember { mutableStateOf(false) }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -167,14 +262,12 @@ fun MapControls(
                 }
                 .padding(16.dp)
         ) {
-            // Single Column for all controls
             Column(
                 modifier = Modifier.align(Alignment.BottomStart),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Main menu options
                 if (showMenu) {
-                    // Add the nearby markers button
+                    // Nearby markers button
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -195,8 +288,7 @@ fun MapControls(
                         }
                     }
 
-
-                    // Bouton Ajouter Marqueur
+                    // Add marker button
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -204,7 +296,6 @@ fun MapControls(
                         FloatingActionButton(
                             onClick = {
                                 val center = mapView.mapCenter
-                                // Create a new client with GPS location
                                 val newID = viewModelInitApp._modelAppsFather.clientsDisponible
                                     .maxOf { it.id } + 1
                                 val newnom = "Nouveau client *$newID"
@@ -260,11 +351,11 @@ fun MapControls(
                             modifier = Modifier.size(40.dp),
                             containerColor = Color(0xFF2196F3)
                         ) {
-                            Icon(Icons.Default.Add, "Ajouter un marqueur")
+                            Icon(Icons.Default.Add, "Add marker")
                         }
                         if (showLabels) {
                             Text(
-                                "Ajouter",
+                                "Add",
                                 modifier = Modifier
                                     .background(Color(0xFF2196F3))
                                     .padding(4.dp),
@@ -272,13 +363,14 @@ fun MapControls(
                             )
                         }
                     }
-                    // In MapControls.kt, update the location button to be a toggle:
+
+                    // Location tracking toggle
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         var isTracking by remember { mutableStateOf(false) }
-                        val locationTracker = rememberLocationTracker(mapView,proximiteMeter)
+                        val locationTracker = rememberLocationTracker(mapView, proximiteMeter)
 
                         FloatingActionButton(
                             onClick = {
@@ -308,7 +400,7 @@ fun MapControls(
                         }
                     }
 
-                    // Bouton Afficher/Masquer Détails
+                    // Show/Hide Details button
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -318,11 +410,11 @@ fun MapControls(
                             modifier = Modifier.size(40.dp),
                             containerColor = Color(0xFF009688)
                         ) {
-                            Icon(Icons.Default.Info, "Détails")
+                            Icon(Icons.Default.Info, "Details")
                         }
                         if (showLabels) {
                             Text(
-                                if (showMarkerDetails) "Masquer détails" else "Afficher détails",
+                                if (showMarkerDetails) "Hide details" else "Show details",
                                 modifier = Modifier.background(Color(0xFF009688)).padding(4.dp),
                                 color = Color.White
                             )
@@ -331,7 +423,7 @@ fun MapControls(
                 }
 
                 // Always visible controls
-                // Bouton Labels
+                // Labels button
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -341,18 +433,18 @@ fun MapControls(
                         modifier = Modifier.size(40.dp),
                         containerColor = Color(0xFF3F51B5)
                     ) {
-                        Icon(Icons.Default.Info, if (showLabels) "Masquer labels" else "Afficher labels")
+                        Icon(Icons.Default.Info, if (showLabels) "Hide labels" else "Show labels")
                     }
                     if (showLabels) {
                         Text(
-                            if (showLabels) "Masquer labels" else "Afficher labels",
+                            if (showLabels) "Hide labels" else "Show labels",
                             modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
                             color = Color.White
                         )
                     }
                 }
 
-                // Bouton Menu Principal
+                // Main menu button
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -364,12 +456,12 @@ fun MapControls(
                     ) {
                         Icon(
                             if (showMenu) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                            if (showMenu) "Masquer menu" else "Afficher menu"
+                            if (showMenu) "Hide menu" else "Show menu"
                         )
                     }
                     if (showLabels) {
                         Text(
-                            if (showMenu) "Masquer" else "Options",
+                            if (showMenu) "Hide" else "Options",
                             modifier = Modifier.background(Color(0xFF3F51B5)).padding(4.dp),
                             color = Color.White
                         )
@@ -377,14 +469,17 @@ fun MapControls(
                 }
             }
         }
-        // Add the dialog
+
+        // Show nearby markers dialog when active
         if (showMenu) {
             NearbyMarkersDialog(
+                viewModelInitApp = viewModelInitApp,
                 showDialog = showNearbyMarkersDialog,
                 onDismiss = { showNearbyMarkersDialog = false },
                 markers = markers,
-                currentLocation = currentLocation  ,
-                proxim=proximiteMeter
+                currentLocation = currentLocation,
+                proxim = proximiteMeter,
+                mapView = mapView
             )
         }
     }

@@ -1,12 +1,10 @@
 package com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs
 
-import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
 import android.location.LocationManager
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -36,25 +34,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import com.example.Packages.Views._2LocationGpsClients.App.Main.CustomMarkerInfoWindow
+import com.example.c_serveur.R
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.infowindow.InfoWindow
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 import kotlin.math.roundToInt
 
 @Composable
 fun MapControls(
     mapView: MapView,
     viewModelInitApp: ViewModelInitApp,
+    markers: MutableList<Marker>,
     showMarkerDetails: Boolean,
     onShowMarkerDetailsChange: (Boolean) -> Unit,
     onMarkerSelected: (Marker) -> Unit
@@ -101,7 +98,7 @@ fun MapControls(
                                 val center = mapView.mapCenter
                                 // Create a new client with GPS location
                                 val newClient = _ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations(
-                                    id = viewModelInitApp._modelAppsFather.clientsDisponible.maxOf { it.id } + 1,
+                                    id = System.currentTimeMillis(),
                                     nom = "Nouveau client",
                                 ).apply {
                                     statueDeBase.cUnClientTemporaire = true
@@ -117,41 +114,11 @@ fun MapControls(
                                             this.title = title
                                             this.snippet = snippet
                                             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-
-                                            // Utiliser CustomMarkerInfoWindow au lieu de MarkerInfoWindow
-                                            infoWindow = CustomMarkerInfoWindow(mapView)
-
-                                            // Configurer l'icône du marker avec la couleur
-                                            try {
-                                                ContextCompat.getDrawable(
-                                                    mapView.context,
-                                                    com.example.c_serveur.R.drawable.ic_location_on
-                                                )?.let { drawable ->
-                                                    val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
-                                                    DrawableCompat.setTint(
-                                                        wrappedDrawable,
-                                                        Color(android.graphics.Color.parseColor(couleur)).toArgb()
-                                                    )
-                                                    icon = wrappedDrawable
-                                                }
-                                            } catch (e: Exception) {
-                                                Log.e("Marker", "Error setting marker icon", e)
-                                            }
-
+                                            infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
                                             setOnMarkerClickListener { marker, _ ->
-                                                InfoWindow.closeAllInfoWindowsOn(mapView)
                                                 onMarkerSelected(marker)
-                                                if (showMarkerDetails) {
-                                                    marker.showInfoWindow()
-                                                }
+                                                if (showMarkerDetails) marker.showInfoWindow()
                                                 true
-                                            }
-                                        }
-
-                                        // Ajouter le marker à la carte immédiatement
-                                        locationGpsMark?.let { marker ->
-                                            if (!mapView.overlays.contains(marker)) {
-                                                mapView.overlays.add(marker)
                                             }
                                         }
                                     }
@@ -169,17 +136,13 @@ fun MapControls(
 
                                 product.bonsVentDeCetteCota.add(newBonVent)
 
-                                // Afficher l'InfoWindow si nécessaire
-                                if (showMarkerDetails) {
-                                    newClient.gpsLocation.locationGpsMark?.let { marker ->
-                                        InfoWindow.closeAllInfoWindowsOn(mapView)
-                                        marker.showInfoWindow()
-                                    }
+                                newClient.gpsLocation.locationGpsMark?.let { marker ->
+                                    markers.add(marker)
+                                    mapView.overlays.add(marker)
+                                    if (showMarkerDetails) marker.showInfoWindow()
                                 }
-
                                 mapView.invalidate()
 
-                                // Mettre à jour le produit dans la base de données
                                 _ModelAppsFather.updateProduit(product, viewModelInitApp)
                             },
                             modifier = Modifier.size(40.dp),
@@ -305,5 +268,3 @@ fun MapControls(
         }
     }
 }
-
-

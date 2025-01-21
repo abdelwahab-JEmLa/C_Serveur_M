@@ -5,13 +5,9 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -38,67 +35,34 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.Views._2LocationGpsClients.App.Main.B.Dialogs.MapControls
+import com.example.c_serveur.R
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.infowindow.InfoWindow
-
-class CustomMarkerInfoWindow(
-    mapView: MapView
-) : InfoWindow(com.example.c_serveur.R.layout.marker_info_window, mapView) {
-
-    override fun onOpen(item: Any?) {
-        try {
-            // Fermer toutes les autres fenêtres d'info
-            closeAllInfoWindowsOn(mMapView)
-
-            // Vérifier que c'est bien un marker
-            if (item !is Marker) return
-
-            // Créer une nouvelle vue pour l'info window
-            val inflater = mMapView.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            mView = inflater.inflate(com.example.c_serveur.R.layout.marker_info_window, null)
-
-            // Mettre à jour le contenu
-            val titleView = mView.findViewById<TextView>(com.example.c_serveur.R.id.bubble_title)
-            val descView = mView.findViewById<TextView>(com.example.c_serveur.R.id.bubble_subdescription)
-            val imageView = mView.findViewById<ImageView>(com.example.c_serveur.R.id.bubble_image)
-
-            titleView?.text = item.title ?: ""
-            descView?.text = item.snippet ?: ""
-            imageView?.visibility = View.GONE
-
-        } catch (e: Exception) {
-            Log.e("InfoWindow", "Error opening InfoWindow", e)
-        }
-    }
-
-    override fun onClose() {
-        // Nettoyer les ressources si nécessaire
-    }
-}
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
 @Composable
 fun A_ClientsLocationGps(
     modifier: Modifier = Modifier,
-    viewModelInitApp: ViewModelInitApp = viewModel()
+    viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
-
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val currentZoom by remember { mutableStateOf(18.2) }
 
-    var showMarkerDetails by remember { mutableStateOf(true) }
-    var showNavigationDialog by remember { mutableStateOf(false) }
-    var selectedMarker by remember { mutableStateOf<Marker?>(null) }
+    val mapView = remember { MapView(context) }
     val markers = remember { mutableStateListOf<Marker>() }
-    var mapInitialized by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var selectedMarker by remember { mutableStateOf<Marker?>(null) }
+    var showNavigationDialog by remember { mutableStateOf(false) }
+    var showMarkerDetails by remember { mutableStateOf(true) }
 
+    var currentLocation by remember { mutableStateOf(getDefaultLocation()) }
     // Show loading indicator while initializing
     if (viewModelInitApp.isLoading) {
         Box(
@@ -112,150 +76,110 @@ fun A_ClientsLocationGps(
         }
         return
     }
-
-    // Show error message if any
-    errorMessage?.let { message ->
-        AlertDialog(
-            onDismissRequest = { errorMessage = null },
-            title = { Text("Error") },
-            text = { Text(message) },
-            confirmButton = {
-                Button(onClick = { errorMessage = null }) {
-                    Text("OK")
-                }
-            }
-        )
-    }
-
-    // Initialize map
-    val mapView = remember {
-        try {
-            MapView(context).apply {
-                Configuration.getInstance().load(
-                    context,
-                    context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE)
-                )
-                setTileSource(TileSourceFactory.MAPNIK)
-                setMultiTouchControls(true)
-                mapInitialized = true
-            }
-        } catch (e: Exception) {
-            Log.e("MapView", "Error initializing MapView", e)
-            errorMessage = "Failed to initialize map: ${e.message}"
-            null
-        }
-    }
-
-    // Create shared InfoWindow instance
-    val sharedInfoWindow = remember(mapView) {
-        mapView?.let { CustomMarkerInfoWindow(it) }
-    }
-
-    // Update markers when clients change
+    // Load client markers
     LaunchedEffect(viewModelInitApp._modelAppsFather.clientsDisponible) {
-        try {
-            mapView?.let { map ->
-                markers.clear()
-                map.overlays.clear()
+        markers.clear()
+        mapView.overlays.clear()
 
-                viewModelInitApp._modelAppsFather.clientsDisponible
-                    .filter { it.gpsLocation.latitude != 0.0 && it.gpsLocation.longitude != 0.0 }
-                    .forEach { client ->
-                        val marker = client.gpsLocation.locationGpsMark ?: Marker(map).also {
-                            client.gpsLocation.locationGpsMark = it
-                        }
+        // Create marker icon using VectorDrawableCompat
+        val markerDrawable = ContextCompat.getDrawable(context, R.drawable.ic_location_on)?.mutate()
 
-                        marker.apply {
-                            position = GeoPoint(client.gpsLocation.latitude, client.gpsLocation.longitude)
-                            title = client.nom
-                            snippet = if (client.statueDeBase.cUnClientTemporaire)
-                                "Client temporaire" else "Client permanent"
-                            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                            infoWindow = sharedInfoWindow
+        viewModelInitApp._modelAppsFather.clientsDisponible.forEach { client ->
+            client.gpsLocation.locationGpsMark?.let { existingMarker ->
+                // If marker already exists, update its position
+                existingMarker.position = GeoPoint(
+                    client.gpsLocation.latitude,
+                    client.gpsLocation.longitude
+                )
+                existingMarker.title = client.nom
+                existingMarker.snippet = if (client.statueDeBase.cUnClientTemporaire) "Client temporaire" else "Client permanent"
+                markers.add(existingMarker)
+                mapView.overlays.add(existingMarker)
+            } ?: run {
+                // Create new marker if it doesn't exist
+                Marker(mapView).apply {
+                    position = GeoPoint(
+                        client.gpsLocation.latitude,
+                        client.gpsLocation.longitude
+                    )
+                    title = client.nom
+                    snippet = if (client.statueDeBase.cUnClientTemporaire) "Client temporaire" else "Client permanent"
+                    setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
 
-                            // Set marker icon and color
-                            try {
-                                ContextCompat.getDrawable(
-                                    context,
-                                    com.example.c_serveur.R.drawable.ic_location_on
-                                )?.let { drawable ->
-                                    val wrappedDrawable = androidx.core.graphics.drawable.DrawableCompat
-                                        .wrap(drawable)
-                                        .mutate()
-                                    androidx.core.graphics.drawable.DrawableCompat.setTint(
-                                        wrappedDrawable,
-                                        Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb()
-                                    )
-                                    icon = wrappedDrawable
-                                }
-                            } catch (e: Exception) {
-                                Log.e("Marker", "Error setting marker icon", e)
-                            }
-
-                            setOnMarkerClickListener { clickedMarker, _ ->
-                                selectedMarker = clickedMarker
-                                if (showMarkerDetails) {
-                                    InfoWindow.closeAllInfoWindowsOn(map)
-                                    clickedMarker.showInfoWindow()
-                                }
-                                showNavigationDialog = true
-                                true
-                            }
-                        }
-
-                        if (!markers.contains(marker)) {
-                            markers.add(marker)
-                            map.overlays.add(marker)
-                        }
+                    // Set the icon using the vector drawable
+                    markerDrawable?.let { drawable ->
+                        // Create a wrapped drawable that we can tint
+                        val wrappedDrawable = DrawableCompat.wrap(drawable).mutate()
+                        DrawableCompat.setTint(
+                            wrappedDrawable,
+                            Color(android.graphics.Color.parseColor(client.gpsLocation.couleur)).toArgb()
+                        )
+                        icon = wrappedDrawable
                     }
 
-                if (showMarkerDetails) {
-                    InfoWindow.closeAllInfoWindowsOn(map)
-                    markers.forEach { it.showInfoWindow() }
+                    setOnMarkerClickListener { marker, _ ->
+                        selectedMarker = marker
+                        showNavigationDialog = true
+                        if (showMarkerDetails) marker.showInfoWindow()
+                        true
+                    }
+                    client.gpsLocation.locationGpsMark = this
+                    markers.add(this)
+                    mapView.overlays.add(this)
                 }
-                map.invalidate()
             }
-        } catch (e: Exception) {
-            Log.e("MapUpdate", "Error updating markers", e)
-            errorMessage = "Failed to update markers: ${e.message}"
+        }
+
+        if (showMarkerDetails) {
+            markers.forEach { it.showInfoWindow() }
+        }
+        mapView.invalidate()
+    }
+
+    // Effect for loading initial position
+    LaunchedEffect(Unit) {
+        val location = getCurrentLocation(context)
+        if (location != null) {
+            currentLocation = location
         }
     }
+
+    // Initial configuration
+    DisposableEffect(context) {
+        Configuration.getInstance()
+            .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
+        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        mapView.setMultiTouchControls(true)
+
+        onDispose {
+            mapView.overlays.clear()
+        }
+    }
+
+    // Function to update markers visibility
+    fun updateMarkersVisibility() {
+        markers.forEach { marker ->
+            if (showMarkerDetails) marker.showInfoWindow() else marker.closeInfoWindow()
+        }
+        mapView.invalidate()
+    }
+
+    val geoPoint = GeoPoint(currentLocation.latitude, currentLocation.longitude)
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Map view
-        mapView?.let { map ->
-            AndroidView(
-                factory = { map },
-                modifier = Modifier.fillMaxSize()
-            ) { view ->
-                scope.launch {
-                    try {
-                        if (ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.ACCESS_FINE_LOCATION
-                            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-                        ) {
-                            val locationManager =
-                                context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-                            val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                                ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-
-                            location?.let {
-                                view.controller.apply {
-                                    setCenter(GeoPoint(it.latitude, it.longitude))
-                                    setZoom(18.2)
-                                }
-                            }
-                        }
-                    } catch (e: Exception) {
-                        Log.e("Location", "Error getting location", e)
-                        errorMessage = "Failed to get location: ${e.message}"
-                    }
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { mapView }
+        ) { view ->
+            scope.launch {
+                view.controller.apply {
+                    setCenter(geoPoint)
+                    setZoom(currentZoom)
                 }
             }
         }
 
-        // Center indicator
         Box(
             modifier = Modifier
                 .size(8.dp)
@@ -263,56 +187,74 @@ fun A_ClientsLocationGps(
                 .align(Alignment.Center)
         )
 
-        // Map controls
-        if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility && mapView != null) {
+        if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
             MapControls(
-                mapView = mapView,
                 viewModelInitApp = viewModelInitApp,
+                mapView = mapView,
+                markers = markers,
                 showMarkerDetails = showMarkerDetails,
-                onShowMarkerDetailsChange = { show ->
-                    showMarkerDetails = show
-                    markers.forEach { if (show) it.showInfoWindow() else it.closeInfoWindow() }
+                onShowMarkerDetailsChange = {
+                    showMarkerDetails = it
+                    updateMarkersVisibility()
                 },
-                onMarkerSelected = { marker ->
-                    selectedMarker = marker
+                onMarkerSelected = {
+                    selectedMarker = it
                     showNavigationDialog = true
                 }
             )
         }
 
-        // Navigation dialog
         if (showNavigationDialog && selectedMarker != null) {
-            AlertDialog(
-                onDismissRequest = { showNavigationDialog = false },
-                title = { Text("Navigation") },
-                text = { Text("Voulez-vous démarrer la navigation vers ce point ?") },
-                confirmButton = {
-                    Button(onClick = {
-                        try {
-                            selectedMarker?.let { marker ->
-                                val uri = Uri.parse(
-                                    "google.navigation:q=${marker.position.latitude},${marker.position.longitude}&mode=d"
-                                )
-                                val intent = Intent(Intent.ACTION_VIEW, uri).apply {
-                                    setPackage("com.google.android.apps.maps")
-                                }
-                                context.startActivity(intent)
-                            }
-                        } catch (e: Exception) {
-                            Log.e("Navigation", "Error starting navigation", e)
-                            errorMessage = "Failed to start navigation: ${e.message}"
-                        }
-                        showNavigationDialog = false
-                    }) {
-                        Text("Démarrer")
+            NavigationDialog(
+                onDismiss = { showNavigationDialog = false },
+                onConfirm = { marker ->
+                    val uri = Uri.parse("google.navigation:q=${marker.position.latitude},${marker.position.longitude}&mode=d")
+                    val mapIntent = Intent(Intent.ACTION_VIEW, uri).apply {
+                        setPackage("com.google.android.apps.maps")
                     }
+                    context.startActivity(mapIntent)
                 },
-                dismissButton = {
-                    Button(onClick = { showNavigationDialog = false }) {
-                        Text("Annuler")
-                    }
-                }
+                marker = selectedMarker!!
             )
         }
     }
+}
+
+private fun getDefaultLocation() = Location("default").apply {
+    latitude = -34.0
+    longitude = 151.0
+}
+
+private fun getCurrentLocation(context: Context): Location? {
+    return if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    ) {
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+    } else null
+}
+@Composable
+private fun NavigationDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (Marker) -> Unit,
+    marker: Marker
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Navigation") },
+        text = { Text("Voulez-vous démarrer la navigation vers ce point ?") },
+        confirmButton = {
+            Button(onClick = { onConfirm(marker); onDismiss() }) {
+                Text("Démarrer")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Annuler")
+            }
+        }
+    )
 }

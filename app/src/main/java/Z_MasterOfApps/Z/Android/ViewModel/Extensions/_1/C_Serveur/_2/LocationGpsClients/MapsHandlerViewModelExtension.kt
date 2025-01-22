@@ -1,8 +1,9 @@
-package Z_MasterOfApps.Kotlin.ViewModel
+package Z_MasterOfApps.Z.Android.ViewModel.Extensions._1.C_Serveur._2.LocationGpsClients
 
 import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.produitsFireBaseRef
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import com.example.c_serveur.R
 import kotlinx.coroutines.tasks.await
@@ -40,10 +41,10 @@ class MapsHandlerViewModelExtension(
 
             // 3. Remove data from Firebase using removeValue()
             produitsMainDataBase.forEach { produit ->
-                produit.bonsVentDeCetteCota.forEachIndexed() {index, bonVent ->
+                produit.historiqueBonsVents.forEachIndexed() {index, bonVent ->
                     val clientRef = produitsFireBaseRef
                         .child(produit.id.toString())
-                        .child("bonsVentDeCetteCota")
+                        .child("historiqueBonsVents")
                         .child(index.toString())
                         .child("clientInformations")
                         .child("gpsLocation")

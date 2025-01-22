@@ -19,7 +19,7 @@ class ViewModelExtensionMapsHandler(
 ) {
     suspend fun clearAllData(mapView: MapView?) {
         try {
-            // Clear map and local markers in one pass
+            // 1. Clear UI
             mapView?.apply {
                 overlays.clear()
                 produitsMainDataBase.forEach { produit ->
@@ -34,25 +34,24 @@ class ViewModelExtensionMapsHandler(
                 invalidate()
             }
 
-            // Clear Firebase GPS data for all products including ID 0
-            val allProducts = if (produitsMainDataBase.none { it.id == 0L }) {
-                produitsMainDataBase + _ModelAppsFather.ProduitModel(id = 0L)
-            } else {
-                produitsMainDataBase
-            }
-
-            allProducts.forEach { produit ->
+            // 2. Clear Firebase data
+            produitsFireBaseRef.get().await()?.children?.forEach { produitSnapshot ->
                 try {
-                    val productRef = produitsFireBaseRef.child(produit.id.toString())
-                    productRef.child("historiqueBonsVents").get().await()?.children?.forEach { bonVent ->
-                        bonVent.ref.child("clientInformations/gpsLocation").removeValue().await()
-                    }
+                    produitSnapshot
+                        .child("historiqueBonsVents")
+                        .children.forEach { bonVentSnapshot ->
+                            bonVentSnapshot
+                                .child("clientInformations/gpsLocation")
+                                .ref
+                                .removeValue()
+                                .await()
+                        }
                 } catch (e: Exception) {
-                    Log.e("FirebaseCleanup", "Error clearing product ${produit.id}", e)
+                    Log.e("FirebaseCleanup", "Error with product ${produitSnapshot.key}", e)
                 }
             }
         } catch (e: Exception) {
-            Log.e("FirebaseCleanup", "Global cleanup error", e)
+            Log.e("FirebaseCleanup", "Cleanup failed", e)
             throw e
         }
     }

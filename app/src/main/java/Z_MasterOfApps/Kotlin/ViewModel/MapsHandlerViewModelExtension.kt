@@ -11,7 +11,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
-class ViewModelExtentionHandlerMaps(
+class MapsHandlerViewModelExtension(
     val viewModel: ViewModelInitApp,
     val produitsMainDataBase: MutableList<_ModelAppsFather.ProduitModel>,
     val modelAppsFather: _ModelAppsFather
@@ -31,6 +31,7 @@ class ViewModelExtentionHandlerMaps(
                     bonVent.clientInformations?.gpsLocation?.locationGpsMark?.let { marker ->
                         marker.closeInfoWindow()
                         marker.remove(mapView)
+
                     }
                     // Reset marker reference
                     bonVent.clientInformations?.gpsLocation?.locationGpsMark = null
@@ -39,11 +40,11 @@ class ViewModelExtentionHandlerMaps(
 
             // 3. Remove data from Firebase using removeValue()
             produitsMainDataBase.forEach { produit ->
-                produit.bonsVentDeCetteCota.forEach { bonVent ->
+                produit.bonsVentDeCetteCota.forEachIndexed() {index, bonVent ->
                     val clientRef = produitsFireBaseRef
                         .child(produit.id.toString())
                         .child("bonsVentDeCetteCota")
-                        .child(bonVent.clientInformations?.id.toString())
+                        .child(index.toString())
                         .child("clientInformations")
                         .child("gpsLocation")
 
@@ -62,7 +63,7 @@ class ViewModelExtentionHandlerMaps(
         }
     }
 
-    fun ViewModelExtentionHandlerMaps.onClickAddMarkerButton(
+    fun onClickAddMarkerButton(
         mapView: MapView,
         onMarkerSelected: (Marker) -> Unit,
         showMarkerDetails: Boolean,
@@ -111,7 +112,7 @@ class ViewModelExtentionHandlerMaps(
                 produitsMainDataBase.add(it)
             }
 
-        product.bonsVentDeCetteCota.add(newBonVent)
+        product.historiqueBonsVents.add(newBonVent)
 
         newClient.gpsLocation.locationGpsMark?.let { marker ->
             markers.add(marker)

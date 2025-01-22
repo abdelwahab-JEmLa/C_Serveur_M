@@ -30,7 +30,7 @@ class ViewModelInitApp : ViewModel() {
     var isLoading by mutableStateOf(false)
     var loadingProgress by mutableFloatStateOf(0f)
 
-    private val mapsHandler = MapsHandler(
+    private val mapsHandler = ViewModelExtentionHandlerMaps(
         viewModel=this@ViewModelInitApp,
         produitsMainDataBase = produitsMainDataBase,
         modelAppsFather = _modelAppsFather,

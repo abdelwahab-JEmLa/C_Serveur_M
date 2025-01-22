@@ -11,12 +11,11 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
-class MapsHandler(
-    private val viewModel: ViewModelInitApp,
-    private val produitsMainDataBase: MutableList<_ModelAppsFather.ProduitModel>,
-    private val modelAppsFather: _ModelAppsFather
+class ViewModelExtentionHandlerMaps(
+    val viewModel: ViewModelInitApp,
+    val produitsMainDataBase: MutableList<_ModelAppsFather.ProduitModel>,
+    val modelAppsFather: _ModelAppsFather
 ) {
-
     suspend fun clearAllData(mapView: MapView?) {
         try {
             // 1. Clear UI elements first
@@ -63,7 +62,7 @@ class MapsHandler(
         }
     }
 
-    fun onClickAddMarkerButton(
+    fun ViewModelExtentionHandlerMaps.onClickAddMarkerButton(
         mapView: MapView,
         onMarkerSelected: (Marker) -> Unit,
         showMarkerDetails: Boolean,

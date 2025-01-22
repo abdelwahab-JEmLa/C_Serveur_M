@@ -1,4 +1,4 @@
-package Z_MasterOfApps.Z.Android.ViewModel.Extensions._1.C_Serveur._2.LocationGpsClients
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp
 
 import Z_MasterOfApps.Kotlin.Model.Extension.clientsDisponible
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
@@ -12,7 +12,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
-class MapsHandlerViewModelExtension(
+class ViewModelExtensionMapsHandler(
     val viewModel: ViewModelInitApp,
     val produitsMainDataBase: MutableList<_ModelAppsFather.ProduitModel>,
     val modelAppsFather: _ModelAppsFather

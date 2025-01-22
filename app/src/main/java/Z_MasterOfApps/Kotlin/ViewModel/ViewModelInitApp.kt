@@ -55,7 +55,6 @@ class ViewModelInitApp : ViewModel() {
     fun clearAllData(context: Context) {
         viewModelScope.launch {
             mapsHandler.clearAllData(mapViewVM)
-            // Re-initialize the map view after clearing
             mapViewVM = initializeMapView(context)
         }
     }

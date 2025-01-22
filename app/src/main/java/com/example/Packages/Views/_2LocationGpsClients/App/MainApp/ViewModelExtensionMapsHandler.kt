@@ -19,51 +19,43 @@ class ViewModelExtensionMapsHandler(
 ) {
     suspend fun clearAllData(mapView: MapView?) {
         try {
-            // 1. Clear UI elements first
-            mapView?.let { map ->
-                map.overlays.clear()
-                map.invalidate()
-            }
-
-            // 2. Clear local markers and data
-            produitsMainDataBase.forEach { produit ->
-                produit.bonsVentDeCetteCota.forEach { bonVent ->
-                    // Clear existing marker
-                    bonVent.clientInformations?.gpsLocation?.locationGpsMark?.let { marker ->
-                        marker.closeInfoWindow()
-                        marker.remove(mapView)
-
+            // Clear map and local markers in one pass
+            mapView?.apply {
+                overlays.clear()
+                produitsMainDataBase.forEach { produit ->
+                    produit.bonsVentDeCetteCota.forEach { bonVent ->
+                        bonVent.clientInformations?.gpsLocation?.locationGpsMark?.also {
+                            it.closeInfoWindow()
+                            it.remove(this)
+                            bonVent.clientInformations?.gpsLocation?.locationGpsMark = null
+                        }
                     }
-                    // Reset marker reference
-                    bonVent.clientInformations?.gpsLocation?.locationGpsMark = null
                 }
+                invalidate()
             }
 
-            // 3. Remove data from Firebase using removeValue()
-            produitsMainDataBase.forEach { produit ->
-                produit.historiqueBonsVents.forEachIndexed() {index, bonVent ->
-                    val clientRef = produitsFireBaseRef
-                        .child(produit.id.toString())
-                        .child("historiqueBonsVents")
-                        .child(index.toString())
-                        .child("clientInformations")
-                        .child("gpsLocation")
-
-                    // Remove the entire gpsLocation node
-                    clientRef.removeValue().await()
-                }
+            // Clear Firebase GPS data for all products including ID 0
+            val allProducts = if (produitsMainDataBase.none { it.id == 0L }) {
+                produitsMainDataBase + _ModelAppsFather.ProduitModel(id = 0L)
+            } else {
+                produitsMainDataBase
             }
 
-            Log.d(
-                "FirebaseCleanup",
-                "Successfully cleared all data from UI, local storage, and Firebase"
-            )
+            allProducts.forEach { produit ->
+                try {
+                    val productRef = produitsFireBaseRef.child(produit.id.toString())
+                    productRef.child("historiqueBonsVents").get().await()?.children?.forEach { bonVent ->
+                        bonVent.ref.child("clientInformations/gpsLocation").removeValue().await()
+                    }
+                } catch (e: Exception) {
+                    Log.e("FirebaseCleanup", "Error clearing product ${produit.id}", e)
+                }
+            }
         } catch (e: Exception) {
-            Log.e("FirebaseCleanup", "Failed to clear data", e)
+            Log.e("FirebaseCleanup", "Global cleanup error", e)
             throw e
         }
     }
-
     fun onClickAddMarkerButton(
         mapView: MapView,
         onMarkerSelected: (Marker) -> Unit,

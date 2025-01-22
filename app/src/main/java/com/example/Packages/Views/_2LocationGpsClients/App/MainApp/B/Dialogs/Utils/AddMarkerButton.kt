@@ -10,7 +10,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 
 @Composable
- fun AddMarkerButton(
+fun AddMarkerButton(
     markers: MutableList<Marker>,
     viewModelInitApp: ViewModelInitApp,
     showLabels: Boolean,
@@ -20,7 +20,12 @@ import org.osmdroid.views.overlay.Marker
 ) {
     ControlButton(
         onClick = {
-            viewModelInitApp.onClickAddMarkerButton(mapView, onMarkerSelected, showMarkerDetails, markers)
+            viewModelInitApp.onClickAddMarkerButton(
+                mapView,
+                onMarkerSelected,
+                showMarkerDetails,
+                markers
+            )
         },
         icon = Icons.Default.Add,
         contentDescription = "Add marker",
@@ -29,4 +34,3 @@ import org.osmdroid.views.overlay.Marker
         containerColor = Color(0xFF2196F3)
     )
 }
-

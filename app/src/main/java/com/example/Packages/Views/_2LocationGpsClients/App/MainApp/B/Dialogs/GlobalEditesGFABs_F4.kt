@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AddMarkerButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ClearHistoryButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LabelsButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LocationTrackingButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.MenuButton
@@ -92,6 +93,10 @@ fun MapControls(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (showMenu) {
+                    ClearHistoryButton(
+                        showLabels = showLabels,
+                        viewModelInitApp = viewModelInitApp
+                    )
                     NearbyMarkersButton(
                         showLabels = showLabels,
                         viewModelInitApp = viewModelInitApp,

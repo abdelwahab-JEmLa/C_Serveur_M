@@ -13,10 +13,20 @@ import androidx.navigation.compose.composable
 import com.example.Packages.Views.Screen
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.A_ClientsLocationGps
 
+// _2App.kt
 fun NavGraphBuilder._2App(viewModelInitApp: ViewModelInitApp) {
     composable(ScreensApp2.Fragment1Screen.route) {
-        A_ClientsLocationGps(viewModel = ChildViewModelOfFragment(viewModelInitApp))
+        A_ClientsLocationGps(
+            viewModel = viewModelInitApp
+        )
     }
+}
+
+@Preview
+@Composable
+private fun PreviewApp2_F1() {
+    // Preview version without real ViewModel
+    A_ClientsLocationGps(modifier = Modifier.fillMaxSize())
 }
 
 object ScreensApp2 {
@@ -30,8 +40,3 @@ data object Fragment1ScreenDataObject : Screen(
     color = Color(0xFFFF5722)
 )
 
-@Preview
-@Composable
-private fun PreviewApp2_F1() {
-    A_ClientsLocationGps(modifier = Modifier.fillMaxSize())
-}

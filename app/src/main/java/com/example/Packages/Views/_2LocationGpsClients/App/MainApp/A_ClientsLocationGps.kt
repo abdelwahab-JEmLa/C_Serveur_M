@@ -36,18 +36,17 @@ import com.example.c_serveur.R
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 
 @Composable
 fun A_ClientsLocationGps(
     modifier: Modifier = Modifier,
-    viewModelInitApp: ViewModelInitApp = viewModel(),
+    viewModel: ViewModelInitApp = viewModel(),
 ) {
     val context = LocalContext.current
     val currentZoom by remember { mutableStateOf(18.2) }
-    val mapView = remember { MapView(context) }
+    val mapView = remember { viewModel.initializeMapView(context) }
     val markers = remember { mutableStateListOf<Marker>() }
     var selectedMarker by remember { mutableStateOf<Marker?>(null) }
     var showNavigationDialog by remember { mutableStateOf(false) }
@@ -72,20 +71,14 @@ fun A_ClientsLocationGps(
             )
         }
 
-        // Animate to position immediately
-        mapView.controller.apply {
-            setZoom(currentZoom)
-            animateTo(GeoPoint(initialPosition.latitude, initialPosition.longitude))
-        }
-
         // Configure map settings
         mapView.apply {
             setMultiTouchControls(true)
             setTileSource(TileSourceFactory.MAPNIK)
-            controller.setCenter(GeoPoint(initialPosition.latitude, initialPosition.longitude))
+            controller.setZoom(currentZoom)
+            controller.animateTo(GeoPoint(initialPosition.latitude, initialPosition.longitude))
         }
     }
-
     // Configuration initiale de la carte
     DisposableEffect(context) {
         Configuration.getInstance()
@@ -120,11 +113,11 @@ fun A_ClientsLocationGps(
         }
     }
 
-    LaunchedEffect(viewModelInitApp._modelAppsFather.clientsDisponible) {
+    LaunchedEffect(viewModel._modelAppsFather.clientsDisponible) {
         markers.clear()
         mapView.overlays.clear()
 
-        viewModelInitApp._modelAppsFather.clientsDisponible.forEach { client ->
+        viewModel._modelAppsFather.clientsDisponible.forEach { client ->
             client.gpsLocation.locationGpsMark?.let { existingMarker ->
                 // Mise à jour du marqueur existant
                 existingMarker.position = GeoPoint(
@@ -191,9 +184,9 @@ fun A_ClientsLocationGps(
                 .align(Alignment.Center)
         )
 
-        if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
+        if (viewModel._paramatersAppsViewModelModel.fabsVisibility) {
             MapControls(
-                viewModelInitApp = viewModelInitApp,
+                viewModelInitApp = viewModel,
                 mapView = mapView,
                 markers = markers,
                 showMarkerDetails = showMarkerDetails,

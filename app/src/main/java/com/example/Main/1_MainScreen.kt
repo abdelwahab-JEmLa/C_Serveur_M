@@ -29,7 +29,6 @@ fun MainScreen(
     val items = NavigationItems.items
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-    // Contenu principal uniquement affiché si les permissions sont accordées
     if (permissionsGranted) {
         Surface(
             modifier = modifier.fillMaxSize(),

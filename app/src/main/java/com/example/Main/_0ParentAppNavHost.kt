@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Screens
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App._1GerantAfficheurGrossistCommendApp
 import com.example.Packages.Views._2LocationGpsClients.App.ScreensApp2
 import com.example.Packages.Views._2LocationGpsClients.App._2App
@@ -22,7 +23,7 @@ import com.example.Packages.Views._2LocationGpsClients.App._2App
 fun ParentAppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModelInitApp: ViewModelInitApp ,
+    viewModelInitApp: ViewModelInitApp,
 ) {
     // Show loading indicator while initializing
     if (viewModelInitApp.isLoading) {
@@ -49,16 +50,18 @@ fun ParentAppNavHost(
         }
     }
 }
+
 object NavigationItems {
     val items = listOf(
         ScreensApp2.Fragment1Screen,
-        /*
-          Screens.MainScreen_F4,
-          Screens.MainScreen_F1,
-          Screens.MainScreen_F2,
-          Screens.MainScreen_F3 */
+
+        Screens.MainScreen_F4,
+        Screens.MainScreen_F1,
+        Screens.MainScreen_F2,
+        Screens.MainScreen_F3
     )
 }
+
 abstract class Screen(
     val route: String,
     val icon: ImageVector,

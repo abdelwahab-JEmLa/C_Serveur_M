@@ -83,6 +83,22 @@ abstract class Screen(
     val title: String,
     val color: Color
 )
+fun NavGraphBuilder._2App(viewModelInitApp: ViewModelInitApp) {
+    composable(ScreensApp2.Fragment1Screen.route) {
+        // A_ClientsLocationGps(viewModel = viewModelInitApp)
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewApp2_F1() {
+    //  A_ClientsLocationGps(modifier = Modifier.fillMaxSize())
+}
+
+object ScreensApp2 {
+    val Fragment1Screen = Fragment1ScreenDataObject
+}
+
 
 
 @Preview
@@ -97,6 +113,13 @@ private fun Preview_Fragment() {
 
 
 
+
+data object Fragment1ScreenDataObject : Screen(
+    route = "Fragment1",
+    icon = Icons.Default.Person,
+    title = "A_ClientsLocationGps",
+    color = Color(0xFFFF5722)
+)
 
 data object MainScreenDataObject_F4 : Screen(
     route = "main_screen_f4",
@@ -127,24 +150,3 @@ data object MainScreenDataObject_F3 : Screen(
 )
 
 
-/*
-@Preview
-@Composable
-private fun Preview_Fragment2() {
-   A_TravaillieurListProduitAchercheChezLeGrossist_F2(modifier = Modifier.fillMaxSize())
-}    */
-
-
-/*
-@Preview
-@Composable
-private fun Preview_Fragment3() {
-A_AfficheurDesProduitsPourLeColecteur_F3(modifier = Modifier.fillMaxSize())
-}
-
-@Preview
-@Composable
-private fun Preview_Fragment4() {
-A_DeplaceProduitsVerGrossist(modifier = Modifier.fillMaxSize())
-}
-      */

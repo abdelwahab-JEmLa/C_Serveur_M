@@ -11,27 +11,4 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
-fun NavGraphBuilder._2App(viewModelInitApp: ViewModelInitApp) {
-    composable(ScreensApp2.Fragment1Screen.route) {
-       // A_ClientsLocationGps(viewModel = viewModelInitApp)
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewApp2_F1() {
-    // Preview version without real ViewModel
-  //  A_ClientsLocationGps(modifier = Modifier.fillMaxSize())
-}
-
-object ScreensApp2 {
-    val Fragment1Screen = Fragment1ScreenDataObject
-}
-
-data object Fragment1ScreenDataObject : Screen(
-    route = "Fragment1",
-    icon = Icons.Default.Person,
-    title = "A_ClientsLocationGps",
-    color = Color(0xFFFF5722)
-)
 

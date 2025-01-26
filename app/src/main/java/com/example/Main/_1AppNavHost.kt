@@ -1,41 +1,25 @@
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App
+package com.example.Main
 
+import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.A_GerantDefinirePosition_F1
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhonelinkRing
 import androidx.compose.material.icons.filled.Tab
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.Main.Screen
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.A_GerantDefinirePosition_F1
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_4InNavHost_Id3.A_AfficheurDesProduitsPourLeColecteur_F3
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.A_DeplaceProduitsVerGrossist
 
 
 fun NavGraphBuilder._1GerantAfficheurGrossistCommendApp(viewModelInitApp: ViewModelInitApp) {
-    composable(Screens.MainScreen_F4.route) {
-        A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
-    }
+ //  composable(Screens.MainScreen_F4.route) { A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp) }
 
-    composable(Screens.MainScreen_F1.route) {
-        A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp)
-    }
+    composable(Screens.MainScreen_F1.route) { A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp) }
 
-    composable(Screens.MainScreen_F2.route) {
-        A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp)
-    }
+  //  composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp) }
 
-    composable(Screens.MainScreen_F3.route) {
-        A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp)
-    }
+   // composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
 }
 
 object Screens {
@@ -73,18 +57,16 @@ data object MainScreenDataObject_F3 : Screen(
     color = Color(0xFFFF5722)
 )
 
-@Preview
-@Composable
-private fun Preview_Fragment1() {
-    A_GerantDefinirePosition_F1(modifier = Modifier.fillMaxSize())
-}
 
+ /*
 @Preview
 @Composable
 private fun Preview_Fragment2() {
     A_TravaillieurListProduitAchercheChezLeGrossist_F2(modifier = Modifier.fillMaxSize())
-}
+}    */
 
+
+    /*
 @Preview
 @Composable
 private fun Preview_Fragment3() {
@@ -96,3 +78,4 @@ private fun Preview_Fragment3() {
 private fun Preview_Fragment4() {
     A_DeplaceProduitsVerGrossist(modifier = Modifier.fillMaxSize())
 }
+          */

@@ -1,4 +1,4 @@
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.Modules
+package Z_MasterOfApps.Z.Android.Dev.Views._1NavHost.Fragment_IdDEV.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
@@ -31,8 +31,10 @@ import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -56,7 +58,7 @@ import java.io.IOException
 import kotlin.math.roundToInt
 
 @Composable
-fun GlobalEditesGFABs_F1(
+fun GlobalEditesGFABs_F5(
     appsHeadModel: _ModelAppsFather,
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp,
@@ -67,12 +69,16 @@ fun GlobalEditesGFABs_F1(
     var deviceMode by remember { mutableStateOf(ParamatersAppsModel.DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
     var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
+    var isProcessing by remember { mutableStateOf(false) }
 
     // États pour le déplacement par glisser-déposer
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
 
     suspend fun handleImageCapture(uri: Uri) {
+        if (isProcessing) return
+        isProcessing = true
+
         try {
             if (uri.toString().isEmpty()) {
                 throw IllegalArgumentException("Invalid URI")
@@ -98,10 +104,14 @@ fun GlobalEditesGFABs_F1(
                             }
                         }
 
-                        // Upload vers Firebase Storage
+                        // Upload vers Firebase Storage avec gestion de la progression
                         val uploadTask = imagesProduitsFireBaseStorageRef
                             .child(fileName)
                             .putBytes(imageBytes)
+                            .addOnProgressListener { taskSnapshot ->
+                                val progress = (100.0 * taskSnapshot.bytesTransferred) / taskSnapshot.totalByteCount
+                                Log.d("Upload", "Progress: $progress%")
+                            }
                             .await()
 
                         if (uploadTask.metadata != null) {
@@ -150,6 +160,7 @@ fun GlobalEditesGFABs_F1(
         } finally {
             pendingProduct = null
             tempImageUri = null
+            isProcessing = false
         }
     }
 
@@ -208,6 +219,7 @@ fun GlobalEditesGFABs_F1(
         }
     }
 
+
     fun checkAndRequestPermissions() {
         val permissions = arrayOf(
             Manifest.permission.CAMERA,
@@ -233,7 +245,13 @@ fun GlobalEditesGFABs_F1(
             }
         }
     }
+    var clearDataClickCount by remember { mutableIntStateOf(0) }
 
+    LaunchedEffect(showOptions) {
+        if (!showOptions) {
+            clearDataClickCount = 0
+        }
+    }
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -270,11 +288,16 @@ fun GlobalEditesGFABs_F1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // FAB Suppression
+                
                     FloatingActionButton(
                         onClick = {
-                             //TODO
-                        },
+                            if (clearDataClickCount == 0) {
+                                clearDataClickCount++
+                            } else {
+
+                                clearDataClickCount = 0
+                            }
+                        } ,
                         modifier = Modifier.size(48.dp),
                         containerColor = Color(0xFF4CAF50)
                     ) {

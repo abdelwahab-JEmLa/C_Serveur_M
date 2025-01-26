@@ -1,4 +1,4 @@
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1
+package Z_MasterOfApps.Z.Android.Dev.Views._1NavHost.Fragment_IdDEV
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageBykeyId
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun C_ItemMainFragment(
+fun MainItem_F5(
     mainItem: _ModelAppsFather.ProduitModel,  // Moved to be first optional parameter
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
@@ -32,8 +32,7 @@ fun C_ItemMainFragment(
             .height(80.dp)
             .background(
                 color = if (position != null)
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                else
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )
@@ -45,7 +44,7 @@ fun C_ItemMainFragment(
 
         GlideDisplayImageBykeyId(
             imageGlidReloadTigger = 0,
-            mainItem=mainItem,
+            mainItem = mainItem,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),

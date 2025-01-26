@@ -1,4 +1,4 @@
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.Modules
+package Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules
 
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits

@@ -1,5 +1,7 @@
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1
+package Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1
 
+import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules.ClientEditePositionDialog
+import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules.GlobalEditesGFABs_F1
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -12,8 +14,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.Modules.ClientEditePositionDialog
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.Modules.GlobalEditesGFABs_F1
 
 private const val TAG = "A_GerantDefinirePosition_F1"
 
@@ -22,7 +22,6 @@ internal fun A_GerantDefinirePosition_F1(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
-    // Log state changes using LaunchedEffect
     LaunchedEffect(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress) {
         logLoadingState(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress)
     }
@@ -64,7 +63,6 @@ internal fun A_GerantDefinirePosition_F1(
                     )
                 }
 
-                // Déplacer GlobalEditesGFABs ici, à l'intérieur du Box mais en dehors du Scaffold
                 if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
                     GlobalEditesGFABs_F1(
                         appsHeadModel = viewModelInitApp._modelAppsFather,
@@ -77,7 +75,7 @@ internal fun A_GerantDefinirePosition_F1(
                 }
             }
 
-            ClientEditePositionDialog(    
+            ClientEditePositionDialog(
                 viewModelProduits = viewModelInitApp,
             )
         }

@@ -48,7 +48,6 @@ class ViewModelInitApp : ViewModel() {
     val extension_App1_F2 = ViewModelExtension_App1_F2(
         viewModel=this@ViewModelInitApp,
         produitsMainDataBase = produitsMainDataBase,
-        clientDataBaseSnapList=clientDataBaseSnapList,
         viewModelScope =this@ViewModelInitApp.viewModelScope,
     )
 

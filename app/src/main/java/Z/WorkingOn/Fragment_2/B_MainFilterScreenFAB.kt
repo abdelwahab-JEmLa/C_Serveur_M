@@ -88,7 +88,6 @@ fun MainScreenFilterFAB_F2(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Add a new button to display produitsAChoisireLeurClient
                     FloatingActionButton(
                         onClick = {
                             viewModelInitApp.extension_App1_F2.produitsAChoisireLeurClient =
@@ -98,19 +97,23 @@ fun MainScreenFilterFAB_F2(
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
                     ) {
                         Text(
-                            text = "Show",
+                            text = "Show cONFLISTS pRODUITS",
                             color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                     }
 
+                    // Iterate over grouped products and display buttons for each grossist
                     groupedProducts.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            // Button to move grossist up in the list
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
+                                        viewModelInitApp.extension_App1_F2.produitsAChoisireLeurClient = mutableListOf()
+
                                         viewModelInitApp.viewModelScope.launch {
                                             val previousGrossist = groupedProducts[index - 1].first
 
@@ -149,6 +152,7 @@ fun MainScreenFilterFAB_F2(
                                 }
                             }
 
+                            // Display grossist name and product count
                             Text(
                                 text = "${grossist.nom} (${produits.size})",
                                 modifier = Modifier
@@ -164,6 +168,7 @@ fun MainScreenFilterFAB_F2(
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
+                            // Button to select the grossist
                             FloatingActionButton(
                                 onClick = {
                                     viewModelInitApp

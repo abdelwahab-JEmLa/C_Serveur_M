@@ -1,5 +1,6 @@
 package com.example.Main
 
+import Views._2LocationGpsClients.App.MainApp.A_ClientsLocationGps
 import Z.WorkingOn.Fragment_2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
 import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.A_GerantDefinirePosition_F1
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
@@ -20,10 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_4InNavHost_Id3.A_AfficheurDesProduitsPourLeColecteur_F3
+import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.A_DeplaceProduitsVerGrossist
 
 @Composable
 fun ParentAppNavHost(
@@ -51,55 +53,14 @@ fun ParentAppNavHost(
             startDestination = Screens.MainScreen_F1.route,
             modifier = Modifier.fillMaxSize()
         ) {
-            _1GerantAfficheurGrossistCommendApp(viewModelInitApp)
-            //  _2App(viewModelInitApp)
+            composable(Screens.MainScreen_F4.route) { A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp) }
+            composable(Screens.MainScreen_F1.route) { A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp) }
+            composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp) }
+            composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
+            composable(Screens.Fragment1Screen.route) { A_ClientsLocationGps(viewModel = viewModelInitApp) }
         }
     }
 }
-fun NavGraphBuilder._1GerantAfficheurGrossistCommendApp(viewModelInitApp: ViewModelInitApp) {
-    //  composable(Screens.MainScreen_F4.route) { A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp) }
-    composable(Screens.MainScreen_F1.route) { A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp) }
-    composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp) }
-    // composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
-}
-object NavigationItems {
-    val items = listOf(
-     //   Screens.MainScreen_F4,
-        Screens.MainScreen_F1,
-        Screens.MainScreen_F2,
-     //   Screens.MainScreen_F3,
-     //   ScreensApp2.Fragment1Screen
-    )
-}
-object Screens {
-    val MainScreen_F4 = MainScreenDataObject_F4
-    val MainScreen_F1 = MainScreenDataObject_F1
-    val MainScreen_F2 = MainScreenDataObject_F2
-    val MainScreen_F3 = MainScreenDataObject_F3
-}
-abstract class Screen(
-    val route: String,
-    val icon: ImageVector,
-    val title: String,
-    val color: Color
-)
-fun NavGraphBuilder._2App(viewModelInitApp: ViewModelInitApp) {
-    composable(ScreensApp2.Fragment1Screen.route) {
-        // A_ClientsLocationGps(viewModel = viewModelInitApp)
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewApp2_F1() {
-    //  A_ClientsLocationGps(modifier = Modifier.fillMaxSize())
-}
-
-object ScreensApp2 {
-    val Fragment1Screen = Fragment1ScreenDataObject
-}
-
-
 
 @Preview
 @Composable
@@ -107,19 +68,31 @@ private fun Preview_Fragment() {
     A_GerantDefinirePosition_F1(modifier = Modifier.fillMaxSize())
 }
 
+object NavigationItems {
+    val items = listOf(
+        Screens.MainScreen_F4,
+        Screens.MainScreen_F1,
+        Screens.MainScreen_F2,
+        Screens.MainScreen_F3,
+        Screens.Fragment1Screen
+    )
+}
 
+object Screens {
+    val MainScreen_F4 = MainScreenDataObject_F4
+    val MainScreen_F1 = MainScreenDataObject_F1
+    val MainScreen_F2 = MainScreenDataObject_F2
+    val MainScreen_F3 = MainScreenDataObject_F3
+    val Fragment1Screen = App2Fragment1
+}
 
-
-
-
-
-
-data object Fragment1ScreenDataObject : Screen(
-    route = "Fragment1",
-    icon = Icons.Default.Person,
-    title = "A_ClientsLocationGps",
-    color = Color(0xFFFF5722)
+abstract class Screen(
+    val route: String,
+    val icon: ImageVector,
+    val title: String,
+    val color: Color
 )
+
 
 data object MainScreenDataObject_F4 : Screen(
     route = "main_screen_f4",
@@ -146,6 +119,13 @@ data object MainScreenDataObject_F3 : Screen(
     route = "main_screen_f3",
     icon = Icons.Default.Person,
     title = "Phone Client Client",
+    color = Color(0xFFFF5722)
+)
+
+data object App2Fragment1 : Screen(
+    route = "Fragment1",
+    icon = Icons.Default.Person,
+    title = "A_ClientsLocationGps",
     color = Color(0xFFFF5722)
 )
 

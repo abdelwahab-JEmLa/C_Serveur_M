@@ -60,7 +60,7 @@ internal fun A_TravaillieurListProduitAchercheChezLeGrossist_F2(
         Box(modifier = Modifier.fillMaxSize()) {
             if (databaseSize > 0) {
                 MainList_F2(
-                    visibleProducts = visibleProducts,
+                    initVisibleProducts = visibleProducts,
                     viewModelInitApp = viewModelInitApp,
                     paddingValues = paddingValues
                 )

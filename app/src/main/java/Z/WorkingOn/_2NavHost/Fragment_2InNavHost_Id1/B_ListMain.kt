@@ -1,10 +1,14 @@
 package Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1
 
+import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules.MoveProductsDialog
+import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules.SearchDialog_F1
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Moving
+import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,8 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules.MoveProductsDialog
-import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules.SearchDialog_F1
 
 @Composable
 fun B_ListMainFragment(
@@ -41,7 +44,9 @@ fun B_ListMainFragment(
     visibleProducts: List<_ModelAppsFather.ProduitModel>
 ) {
     var showMoveDialog by remember { mutableStateOf(false) }
+    var choisireClient by remember { mutableStateOf(false) }
     var showSearchDialog by remember { mutableStateOf(false) }
+    var produitsAChoisireLeurClient by remember { mutableStateOf<List<_ModelAppsFather.ProduitModel>>(emptyList()) }
 
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true
@@ -59,11 +64,33 @@ fun B_ListMainFragment(
         // Header for positioned products
         if (positionedProducts.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
-                Text(
-                    "Produits avec position (${positionedProducts.size})",
+                Row(
                     modifier = Modifier.padding(8.dp),
-                    style = MaterialTheme.typography.titleMedium
-                )
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Box {
+                        Icon(
+                            Icons.Default.QrCodeScanner,
+                            contentDescription = "ChoisireClient",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Text(
+                            "PCC(${produitsAChoisireLeurClient.size})",
+                            modifier = Modifier.padding(8.dp)
+                                .clickable { choisireClient = true},
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                    Text(
+                        "Produits avec position (${positionedProducts.size})",
+                        modifier = Modifier.padding(8.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+
             }
 
             items(

@@ -1,7 +1,7 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
+import Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModelExtensionMapsHandler
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.LoadFromFirebaseProduits
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.CreeDepuitAncienDataBases
@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
 
 @SuppressLint("SuspiciousIndentation")
 class ViewModelInitApp : ViewModel() {
@@ -24,41 +23,21 @@ class ViewModelInitApp : ViewModel() {
     var _modelAppsFather by mutableStateOf(_ModelAppsFather())
     var mapViewVM by mutableStateOf<MapView?>(null)
         private set
-
+   
     val modelAppsFather: _ModelAppsFather get() = _modelAppsFather
     val produitsMainDataBase = _modelAppsFather.produitsMainDataBase
+
+    val clientDataBaseSnapList = _modelAppsFather.clientDataBaseSnapList
 
     var isLoading by mutableStateOf(false)
     var loadingProgress by mutableFloatStateOf(0f)
 
-    private val mapsHandler = ViewModelExtensionMapsHandler(
-        viewModel=this@ViewModelInitApp,
+    val mapsHandler = ViewModelExtensionMapsHandler(
+        viewModelScope =this@ViewModelInitApp.viewModelScope,
         produitsMainDataBase = produitsMainDataBase,
-        modelAppsFather = _modelAppsFather,
+        clientDataBaseSnapList=clientDataBaseSnapList,
+        viewModel=this@ViewModelInitApp,
     )
-
-    // Delegate method for adding markers
-    fun onClickAddMarkerButton(
-        mapView: MapView,
-        onMarkerSelected: (Marker) -> Unit,
-        showMarkerDetails: Boolean,
-        markers: MutableList<Marker>
-    ) {
-        mapsHandler.onClickAddMarkerButton(
-            mapView = mapView,
-            onMarkerSelected = onMarkerSelected,
-            showMarkerDetails = showMarkerDetails,
-            markers = markers,
-        )
-    }
-
-    fun clearAllData(context: Context) {
-        viewModelScope.launch {
-            mapsHandler.clearAllData(mapViewVM)
-            mapViewVM = initializeMapView(context)
-        }
-    }
-
 
     fun initializeMapView(context: Context): MapView {
         return MapView(context).also {

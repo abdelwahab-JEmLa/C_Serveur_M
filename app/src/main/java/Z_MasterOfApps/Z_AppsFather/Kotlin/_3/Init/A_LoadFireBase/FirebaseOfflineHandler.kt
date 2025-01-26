@@ -17,7 +17,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withTimeoutOrNull
 
 object FirebaseOfflineHandler {
-    private const val TIMEOUT_MS = 2000L
+    private const val TIMEOUT_MS = 5000L
     private var isInitialized = false
 
     fun initializeFirebase(app: FirebaseApp) {
@@ -25,12 +25,13 @@ object FirebaseOfflineHandler {
             try {
                 FirebaseDatabase.getInstance(app).apply {
                     setPersistenceEnabled(true)
-                    setPersistenceCacheSizeBytes(100L * 1024L * 1024L) // 100MB
+                    setPersistenceCacheSizeBytes(100L * 1024L * 1024L)
+                    Log.d("Firebase", "Persistence configured")
                 }
                 isInitialized = true
                 Log.i("Firebase", "Firebase initialized successfully")
             } catch (e: Exception) {
-                Log.e("Firebase", "Failed to initialize Firebase", e)
+                Log.e("Firebase", "Initialization failed", e)
                 throw e
             }
         }
@@ -38,99 +39,113 @@ object FirebaseOfflineHandler {
 
     suspend fun loadData(
         ref: DatabaseReference,
+        refClientsDataBase: DatabaseReference,
         viewModel: ViewModelInitApp? = null
-    ): DataSnapshot? {
-        try {
-            if (!isInitialized) {
-                Log.e("Firebase", "Firebase not initialized. Call initializeFirebase first.")
-                return null
-            }
+    ): Pair<DataSnapshot?, DataSnapshot?> {
+        if (!isInitialized) {
+            Log.e("Firebase", "Firebase not initialized")
+            return Pair(null, null)
+        }
 
+        return try {
             ref.keepSynced(true)
+            refClientsDataBase.keepSynced(true)
 
-            // Simplified connection check using get()
-            val isOnline = try {
-                withTimeoutOrNull(TIMEOUT_MS) {
-                    val testRef = ref.child("test_connection")
-                    testRef.setValue(System.currentTimeMillis()).await()
-                    testRef.removeValue().await()
-                    true
-                } ?: false
-            } catch (e: Exception) {
-                Log.w("Firebase", "Connection test failed, assuming offline mode", e)
-                false
-            }
+            val isOnline = checkConnection(ref)
 
-            return when (isOnline) {
-                false -> {
-                    Log.i("Firebase", "Mode offline")
-                    FirebaseDatabase.getInstance().goOffline()
-                    val data = ref.get().await()
-                    FirebaseDatabase.getInstance().goOnline()
-                    data
-                }
-                true -> {
-                    Log.i("Firebase", "Mode online")
-                    val data = ref.get().await()
-
-                    // Setup real-time listeners for all products
-                    if (viewModel != null) {
-                        setupProductListeners(viewModel)
-                    }
-
-                    data
-                }
+            if (isOnline) {
+                Log.i("Firebase", "🟢 Online mode")
+                handleOnlineOperations(ref, refClientsDataBase, viewModel)
+            } else {
+                Log.w("Firebase", "🔴 Offline mode")
+                handleOfflineOperations(ref, refClientsDataBase)
             }
         } catch (e: Exception) {
-            Log.e("Firebase", "Erreur chargement", e)
-            return null
+            Log.e("Firebase", "Critical load error", e)
+            Pair(null, null)
         }
     }
 
-    private fun setupProductListeners(viewModel: ViewModelInitApp) {
+    private suspend fun checkConnection(ref: DatabaseReference): Boolean {
+        return try {
+            withTimeoutOrNull(3000L) {
+                val testRef = ref.child("connection_test").apply { keepSynced(false) }
+                testRef.setValue(true).await()
+                testRef.removeValue().await()
+                true
+            } ?: false
+        } catch (e: Exception) {
+            Log.w("Firebase", "Connection check failed: ${e.message}")
+            false
+        }
+    }
+
+    private suspend fun handleOnlineOperations(
+        ref: DatabaseReference,
+        refClientsDataBase: DatabaseReference,
+        viewModel: ViewModelInitApp?
+    ): Pair<DataSnapshot?, DataSnapshot?> {
+        return try {
+            val data = ref.get().await()
+            val data2 = refClientsDataBase.get().await()
+            viewModel?.let { setupRealtimeListeners(it) }
+            Pair(data, data2)
+        } catch (e: Exception) {
+            Log.e("Firebase", "Online operation failed", e)
+            Pair(null, null)
+        }
+    }
+
+    private suspend fun handleOfflineOperations(
+        ref: DatabaseReference,
+        refClientsDataBase: DatabaseReference
+    ): Pair<DataSnapshot?, DataSnapshot?> {
+        return try {
+            FirebaseDatabase.getInstance().goOffline()
+            val data = withTimeoutOrNull(TIMEOUT_MS) { ref.get().await() }
+            val data2 = withTimeoutOrNull(TIMEOUT_MS) { refClientsDataBase.get().await() }
+            FirebaseDatabase.getInstance().goOnline()
+            Pair(data, data2)
+        } catch (e: Exception) {
+            Log.e("Firebase", "Offline operation failed", e)
+            Pair(null, null)
+        }
+    }
+
+    private fun setupRealtimeListeners(viewModel: ViewModelInitApp) {
         val scope = CoroutineScope(Dispatchers.IO)
 
-        viewModel.modelAppsFather.produitsMainDataBase.forEach { produit ->
-            Log.d("SetupListener", "Setting up listener for product ${produit.id}")
-
-            _ModelAppsFather.produitsFireBaseRef.child(produit.id.toString())
-                .addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        scope.launch {
-                            try {
-                                val updatedProduct = LoadFromFirebaseProduits.parseProduct(snapshot)
-                                if (updatedProduct != null) {
-                                    val index = viewModel.modelAppsFather.produitsMainDataBase.indexOfFirst {
-                                        it.id == updatedProduct.id
-                                    }
-                                    if (index != -1) {
-                                        viewModel.modelAppsFather.produitsMainDataBase[index] = updatedProduct
-                                    }
-                                }
-                            } catch (e: Exception) {
-                                Log.e("SetupListener", "Error updating product", e)
-                            }
-                        }
+        _ModelAppsFather.produitsFireBaseRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                scope.launch {
+                    val products = snapshot.children.mapNotNull { LoadFromFirebaseProduits.parseProduct(it) }
+                    viewModel.modelAppsFather.produitsMainDataBase.apply {
+                        clear()
+                        addAll(products)
                     }
+                    Log.d("Firebase", "Real-time products updated: ${products.size} items")
+                }
+            }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.e("SetupListener", "Database error: ${error.message}")
-                    }
-                })
-        }
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Products listener cancelled: ${error.message}")
+            }
+        })
     }
-
+    // À l'intérieur de l'objet FirebaseOfflineHandler
     inline fun <reified T> parseChild(
         path: String,
         snapshot: DataSnapshot,
         crossinline onSuccess: (List<T>) -> Unit
     ) {
         try {
-            snapshot.child(path)
+            val list = snapshot.child(path)
                 .getValue(object : GenericTypeIndicator<List<T>>() {})
-                ?.let(onSuccess)
+                ?: emptyList()
+
+            onSuccess(list)
         } catch (e: Exception) {
-            Log.e("Firebase", "Erreur parse: $path", e)
+            Log.e("Firebase", "Parse error for path '$path'", e)
         }
     }
 }

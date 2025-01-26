@@ -1,9 +1,8 @@
-package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs
+package Views._2LocationGpsClients.App.MainApp.B.Dialogs
 
+import Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AlimentclientDataBaseSnapList
+import Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ClearHistoryButton
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import android.Manifest
-import android.content.Context
-import android.location.LocationManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -28,31 +27,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AddMarkerButton
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ClearHistoryButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LabelsButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LocationTrackingButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.MenuButton
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.NearbyMarkersButton
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ShowLocationsInfoBubble
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
 import kotlin.math.roundToInt
 
 @Composable
 fun MapControls(
     mapView: MapView,
     viewModelInitApp: ViewModelInitApp,
-    markers: MutableList<Marker>,
-    showMarkerDetails: Boolean,
-    onShowMarkerDetailsChange: (Boolean) -> Unit,
-    onMarkerSelected: (Marker) -> Unit
 ) {
-    val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
     var showLabels by remember { mutableStateOf(false) }
     val proximiteMeter = 50.0
@@ -60,17 +48,6 @@ fun MapControls(
     // États pour le drag
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
-
-    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val currentLocation = if (ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-    ) {
-        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-    } else null
-
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -93,26 +70,19 @@ fun MapControls(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (showMenu) {
-                    ClearHistoryButton(
+                    AlimentclientDataBaseSnapList(
                         showLabels = showLabels,
                         viewModelInitApp = viewModelInitApp
                     )
-                    NearbyMarkersButton(
+                    ClearHistoryButton(
                         showLabels = showLabels,
-                        viewModelInitApp = viewModelInitApp,
-                        markers = markers,
-                        currentLocation = currentLocation,
-                        proximiteMeter = proximiteMeter,
-                        mapView = mapView
+                        viewModelInitApp = viewModelInitApp
                     )
 
                     AddMarkerButton(
                         showLabels = showLabels,
                         mapView = mapView,
                         viewModelInitApp = viewModelInitApp,
-                        markers = markers,
-                        showMarkerDetails = showMarkerDetails,
-                        onMarkerSelected = onMarkerSelected
                     )
 
                     LocationTrackingButton(
@@ -120,15 +90,8 @@ fun MapControls(
                         mapView = mapView,
                         proximiteMeter = proximiteMeter
                     )
-
-                    ShowLocationsInfoBubble(
-                        showLabels = showLabels,
-                        showMarkerDetails = showMarkerDetails,
-                        onShowMarkerDetailsChange = onShowMarkerDetailsChange
-                    )
                 }
 
-                // Always visible controls
                 LabelsButton(
                     showLabels = showLabels,
                     onShowLabelsChange = { showLabels = it }

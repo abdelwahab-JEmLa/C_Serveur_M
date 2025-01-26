@@ -17,6 +17,7 @@ import com.google.firebase.database.database
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 import java.util.Objects
 
@@ -26,6 +27,10 @@ open class _ModelAppsFather(
     @get:Exclude
     var produitsMainDataBase: SnapshotStateList<ProduitModel> =
         initial_Produits_Main_DataBase.toMutableStateList()
+
+    @get:Exclude
+    var clientDataBaseSnapList: SnapshotStateList<ClientsDataBase> =
+        emptyList<ClientsDataBase>().toMutableStateList()
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -179,31 +184,26 @@ open class _ModelAppsFather(
                 historiqueBonsVents.clear()
                 historiqueBonsVents.addAll(value)
             }
-
         @IgnoreExtraProperties
         class ClientBonVentModel(
             vid: Long = 0,
             init_clientInformations: ClientInformations? = null,
             init_colours_achete: List<ColorAchatModel> = emptyList(),
         ) {
+            // Basic information
+            var bonStatueDeBase by mutableStateOf(BonStatueDeBase())
+            // Status management
+            @IgnoreExtraProperties
+            class BonStatueDeBase {
+                var lastUpdateTimestamp: Long by mutableStateOf(System.currentTimeMillis())
+            }
+
             var clientInformations: ClientInformations? by mutableStateOf(init_clientInformations)
-
-            @get:Exclude
-            var colours_Achete: SnapshotStateList<ColorAchatModel> =
-                init_colours_achete.toMutableStateList()
-
-            var coloursAcheteList: List<ColorAchatModel>
-                get() = colours_Achete.toList()
-                set(value) {
-                    colours_Achete.clear()
-                    colours_Achete.addAll(value)
-                }
-
             @IgnoreExtraProperties
             data class ClientInformations(
                 var id: Long = 1,
                 var nom: String = "Non Defini",
-                val couleur: String = "#FFFFFF"
+                var couleur: String = "#FFFFFF"
             ) {
                 var auFilterFAB: Boolean by mutableStateOf(false)
                 var positionDonClientsList: Int by mutableIntStateOf(0)
@@ -211,6 +211,7 @@ open class _ModelAppsFather(
                 var statueDeBase by mutableStateOf(StatueDeBase())
                 @IgnoreExtraProperties
                 class StatueDeBase {
+                    var caRefDonAncienDataBase by mutableStateOf("G_Clients")
                     var cUnClientTemporaire: Boolean by mutableStateOf(true)
                 }
 
@@ -218,14 +219,22 @@ open class _ModelAppsFather(
                 @IgnoreExtraProperties
                 class GpsLocation {
                     @get:Exclude
-                    var locationGpsMark: Marker? by mutableStateOf(null)
-                    var couleur by mutableStateOf("#FFFFFF")
-
-                    // Ajout des propriétés pour stocker les données du marker
+                    var geoPoint: GeoPoint? by mutableStateOf(null)
                     var latitude by mutableStateOf(0.0)
                     var longitude by mutableStateOf(0.0)
                     var title by mutableStateOf("")
                     var snippet by mutableStateOf("")
+
+                    var actuelleEtat: DernierEtatAAffiche? by mutableStateOf(null)
+                    enum class DernierEtatAAffiche(val color: Int, val nomArabe: String) {
+                        Cible(android.R.color.holo_red_light, "Cible"),
+                        ON_MODE_COMMEND_ACTUELLEMENT(android.R.color.holo_green_light, "نشط / متصل"),
+                        CLIENT_ABSENT(android.R.color.darker_gray, "غائب الشاري"),
+                        AVEC_MARCHANDISE(android.R.color.holo_blue_light, "عندو سلعة"),
+                        FERME(android.R.color.darker_gray, "مغلق")
+                    }
+
+                    var locationGpsMark: Marker? by mutableStateOf(null)
                 }
 
                 override fun equals(other: Any?): Boolean {
@@ -242,6 +251,16 @@ open class _ModelAppsFather(
 
             }
 
+            @get:Exclude
+            var colours_Achete: SnapshotStateList<ColorAchatModel> =
+                init_colours_achete.toMutableStateList()
+
+            var coloursAcheteList: List<ColorAchatModel>
+                get() = colours_Achete.toList()
+                set(value) {
+                    colours_Achete.clear()
+                    colours_Achete.addAll(value)
+                }
             @IgnoreExtraProperties
             class ColorAchatModel(
                 var vidPosition: Long = 0,

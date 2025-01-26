@@ -1,5 +1,6 @@
 package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils
 
+import Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -21,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
 import com.example.c_serveur.R
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView

@@ -13,13 +13,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.Packages.Views.ParentAppNavHost
-import com.example.Packages.Views.NavigationItems
 
 @RequiresApi(Build.VERSION_CODES.Q)
 @Composable
@@ -28,7 +25,6 @@ fun MainScreen(
     permissionsGranted: Boolean,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
-    val context = LocalContext.current
     val navController = rememberNavController()
     val items = NavigationItems.items
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route

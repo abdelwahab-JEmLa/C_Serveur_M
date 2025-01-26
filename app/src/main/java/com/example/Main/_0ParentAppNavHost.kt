@@ -1,4 +1,4 @@
-package com.example.Packages.Views
+package com.example.Main
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Box
@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App._1GerantAfficheurGrossistCommendApp
 import com.example.Packages.Views._2LocationGpsClients.App.ScreensApp2
 import com.example.Packages.Views._2LocationGpsClients.App._2App
 
@@ -44,7 +45,7 @@ fun ParentAppNavHost(
             modifier = Modifier.fillMaxSize()
         ) {
             _2App(viewModelInitApp)
-            //   _1GerantAfficheurGrossistCommendApp(viewModelInitApp)
+            _1GerantAfficheurGrossistCommendApp(viewModelInitApp)
         }
     }
 }

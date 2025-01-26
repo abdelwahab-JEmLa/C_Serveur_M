@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.Packages.Views.Screen
+import com.example.Main.Screen
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_2InNavHost_Id1.A_GerantDefinirePosition_F1
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_4InNavHost_Id3.A_AfficheurDesProduitsPourLeColecteur_F3

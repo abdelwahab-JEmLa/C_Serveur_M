@@ -120,6 +120,7 @@ dependencies {
     implementation(libs.osmdroid.android)
     implementation(libs.osmdroid.wms)
     implementation(libs.osmdroid.mapsforge)
+
     implementation (libs.firebase.database.ktx)
     implementation (libs.compose)
     implementation (libs.glide.transformations)

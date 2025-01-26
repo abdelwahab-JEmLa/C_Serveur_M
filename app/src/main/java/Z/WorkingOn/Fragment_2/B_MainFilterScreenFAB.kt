@@ -1,6 +1,7 @@
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2
+package Z.WorkingOn.Fragment_2
 
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
@@ -43,6 +44,7 @@ import kotlin.math.roundToInt
 fun MainScreenFilterFAB_F2(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp,
+    produitsAChoisireLeurClient: MutableList<_ModelAppsFather.ProduitModel>,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -87,7 +89,8 @@ fun MainScreenFilterFAB_F2(
                 Column(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                ) {//-->
+                //TODO(1): ajout un butt au click affiche la produitsAChoisireLeurClient
                     groupedProducts.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,

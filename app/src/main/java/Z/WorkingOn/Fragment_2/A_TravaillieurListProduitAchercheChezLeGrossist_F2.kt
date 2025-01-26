@@ -1,5 +1,6 @@
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2
+package Z.WorkingOn.Fragment_2
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,12 @@ private const val TAG = "A_GerantDefinirePosition_F1"
 internal fun A_TravaillieurListProduitAchercheChezLeGrossist_F2(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
+    produitsAChoisireLeurClient: MutableList<_ModelAppsFather.ProduitModel> = emptyList<_ModelAppsFather.ProduitModel>(), //->
+    //TODO(FIXME):Fix erreur Type mismatch.
+    //Required:
+    //MutableList<_ModelAppsFather.ProduitModel>
+    //Found:
+    //List<_ModelAppsFather.ProduitModel>
 ) {
     // Log state changes using LaunchedEffect
     LaunchedEffect(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress) {
@@ -70,9 +77,9 @@ internal fun A_TravaillieurListProduitAchercheChezLeGrossist_F2(
                 ._paramatersAppsViewModelModel
                 .fabsVisibility
         ) {
-
             MainScreenFilterFAB_F2(
                 viewModelInitApp = viewModelInitApp,
+                produitsAChoisireLeurClient =produitsAChoisireLeurClient
             )
         }
     }

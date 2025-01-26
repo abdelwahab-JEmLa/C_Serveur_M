@@ -1,12 +1,12 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
 import Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
+import Z.WorkingOn.ViewModel.Extension.ViewModelExtension_App1_F1
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.LoadFromFirebaseProduits
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.CreeDepuitAncienDataBases
 import android.annotation.SuppressLint
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -38,12 +38,12 @@ class ViewModelInitApp : ViewModel() {
         clientDataBaseSnapList=clientDataBaseSnapList,
         viewModel=this@ViewModelInitApp,
     )
-
-    fun initializeMapView(context: Context): MapView {
-        return MapView(context).also {
-            mapViewVM = it
-        }
-    }
+    val extension_App1_F1 = ViewModelExtension_App1_F1(
+        viewModel=this@ViewModelInitApp,
+        produitsMainDataBase = produitsMainDataBase,
+        clientDataBaseSnapList=clientDataBaseSnapList,
+        viewModelScope =this@ViewModelInitApp.viewModelScope,
+    )
 
     init {
         viewModelScope.launch {

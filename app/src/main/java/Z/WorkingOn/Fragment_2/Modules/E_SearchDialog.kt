@@ -1,5 +1,5 @@
 // SearchDialog.kt
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2.Modules
+package Z.WorkingOn.Fragment_2.Modules
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement

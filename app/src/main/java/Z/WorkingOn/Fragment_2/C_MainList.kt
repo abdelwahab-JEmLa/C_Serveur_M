@@ -1,4 +1,4 @@
-package com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2
+package Z.WorkingOn.Fragment_2
 
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
@@ -24,8 +24,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2.D_MainItem.ExpandedMainItem_F2
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_3InNavHost_Id2.D_MainItem.MainItem_F2
+import Z.WorkingOn.Fragment_2.D_MainItem.ExpandedMainItem_F2
+import Z.WorkingOn.Fragment_2.D_MainItem.MainItem_F2
 
 @Composable
 fun MainList_F2(

@@ -20,7 +20,7 @@ fun NavGraphBuilder._1GerantAfficheurGrossistCommendApp(viewModelInitApp: ViewMo
     val produitsAChoisireLeurClient = viewModelInitApp
         .extension_App1_F1
         .produitsAChoisireLeurClient
-   composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp,produitsAChoisireLeurClient=produitsAChoisireLeurClient) }
+   composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp) }
 
    // composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
 }

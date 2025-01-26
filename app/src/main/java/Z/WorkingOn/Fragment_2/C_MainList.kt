@@ -1,6 +1,8 @@
 package Z.WorkingOn.Fragment_2
 
 
+import Z.WorkingOn.Fragment_2.D_MainItem.ExpandedMainItem_F2
+import Z.WorkingOn.Fragment_2.D_MainItem.MainItem_F2
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
@@ -24,16 +26,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import Z.WorkingOn.Fragment_2.D_MainItem.ExpandedMainItem_F2
-import Z.WorkingOn.Fragment_2.D_MainItem.MainItem_F2
 
 @Composable
 fun MainList_F2(
-    visibleProducts: List<_ModelAppsFather.ProduitModel>,
+    initVisibleProducts: List<_ModelAppsFather.ProduitModel>,
     viewModelInitApp: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+   val produitsAChoisireLeurClient=
+       viewModelInitApp.extension_App1_F2.produitsAChoisireLeurClient
+
+    val visibleProducts= produitsAChoisireLeurClient.ifEmpty { initVisibleProducts }
+
     var expandedItemId by remember { mutableStateOf<Long?>(null) }
 
     LazyColumn(
@@ -87,6 +92,7 @@ fun MainList_F2(
                     )
                 ) {
                     ExpandedMainItem_F2(
+                        viewModelInitApp=viewModelInitApp,
                         mainItem = product,
                         modifier = Modifier
                             .fillMaxWidth()

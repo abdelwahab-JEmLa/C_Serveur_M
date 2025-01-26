@@ -1,7 +1,6 @@
 package Z.WorkingOn.Fragment_2
 
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
@@ -44,7 +43,6 @@ import kotlin.math.roundToInt
 fun MainScreenFilterFAB_F2(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp,
-    produitsAChoisireLeurClient: MutableList<_ModelAppsFather.ProduitModel>,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
@@ -89,15 +87,28 @@ fun MainScreenFilterFAB_F2(
                 Column(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {//-->
-                //TODO(1): ajout un butt au click affiche la produitsAChoisireLeurClient
+                ) {
+                    // Add a new button to display produitsAChoisireLeurClient
+                    FloatingActionButton(
+                        onClick = {
+                            viewModelInitApp.extension_App1_F2.produitsAChoisireLeurClient =
+                                viewModelInitApp.extension_App1_F1.produitsAChoisireLeurClient
+                        },
+                        modifier = Modifier.size(48.dp),
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    ) {
+                        Text(
+                            text = "Show",
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
+
                     groupedProducts.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             if (index > 0) {
-                                // In your FAB implementation
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelInitApp.viewModelScope.launch {
@@ -106,16 +117,14 @@ fun MainScreenFilterFAB_F2(
                                             grossist.positionInGrossistsList--
                                             previousGrossist.positionInGrossistsList++
 
-                                            // Update positions using the current list
                                             val updatedProducts =
-                                                viewModelInitApp._modelAppsFather.produitsMainDataBase .map { product ->
+                                                viewModelInitApp._modelAppsFather.produitsMainDataBase.map { product ->
                                                     product.apply {
                                                         bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                             when (currentGrossist.id) {
                                                                 grossist.id -> {
                                                                     currentGrossist.positionInGrossistsList--
                                                                 }
-
                                                                 previousGrossist.id -> {
                                                                     currentGrossist.positionInGrossistsList++
                                                                 }
@@ -124,7 +133,6 @@ fun MainScreenFilterFAB_F2(
                                                     }
                                                 }
 
-                                            // Now pass the updated list to the update function
                                             update_AllProduits(
                                                 updatedProducts,
                                                 viewModelInitApp

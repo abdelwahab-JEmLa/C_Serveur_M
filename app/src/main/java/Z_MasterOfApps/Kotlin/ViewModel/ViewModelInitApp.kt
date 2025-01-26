@@ -1,6 +1,7 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
 import Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
+import Z.WorkingOn.Fragment_2.ViewModel.Extension.ViewModelExtension_App1_F2
 import Z.WorkingOn.ViewModel.Extension.ViewModelExtension_App1_F1
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
@@ -39,6 +40,12 @@ class ViewModelInitApp : ViewModel() {
         viewModel=this@ViewModelInitApp,
     )
     val extension_App1_F1 = ViewModelExtension_App1_F1(
+        viewModel=this@ViewModelInitApp,
+        produitsMainDataBase = produitsMainDataBase,
+        clientDataBaseSnapList=clientDataBaseSnapList,
+        viewModelScope =this@ViewModelInitApp.viewModelScope,
+    )
+    val extension_App1_F2 = ViewModelExtension_App1_F2(
         viewModel=this@ViewModelInitApp,
         produitsMainDataBase = produitsMainDataBase,
         clientDataBaseSnapList=clientDataBaseSnapList,

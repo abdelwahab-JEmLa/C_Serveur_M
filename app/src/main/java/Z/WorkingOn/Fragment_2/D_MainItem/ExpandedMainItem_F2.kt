@@ -1,6 +1,7 @@
 package Z.WorkingOn.Fragment_2.D_MainItem
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageBykeyId
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun ExpandedMainItem_F2(
+    viewModelInitApp: ViewModelInitApp,
     mainItem: _ModelAppsFather.ProduitModel,
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
@@ -51,7 +53,8 @@ fun ExpandedMainItem_F2(
                 mainItem = mainItem,
                 modifier = Modifier
                     .width(350.dp)
-                    .height(350.dp),
+                    .height(350.dp)
+                    ,
                 size = 350.dp
             )
 
@@ -112,6 +115,16 @@ fun ExpandedMainItem_F2(
                                     RoundedCornerShape(4.dp)
                                 )
                                 .padding(4.dp)
+                                .clickable {
+                                  //-->
+                                  //TODO(1): ouvre un dialoge contien buttons de 1 a 50 
+                                  //au click il lence .clickable { 
+                                    //                        viewModelInitApp.extension_App1_F2
+                                    //                            .changeState(
+                                //                            )  //-->
+                                //TODO(1): ici fait change la quantity du bon vent du cleur
+                                    //                    }  
+                                }
                         ) {
                             Text(
                                 text = color.imogi.ifEmpty { color.nom.take(2) },

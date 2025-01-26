@@ -148,7 +148,8 @@ fun ExpandedMainItem_F2(
     if (showDialog && selectedColor != null) {
         QuantitySelectionDialog(
             onQuantitySelected = { quantity ->
-                viewModelInitApp.extension_App1_F2.changeColours_AcheteQuantity_Achete(
+                viewModelInitApp
+                    .extension_App1_F2.changeColours_AcheteQuantity_Achete(
                     selectedBonVent,
                     mainItem,
                     selectedColor!!,

@@ -1,5 +1,6 @@
 package Z.WorkingOn.Fragment_2.D_MainItem
 
+import Z.WorkingOn.Fragment_2.E.Dialogs.QuantitySelectionDialog
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageBykeyId
@@ -20,6 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,6 +37,10 @@ fun ExpandedMainItem_F2(
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedColor by remember { mutableStateOf<_ModelAppsFather.ProduitModel.ClientBonVentModel.ColorAchatModel?>(null) }
+    var selectedBonVent by remember { mutableStateOf<_ModelAppsFather.ProduitModel.ClientBonVentModel?>(null) }
+
     Column(
         modifier = modifier
             .background(
@@ -54,7 +63,7 @@ fun ExpandedMainItem_F2(
                 modifier = Modifier
                     .width(350.dp)
                     .height(350.dp)
-                    ,
+                ,
                 size = 350.dp
             )
 
@@ -116,14 +125,9 @@ fun ExpandedMainItem_F2(
                                 )
                                 .padding(4.dp)
                                 .clickable {
-                                  //-->
-                                  //TODO(1): ouvre un dialoge contien buttons de 1 a 50 
-                                  //au click il lence .clickable { 
-                                    //                        viewModelInitApp.extension_App1_F2
-                                    //                            .changeState(
-                                //                            )  //-->
-                                //TODO(1): ici fait change la quantity du bon vent du cleur
-                                    //                    }  
+                                    selectedBonVent=bonVent
+                                    selectedColor = color
+                                    showDialog = true
                                 }
                         ) {
                             Text(
@@ -139,5 +143,19 @@ fun ExpandedMainItem_F2(
                 }
             }
         }
+    }
+
+    if (showDialog && selectedColor != null) {
+        QuantitySelectionDialog(
+            onQuantitySelected = { quantity ->
+                viewModelInitApp.extension_App1_F2.changeColours_AcheteQuantity_Achete(
+                    selectedBonVent,
+                    mainItem,
+                    selectedColor!!,
+                    quantity
+                )
+            },
+            onDismiss = { showDialog = false }
+        )
     }
 }

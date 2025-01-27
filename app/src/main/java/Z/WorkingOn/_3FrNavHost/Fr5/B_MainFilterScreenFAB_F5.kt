@@ -55,7 +55,6 @@ fun B_MainScreenFilterFAB_F5(
                     detectDragGestures { change, dragAmount ->
                         change.consume()
                         offsetX += dragAmount.x
-
                         offsetY += dragAmount.y
                     }
                 },
@@ -92,14 +91,18 @@ fun B_MainScreenFilterFAB_F5(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        extensionVM.selectedGrossistId = grossist.id
+                                        extensionVM.produitsIDsDeVerificationList.clear()
+                                        extensionVM.produitsIDsDeVerificationList.addAll(produits.map { it.id }
+                                        )
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = try {
-                                        Color(android.graphics.Color.parseColor(
-                                            if (grossist.couleur.startsWith("#")) grossist.couleur
-                                            else "#${grossist.couleur}"
-                                        ))
+                                        Color(
+                                            android.graphics.Color.parseColor(
+                                                if (grossist.couleur.startsWith("#")) grossist.couleur
+                                                else "#${grossist.couleur}"
+                                            )
+                                        )
                                     } catch (e: Exception) {
                                         Color(0xFFFF0000)
                                     }

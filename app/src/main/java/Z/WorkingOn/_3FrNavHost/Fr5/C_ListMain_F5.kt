@@ -45,6 +45,7 @@ fun C_MainList_F5(
     modifier: Modifier = Modifier,
     visibleProducts: List<_ModelAppsFather.ProduitModel>
 ) {
+    val produitsDeVerificationList = extensionVM.produitsIDsDeVerificationList
     var showMoveDialog by remember { mutableStateOf(false) }
     var showSearchDialog by remember { mutableStateOf(false) }
 

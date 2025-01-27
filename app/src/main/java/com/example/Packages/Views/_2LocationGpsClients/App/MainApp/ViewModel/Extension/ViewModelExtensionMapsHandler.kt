@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 
-class ViewModelExtensionMapsHandler(
+class ViewModelExtension_App2_F1(
     val viewModelScope: CoroutineScope,
     val produitsMainDataBase: MutableList<ProduitModel>,
     val clientDataBaseSnapList: SnapshotStateList<ClientsDataBase>,

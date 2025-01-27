@@ -24,12 +24,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.MapControls
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.MarkerStatusDialog
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.DEFAULT_LATITUDE
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.DEFAULT_LONGITUDE
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.getCurrentLocation
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtension_App2_F1
 import com.example.c_serveur.R
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -45,6 +47,8 @@ fun A_ClientsLocationGps(
     clientEnCourDeVent: Long=0, onUpdateLongAppSetting: () -> Unit = {},
 
     ) {
+    val extensionVM = ViewModelExtension_App2_F1(viewModel.viewModelScope,viewModel.produitsMainDataBase,viewModel.clientDataBaseSnapList,viewModel)
+
     val context = LocalContext.current
     val currentZoom by remember { mutableDoubleStateOf(18.2) }
     val mapView =remember { MapView(context) }
@@ -151,12 +155,14 @@ fun A_ClientsLocationGps(
 
         if (viewModel._paramatersAppsViewModelModel.fabsVisibility) {
             MapControls(
+                extensionVM=extensionVM,
                 mapView = mapView,
                 viewModelInitApp = viewModel
             )
         }
         if (showMarkerDialog && selectedMarker != null) {
             MarkerStatusDialog(
+                extensionVM=extensionVM,
                  viewModel = viewModel,
                  selectedMarker = selectedMarker,
                  onDismiss = { showMarkerDialog = false },

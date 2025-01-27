@@ -14,7 +14,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
 import kotlinx.coroutines.launch
 import org.osmdroid.views.MapView
 
@@ -32,14 +31,6 @@ class ViewModelInitApp : ViewModel() {
 
     var isLoading by mutableStateOf(false)
     var loadingProgress by mutableFloatStateOf(0f)
-
-
-    val mapsHandler = ViewModelExtensionMapsHandler(
-        viewModelScope =this@ViewModelInitApp.viewModelScope,
-        produitsMainDataBase = produitsMainDataBase,
-        clientDataBaseSnapList=clientDataBaseSnapList,
-        viewModel=this@ViewModelInitApp,
-    )
 
     val extension_App1_F1 = ViewModelExtension_App1_F1(
         viewModel=this@ViewModelInitApp,

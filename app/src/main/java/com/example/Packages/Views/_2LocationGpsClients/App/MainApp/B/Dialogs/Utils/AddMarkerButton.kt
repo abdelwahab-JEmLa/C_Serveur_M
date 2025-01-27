@@ -1,22 +1,24 @@
 package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils
 
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtension_App2_F1
 import org.osmdroid.views.MapView
 
 @Composable
 fun AddMarkerButton(
+    extensionVM: ViewModelExtension_App2_F1,
     viewModelInitApp: ViewModelInitApp,
     showLabels: Boolean,
     mapView: MapView,
 ) {
     ControlButton(
         onClick = {
-            viewModelInitApp.mapsHandler
+            extensionVM
                 .onClickAddMarkerButton(
                     mapView
                 )

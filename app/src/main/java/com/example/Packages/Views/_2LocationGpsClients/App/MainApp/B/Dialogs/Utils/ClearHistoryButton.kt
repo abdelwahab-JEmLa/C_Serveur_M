@@ -12,9 +12,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtension_App2_F1
 
 @Composable
 fun ClearHistoryButton(
+    extensionVM: ViewModelExtension_App2_F1,
     showLabels: Boolean,
     viewModelInitApp: ViewModelInitApp
 ) {
@@ -26,7 +28,7 @@ fun ClearHistoryButton(
             if (clearDataClickCount == 0) {
                 clearDataClickCount++
             } else {
-                viewModelInitApp.mapsHandler.clearAllData()
+                extensionVM.clearAllData()
                 clearDataClickCount = 0
             }
         },

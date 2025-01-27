@@ -1,7 +1,5 @@
 package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs
 
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AlimentclientDataBaseSnapList
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ClearHistoryButton
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -30,14 +28,18 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AddMarkerButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AlimentclientDataBaseSnapList
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ClearHistoryButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LabelsButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.LocationTrackingButton
 import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.MenuButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtension_App2_F1
 import org.osmdroid.views.MapView
 import kotlin.math.roundToInt
 
 @Composable
 fun MapControls(
+    extensionVM: ViewModelExtension_App2_F1,
     mapView: MapView,
     viewModelInitApp: ViewModelInitApp,
 ) {
@@ -75,11 +77,13 @@ fun MapControls(
                         viewModelInitApp = viewModelInitApp
                     )
                     ClearHistoryButton(
+                        extensionVM=extensionVM,
                         showLabels = showLabels,
                         viewModelInitApp = viewModelInitApp
                     )
 
                     AddMarkerButton(
+                        extensionVM=extensionVM,
                         showLabels = showLabels,
                         mapView = mapView,
                         viewModelInitApp = viewModelInitApp,

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhonelinkRing
+import androidx.compose.material.icons.filled.Start
 import androidx.compose.material.icons.filled.Tab
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -27,8 +28,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.Main.C_EcranDeDepart.Startup.A_PremierScreenApp
 import com.example.Main.Utils.NavigationBarWithFab
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.A_id4_DeplaceProduitsVerGrossist
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.A_id1_GerantDefinirePosition
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.A_Id2_TravaillieurListProduitAchercheChezLeGrossist
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.A_id3_AfficheurDesProduitsPourLeColecteur
@@ -59,11 +60,12 @@ fun AppNavigationHost(
                     } else {
                         NavHost(
                             navController = navController,
-                            startDestination = Screens.NavHost_1.route,
+                            startDestination = Screens.Startup.route,
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            composable(Screens.NavHost_1.route) {
-                                A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
+
+                            composable(Screens.Startup.route) {
+                                A_PremierScreenApp(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHost_2.route) {
                                 A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
@@ -112,6 +114,7 @@ fun AppNavigationHost(
 
 object NavigationItems {
     val items = listOf(
+        Screens.Startup,
         Screens.NavHost_1,
         Screens.NavHost_2,
         Screens.NavHost_3,
@@ -142,6 +145,7 @@ private fun Preview_Fragment() {
 }
 
 object Screens {
+    val Startup = StartupIcon_Start
     val NavHost_1 = MainScreenDataObject_F4
     val NavHost_2 = MainScreenDataObject_F1
     val NavHost_3 = MainScreenDataObject_F2
@@ -155,6 +159,11 @@ abstract class Screen(
     val icon: ImageVector,
     val title: String,
     val color: Color
+)
+data object StartupIcon_Start : Screen(
+    icon = Icons.Default.Start,
+    color = Color(0xFFFF5722),
+    route = "StartupIcon_Start", title = "StartupIcon_Start"
 )
 
 data object MainScreenDataObject_F1 : Screen(

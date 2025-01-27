@@ -63,7 +63,6 @@ fun AppNavigationHost(
                             startDestination = Screens.Startup.route,
                             modifier = Modifier.fillMaxSize()
                         ) {
-
                             composable(Screens.Startup.route) {
                                 A_PremierScreenApp(viewModelInitApp = viewModelInitApp)
                             }
@@ -111,18 +110,24 @@ fun AppNavigationHost(
     }
 }
 
-
 object NavigationItems {
-    val items = listOf(
-        Screens.Startup,
-        Screens.NavHost_1,
-        Screens.NavHost_2,
-        Screens.NavHost_3,
-        Screens.NavHost_5,
-        Screens.NavHost_4,
+    val items @Composable get() = buildList {
+        // Always add Startup screen
+        add(Screens.Startup)
+        add(Screens.NavHost_1)
 
-        Screens.NavHostA2_1
-    )
+        // Only add NavHost_2 and related screens if cLeTelephoneDuGerant is true
+        val viewModelInitApp: ViewModelInitApp = viewModel()
+        if (viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant == true) {
+            add(Screens.NavHost_2)
+            add(Screens.NavHost_3)
+            add(Screens.NavHost_5)
+            add(Screens.NavHost_4)
+        }
+
+        // Always add NavHostA2_1
+        add(Screens.NavHostA2_1)
+    }
 }
 
 @Preview

@@ -148,19 +148,14 @@ data object MainScreenDataObject_F4 : Screen(
     title = "main_screen_f4",
     color = Color(0xFF3F51B5)
 )
-
 data object ID4Icon_Done : Screen(
-    route = "A_ID5_VerificationProduitAcGrossist",
     icon = Icons.Default.Done,
-    title = "A_ID5_VerificationProduitAcGrossist",
+    route = "A_ID5_VerificationProduitAcGrossist", title = "A_ID5_VerificationProduitAcGrossist",
     color = Color(0xFFFF5892)
 )
-
-
 data object ID1Icon_Person : Screen(
-    route = "Fragment1",
     icon = Icons.Default.Person,
-    title = "A_id1_ClientsLocationGps",
+    route = "Id_App2Fragment1", title = "A_id1_ClientsLocationGps",
     color = Color(0xFF03A9F4)
 )
 

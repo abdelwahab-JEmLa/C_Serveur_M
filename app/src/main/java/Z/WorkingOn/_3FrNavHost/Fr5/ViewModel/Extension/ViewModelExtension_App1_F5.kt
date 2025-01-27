@@ -19,13 +19,4 @@ class ViewModelExtension_App1_F5(
         emptyList<ProduitModel>().toMutableStateList()
 
     var prochenClickIncludeProduit by mutableStateOf<ProduitModel?>(null)
-
-
-
-    fun excludeProduit(
-        product: ProduitModel,
-    ) {
-        produitsVerifie.remove(product)
-        excludedProduits.add(product)
-    }
 }

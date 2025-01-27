@@ -1,8 +1,11 @@
 package com.example.Main
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
@@ -20,9 +23,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.Main.Utils.NavigationBarWithFab
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.A_id4_DeplaceProduitsVerGrossist
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.A_id1_GerantDefinirePosition
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.A_Id2_TravaillieurListProduitAchercheChezLeGrossist
@@ -31,48 +36,79 @@ import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_5.ID5
 import com.example.Packages.Views._2LocationGpsClients.App.NH_1.id1_ClientsLocationGps.A_id1_ClientsLocationGps
 
 @Composable
-fun ParentAppNavHost(
-    modifier: Modifier = Modifier,
-    navController: NavHostController,
+fun AppNavigationHost(
     viewModelInitApp: ViewModelInitApp,
+    modifier: Modifier,
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
-        if (viewModelInitApp.isLoading) {
-            // Loading indicator centered in the box
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(48.dp)
-                    .align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary
-            )
-        } else {
-            NavHost(
-                navController = navController,
-                startDestination = Screens.NavHost_1.route,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                composable(Screens.NavHost_1.route) {
-                    A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
-                }
-                composable(Screens.NavHost_2.route) {
-                    A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
-                }
-                composable(Screens.NavHost_3.route) {
-                    A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModelInitApp)
-                }
-                composable(Screens.NavHost_4.route) {
-                    A_ID5_VerificationProduitAcGrossist(viewModelInitApp)
-                }
-                composable(Screens.NavHost_5.route) {
-                    A_id3_AfficheurDesProduitsPourLeColecteur(viewModelInitApp = viewModelInitApp)
-                }
-                composable(Screens.NavHostA2_1.route) {
-                    A_id1_ClientsLocationGps(viewModel = viewModelInitApp)
+    val navController = rememberNavController()
+    val items = NavigationItems.items
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.weight(1f)) {
+                Box(modifier = modifier.fillMaxSize()) {
+                    if (viewModelInitApp.isLoading) {
+                        // Loading indicator centered in the box
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .align(Alignment.Center),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    } else {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Screens.NavHost_1.route,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            composable(Screens.NavHost_1.route) {
+                                A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
+                            }
+                            composable(Screens.NavHost_2.route) {
+                                A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
+                            }
+                            composable(Screens.NavHost_3.route) {
+                                A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModelInitApp)
+                            }
+                            composable(Screens.NavHost_4.route) {
+                                A_ID5_VerificationProduitAcGrossist(viewModelInitApp)
+                            }
+                            composable(Screens.NavHost_5.route) {
+                                A_id3_AfficheurDesProduitsPourLeColecteur(viewModelInitApp = viewModelInitApp)
+                            }
+                            composable(Screens.NavHostA2_1.route) {
+                                A_id1_ClientsLocationGps(viewModel = viewModelInitApp)
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        AnimatedVisibility(
+            visible = true,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        ) {
+            NavigationBarWithFab(
+                items = items,
+                viewModelInitApp = viewModelInitApp,
+                currentRoute = currentRoute,
+                onNavigate = { route ->
+                    navController.navigate(route) {
+                        popUpTo(navController.graph.startDestinationId) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
     }
 }
+
 
 object NavigationItems {
     val items = listOf(
@@ -100,7 +136,7 @@ private fun Preview_Fragment() {
                 color = MaterialTheme.colorScheme.primary
             )
         } else {
-               A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
+            A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
         }
     }
 }
@@ -148,11 +184,13 @@ data object MainScreenDataObject_F4 : Screen(
     title = "main_screen_f4",
     color = Color(0xFF3F51B5)
 )
+
 data object ID4Icon_Done : Screen(
     icon = Icons.Default.Done,
     route = "A_ID5_VerificationProduitAcGrossist", title = "A_ID5_VerificationProduitAcGrossist",
     color = Color(0xFFFF5892)
 )
+
 data object ID1Icon_Person : Screen(
     icon = Icons.Default.Person,
     route = "Id_App2Fragment1", title = "A_id1_ClientsLocationGps",

@@ -111,7 +111,7 @@ object Screens {
     val NavHost_3 = MainScreenDataObject_F2
     val NavHost_5 = MainScreenDataObject_F3
     val NavHost_4 = ID4Icon_Done
-    val NavHostA2_1 = IconNavApp2_F1
+    val NavHostA2_1 = ID1Icon_Person
 }
 
 abstract class Screen(
@@ -157,7 +157,7 @@ data object ID4Icon_Done : Screen(
 )
 
 
-data object IconNavApp2_F1 : Screen(
+data object ID1Icon_Person : Screen(
     route = "Fragment1",
     icon = Icons.Default.Person,
     title = "A_id1_ClientsLocationGps",

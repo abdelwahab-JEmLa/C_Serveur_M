@@ -11,9 +11,6 @@ class ViewModelExtension_App1_F5(
     val produitsMainDataBase: MutableList<ProduitModel>,
 ) {
 
-    val produitsAChoisireLeurClient = viewModel
-        ._paramatersAppsViewModelModel.produitsAChoisireLeurClient
-
     var selectedGrossistId by mutableStateOf<Long?>(0)
 
 }

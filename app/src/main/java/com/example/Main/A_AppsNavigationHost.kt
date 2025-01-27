@@ -1,7 +1,7 @@
 package com.example.Main
 
-import Z.WorkingOn.Fragment_2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
-import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.A_GerantDefinirePosition_F1
+import Z.WorkingOn._2NavHost.Fragment_2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
+import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.A_GerantDefinirePosition_F1
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

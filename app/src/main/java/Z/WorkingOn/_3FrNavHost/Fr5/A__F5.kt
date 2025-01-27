@@ -1,0 +1,82 @@
+package Z.WorkingOn._3FrNavHost.Fr5
+
+import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.B_ListMainFragment
+import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.Modules.ClientEditePositionDialog
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+private const val TAG = "A_GerantDefinirePosition_F1"
+
+@Composable
+internal fun A__F5(
+    modifier: Modifier = Modifier,
+    viewModelInitApp: ViewModelInitApp = viewModel(),
+) {
+    LaunchedEffect(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress) {
+        logLoadingState(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress)
+    }
+
+    if (viewModelInitApp.isLoading) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CircularProgressIndicator(
+                progress = {
+                    viewModelInitApp.loadingProgress
+                },
+                modifier = Modifier.align(Alignment.Center),
+                trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
+            )
+        }
+        return
+    }
+
+    val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
+
+    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase.filter { product ->
+        product.bonCommendDeCetteCota
+            ?.grossistInformations?.id ==
+                viewModelInitApp
+                    ._paramatersAppsViewModelModel
+                    .telephoneClientParamaters
+                    .selectedGrossistForServeur
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+        ) { paddingValues ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (databaseSize > 0) {
+                    B_ListMainFragment(
+                        visibleProducts = visibleProducts,
+                        viewModel = viewModelInitApp,
+                        paddingValues = paddingValues
+                    )
+                }
+
+                if (viewModelInitApp._paramatersAppsViewModelModel.fabsVisibility) {
+                    MainScreenFilterFAB_F5(
+                        viewModelProduits = viewModelInitApp,
+                    )
+                }
+            }
+
+            ClientEditePositionDialog(
+                viewModelProduits = viewModelInitApp,
+            )
+        }
+    }
+}
+
+private fun logLoadingState(isLoading: Boolean, progress: Float) {
+    Log.d(TAG, "Loading State: isLoading=$isLoading, progress=${progress * 100}%")
+}

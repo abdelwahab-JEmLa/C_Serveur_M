@@ -1,8 +1,8 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
 import Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
-import Z.WorkingOn.Fragment_2.ViewModel.Extension.ViewModelExtension_App1_F2
-import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.ViewModel.Extension.ViewModelExtension_App1_F1
+import Z.WorkingOn._2NavHost.Fragment_2.ViewModel.Extension.ViewModelExtension_App1_F2
+import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.ViewModel.Extension.ViewModelExtension_App1_F1
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.LoadFromFirebaseProduits

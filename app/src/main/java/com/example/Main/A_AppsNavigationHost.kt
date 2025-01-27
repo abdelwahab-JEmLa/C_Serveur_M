@@ -57,6 +57,7 @@ fun ParentAppNavHost(
             composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp) }
             //  composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
             composable(Screens.MainScreen_F5.route) { A_VerificationProduitAcGrossist_F5(viewModelInitApp) }
+
             // composable(Screens.Fragment1Screen.route) { A_ClientsLocationGps(viewModel = viewModelInitApp) }
         }
     }

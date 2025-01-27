@@ -1,7 +1,7 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
-import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.ViewModel.Extension.ViewModelExtension_App1_F1
-import Z.WorkingOn._2NavHost.Fragment_2.ViewModel.Extension.ViewModelExtension_App1_F2
+import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.ViewModel.Extension.ViewModelExtension_App1_F1
+import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.ViewModel.Extension.ViewModelExtension_App1_F2
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.LoadFromFirebaseProduits

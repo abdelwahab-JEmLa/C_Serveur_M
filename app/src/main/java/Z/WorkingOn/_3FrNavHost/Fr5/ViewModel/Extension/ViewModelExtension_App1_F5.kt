@@ -9,8 +9,11 @@ class ViewModelExtension_App1_F5(
     val produitsMainDataBase: MutableList<ProduitModel>,
 ) {
 
-    var produitsIDsDeVerificationList: MutableList<Long> =
-        emptyList<Long>().toMutableStateList()
+    var produitsExcluded: MutableList<ProduitModel> =
+        emptyList<ProduitModel>().toMutableStateList()
+
+    var verifieProduits: MutableList<ProduitModel> =
+        emptyList<ProduitModel>().toMutableStateList()
 
 
 }

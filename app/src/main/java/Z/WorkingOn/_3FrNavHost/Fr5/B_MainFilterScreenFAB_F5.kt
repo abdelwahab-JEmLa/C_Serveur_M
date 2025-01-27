@@ -91,18 +91,15 @@ fun B_MainScreenFilterFAB_F5(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        extensionVM.produitsIDsDeVerificationList.clear()
-                                        extensionVM.produitsIDsDeVerificationList.addAll(produits.map { it.id }
-                                        )
+                                        extensionVM.verifieProduits.clear()
+                                        extensionVM.verifieProduits.addAll(produits)
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = try {
-                                        Color(
-                                            android.graphics.Color.parseColor(
-                                                if (grossist.couleur.startsWith("#")) grossist.couleur
-                                                else "#${grossist.couleur}"
-                                            )
-                                        )
+                                        Color(android.graphics.Color.parseColor(
+                                            if (grossist.couleur.startsWith("#")) grossist.couleur
+                                            else "#${grossist.couleur}"
+                                        ))
                                     } catch (e: Exception) {
                                         Color(0xFFFF0000)
                                     }

@@ -117,12 +117,10 @@ object NavigationItems {
 
             add(Screens.Startup)
         if (cLeTelephoneDuGerant) { add(Screens.NavHost_1) }
-
             add(Screens.NavHost_2)
             add(Screens.NavHost_3)
             add(Screens.NavHost_5)
             add(Screens.NavHost_4)
-
         if (cLeTelephoneDuGerant) { add(Screens.NavHostA2_1) }
     }
 }
@@ -156,12 +154,7 @@ object Screens {
     val NavHostA2_1 = ID1Icon_Person
 }
 
-abstract class Screen(
-    val route: String,
-    val icon: ImageVector,
-    val title: String,
-    val color: Color
-)
+
 data object StartupIcon_Start : Screen(
     icon = Icons.Default.Start,
     color = Color(0xFFFF5722),
@@ -206,6 +199,12 @@ data object ID1Icon_Person : Screen(
     icon = Icons.Default.Person,
     route = "Id_App2Fragment1", title = "A_id1_ClientsLocationGps",
     color = Color(0xFF03A9F4)
+)
+abstract class Screen(
+    val route: String,
+    val icon: ImageVector,
+    val title: String,
+    val color: Color
 )
 
 

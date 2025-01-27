@@ -1,6 +1,5 @@
-package Views._2LocationGpsClients.App.MainApp.B.Dialogs
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs
 
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.Utils.updateLongAppSetting
 import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.Utils.updateLongAppSetting
 import kotlinx.coroutines.launch
 import org.osmdroid.views.overlay.Marker
 

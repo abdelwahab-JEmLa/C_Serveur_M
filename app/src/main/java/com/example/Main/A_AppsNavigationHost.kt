@@ -56,7 +56,6 @@ fun ParentAppNavHost(
             composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp) }
             //  composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
             composable(Screens.MainScreen_F5.route) { A_VerificationProduitAcGrossist_F5(viewModelInitApp) }
-
             // composable(Screens.Fragment1Screen.route) { A_ClientsLocationGps(viewModel = viewModelInitApp) }
         }
     }
@@ -67,8 +66,8 @@ object NavigationItems {
         //   Screens.MainScreen_F4,
         Screens.MainScreen_F1,
         Screens.MainScreen_F2,
-        Screens.MainScreen_F3,
-        //    Screens.MainScreen_F5,
+        //  Screens.MainScreen_F3,
+        Screens.MainScreen_F5,
 
         //    Screens.Fragment1Screen
     )
@@ -96,14 +95,6 @@ abstract class Screen(
     val color: Color
 )
 
-
-data object MainScreenDataObject_F4 : Screen(
-    route = "main_screen_f4",
-    icon = Icons.Default.Moving,
-    title = "main_screen_f4",
-    color = Color(0xFF3F51B5)
-)
-
 data object MainScreenDataObject_F1 : Screen(
     route = "fragment_main_screen_1",
     icon = Icons.Default.Tab,
@@ -123,6 +114,13 @@ data object MainScreenDataObject_F3 : Screen(
     icon = Icons.Default.Person,
     title = "Phone Client Client",
     color = Color(0xFFFF5722)
+)
+
+data object MainScreenDataObject_F4 : Screen(
+    route = "main_screen_f4",
+    icon = Icons.Default.Moving,
+    title = "main_screen_f4",
+    color = Color(0xFF3F51B5)
 )
 
 data object MainScreenDataObject_F5 : Screen(

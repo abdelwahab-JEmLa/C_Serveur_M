@@ -12,9 +12,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 private const val TAG = "A_GerantDefinirePosition_F1"
 
 @Composable
-internal fun A__F5(
-    modifier: Modifier = Modifier,
+internal fun A_VerificationProduitAcGrossist_F5(
     viewModelInitApp: ViewModelInitApp = viewModel(),
+    modifier: Modifier = Modifier,
 ) {
     val extensionVM = viewModelInitApp.extension_App1_F5
 

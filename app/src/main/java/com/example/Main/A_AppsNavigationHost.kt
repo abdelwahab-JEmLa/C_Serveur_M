@@ -2,7 +2,7 @@ package com.example.Main
 
 import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.A_GerantDefinirePosition_F1
 import Z.WorkingOn._2NavHost.Fragment_2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
-import Z.WorkingOn._3FrNavHost.Fr5.A__F5
+import Z.WorkingOn._3FrNavHost.Fr5.A_VerificationProduitAcGrossist_F5
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -55,7 +55,7 @@ fun ParentAppNavHost(
             composable(Screens.MainScreen_F1.route) { A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp) }
             composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp) }
             //  composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
-            composable(Screens.MainScreen_F5.route) { A__F5(viewModelInitApp = viewModelInitApp) }
+            composable(Screens.MainScreen_F5.route) { A_VerificationProduitAcGrossist_F5(viewModelInitApp) }
 
             // composable(Screens.Fragment1Screen.route) { A_ClientsLocationGps(viewModel = viewModelInitApp) }
         }
@@ -126,9 +126,9 @@ data object MainScreenDataObject_F3 : Screen(
 )
 
 data object MainScreenDataObject_F5 : Screen(
-    route = "A__F5",
+    route = "A_VerificationProduitAcGrossist_F5",
     icon = Icons.Default.Person,
-    title = "A__F5",
+    title = "A_VerificationProduitAcGrossist_F5",
     color = Color(0xFFFF5722)
 )
 

@@ -112,21 +112,18 @@ fun AppNavigationHost(
 
 object NavigationItems {
     val items @Composable get() = buildList {
-        // Always add Startup screen
-        add(Screens.Startup)
-        add(Screens.NavHost_1)
-
-        // Only add NavHost_2 and related screens if cLeTelephoneDuGerant is true
         val viewModelInitApp: ViewModelInitApp = viewModel()
-        if (viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant == true) {
+        val cLeTelephoneDuGerant = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant == true
+
+            add(Screens.Startup)
+        if (cLeTelephoneDuGerant) { add(Screens.NavHost_1) }
+
             add(Screens.NavHost_2)
             add(Screens.NavHost_3)
             add(Screens.NavHost_5)
             add(Screens.NavHost_4)
-        }
 
-        // Always add NavHostA2_1
-        add(Screens.NavHostA2_1)
+        if (cLeTelephoneDuGerant) { add(Screens.NavHostA2_1) }
     }
 }
 

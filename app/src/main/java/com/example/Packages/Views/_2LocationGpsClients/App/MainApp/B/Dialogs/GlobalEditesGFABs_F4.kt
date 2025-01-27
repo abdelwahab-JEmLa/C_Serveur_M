@@ -1,7 +1,7 @@
-package Views._2LocationGpsClients.App.MainApp.B.Dialogs
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs
 
-import Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AlimentclientDataBaseSnapList
-import Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ClearHistoryButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.AlimentclientDataBaseSnapList
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.ClearHistoryButton
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures

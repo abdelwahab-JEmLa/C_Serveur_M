@@ -1,6 +1,6 @@
 package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils
 
-import Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent

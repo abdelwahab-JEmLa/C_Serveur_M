@@ -1,7 +1,5 @@
-package Views._2LocationGpsClients.App.MainApp
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp
 
-import Views._2LocationGpsClients.App.MainApp.B.Dialogs.MapControls
-import Views._2LocationGpsClients.App.MainApp.B.Dialogs.MarkerStatusDialog
 import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.content.Context
@@ -27,9 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.Utils.DEFAULT_LATITUDE
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.Utils.DEFAULT_LONGITUDE
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.Utils.getCurrentLocation
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.MapControls
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.MarkerStatusDialog
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.DEFAULT_LATITUDE
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.DEFAULT_LONGITUDE
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils.getCurrentLocation
 import com.example.c_serveur.R
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory

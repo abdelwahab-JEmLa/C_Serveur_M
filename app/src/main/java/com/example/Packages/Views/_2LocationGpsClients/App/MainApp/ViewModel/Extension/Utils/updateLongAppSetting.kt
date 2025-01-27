@@ -1,6 +1,6 @@
 package com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.Utils
 
-import Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.Parent.AppSettingsSaverModel
 import com.google.firebase.Firebase
 import com.google.firebase.database.database

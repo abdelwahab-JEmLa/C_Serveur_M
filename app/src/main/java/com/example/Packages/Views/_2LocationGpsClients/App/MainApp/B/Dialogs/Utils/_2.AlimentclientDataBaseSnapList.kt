@@ -1,6 +1,5 @@
-package Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils
 
-import Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -10,6 +9,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
 
 @Composable
 fun AlimentclientDataBaseSnapList(

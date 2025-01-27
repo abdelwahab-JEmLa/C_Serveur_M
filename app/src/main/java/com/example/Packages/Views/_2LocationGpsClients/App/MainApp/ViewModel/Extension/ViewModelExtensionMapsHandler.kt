@@ -1,4 +1,4 @@
-package Views._2LocationGpsClients.App.MainApp.ViewModel.Extension
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension
 
 import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.ClientsDataBase.Companion.updateClientsDataBase

@@ -1,6 +1,6 @@
 package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.Utils
 
-import Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs.ControlButton
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add

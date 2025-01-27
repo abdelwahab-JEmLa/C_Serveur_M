@@ -1,9 +1,7 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
-import Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
 import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.ViewModel.Extension.ViewModelExtension_App1_F1
 import Z.WorkingOn._2NavHost.Fragment_2.ViewModel.Extension.ViewModelExtension_App1_F2
-import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.ViewModelExtension_App1_F5
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.LoadFromFirebaseProduits
@@ -16,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
 import kotlinx.coroutines.launch
 import org.osmdroid.views.MapView
 
@@ -52,7 +51,6 @@ class ViewModelInitApp : ViewModel() {
         produitsMainDataBase = produitsMainDataBase,
         viewModelScope =this@ViewModelInitApp.viewModelScope,
     )
-    val extension_App1_F5 = ViewModelExtension_App1_F5(this@ViewModelInitApp,produitsMainDataBase,)
 
     init {
         viewModelScope.launch {

@@ -1,4 +1,4 @@
-package Views._2LocationGpsClients.App.MainApp.B.Dialogs
+package com.example.Packages.Views._2LocationGpsClients.App.MainApp.B.Dialogs
 
 import android.content.Context
 import android.content.Intent

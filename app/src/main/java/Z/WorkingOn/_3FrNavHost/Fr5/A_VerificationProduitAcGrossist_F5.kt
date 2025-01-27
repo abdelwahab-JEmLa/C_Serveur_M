@@ -1,6 +1,7 @@
 package Z.WorkingOn._3FrNavHost.Fr5
 
 import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.Modules.ClientEditePositionDialog
+import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.ViewModelExtension_App1_F5
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +17,7 @@ internal fun A_VerificationProduitAcGrossist_F5(
     viewModelInitApp: ViewModelInitApp = viewModel(),
     modifier: Modifier = Modifier,
 ) {
-    val extensionVM = viewModelInitApp.extension_App1_F5
+    val extensionVM = ViewModelExtension_App1_F5(viewModelInitApp,viewModelInitApp.produitsMainDataBase,)
 
     val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 

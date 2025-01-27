@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Moving
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhonelinkRing
@@ -84,7 +85,7 @@ object Screens {
     val MainScreen_F1 = MainScreenDataObject_F1
     val MainScreen_F2 = MainScreenDataObject_F2
     val MainScreen_F3 = MainScreenDataObject_F3
-    val MainScreen_F5 = MainScreenDataObject_F5
+    val MainScreen_F5 = IconNavApp2_F5
     val Fragment1Screen = App2Fragment1
 }
 
@@ -123,12 +124,13 @@ data object MainScreenDataObject_F4 : Screen(
     color = Color(0xFF3F51B5)
 )
 
-data object MainScreenDataObject_F5 : Screen(
+data object IconNavApp2_F5 : Screen(
     route = "A_VerificationProduitAcGrossist_F5",
-    icon = Icons.Default.Person,
+    icon = Icons.Default.Done,
     title = "A_VerificationProduitAcGrossist_F5",
-    color = Color(0xFFFF5722)
+    color = Color(0xFFFF5892)
 )
+
 
 data object App2Fragment1 : Screen(
     route = "Fragment1",

@@ -1,12 +1,12 @@
 package com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.Extensions
 
-import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.produitsFireBaseRef
 import android.util.Log
+import com.example.Packages.Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtension_App2_F1
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-fun ViewModelExtensionMapsHandler.clearAllData() {
+fun ViewModelExtension_App2_F1.clearAllData() {
     viewModelScope.launch {
         try {
             produitsMainDataBase.forEach { produit ->

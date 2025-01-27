@@ -9,13 +9,8 @@ class ViewModelExtension_App1_F1(
     val produitsMainDataBase: MutableList<ProduitModel>,
     val viewModelScope: CoroutineScope,
 ) {
-    private val produitsAChoisireLeurClient = viewModel
+    val produitsAChoisireLeurClient = viewModel
         ._paramatersAppsViewModelModel.produitsAChoisireLeurClient
-
-    fun addToproduitsAChoisireLeurClient(last: ProduitModel) {
-        produitsAChoisireLeurClient.add(last)
-    }
-
 }
 
 

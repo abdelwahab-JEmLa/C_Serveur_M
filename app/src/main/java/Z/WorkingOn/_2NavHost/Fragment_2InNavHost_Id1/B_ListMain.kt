@@ -2,6 +2,7 @@ package Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1
 
 import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules.MoveProductsDialog
 import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules.SearchDialog_F1
+import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.ViewModel.Extension.Z_OnClick.MainItem.Extend.addToproduitsAChoisireLeurClient
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp

@@ -65,6 +65,9 @@ fun B_ListMainFragment(
     ) {
         // Header for positioned products
         if (positionedProducts.isNotEmpty()) {
+            val positionedProductsSorted = positionedProducts.sortedBy {
+                it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+            }
             item(span = { GridItemSpan(5) }) {
                 Row(
                     modifier = Modifier.padding(8.dp),
@@ -84,7 +87,8 @@ fun B_ListMainFragment(
                                 .clickable {
                                     viewModel.extension_App1_F1
                                         .addToproduitsAChoisireLeurClient(
-                                            positionedProducts.last()
+                                            positionedProductsSorted
+                                                .last()
                                         )
                                 },
                             style = MaterialTheme.typography.titleMedium
@@ -101,10 +105,9 @@ fun B_ListMainFragment(
 
             }
 
+
             items(
-                items = positionedProducts.sortedBy {
-                    it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                },
+                items = positionedProductsSorted,
             ) { product ->
                 C_ItemMainFragment(
                     mainItem = product,

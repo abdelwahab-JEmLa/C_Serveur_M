@@ -88,13 +88,27 @@ fun MainScreenFilterFAB_F2(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    FloatingActionButton(
+                        onClick = {
+                            viewModelInitApp.extension_App1_F2.afficheProduitsPourRegleConflites =
+                                !viewModelInitApp.extension_App1_F2.afficheProduitsPourRegleConflites
+                        },
+                        modifier = Modifier.size(48.dp),
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    ) {
+                        Text(
+                            text = "Show Conflicts Products",
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
+
+                    // Rest of the code remains unchanged...
                     groupedProducts.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             if (index > 0) {
-                                // In your FAB implementation
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelInitApp.viewModelScope.launch {
@@ -103,16 +117,14 @@ fun MainScreenFilterFAB_F2(
                                             grossist.positionInGrossistsList--
                                             previousGrossist.positionInGrossistsList++
 
-                                            // Update positions using the current list
                                             val updatedProducts =
-                                                viewModelInitApp._modelAppsFather.produitsMainDataBase .map { product ->
+                                                viewModelInitApp._modelAppsFather.produitsMainDataBase.map { product ->
                                                     product.apply {
                                                         bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                             when (currentGrossist.id) {
                                                                 grossist.id -> {
                                                                     currentGrossist.positionInGrossistsList--
                                                                 }
-
                                                                 previousGrossist.id -> {
                                                                     currentGrossist.positionInGrossistsList++
                                                                 }
@@ -121,7 +133,6 @@ fun MainScreenFilterFAB_F2(
                                                     }
                                                 }
 
-                                            // Now pass the updated list to the update function
                                             update_AllProduits(
                                                 updatedProducts,
                                                 viewModelInitApp

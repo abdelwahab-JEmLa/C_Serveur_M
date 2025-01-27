@@ -34,10 +34,14 @@ fun MainList_F2(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-   val produitsAChoisireLeurClient=
-       viewModelInitApp._paramatersAppsViewModelModel.produitsAChoisireLeurClient
+    val produitsAChoisireLeurClient =
+        viewModelInitApp._paramatersAppsViewModelModel.produitsAChoisireLeurClient
 
-    val visibleProducts= produitsAChoisireLeurClient.ifEmpty { initVisibleProducts }
+    val afficheProduitsPourRegleConflites =
+        viewModelInitApp.extension_App1_F2.afficheProduitsPourRegleConflites
+
+    val visibleProducts = if (afficheProduitsPourRegleConflites)
+        produitsAChoisireLeurClient else initVisibleProducts
 
     var expandedItemId by remember { mutableStateOf<Long?>(null) }
 
@@ -55,11 +59,6 @@ fun MainList_F2(
                     ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                     ?: Int.MAX_VALUE
             },
-            key = { product ->
-                "${product.id}_${product.bonCommendDeCetteCota
-                    ?.mutableBasesStates
-                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit}"
-            }
         ) { product ->
             Column(
                 modifier = Modifier
@@ -92,7 +91,7 @@ fun MainList_F2(
                     )
                 ) {
                     ExpandedMainItem_F2(
-                        viewModelInitApp=viewModelInitApp,
+                        viewModelInitApp = viewModelInitApp,
                         mainItem = product,
                         modifier = Modifier
                             .fillMaxWidth()

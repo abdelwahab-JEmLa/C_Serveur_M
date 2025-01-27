@@ -15,18 +15,18 @@ class ViewModelExtension_App1_F5(
     var excludedProduits: MutableList<ProduitModel> =
         emptyList<ProduitModel>().toMutableStateList()
 
-    var verifieProduits: MutableList<ProduitModel> =
+    var produitsVerifie: MutableList<ProduitModel> =
         emptyList<ProduitModel>().toMutableStateList()
 
     var prochenClickIncludeProduit by mutableStateOf<ProduitModel?>(null)
 
     fun includeProduit(clickeProduct: ProduitModel) {
         excludedProduits.remove(prochenClickIncludeProduit)
-        val targetIndex = verifieProduits.indexOf(clickeProduct)
+        val targetIndex = produitsVerifie.indexOf(clickeProduct)
         if (targetIndex != -1) {
-            verifieProduits.add(targetIndex + 1, prochenClickIncludeProduit!!)
+            produitsVerifie.add(targetIndex + 1, prochenClickIncludeProduit!!)
         } else {
-            verifieProduits.add(prochenClickIncludeProduit!!)
+            produitsVerifie.add(prochenClickIncludeProduit!!)
         }
         prochenClickIncludeProduit = null
     }
@@ -34,7 +34,7 @@ class ViewModelExtension_App1_F5(
     fun excludeProduit(
         product: ProduitModel,
     ) {
-        verifieProduits.remove(product)
+        produitsVerifie.remove(product)
         excludedProduits.add(product)
     }
 }

@@ -91,8 +91,8 @@ fun B_MainScreenFilterFAB_F5(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        extensionVM.verifieProduits.clear()
-                                        extensionVM.verifieProduits.addAll(produits)
+                                        extensionVM.produitsVerifie.clear()
+                                        extensionVM.produitsVerifie.addAll(produits)
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = try {

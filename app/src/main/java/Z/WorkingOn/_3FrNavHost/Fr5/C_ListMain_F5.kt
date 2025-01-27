@@ -3,14 +3,17 @@ package Z.WorkingOn._3FrNavHost.Fr5
 import Z.WorkingOn._3FrNavHost.Fr5.Modules.SearchDialog_F1
 import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.ViewModelExtension_App1_F5
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import android.util.Log
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -34,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 
 @Composable
 fun C_MainList_F5(
@@ -44,13 +46,20 @@ fun C_MainList_F5(
     modifier: Modifier = Modifier
 ) {
     var showSearchDialog by remember { mutableStateOf(false) }
-    var isVisible by remember { mutableStateOf(true) }
 
-    LaunchedEffect(Unit) {
-        while(true) {
-            delay(500)
-            isVisible = !isVisible
-        }
+    // Use animateFloatAsState for smooth blinking animation
+    val blinkingAlpha by animateFloatAsState(
+        targetValue = if (extensionVM.prochenClickIncludeProduit != null) 0.3f else 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(500),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "blinking"
+    )
+
+    // Add logging for debugging
+    LaunchedEffect(extensionVM.prochenClickIncludeProduit) {
+        Log.d("Animation", "Selected product for inclusion: ${extensionVM.prochenClickIncludeProduit?.id}")
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -73,15 +82,20 @@ fun C_MainList_F5(
                 D_MainItem_F5(
                     mainItem = product,
                     onCLickOnMain = {
+                        Log.d("ProductInteraction", "Clicked on excluded product: ${product.id}")
                         extensionVM.prochenClickIncludeProduit =
-                            if (extensionVM.prochenClickIncludeProduit != null) product
+                            if (extensionVM.prochenClickIncludeProduit != product) product
                             else null
+                        Log.d("ProductInteraction", "Updated prochenClickIncludeProduit: ${extensionVM.prochenClickIncludeProduit?.id}")
                     },
                     modifier = Modifier
-                        .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                        .animateItem(
+                            fadeInSpec = tween(500),
+                            fadeOutSpec = tween(500)
+                        )
                         .then(
-                            if (extensionVM.prochenClickIncludeProduit == product) {
-                                Modifier.alpha(if (isVisible) 1f else 0.3f)
+                            if (extensionVM.prochenClickIncludeProduit?.id == product.id) {
+                                Modifier.alpha(blinkingAlpha)
                             } else {
                                 Modifier
                             }
@@ -89,8 +103,6 @@ fun C_MainList_F5(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         // Section Produits Verifie
         LazyVerticalGrid(
@@ -116,23 +128,29 @@ fun C_MainList_F5(
                         )
                     }
                     Text(
-                        "Produits Verifie (${extensionVM.verifieProduits.size})",
+                        "Produits Verifie (${extensionVM.produitsVerifie.size})",
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
             }
 
-            items(extensionVM.verifieProduits) { product ->
+            items(extensionVM.produitsVerifie) { product ->
                 D_MainItem_F5(
                     mainItem = product,
                     onCLickOnMain = {
+                        Log.d("ProductInteraction", "Clicked on verified product: ${product.id}")
                         if (extensionVM.prochenClickIncludeProduit != null) {
+                            Log.d("ProductMovement", "Including product at position of: ${product.id}")
                             extensionVM.includeProduit(product)
                         } else {
+                            Log.d("ProductMovement", "Excluding product: ${product.id}")
                             extensionVM.excludeProduit(product)
                         }
                     },
-                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
+                    modifier = Modifier.animateItem(
+                        fadeInSpec = tween(500),
+                        fadeOutSpec = tween(500)
+                    )
                 )
             }
         }

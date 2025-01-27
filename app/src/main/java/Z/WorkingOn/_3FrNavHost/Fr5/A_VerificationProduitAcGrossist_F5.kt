@@ -19,14 +19,13 @@ internal fun A_VerificationProduitAcGrossist_F5(
 ) {
     val extensionVM = ViewModelExtension_App1_F5(viewModelInitApp,viewModelInitApp.produitsMainDataBase,)
 
-    val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
-
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize()
         ) { paddingValues ->
             Box(modifier = Modifier.fillMaxSize()) {
-                if (databaseSize > 0) {
+
+                if (extensionVM.produitsVerifie.size > 0) {
                     C_MainList_F5(
                         extensionVM=extensionVM,
                         viewModel = viewModelInitApp,

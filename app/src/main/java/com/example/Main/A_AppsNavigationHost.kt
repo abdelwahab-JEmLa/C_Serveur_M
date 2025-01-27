@@ -51,7 +51,8 @@ fun ParentAppNavHost(
             navController = navController,
             startDestination = Screens.MainScreen_F1.route,
             modifier = Modifier.fillMaxSize()
-        ) {
+        ) {   //-->
+        //TODO(1): fait que le ca ne ai pas enable si loading
             //  composable(Screens.MainScreen_F4.route) { A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp) }
             composable(Screens.MainScreen_F1.route) { A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp) }
             composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp) }

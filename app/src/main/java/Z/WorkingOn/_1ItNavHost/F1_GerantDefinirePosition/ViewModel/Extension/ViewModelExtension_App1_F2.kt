@@ -1,4 +1,4 @@
-package Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.ViewModel.Extension
+package Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.ViewModel.Extension
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp

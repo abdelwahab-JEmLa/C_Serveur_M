@@ -1,5 +1,5 @@
 // SearchDialog.kt
-package Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.Modules
+package Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.Modules
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
@@ -31,7 +31,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.C_ItemMainFragment
+import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.C_ItemMainFragment
 import kotlinx.coroutines.delay
 
 @Composable

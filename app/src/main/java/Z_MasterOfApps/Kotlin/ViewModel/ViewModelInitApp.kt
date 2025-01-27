@@ -1,8 +1,8 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
-import Views._2LocationGpsClients.App.MainApp.ViewModel.Extension.ViewModelExtensionMapsHandler
+import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.ViewModel.Extension.ViewModelExtension_App1_F1
 import Z.WorkingOn._2NavHost.Fragment_2.ViewModel.Extension.ViewModelExtension_App1_F2
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.ViewModel.Extension.ViewModelExtension_App1_F1
+import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.ViewModelExtension_App1_F5
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.LoadFromFirebaseProduits
@@ -33,12 +33,13 @@ class ViewModelInitApp : ViewModel() {
     var isLoading by mutableStateOf(false)
     var loadingProgress by mutableFloatStateOf(0f)
 
-    val mapsHandler = ViewModelExtensionMapsHandler(
+   /* val mapsHandler = ViewModelExtensionMapsHandler(
         viewModelScope =this@ViewModelInitApp.viewModelScope,
         produitsMainDataBase = produitsMainDataBase,
         clientDataBaseSnapList=clientDataBaseSnapList,
         viewModel=this@ViewModelInitApp,
-    )
+    )   */
+
     val extension_App1_F1 = ViewModelExtension_App1_F1(
         viewModel=this@ViewModelInitApp,
         produitsMainDataBase = produitsMainDataBase,
@@ -49,6 +50,7 @@ class ViewModelInitApp : ViewModel() {
         produitsMainDataBase = produitsMainDataBase,
         viewModelScope =this@ViewModelInitApp.viewModelScope,
     )
+    val extension_App1_F5 = ViewModelExtension_App1_F5(this@ViewModelInitApp,produitsMainDataBase,)
 
     init {
         viewModelScope.launch {

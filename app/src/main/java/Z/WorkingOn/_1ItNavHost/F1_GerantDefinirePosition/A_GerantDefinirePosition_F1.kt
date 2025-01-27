@@ -1,7 +1,7 @@
-package Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1
+package Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition
 
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.Modules.ClientEditePositionDialog
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.Modules.GlobalEditesGFABs_F1
+import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.Modules.ClientEditePositionDialog
+import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.Modules.GlobalEditesGFABs_F1
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -69,7 +69,7 @@ internal fun A_GerantDefinirePosition_F1(
                         viewModelInitApp = viewModelInitApp,
                     )
 
-                    Z.WorkingOn._3FrNavHost.Fr5.MainScreenFilterFAB(
+                    MainScreenFilterFAB(
                         viewModelProduits = viewModelInitApp,
                     )
                 }

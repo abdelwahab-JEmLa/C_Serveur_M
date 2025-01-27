@@ -1,7 +1,7 @@
 package Z.WorkingOn._3FrNavHost.Fr5
 
+import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.ViewModelExtension_App1_F5
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -32,12 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun MainScreenFilterFAB_F5(
+fun B_MainScreenFilterFAB_F5(
+    extensionVM: ViewModelExtension_App1_F5,
     modifier: Modifier = Modifier,
     viewModelProduits: ViewModelInitApp,
 ) {
@@ -80,34 +79,6 @@ fun MainScreenFilterFAB_F5(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                if (index > 0) {
-                                    FloatingActionButton(
-                                        onClick = {
-                                            viewModelProduits.viewModelScope.launch {
-                                                val previousGrossist = viewModelProduits._modelAppsFather.groupedProductsPatGrossist[index - 1].first
-                                                grossist.positionInGrossistsList--
-                                                previousGrossist.positionInGrossistsList++
-                                                update_AllProduits(
-                                                    viewModelProduits.produitsMainDataBase.map { product ->
-                                                        product.apply {
-                                                            bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                                when (currentGrossist.id) {
-                                                                    grossist.id -> currentGrossist.positionInGrossistsList--
-                                                                    previousGrossist.id -> currentGrossist.positionInGrossistsList++
-                                                                }
-                                                            }
-                                                        }
-                                                    },
-                                                    viewModelProduits
-                                                )
-                                            }
-                                        },
-                                        modifier = Modifier.size(36.dp)
-                                    ) {
-                                        Icon(Icons.Default.ExpandLess, null)
-                                    }
-                                }
-
                                 Text(
                                     "${grossist.nom} (${produits.size})",
                                     modifier = Modifier
@@ -121,8 +92,7 @@ fun MainScreenFilterFAB_F5(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelProduits._paramatersAppsViewModelModel
-                                            .telephoneClientParamaters.selectedGrossistForServeur = grossist.id
+                                        extensionVM.selectedGrossistId = grossist.id
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = try {

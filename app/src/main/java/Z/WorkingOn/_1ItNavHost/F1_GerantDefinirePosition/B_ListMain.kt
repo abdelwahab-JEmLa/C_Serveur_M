@@ -1,8 +1,8 @@
-package Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1
+package Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition
 
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.Modules.MoveProductsDialog
+import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.Modules.MoveProductsDialog
+import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.ViewModel.Extension.Z_OnClick.MainItem.Extend.addToproduitsAChoisireLeurClient
 import Z.WorkingOn._3FrNavHost.Fr5.Modules.SearchDialog_F1
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.ViewModel.Extension.Z_OnClick.MainItem.Extend.addToproduitsAChoisireLeurClient
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
@@ -92,7 +92,7 @@ fun B_ListMainFragment(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .clickable {
-                                    Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.ViewModel.Extension.Z_OnClick.MainItem.Extend.addToproduitsAChoisireLeurClient(
+                                    viewModel.extension_App1_F1.addToproduitsAChoisireLeurClient(
                                         positionedProductsSorted
                                             .last()
                                     )

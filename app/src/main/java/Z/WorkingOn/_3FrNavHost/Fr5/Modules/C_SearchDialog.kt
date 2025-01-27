@@ -31,7 +31,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.C_ItemMainFragment
+import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.C_ItemMainFragment
 import kotlinx.coroutines.delay
 
 @Composable

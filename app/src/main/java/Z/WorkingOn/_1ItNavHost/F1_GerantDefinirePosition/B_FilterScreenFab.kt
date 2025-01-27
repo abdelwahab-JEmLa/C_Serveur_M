@@ -1,4 +1,4 @@
-package Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1
+package Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition
 
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits

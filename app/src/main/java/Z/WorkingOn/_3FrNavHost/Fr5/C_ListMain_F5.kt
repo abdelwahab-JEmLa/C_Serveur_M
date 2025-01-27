@@ -1,9 +1,8 @@
 package Z.WorkingOn._3FrNavHost.Fr5
 
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.C_ItemMainFragment
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.Modules.MoveProductsDialog
 import Z.WorkingOn._3FrNavHost.Fr5.Modules.SearchDialog_F1
-import Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.ViewModel.Extension.Z_OnClick.MainItem.Extend.addToproduitsAChoisireLeurClient
+import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.ViewModel.Extension.Z_OnClick.MainItem.Extend.addToproduitsAChoisireLeurClient
+import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.ViewModelExtension_App1_F5
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
@@ -39,7 +38,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun C_ListMain_F5(
+fun C_MainList_F5(
+    extensionVM: ViewModelExtension_App1_F5,
     viewModel: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
@@ -93,7 +93,7 @@ fun C_ListMain_F5(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .clickable {
-                                    Z.WorkingOn._1ItNavHost.Fragment_2InNavHost_Id1.ViewModel.Extension.Z_OnClick.MainItem.Extend.addToproduitsAChoisireLeurClient(
+                                    Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.ViewModel.Extension.Z_OnClick.MainItem.Extend.addToproduitsAChoisireLeurClient(
                                         positionedProductsSorted
                                             .last()
                                     )

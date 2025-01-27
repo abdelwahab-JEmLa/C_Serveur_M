@@ -1,6 +1,5 @@
 package com.example.Main
 
-import Views._2LocationGpsClients.App.MainApp.A_ClientsLocationGps
 import Z.WorkingOn.Fragment_2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
 import Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.A_GerantDefinirePosition_F1
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
@@ -24,8 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.Fragment_4InNavHost_Id3.A_AfficheurDesProduitsPourLeColecteur_F3
-import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App._1NavHost.Fragment_Id4.A_DeplaceProduitsVerGrossist
 
 @Composable
 fun ParentAppNavHost(
@@ -53,19 +50,13 @@ fun ParentAppNavHost(
             startDestination = Screens.MainScreen_F1.route,
             modifier = Modifier.fillMaxSize()
         ) {
-            composable(Screens.MainScreen_F4.route) { A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp) }
+          //  composable(Screens.MainScreen_F4.route) { A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp) }
             composable(Screens.MainScreen_F1.route) { A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp) }
             composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp) }
-            composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
+          /*  composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
             composable(Screens.Fragment1Screen.route) { A_ClientsLocationGps(viewModel = viewModelInitApp) }
-        }
+       */}
     }
-}
-
-@Preview
-@Composable
-private fun Preview_Fragment() {
-    A_GerantDefinirePosition_F1(modifier = Modifier.fillMaxSize())
 }
 
 object NavigationItems {
@@ -76,6 +67,12 @@ object NavigationItems {
         Screens.MainScreen_F3,
         Screens.Fragment1Screen
     )
+}
+
+@Preview
+@Composable
+private fun Preview_Fragment() {
+    A_GerantDefinirePosition_F1(modifier = Modifier.fillMaxSize())
 }
 
 object Screens {

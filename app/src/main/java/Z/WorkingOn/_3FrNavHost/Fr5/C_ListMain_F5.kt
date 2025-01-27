@@ -2,7 +2,7 @@ package Z.WorkingOn._3FrNavHost.Fr5
 
 import Z.WorkingOn._3FrNavHost.Fr5.Modules.SearchDialog_F1
 import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.ViewModelExtension_App1_F5
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
+import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.Z_OnClick.MainItem.Extend.excludeProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,10 +41,11 @@ fun C_MainList_F5(
 ) {
     var showSearchDialog by remember { mutableStateOf(false) }
 
+    val excludedProduits = extensionVM.excludedProduits
     Column {
         Column() {
             Text(
-                "Produits Excluded (${extensionVM.produitsExcluded.size})",
+                "Produits Excluded (${excludedProduits.size})",
                 modifier = Modifier.padding(8.dp),
                 style = MaterialTheme.typography.titleMedium
             )
@@ -58,7 +59,7 @@ fun C_MainList_F5(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(
-                    items = extensionVM.produitsExcluded,
+                    items = excludedProduits,
                 ) { product ->
                     D_MainItem_F5(
                         mainItem = product,
@@ -77,6 +78,7 @@ fun C_MainList_F5(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            val verifieProduits = extensionVM.verifieProduits
             item(span = { GridItemSpan(5) }) {
                 Row(
                     modifier = Modifier.padding(8.dp),
@@ -91,40 +93,19 @@ fun C_MainList_F5(
                         )
                     }
                     Text(
-                        "Produits Verifie (${extensionVM.verifieProduits.size})",
+                        "Produits Verifie (${verifieProduits.size})",
                         style = MaterialTheme.typography.titleMedium
                     )
                 }
             }
 
-            items(
-                items = unpositionedProducts.sortedWith(compareBy(
-                    { product ->
-                        val position =
-                            product.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                        if (position == null || position == 0) null else position
-                    },
-                    // Ensuite trier par nom
-                    { it.nom.lowercase() }
-                )),
+            items(items = verifieProduits
             ) { product ->
                 D_MainItem_F5(
                     mainItem = product,
                     onCLickOnMain = {
-                        val newPosition = (positionedProducts.maxOfOrNull {
-                            it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                                ?: 0
-                        } ?: 0) + 1
-
-                        product.bonCommendDeCetteCota?.apply {
-                            mutableBasesStates?.cPositionCheyCeGrossit = true
-                            mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit =
-                                newPosition
-                        }
-                        if (product.itsTempProduit) {
-                            product.statuesBase.prePourCameraCapture = true
-                        }
-                        updateProduit(product, viewModel)
+                        extensionVM
+                            .excludeProduit(product, verifieProduits, excludedProduits)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
@@ -135,9 +116,11 @@ fun C_MainList_F5(
 
 
     SearchDialog_F1(
-        unpositionedItems = unpositionedProducts,
+        unpositionedItems = excludedProduits,
         viewModelProduits = viewModel,
         showDialog = showSearchDialog,
         onDismiss = { showSearchDialog = false }
     )
 }
+
+

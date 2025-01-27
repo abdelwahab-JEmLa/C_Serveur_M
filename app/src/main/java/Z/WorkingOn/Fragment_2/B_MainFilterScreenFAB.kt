@@ -88,46 +88,31 @@ fun MainScreenFilterFAB_F2(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    FloatingActionButton(
-                        onClick = {
-                            viewModelInitApp.extension_App1_F2.produitsAChoisireLeurClient =
-                                viewModelInitApp.extension_App1_F1.produitsAChoisireLeurClient
-                        },
-                        modifier = Modifier.size(48.dp),
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
-                    ) {
-                        Text(
-                            text = "Show cONFLISTS pRODUITS",
-                            color = MaterialTheme.colorScheme.onTertiaryContainer
-                        )
-                    }
-
-                    // Iterate over grouped products and display buttons for each grossist
                     groupedProducts.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            // Button to move grossist up in the list
                             if (index > 0) {
+                                // In your FAB implementation
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelInitApp.extension_App1_F2.produitsAChoisireLeurClient = mutableListOf()
-
                                         viewModelInitApp.viewModelScope.launch {
                                             val previousGrossist = groupedProducts[index - 1].first
 
                                             grossist.positionInGrossistsList--
                                             previousGrossist.positionInGrossistsList++
 
+                                            // Update positions using the current list
                                             val updatedProducts =
-                                                viewModelInitApp._modelAppsFather.produitsMainDataBase.map { product ->
+                                                viewModelInitApp._modelAppsFather.produitsMainDataBase .map { product ->
                                                     product.apply {
                                                         bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
                                                             when (currentGrossist.id) {
                                                                 grossist.id -> {
                                                                     currentGrossist.positionInGrossistsList--
                                                                 }
+
                                                                 previousGrossist.id -> {
                                                                     currentGrossist.positionInGrossistsList++
                                                                 }
@@ -136,6 +121,7 @@ fun MainScreenFilterFAB_F2(
                                                     }
                                                 }
 
+                                            // Now pass the updated list to the update function
                                             update_AllProduits(
                                                 updatedProducts,
                                                 viewModelInitApp
@@ -152,7 +138,6 @@ fun MainScreenFilterFAB_F2(
                                 }
                             }
 
-                            // Display grossist name and product count
                             Text(
                                 text = "${grossist.nom} (${produits.size})",
                                 modifier = Modifier
@@ -168,7 +153,6 @@ fun MainScreenFilterFAB_F2(
                                 style = MaterialTheme.typography.bodyMedium
                             )
 
-                            // Button to select the grossist
                             FloatingActionButton(
                                 onClick = {
                                     viewModelInitApp

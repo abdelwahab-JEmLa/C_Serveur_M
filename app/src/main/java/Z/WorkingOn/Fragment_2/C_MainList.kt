@@ -35,7 +35,7 @@ fun MainList_F2(
     modifier: Modifier = Modifier
 ) {
    val produitsAChoisireLeurClient=
-       viewModelInitApp.extension_App1_F2.produitsAChoisireLeurClient
+       viewModelInitApp._paramatersAppsViewModelModel.produitsAChoisireLeurClient
 
     val visibleProducts= produitsAChoisireLeurClient.ifEmpty { initVisibleProducts }
 

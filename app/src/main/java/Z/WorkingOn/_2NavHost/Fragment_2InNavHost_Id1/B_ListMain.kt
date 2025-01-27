@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun B_ListMainFragment(
-    viewModelInitApp: ViewModelInitApp,
+    viewModel: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
     visibleProducts: List<_ModelAppsFather.ProduitModel>
@@ -49,9 +49,10 @@ fun B_ListMainFragment(
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true
     }
-    val produitsAChoisireLeurClient = viewModelInitApp
-        .extension_App1_F1
-        .produitsAChoisireLeurClient
+
+    val produitsAChoisireLeurClient = viewModel
+        ._paramatersAppsViewModelModel.produitsAChoisireLeurClient
+
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -77,12 +78,12 @@ fun B_ListMainFragment(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            "PCC(${produitsAChoisireLeurClient.size})",
+                            "${produitsAChoisireLeurClient.size}",
                             modifier = Modifier
                                 .padding(8.dp)
                                 .clickable {
-
-                                    produitsAChoisireLeurClient.add(
+                                    viewModel.extension_App1_F1
+                                        .addToproduitsAChoisireLeurClient(
                                             positionedProducts.last()
                                         )
                                 },
@@ -109,7 +110,7 @@ fun B_ListMainFragment(
                     mainItem = product,
                     onCLickOnMain = {
                         product.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit = false
-                        updateProduit(product, viewModelInitApp)
+                        updateProduit(product, viewModel)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
@@ -170,7 +171,7 @@ fun B_ListMainFragment(
                         if (product.itsTempProduit) {
                             product.statuesBase.prePourCameraCapture = true
                         }
-                        updateProduit(product, viewModelInitApp)
+                        updateProduit(product, viewModel)
                     },
                     modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                 )
@@ -182,7 +183,7 @@ fun B_ListMainFragment(
         MoveProductsDialog(
             selectedProducts = unpositionedProducts,
             currentGrossist = unpositionedProducts.firstOrNull()?.bonCommendDeCetteCota?.grossistInformations,
-            viewModelProduits = viewModelInitApp,
+            viewModelProduits = viewModel,
             onDismiss = { showMoveDialog = false },
             onProductsMoved = { showMoveDialog = false }
         )
@@ -190,7 +191,7 @@ fun B_ListMainFragment(
 
     SearchDialog_F1(
         unpositionedItems =unpositionedProducts,
-        viewModelProduits = viewModelInitApp,
+        viewModelProduits = viewModel,
         showDialog = showSearchDialog,
         onDismiss = { showSearchDialog = false }
     )

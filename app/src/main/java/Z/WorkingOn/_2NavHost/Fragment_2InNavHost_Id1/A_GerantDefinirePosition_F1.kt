@@ -58,7 +58,7 @@ internal fun A_GerantDefinirePosition_F1(
                 if (databaseSize > 0) {
                     B_ListMainFragment(
                         visibleProducts = visibleProducts,
-                        viewModelInitApp = viewModelInitApp,
+                        viewModel = viewModelInitApp,
                         paddingValues = paddingValues
                     )
                 }

@@ -19,8 +19,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Moving
-import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,9 +74,15 @@ fun B_ListMainFragment(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+
+                    Text(
+                        "Produits avec position (${positionedProducts.size})",
+                        modifier = Modifier.padding(8.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
                     Box {
                         Icon(
-                            Icons.Default.QrCodeScanner,
+                            Icons.Default.Edit,
                             contentDescription = "ChoisireClient",
                             tint = MaterialTheme.colorScheme.primary
                         )
@@ -94,15 +100,7 @@ fun B_ListMainFragment(
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
-
-                    Text(
-                        "Produits avec position (${positionedProducts.size})",
-                        modifier = Modifier.padding(8.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
                 }
-
-
             }
 
 

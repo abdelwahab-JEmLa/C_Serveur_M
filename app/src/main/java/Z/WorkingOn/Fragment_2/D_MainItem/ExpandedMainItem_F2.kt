@@ -14,12 +14,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -138,6 +140,7 @@ fun ExpandedMainItem_F2(
                         verticalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         items(bonVent.colours_Achete.filter { it.quantity_Achete > 0 }) { color ->
+                            // In ExpandedMainItem_F2.kt - Modified Column section for color display
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
@@ -146,20 +149,53 @@ fun ExpandedMainItem_F2(
                                         RoundedCornerShape(4.dp)
                                     )
                                     .padding(4.dp)
-                                    .clickable {
-                                        selectedBonVent = bonVent
-                                        selectedColor = color
-                                        showDialog = true
-                                    }
+                                // Remove clickable from main Column
                             ) {
-                                Text(
-                                    text = color.imogi.ifEmpty { color.nom.take(2) },
-                                    fontSize = 20.sp
-                                )
-                                Text(
-                                    text = "${color.quantity_Achete}",
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
+                                Row(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    // Clear button (sets quantity to 0)
+                                    IconButton(
+                                        onClick = {
+                                            viewModelInitApp
+                                                .extension_App1_F2.changeColours_AcheteQuantity_Achete(
+                                                    bonVent,
+                                                    mainItem,
+                                                    color,
+                                                    0
+                                                )
+                                        },
+                                        modifier = Modifier.size(24.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Clear,
+                                            contentDescription = "Clear quantity",
+                                            tint = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                }
+
+                                // Color display with dialog trigger
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            selectedBonVent = bonVent
+                                            selectedColor = color
+                                            showDialog = true
+                                        }
+                                ) {
+                                    Text(
+                                        text = color.imogi.ifEmpty { color.nom.take(2) },
+                                        fontSize = 20.sp
+                                    )
+                                    Text(
+                                        text = "${color.quantity_Achete}",
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                             }
                         }
                     }

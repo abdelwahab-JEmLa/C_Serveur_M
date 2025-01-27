@@ -20,16 +20,7 @@ class ViewModelExtension_App1_F5(
 
     var prochenClickIncludeProduit by mutableStateOf<ProduitModel?>(null)
 
-    fun includeProduit(clickeProduct: ProduitModel) {
-        excludedProduits.remove(prochenClickIncludeProduit)
-        val targetIndex = produitsVerifie.indexOf(clickeProduct)
-        if (targetIndex != -1) {
-            produitsVerifie.add(targetIndex + 1, prochenClickIncludeProduit!!)
-        } else {
-            produitsVerifie.add(prochenClickIncludeProduit!!)
-        }
-        prochenClickIncludeProduit = null
-    }
+
 
     fun excludeProduit(
         product: ProduitModel,

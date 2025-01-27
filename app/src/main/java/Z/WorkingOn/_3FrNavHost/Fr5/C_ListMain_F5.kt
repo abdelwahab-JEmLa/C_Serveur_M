@@ -2,8 +2,8 @@ package Z.WorkingOn._3FrNavHost.Fr5
 
 import Z.WorkingOn._3FrNavHost.Fr5.Modules.SearchDialog_F1
 import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.ViewModelExtension_App1_F5
+import Z.WorkingOn._3FrNavHost.Fr5.ViewModel.Extension.Z_OnClick.MainItem.Extend.Action.includeProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import android.util.Log
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
@@ -27,7 +27,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,13 +56,7 @@ fun C_MainList_F5(
         label = "blinking"
     )
 
-    // Add logging for debugging
-    LaunchedEffect(extensionVM.prochenClickIncludeProduit) {
-        Log.d("Animation", "Selected product for inclusion: ${extensionVM.prochenClickIncludeProduit?.id}")
-    }
-
     Column(modifier = Modifier.fillMaxWidth()) {
-        // Section Produits Excluded
         Text(
             "Produits Excluded (${extensionVM.excludedProduits.size})",
             modifier = Modifier.padding(8.dp),
@@ -82,11 +75,9 @@ fun C_MainList_F5(
                 D_MainItem_F5(
                     mainItem = product,
                     onCLickOnMain = {
-                        Log.d("ProductInteraction", "Clicked on excluded product: ${product.id}")
                         extensionVM.prochenClickIncludeProduit =
                             if (extensionVM.prochenClickIncludeProduit != product) product
                             else null
-                        Log.d("ProductInteraction", "Updated prochenClickIncludeProduit: ${extensionVM.prochenClickIncludeProduit?.id}")
                     },
                     modifier = Modifier
                         .animateItem(
@@ -138,12 +129,9 @@ fun C_MainList_F5(
                 D_MainItem_F5(
                     mainItem = product,
                     onCLickOnMain = {
-                        Log.d("ProductInteraction", "Clicked on verified product: ${product.id}")
                         if (extensionVM.prochenClickIncludeProduit != null) {
-                            Log.d("ProductMovement", "Including product at position of: ${product.id}")
                             extensionVM.includeProduit(product)
                         } else {
-                            Log.d("ProductMovement", "Excluding product: ${product.id}")
                             extensionVM.excludeProduit(product)
                         }
                     },

@@ -2,6 +2,7 @@ package com.example.Main
 
 import Z.WorkingOn._1ItNavHost.F1_GerantDefinirePosition.A_GerantDefinirePosition_F1
 import Z.WorkingOn._2NavHost.Fragment_2.A_TravaillieurListProduitAchercheChezLeGrossist_F2
+import Z.WorkingOn._3FrNavHost.Fr5.A__F5
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,22 +51,26 @@ fun ParentAppNavHost(
             startDestination = Screens.MainScreen_F1.route,
             modifier = Modifier.fillMaxSize()
         ) {
-          //  composable(Screens.MainScreen_F4.route) { A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp) }
+            //  composable(Screens.MainScreen_F4.route) { A_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp) }
             composable(Screens.MainScreen_F1.route) { A_GerantDefinirePosition_F1(viewModelInitApp = viewModelInitApp) }
-            composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp = viewModelInitApp) }
-          /*  composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
-            composable(Screens.Fragment1Screen.route) { A_ClientsLocationGps(viewModel = viewModelInitApp) }
-       */}
+            composable(Screens.MainScreen_F2.route) { A_TravaillieurListProduitAchercheChezLeGrossist_F2(viewModelInitApp) }
+            //  composable(Screens.MainScreen_F3.route) { A_AfficheurDesProduitsPourLeColecteur_F3(viewModelInitApp = viewModelInitApp) }
+            composable(Screens.MainScreen_F5.route) { A__F5(viewModelInitApp = viewModelInitApp) }
+
+            // composable(Screens.Fragment1Screen.route) { A_ClientsLocationGps(viewModel = viewModelInitApp) }
+        }
     }
 }
 
 object NavigationItems {
     val items = listOf(
-        Screens.MainScreen_F4,
+        //   Screens.MainScreen_F4,
         Screens.MainScreen_F1,
         Screens.MainScreen_F2,
         Screens.MainScreen_F3,
-        Screens.Fragment1Screen
+        //    Screens.MainScreen_F5,
+
+        //    Screens.Fragment1Screen
     )
 }
 
@@ -80,6 +85,7 @@ object Screens {
     val MainScreen_F1 = MainScreenDataObject_F1
     val MainScreen_F2 = MainScreenDataObject_F2
     val MainScreen_F3 = MainScreenDataObject_F3
+    val MainScreen_F5 = MainScreenDataObject_F5
     val Fragment1Screen = App2Fragment1
 }
 
@@ -116,6 +122,13 @@ data object MainScreenDataObject_F3 : Screen(
     route = "main_screen_f3",
     icon = Icons.Default.Person,
     title = "Phone Client Client",
+    color = Color(0xFFFF5722)
+)
+
+data object MainScreenDataObject_F5 : Screen(
+    route = "A__F5",
+    icon = Icons.Default.Person,
+    title = "A__F5",
     color = Color(0xFFFF5722)
 )
 

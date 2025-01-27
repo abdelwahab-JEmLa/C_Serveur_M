@@ -17,9 +17,9 @@ private const val TAG = "A_GerantDefinirePosition_F1"
 
 @Composable
 internal fun A_TravaillieurListProduitAchercheChezLeGrossist_F2(
-    modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
-    ) {
+    modifier: Modifier = Modifier,
+) {
     // Log state changes using LaunchedEffect
     LaunchedEffect(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress) {
         logLoadingState(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress)

@@ -20,15 +20,6 @@ internal fun A__F5(
 
     val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 
-    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase.filter { product ->
-        product.bonCommendDeCetteCota
-            ?.grossistInformations?.id ==
-                viewModelInitApp
-                    ._paramatersAppsViewModelModel
-                    .telephoneClientParamaters
-                    .selectedGrossistForServeur
-    }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize()
@@ -37,7 +28,6 @@ internal fun A__F5(
                 if (databaseSize > 0) {
                     C_MainList_F5(
                         extensionVM=extensionVM,
-                        visibleProducts = visibleProducts,
                         viewModel = viewModelInitApp,
                         paddingValues = paddingValues
                     )

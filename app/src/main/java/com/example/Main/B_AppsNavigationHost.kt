@@ -30,6 +30,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.Main.C_EcranDeDepart.Startup.A_PremierScreenApp
 import com.example.Main.Utils.NavigationBarWithFab
+import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.A_id4_DeplaceProduitsVerGrossist
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.A_id1_GerantDefinirePosition
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.A_Id2_TravaillieurListProduitAchercheChezLeGrossist
 import com.example.Packages.Views._1_GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.A_id3_AfficheurDesProduitsPourLeColecteur
@@ -50,7 +51,6 @@ fun AppNavigationHost(
             Box(modifier = Modifier.weight(1f)) {
                 Box(modifier = modifier.fillMaxSize()) {
                     if (viewModelInitApp.isLoading) {
-                        // Loading indicator centered in the box
                         CircularProgressIndicator(
                             modifier = Modifier
                                 .size(48.dp)
@@ -65,6 +65,9 @@ fun AppNavigationHost(
                         ) {
                             composable(Screens.Startup.route) {
                                 A_PremierScreenApp(viewModelInitApp = viewModelInitApp)
+                            }
+                            composable(Screens.NavHost_1.route) {
+                                A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHost_2.route) {
                                 A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)

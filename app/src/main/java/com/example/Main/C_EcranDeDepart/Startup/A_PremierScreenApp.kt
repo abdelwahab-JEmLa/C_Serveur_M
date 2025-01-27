@@ -30,8 +30,8 @@ internal fun A_PremierScreenApp(
                     imageGlidReloadTigger = 0,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp),
-                    size = 100.dp,
+                        .height(500.dp),
+                    size = 500.dp,
                 )
             }
             if (viewModelInitApp

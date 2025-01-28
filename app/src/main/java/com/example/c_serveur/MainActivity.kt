@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import com.example.Main.MainScreen
 import com.example.c_serveur.Modules.PermissionHandler
+import com.example.c_serveur.Res.XmlsFilesHandler
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.google.firebase.FirebaseApp
 
@@ -27,7 +28,7 @@ class MyApplication : Application() {
     }
 }
 class MainActivity : ComponentActivity() {
-    // Create PermissionHandler at the activity level
+
     private lateinit var permissionHandler: PermissionHandler
     private var permissionsGranted = mutableStateOf(false)
 
@@ -59,7 +60,8 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainScreen(
                         modifier = Modifier.padding(innerPadding),
-                        permissionsGranted = permissionsGranted.value
+                        permissionsGranted = permissionsGranted.value ,
+                        xmlResources=XmlsFilesHandler.xmlResources
                     )
                 }
             }

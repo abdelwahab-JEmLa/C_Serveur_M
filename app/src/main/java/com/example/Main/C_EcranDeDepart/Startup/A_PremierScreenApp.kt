@@ -13,12 +13,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Main.C_EcranDeDepart.Startup.B.Dialogs.A_OptionsControlsButtons
 
-private const val TAG = "A_id1_GerantDefinirePosition"
-
 @Composable
 internal fun A_PremierScreenApp(
-    viewModelInitApp: ViewModelInitApp = viewModel(),
     modifier: Modifier = Modifier,
+    viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
 
     Box(modifier = modifier.fillMaxSize()) {

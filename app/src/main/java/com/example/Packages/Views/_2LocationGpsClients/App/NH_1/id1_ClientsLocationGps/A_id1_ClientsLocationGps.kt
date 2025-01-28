@@ -32,7 +32,6 @@ import com.example.Packages.Views._2LocationGpsClients.App.NH_1.id1_ClientsLocat
 import com.example.Packages.Views._2LocationGpsClients.App.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.DEFAULT_LONGITUDE
 import com.example.Packages.Views._2LocationGpsClients.App.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.getCurrentLocation
 import com.example.Packages.Views._2LocationGpsClients.App.NH_1.id1_ClientsLocationGps.ViewModel.Extension.ViewModelExtension_App2_F1
-import com.example.c_serveur.R
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -44,8 +43,9 @@ import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
 fun A_id1_ClientsLocationGps(
     modifier: Modifier = Modifier,
     viewModel: ViewModelInitApp = viewModel(),
-    clientEnCourDeVent: Long=0, onUpdateLongAppSetting: () -> Unit = {},
-
+    clientEnCourDeVent: Long = 0,
+    onUpdateLongAppSetting: () -> Unit = {},
+    xmlResources: List<Pair<String, Int>>?=null,
     ) {
     val extensionVM = ViewModelExtension_App2_F1(viewModel.viewModelScope,viewModel.produitsMainDataBase,viewModel.clientDataBaseSnapList,viewModel)
 
@@ -105,9 +105,9 @@ fun A_id1_ClientsLocationGps(
 
         clientDataBaseSnapList.forEach { client ->
             val actuelleEtat =
-                if (client.id==clientEnCourDeVent)
-                    ClientsDataBase.GpsLocation.DernierEtatAAffiche.ON_MODE_COMMEND_ACTUELLEMENT else
-                client.gpsLocation.actuelleEtat
+                if (client.id == clientEnCourDeVent)
+                    ClientsDataBase.GpsLocation.DernierEtatAAffiche.ON_MODE_COMMEND_ACTUELLEMENT
+                else client.gpsLocation.actuelleEtat
 
             val marker = Marker(mapView).apply {
                 id = client.id.toString()
@@ -119,14 +119,27 @@ fun A_id1_ClientsLocationGps(
                 snippet = if (client.statueDeBase.cUnClientTemporaire)
                     "Client temporaire" else "Client permanent"
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                infoWindow = MarkerInfoWindow(R.layout.marker_info_window, mapView)
 
-                val container = infoWindow.view.findViewById<LinearLayout>(R.id.info_window_container)
-                    ?: return@forEach // Skip if container not found
-                val backgroundColor = actuelleEtat?.let { statue ->
-                    ContextCompat.getColor(context, statue.color)
-                } ?: ContextCompat.getColor(context, android.R.color.white)
-                container.setBackgroundColor(backgroundColor)
+                // Using companion object to access xmlResources
+                val markerInfoWindowLayout = xmlResources
+                    ?.find { it.first == "marker_info_window" }?.second
+                    ?: throw IllegalStateException("marker_info_window layout not found")
+
+                infoWindow = MarkerInfoWindow(markerInfoWindowLayout, mapView)
+
+                // Using companion object to access xmlResources
+                val containerResourceId = xmlResources
+                    ?.find { it.first == "info_window_container" }?.second
+                    ?: throw IllegalStateException("info_window_container ID not found")
+
+                // Set background color for the container
+                val container = infoWindow.view.findViewById<LinearLayout>(containerResourceId)
+                container?.let {
+                    val backgroundColor = actuelleEtat?.let { statue ->
+                        ContextCompat.getColor(context, statue.color)
+                    } ?: ContextCompat.getColor(context, android.R.color.white)
+                    it.setBackgroundColor(backgroundColor)
+                }
 
                 setOnMarkerClickListener { clickedMarker, _ ->
                     selectedMarker = clickedMarker
@@ -138,7 +151,7 @@ fun A_id1_ClientsLocationGps(
             mapView.overlays.add(marker)
             marker.showInfoWindow()
         }
-        mapView.invalidate() // Refresh the map to show changes
+        mapView.invalidate()
     }
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(

@@ -16,13 +16,14 @@ fun MainScreen(
     modifier: Modifier,
     permissionsGranted: Boolean,
     viewModelInitApp: ViewModelInitApp = viewModel(),
+    xmlResources: List<Pair<String, Int>>,
 ) {
     if (permissionsGranted) {
         Surface(
             modifier = modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            AppNavigationHost(viewModelInitApp,modifier )
+            AppNavigationHost(viewModelInitApp,modifier, xmlResources)
         }
     }
 }

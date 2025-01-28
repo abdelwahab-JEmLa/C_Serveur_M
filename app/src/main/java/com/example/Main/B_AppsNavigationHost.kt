@@ -42,6 +42,7 @@ import com.example.Packages.Views._2LocationGpsClients.App.NH_1.id1_ClientsLocat
 fun AppNavigationHost(
     viewModelInitApp: ViewModelInitApp,
     modifier: Modifier,
+    xmlResources: List<Pair<String, Int>>,
 ) {
     val navController = rememberNavController()
     val items = NavigationItems.items
@@ -83,7 +84,7 @@ fun AppNavigationHost(
                                 A_id3_AfficheurDesProduitsPourLeColecteur(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHostA2_1.route) {
-                                A_id1_ClientsLocationGps(viewModel = viewModelInitApp)
+                                A_id1_ClientsLocationGps(viewModel = viewModelInitApp,xmlResources= xmlResources)
                             }
                         }
                     }

@@ -1,6 +1,7 @@
 package com.example.Main
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -114,7 +115,7 @@ fun AppNavigationHost(
 }
 
 object NavigationItems {
-    val items @Composable get() = buildList {
+    val items @SuppressLint("SuspiciousIndentation") @Composable get() = buildList {
         val viewModelInitApp: ViewModelInitApp = viewModel()
         val cLeTelephoneDuGerant = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant == true
 

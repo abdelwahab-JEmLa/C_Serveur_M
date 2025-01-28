@@ -38,7 +38,7 @@ fun A_OptionsControlsButtons(
     paddingValues: PaddingValues,
 ) {
     var showMenu by remember { mutableStateOf(false) }
-    var showLabels by remember { mutableStateOf(false) }
+    var showLabels by remember { mutableStateOf(true) }
 
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }

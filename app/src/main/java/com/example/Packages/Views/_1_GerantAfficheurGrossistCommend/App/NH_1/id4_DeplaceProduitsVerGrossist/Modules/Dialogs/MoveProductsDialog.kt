@@ -19,7 +19,8 @@ import androidx.compose.ui.window.Dialog
 
 @Composable
 fun MoveProductsDialog(
-    selectedProducts: List<_ModelAppsFather.ProduitModel>,    currentGrossist: _ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations?,
+    selectedProducts: List<_ModelAppsFather.ProduitModel>,
+    currentGrossist: _ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations?,
     viewModelProduits: ViewModelInitApp,
     onDismiss: () -> Unit,
     onProductsMoved: () -> Unit

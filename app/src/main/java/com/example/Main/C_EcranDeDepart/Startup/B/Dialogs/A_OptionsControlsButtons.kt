@@ -68,7 +68,12 @@ fun A_OptionsControlsButtons(
                         showLabels = showLabels,
                         viewModelInitApp = viewModelInitApp
                     )
+                    B_2_ClearAchatsEtCommendsEtSauvgardHistoriques(
+                        showLabels = showLabels,
+                        viewModelInitApp = viewModelInitApp
+                    )
                 }
+
                 LabelsButton(
                     showLabels = showLabels,
                     onShowLabelsChange = { showLabels = it }

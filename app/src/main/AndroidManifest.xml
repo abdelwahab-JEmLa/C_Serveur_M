@@ -45,7 +45,6 @@
 
     <!-- For Android 13 and above -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.location.network" />
 

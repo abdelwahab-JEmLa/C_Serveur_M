@@ -12,7 +12,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import com.example.Packages.Views._2LocationGpsClients.App.NH_1.id1_ClientsLocationGps.B.Dialogs.ControlButton
 
 @Composable
@@ -21,7 +20,6 @@ fun B_2_ClearAchatsEtCommendsEtSauvgardHistoriques(
     showLabels: Boolean
 ) {
     var clearDataClickCount by remember { mutableIntStateOf(0) }
-    val context = LocalContext.current
 
     ControlButton(
         onClick = {

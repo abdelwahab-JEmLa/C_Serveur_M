@@ -1,5 +1,7 @@
 package com.example.c_serveur
 
+import Z_MasterOfApps.Z.Android.Base.App.Main.MainScreen
+import Z_MasterOfApps.Z.Android.Base.App.Main.Utils.PermissionHandler
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.FirebaseOfflineHandler
 import android.app.Application
 import android.os.Build
@@ -13,9 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import com.example.Main.MainScreen
-import com.example.c_serveur.Modules.PermissionHandler
-import com.example.c_serveur.Res.XmlsFilesHandler
 import com.example.c_serveur.ui.theme.B_ServeurTheme
 import com.google.firebase.FirebaseApp
 
@@ -29,19 +28,14 @@ class MyApplication : Application() {
 }
 class MainActivity : ComponentActivity() {
 
-    private lateinit var permissionHandler: PermissionHandler
-    private var permissionsGranted = mutableStateOf(false)
-
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val permissionsGranted = mutableStateOf(false)
         enableEdgeToEdge()
 
-        // Initialize PermissionHandler before setContent
-        permissionHandler = PermissionHandler(this)
-
         // Check permissions immediately
-        permissionHandler.checkAndRequestPermissions(object : PermissionHandler.PermissionCallback {
+        PermissionHandler(this).checkAndRequestPermissions(object : PermissionHandler.PermissionCallback {
             override fun onPermissionsGranted() {
                 permissionsGranted.value = true
             }
@@ -61,10 +55,20 @@ class MainActivity : ComponentActivity() {
                     MainScreen(
                         modifier = Modifier.padding(innerPadding),
                         permissionsGranted = permissionsGranted.value ,
-                        xmlResources=XmlsFilesHandler.xmlResources
+                        xmlResources= XmlsFilesHandler.xmlResources
                     )
                 }
             }
         }
+    }
+}
+class XmlsFilesHandler {
+
+    companion object {
+        // Moved to companion object to allow static access
+        val xmlResources = listOf(
+            Pair("marker_info_window", R.layout.marker_info_window),
+            Pair("info_window_container", R.id.info_window_container)
+        )
     }
 }

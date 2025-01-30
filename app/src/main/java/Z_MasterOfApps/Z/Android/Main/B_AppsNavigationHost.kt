@@ -9,7 +9,6 @@ import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.A_StartupScreen
 import Z_MasterOfApps.Z.Android.Main.Utils.NavigationBarWithFab
 import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.A_id3_AfficheurDesProduitsPourLeColecteur
 import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_5.ID5_VerificationProduitAcGrossist.A_ID5_VerificationProduitAcGrossist
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +26,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +45,15 @@ fun AppNavigationHost(
     modifier: Modifier,
 ) {
     val navController = rememberNavController()
-    val items = NavigationItems.items
+
+    // Get manager phone status
+    val isManagerPhone = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant ?: false
+
+    // Get navigation items using the proper function
+    val items = remember(isManagerPhone) {
+        NavigationItems.getItems(isManagerPhone)
+    }
+
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -66,7 +74,18 @@ fun AppNavigationHost(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             composable(Screens.Startup_0.route) {
-                                A_StartupScreen(viewModelInitApp = viewModelInitApp)
+                                A_StartupScreen(
+                                    viewModelInitApp = viewModelInitApp,
+                                    onNavigate = { route ->
+                                        navController.navigate(route) {
+                                            popUpTo(navController.graph.startDestinationId) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                )
                             }
                             composable(Screens.NavHost_1.route) {
                                 A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
@@ -74,7 +93,7 @@ fun AppNavigationHost(
                             composable(Screens.NavHost_2.route) {
                                 A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
                             }
-                             composable(Screens.NavHost_3.route) {
+                            composable(Screens.NavHost_3.route) {
                                 A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModelInitApp)
                             }
                             composable(Screens.NavHost_4.route) {
@@ -116,18 +135,15 @@ fun AppNavigationHost(
 }
 
 object NavigationItems {
-    val items @SuppressLint("SuspiciousIndentation") @Composable get() = buildList {
-        val viewModelInitApp: ViewModelInitApp = viewModel()
-        val cLeTelephoneDuGerant = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant == true
-
-            add(Screens.Startup_0)
-        if (cLeTelephoneDuGerant) { add(Screens.NavHost_1) }
-            add(Screens.NavHost_2)
-            add(Screens.NavHost_3)
-            add(Screens.NavHost_5)
-            add(Screens.NavHost_4)
-        if (cLeTelephoneDuGerant) { add(Screens.NavHostA2_1) }
-
+    // Remove @Composable annotation and make it a function that takes the required parameter
+    fun getItems(isManagerPhone: Boolean) = buildList {
+        add(Screens.Startup_0)
+        if (isManagerPhone) { add(Screens.NavHost_1) }
+        add(Screens.NavHost_2)
+        add(Screens.NavHost_3)
+        add(Screens.NavHost_5)
+        add(Screens.NavHost_4)
+        if (isManagerPhone) { add(Screens.NavHostA2_1) }
     }
 }
 

@@ -1,8 +1,8 @@
 package com.example.c_serveur
 
-import Z_MasterOfApps.Z.Android.Base.App.Main.MainScreen
-import Z_MasterOfApps.Z.Android.Base.App.Main.Utils.PermissionHandler
-import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.A_LoadFireBase.FirebaseOfflineHandler
+import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.FirebaseOfflineHandler
+import Z_MasterOfApps.Z.Android.Main.MainScreen
+import Z_MasterOfApps.Z.Android.Main.Utils.PermissionHandler
 import android.app.Application
 import android.os.Build
 import android.os.Bundle

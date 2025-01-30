@@ -16,7 +16,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 private const val TAG = "A_id1_GerantDefinirePosition"
 
-
 @Composable
 internal fun A_id4_DeplaceProduitsVerGrossist(
     modifier: Modifier = Modifier,

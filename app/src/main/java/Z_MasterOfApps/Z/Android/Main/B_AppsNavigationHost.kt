@@ -126,6 +126,7 @@ object NavigationItems {
             add(Screens.NavHost_5)
             add(Screens.NavHost_4)
         if (cLeTelephoneDuGerant) { add(Screens.NavHostA2_1) }
+
     }
 }
 

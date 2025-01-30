@@ -69,6 +69,8 @@ internal fun A_StartupScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    //-->
+                    //TODO(1): ajout au top start un floating text contien id 
                     Icon(
                         imageVector = screen.icon,
                         contentDescription = screen.titleArab,

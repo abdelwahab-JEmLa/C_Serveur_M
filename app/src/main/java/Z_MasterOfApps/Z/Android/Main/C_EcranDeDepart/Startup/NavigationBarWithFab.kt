@@ -1,4 +1,4 @@
-package Z_MasterOfApps.Z.Android.Main.Utils
+package Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Main.Screen

@@ -1,8 +1,8 @@
 package Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.MainItem_F3
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -103,10 +103,7 @@ fun MainList_F3(
                     mainItem = product,
                     viewModelProduits = viewModelProduits,
                     onCLickOnMain = {
-                        product.bonCommendDeCetteCota
-                            ?.mutableBasesStates
-                            ?.cPositionCheyCeGrossit = false
-                        updateProduit(product, viewModelProduits)
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -141,10 +138,7 @@ fun MainList_F3(
                     mainItem = product,
                     viewModelProduits = viewModelProduits,
                     onCLickOnMain = {
-                        product.bonCommendDeCetteCota
-                            ?.mutableBasesStates
-                            ?.cPositionCheyCeGrossit = false
-                        updateProduit(product, viewModelProduits)
+
                     },
                     modifier = Modifier
                         .fillMaxWidth()

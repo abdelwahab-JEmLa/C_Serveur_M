@@ -62,7 +62,7 @@ fun NavigationBarWithFab(
                     icon = {
                         Icon(
                             imageVector = screen.icon,
-                            contentDescription = screen.title,
+                            contentDescription = screen.titleArab,
                             tint = if (currentRoute == screen.route) screen.color
                             else LocalContentColor.current.copy(alpha = ContentAlpha.medium)
                         )

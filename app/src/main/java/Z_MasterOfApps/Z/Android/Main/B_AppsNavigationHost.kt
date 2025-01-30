@@ -17,12 +17,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Moving
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PhonelinkRing
-import androidx.compose.material.icons.filled.Start
-import androidx.compose.material.icons.filled.Tab
+import androidx.compose.material.icons.filled.FactCheck
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocalShipping
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PinDrop
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -61,10 +62,10 @@ fun AppNavigationHost(
                     } else {
                         NavHost(
                             navController = navController,
-                            startDestination = Screens.Startup.route,
+                            startDestination = Screens.Startup_0.route,
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            composable(Screens.Startup.route) {
+                            composable(Screens.Startup_0.route) {
                                 A_StartupScreen(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHost_1.route) {
@@ -119,7 +120,7 @@ object NavigationItems {
         val viewModelInitApp: ViewModelInitApp = viewModel()
         val cLeTelephoneDuGerant = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant == true
 
-            add(Screens.Startup)
+            add(Screens.Startup_0)
         if (cLeTelephoneDuGerant) { add(Screens.NavHost_1) }
             add(Screens.NavHost_2)
             add(Screens.NavHost_3)
@@ -150,66 +151,70 @@ private fun Preview_Fragment() {
 }
 
 object Screens {
-    val Startup = StartupIcon_Start
+    val Startup_0 = StartupIcon_Start
     val NavHost_1 = MainScreenDataObject_F4
     val NavHost_2 = MainScreenDataObject_F1
     val NavHost_3 = MainScreenDataObject_F2
-    val NavHost_5 = MainScreenDataObject_F3
     val NavHost_4 = ID4Icon_Done
+    val NavHost_5 = MainScreenDataObject_F3
     val NavHostA2_1 = ID1Icon_Person
 }
 
-
 data object StartupIcon_Start : Screen(
-    icon = Icons.Default.Start,
+    icon = Icons.Default.Home, // Changed from Start to Home for main entry point
     color = Color(0xFFFF5722),
-    route = "StartupIcon_Start", title = "StartupIcon_Start"
+    route = "StartupIcon_Start",
+    titleArab = "المدخل الرئيسي"
 )
 
 data object MainScreenDataObject_F1 : Screen(
-    icon = Icons.Default.Tab,
+    icon = Icons.Default.LocationOn, // Changed from Tab to LocationOn for location marking
     route = "fragment_main_screen_1",
-    title = "Serveur Grossist",
+    titleArab = "محدد اماكن المنتجات عند الجمال",
     color = Color(0xFFFF5722)
 )
 
 data object MainScreenDataObject_F2 : Screen(
-    icon = Icons.Default.PhonelinkRing,
+    icon = Icons.Default.Visibility, // Changed from PhonelinkRing to Visibility for product viewing
     route = "main_screen_f2",
-    title = "Phone Client Grossist",
+    titleArab = "مظهر اماكن المنتجات عند الجمال",
     color = Color(0xFFFFEB3B)
 )
 
 data object MainScreenDataObject_F3 : Screen(
     route = "main_screen_f3",
-    icon = Icons.Default.Person,
-    title = "Phone Client Client",
+    icon = Icons.Default.Groups, // Changed from Person to Groups for customer distribution
+    titleArab = "مظهر الاماكن لمقسم المنتجات على الزبائن",
     color = Color(0xFFFF5722)
 )
 
 data object MainScreenDataObject_F4 : Screen(
     route = "main_screen_f4",
-    icon = Icons.Default.Moving,
-    title = "main_screen_f4",
+    icon = Icons.Default.LocalShipping, // Changed from Moving to LocalShipping for product distribution
+    titleArab = "مقسم المنتجات الى الجمالين",
     color = Color(0xFF3F51B5)
 )
 
 data object ID4Icon_Done : Screen(
-    icon = Icons.Default.Done,
-    route = "A_ID5_VerificationProduitAcGrossist", title = "A_ID5_VerificationProduitAcGrossist",
+    icon = Icons.Default.FactCheck, // Changed from Done to FactCheck for invoice verification
+    route = "A_ID5_VerificationProduitAcGrossist",
+    titleArab = "التاكد من فواتير مع المنتجات عند الجمال",
     color = Color(0xFFFF5892)
 )
 
 data object ID1Icon_Person : Screen(
-    icon = Icons.Default.Person,
-    route = "Id_App2Fragment1", title = "A_id1_ClientsLocationGps",
-    color = Color(0xFF03A9F4)
+    icon = Icons.Default.PinDrop, // Changed from Person to PinDrop for GPS location
+    route = "Id_App2Fragment1",
+    titleArab = "محدد اماكن الزبائن GPS",
+    color = Color(0xFFFF5892)
+
 )
 abstract class Screen(
     val route: String,
     val icon: ImageVector,
-    val title: String,
+    val titleArab: String,
     val color: Color
 )
+
 
 

@@ -67,7 +67,11 @@ internal fun A_StartupScreen(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(navigationItems) { screen ->
-                        NavigationCard(
+                        NavigationCard(           //-->
+                        //TODO(1): fait qu l couleur de  pas tout mais l  item  qui chnage on gris si
+                        //par exemple         if (isManagerPhone) { add(Screens.NavHost_1) }
+                            //-->
+                            //TODO(1): dons NavigationItems
                             screen = screen,
                             isManagerPhone = isManagerPhone,
                             onClick = { onNavigate(screen.route) }

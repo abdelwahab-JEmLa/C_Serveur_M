@@ -1,7 +1,5 @@
-package Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur
+package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur
 
-import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -39,7 +37,7 @@ import kotlin.math.roundToInt
 @Composable
 fun MainScreenFilterFAB_F3(
     modifier: Modifier = Modifier,
-    viewModelProduits: ViewModelInitApp,
+    viewModelInitApp: ViewModelInitApp,
 ) {
     var offset by remember { mutableStateOf(IntOffset(0, 0)) }
     var showButtons by remember { mutableStateOf(false) }
@@ -76,8 +74,11 @@ fun MainScreenFilterFAB_F3(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
-                    viewModelProduits._modelAppsFather.groupedProductsParClients
-                        .forEachIndexed { index, (client, products) ->
+                    val clientDataBaseSnapList = viewModelInitApp._modelAppsFather
+                        .clientDataBaseSnapList
+
+                    clientDataBaseSnapList
+                        .forEachIndexed { index, client ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -87,32 +88,8 @@ fun MainScreenFilterFAB_F3(
                                 if (index > 0) {
                                     FloatingActionButton(
                                         onClick = {
-                                            viewModelProduits.viewModelScope.launch {
-                                                val prevClient = viewModelProduits._modelAppsFather
-                                                    .groupedProductsParClients[index - 1].first
-
-                                                val updatedProducts =
-                                                    viewModelProduits._modelAppsFather
-                                                        .produitsMainDataBase.map { product ->
-                                                            product.apply {
-                                                                bonsVentDeCetteCota.forEach { bon ->
-                                                                    bon.clientInformations?.let { info ->
-                                                                        if (info.id == client.id) {
-                                                                            val temp =
-                                                                                info.positionDonClientsList
-                                                                            info.positionDonClientsList =
-                                                                                prevClient.positionDonClientsList
-                                                                            prevClient.positionDonClientsList =
-                                                                                temp
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                update_AllProduits(
-                                                    updatedProducts,
-                                                    viewModelProduits
-                                                )
+                                            viewModelInitApp.viewModelScope.launch {
+                                                viewModelInitApp.extensionVMApp1FragmentId_3.upButton(index)
                                             }
                                         },
                                         modifier = Modifier.size(36.dp)
@@ -127,7 +104,7 @@ fun MainScreenFilterFAB_F3(
                                     modifier = Modifier
                                         .weight(1f)
                                         .background(
-                                            if (viewModelProduits._paramatersAppsViewModelModel
+                                            if (viewModelInitApp._paramatersAppsViewModelModel
                                                     .phoneClientSelectedAcheteur == client.id
                                             ) MaterialTheme.colorScheme.primaryContainer
                                             else Color.Transparent
@@ -138,7 +115,7 @@ fun MainScreenFilterFAB_F3(
                                 // Selection FAB
                                 val color = try {
                                     Color(android.graphics.Color.parseColor(
-                                        client.couleur.let {
+                                        client.statueDeBase.couleur.let {
                                             if (it.startsWith("#")) it else "#$it"
                                         }
                                     ))
@@ -148,14 +125,14 @@ fun MainScreenFilterFAB_F3(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelProduits._paramatersAppsViewModelModel
+                                        viewModelInitApp._paramatersAppsViewModelModel
                                             .phoneClientSelectedAcheteur = client.id
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = color
                                 ) {
                                     Text(
-                                        products.size.toString(),
+                                        client.produitsAcheterDeIt.cetteCota.size.toString(),
                                         color = if (color.red * 0.299 + color.green * 0.587 +
                                             color.blue * 0.114 > 0.5f
                                         ) Color.Black else Color.White

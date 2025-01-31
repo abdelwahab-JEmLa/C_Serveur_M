@@ -4,10 +4,10 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.A_id4_DeplaceProduitsVerGrossist
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.A_id1_GerantDefinirePosition
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.A_Id2_TravaillieurListProduitAchercheChezLeGrossist
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.A_id3_AfficheurDesProduitsPourLeColecteur
 import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.A_id1_ClientsLocationGps
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.A_StartupScreen
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.NavigationBarWithFab
-import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.A_id3_AfficheurDesProduitsPourLeColecteur
 import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_5.ID5_VerificationProduitAcGrossist.A_ID5_VerificationProduitAcGrossist
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
@@ -99,7 +99,7 @@ fun AppNavigationHost(
                             composable(Screens.NavHost_4.route) {
                                 A_ID5_VerificationProduitAcGrossist(viewModelInitApp)
                             }
-                            composable(Screens.NavHost_5.route) {
+                            composable("مظهر الاماكن لمقسم المنتجات على الزبائن") {
                                 A_id3_AfficheurDesProduitsPourLeColecteur(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHostA2_1.route) {
@@ -205,7 +205,7 @@ data object MainScreenDataObject_F2 : Screen(
 data object MainScreenDataObject_F3 : Screen(
     id =3,
 
-    route = "main_screen_f3",
+    route ="مظهر الاماكن لمقسم المنتجات على الزبائن",
     icon = Icons.Default.Groups, // Changed from Person to Groups for customer distribution
     titleArab = "مظهر الاماكن لمقسم المنتجات على الزبائن",
     color = Color(0xFFFF5722)

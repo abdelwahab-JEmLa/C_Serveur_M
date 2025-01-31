@@ -1,7 +1,8 @@
 package Z_MasterOfApps.Kotlin.Model
 
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.database.IgnoreExtraProperties
@@ -14,16 +15,29 @@ data class ClientsDataBase(
     var id: Long = 1,
     var nom: String = "Non Defini",
     var statueDeBase: StatueDeBase = StatueDeBase(),
-    var gpsLocation: GpsLocation = GpsLocation()
+    var gpsLocation: GpsLocation = GpsLocation(),
+    var produitsAcheterDeIt: ProduitsAcheterDeIt = ProduitsAcheterDeIt()
 ) {
     @IgnoreExtraProperties
     data class StatueDeBase(
         var couleur: String = "#FFFFFF",
+        var positionDonClientsList: Int = 0,
         var caRefDonAncienDataBase: String = "G_Clients",
         var cUnClientTemporaire: Boolean = true,
-        var auFilterFAB: Boolean = false,
-        var positionDonClientsList: Int = 0
+        var auFilterFAB: Boolean = false
     )
+
+    @IgnoreExtraProperties
+    data class ProduitsAcheterDeIt(
+        var cetteCota: List<ProduitModel> = emptyList(),
+        var historique: List<Historique> = emptyList()
+    ) {
+        @IgnoreExtraProperties
+        data class Historique(
+            var idDate: String = "2025-01-01",
+            var produits: List<ProduitModel> = emptyList()
+        )
+    }
 
     @IgnoreExtraProperties
     data class GpsLocation(
@@ -44,33 +58,49 @@ data class ClientsDataBase(
         }
     }
 
+    // ClientsDataBase.kt - Updated companion object
     companion object {
         val refClientsDataBase = Firebase.database
             .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
             .child("ClientsDataBase")
 
-        fun updateClientsDataBase(
-            client: ClientsDataBase,
+        fun ClientsDataBase.updateClientsDataBase(
             viewModel: ViewModelInitApp
         ) {
             viewModel.viewModelScope.launch {
                 try {
-                    // Update local state
-                    val clientsList: SnapshotStateList<ClientsDataBase> =
-                        viewModel._modelAppsFather.clientDataBaseSnapList
+                    // Create a snapshot of the current state
+                    val currentState = this@updateClientsDataBase.copy()
 
-                    val index = clientsList.indexOfFirst { it.id == client.id }
+                    // Update local state
+                    val clientsList = viewModel._modelAppsFather.clientDataBaseSnapList
+                    val index = clientsList.indexOfFirst { it.id == currentState.id }
+
                     if (index != -1) {
-                        clientsList[index] = client
+                        clientsList[index] = currentState
+                    } else {
+                        // If client doesn't exist, add them
+                        clientsList.add(currentState)
                     }
 
-                    // Update Firebase
-                    refClientsDataBase.child(client.id.toString())
-                        .setValue(client)
-                        .await()
+                    // Update Firebase with error handling
+                    try {
+                        refClientsDataBase.child(currentState.id.toString())
+                            .setValue(currentState)
+                            .await()
+                    } catch (e: Exception) {
+                        // Revert local state if Firebase update fails
+                        if (index != -1) {
+                            clientsList[index] = this@updateClientsDataBase
+                        } else {
+                            clientsList.removeAt(clientsList.lastIndex)
+                        }
+                        throw e
+                    }
 
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e("ClientsDataBase", "Failed to update client", e)
+
                 }
             }
         }
@@ -94,4 +124,3 @@ data class ClientsDataBase(
         return result
     }
 }
-

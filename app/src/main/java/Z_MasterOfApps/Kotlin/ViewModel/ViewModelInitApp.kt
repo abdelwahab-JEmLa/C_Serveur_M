@@ -3,6 +3,7 @@ package Z_MasterOfApps.Kotlin.ViewModel
 import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.LoadFromFirebaseProduits
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.ViewModel.ExtensionVMApp1FragmentId_3
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.ViewModel.Startup_Extension
 import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.ViewModel.Extension.ViewModelExtension_App1_F1
 import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.ViewModel.Extension.ViewModelExtension_App1_F2
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 @SuppressLint("SuspiciousIndentation")
 class ViewModelInitApp : ViewModel() {
@@ -48,6 +50,8 @@ class ViewModelInitApp : ViewModel() {
         produitsMainDataBase = produitsMainDataBase,
         viewModelScope = this@ViewModelInitApp.viewModelScope,
     )
+    val extensionVMApp1FragmentId_3 = ExtensionVMApp1FragmentId_3(this@ViewModelInitApp)
+
 
     init {
         viewModelScope.launch {

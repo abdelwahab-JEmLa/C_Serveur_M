@@ -62,7 +62,7 @@ class ViewModelExtension_App2_F1(
                         actuelleEtat = statueVente
                     )
                 )
-                updateClientsDataBase(updatedClient, viewModel)
+                updatedClient.updateClientsDataBase( viewModel)
             }
         }
     }

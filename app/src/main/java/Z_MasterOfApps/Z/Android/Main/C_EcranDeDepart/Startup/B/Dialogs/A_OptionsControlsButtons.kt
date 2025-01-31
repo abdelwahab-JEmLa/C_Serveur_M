@@ -66,6 +66,8 @@ fun A_OptionsControlsButtons(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (showMenu) {
+                    B_3_ImplimentClientsParProduits(viewModelInitApp ,showLabels)
+
                     B_1_SwitchGerantOuAfficheurPhone(
                         showLabels = showLabels,
                         viewModelInitApp = viewModelInitApp
@@ -75,6 +77,7 @@ fun A_OptionsControlsButtons(
                         showLabels = showLabels,
                         viewModelInitApp = viewModelInitApp
                     )
+
                 }
 
                 LabelsButton(

@@ -66,6 +66,7 @@ fun A_OptionsControlsButtons(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (showMenu) {
+
                     B_3_ImplimentClientsParProduits(viewModelInitApp ,showLabels)
 
                     B_1_SwitchGerantOuAfficheurPhone(

@@ -179,7 +179,7 @@ object Screens {
 data object StartupIcon_Start : Screen(
     id =7,
     icon = Icons.Default.Home, // Changed from Start to Home for main entry point
-    color = Color(0xFFFF5722),
+    color = Color(0xFF3A3533),
     route = "StartupIcon_Start",
     titleArab = "المدخل الرئيسي"
 )
@@ -208,7 +208,7 @@ data object MainScreenDataObject_F3 : Screen(
     route ="مظهر الاماكن لمقسم المنتجات على الزبائن",
     icon = Icons.Default.Groups, // Changed from Person to Groups for customer distribution
     titleArab = "مظهر الاماكن لمقسم المنتجات على الزبائن",
-    color = Color(0xFFFF5722)
+    color = Color(0xFF9C27B0)
 )
 
 data object MainScreenDataObject_F4 : Screen(
@@ -235,7 +235,7 @@ data object ID1Icon_Person : Screen(
     icon = Icons.Default.PinDrop, // Changed from Person to PinDrop for GPS location
     route = "Id_App2Fragment1",
     titleArab = "محدد اماكن الزبائن GPS",
-    color = Color(0xFFFF5892)
+    color = Color(0xFFFF9800)
 
 )
 abstract class Screen(

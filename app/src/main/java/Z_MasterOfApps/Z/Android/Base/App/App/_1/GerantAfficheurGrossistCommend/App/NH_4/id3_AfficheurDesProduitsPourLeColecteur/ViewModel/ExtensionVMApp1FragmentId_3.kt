@@ -6,7 +6,9 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 class ExtensionVMApp1FragmentId_3(
     val viewModelInitApp: ViewModelInitApp,
 ) {
-    val clientDataBaseSnapList = viewModelInitApp._modelAppsFather.clientDataBaseSnapList
+    private val clientDataBaseSnapList = viewModelInitApp._modelAppsFather.clientDataBaseSnapList
+    val clientIDAuFilter =viewModelInitApp._paramatersAppsViewModelModel
+    .phoneClientSelectedAcheteur
 
     fun upButton(index: Int) {
         // Ensure index is valid and there's a previous element

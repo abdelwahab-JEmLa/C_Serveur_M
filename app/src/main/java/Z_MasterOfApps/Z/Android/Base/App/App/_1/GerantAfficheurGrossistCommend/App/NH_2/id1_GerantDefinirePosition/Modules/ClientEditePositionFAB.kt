@@ -82,10 +82,10 @@ fun ClientEditePositionDialog(
                                     onClick = {
                                         viewModelProduits.viewModelScope.launch {
                                             val previousClientInfo =
-                                                groupedProducts[index - 1].first
+                                                groupedProducts[index - 1].key
 
-                                            clientInfo.positionDonClientsList--
-                                            previousClientInfo.positionDonClientsList++
+                                            clientInfo.statueDeBase.positionDonClientsList--
+                                            previousClientInfo.statueDeBase.positionDonClientsList++
 
                                             val updatedProducts =
                                                 viewModelProduits._modelAppsFather.produitsMainDataBase.map { product ->
@@ -97,8 +97,8 @@ fun ClientEditePositionDialog(
                                                                         val tempPosition =
                                                                             currentClientInfo.positionDonClientsList
                                                                         currentClientInfo.positionDonClientsList =
-                                                                            previousClientInfo.positionDonClientsList
-                                                                        previousClientInfo.positionDonClientsList =
+                                                                            previousClientInfo.statueDeBase.positionDonClientsList
+                                                                        previousClientInfo.statueDeBase.positionDonClientsList =
                                                                             tempPosition
                                                                     }
                                                                 }
@@ -144,7 +144,7 @@ fun ClientEditePositionDialog(
                                         .phoneClientSelectedAcheteur = clientInfo.id
                                 },
                                 modifier = Modifier.size(48.dp),
-                                containerColor = Color(android.graphics.Color.parseColor(clientInfo.couleur))
+                                containerColor = Color(android.graphics.Color.parseColor(clientInfo.statueDeBase.couleur))
                             ) {
                                 Text(
                                     text = produits.size.toString(),

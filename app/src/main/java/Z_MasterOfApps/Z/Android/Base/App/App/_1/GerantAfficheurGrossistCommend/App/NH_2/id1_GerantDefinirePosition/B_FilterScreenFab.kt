@@ -1,4 +1,4 @@
-package Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition
+package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition
 
 import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits

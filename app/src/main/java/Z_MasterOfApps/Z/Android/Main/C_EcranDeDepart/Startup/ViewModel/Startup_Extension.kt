@@ -1,7 +1,6 @@
 // ViewModelExtension_App1_F5.kt
 package Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.ViewModel
 
-import Z_MasterOfApps.Kotlin.Model.ClientsDataBase.Companion.updateClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.google.firebase.Firebase
@@ -36,23 +35,6 @@ class Startup_Extension(
     }
 
     fun implimentClientsParProduits() {
-        clientDataBaseSnapList.forEachIndexed { _, client ->
-            val matchingProducts = produitsMainDataBase.filter { product ->
-                product.bonsVentDeCetteCota.any { bonVent ->
-                    bonVent.clientInformations?.id == client.id
-                }
-            }
 
-            // Fix: Map the matching products to their IDs
-            val matchingProductIds = matchingProducts.map { it.id }
-
-            // Update the ProduitsAcheterStatues.cetteCota list with product IDs
-            client.produitsAcheterStatue = client.produitsAcheterStatue.copy(
-                cetteCotaProduitsIds = matchingProductIds
-            )
-
-            // Update the client in the database
-            client.updateClientsDataBase(viewModelInitApp)
-        }
     }
 }

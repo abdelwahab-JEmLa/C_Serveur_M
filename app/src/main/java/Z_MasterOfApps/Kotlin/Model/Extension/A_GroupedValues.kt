@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Kotlin.Model.Extension
 
+import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 
 val _ModelAppsFather.clientsDisponible: List<_ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations>
@@ -43,26 +44,19 @@ val _ModelAppsFather.groupedProductsPatGrossist: List<Pair<_ModelAppsFather.Prod
             grossist.positionInGrossistsList
         }
 
-val _ModelAppsFather.groupedProductsParClients: List<Pair<_ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations, List<_ModelAppsFather.ProduitModel>>>
-    get() = produitsMainDataBase
-        .asSequence()
-        .filter { product ->
-            product.bonsVentDeCetteCota.isNotEmpty() &&
-                    product.bonsVentDeCetteCota.any { it.clientInformations != null }
-        }
-        .flatMap { product ->
-            product.bonsVentDeCetteCota.mapNotNull { bonVent ->
-                bonVent.clientInformations?.let { clientInfo ->
-                    clientInfo to product
-                }
+
+val _ModelAppsFather.groupedProductsParClients: List<Map.Entry<ClientsDataBase, List<_ModelAppsFather.ProduitModel>>>
+    get() = clientDataBaseSnapList.map { client ->
+        // Get all products where this client has associated bon vents
+        val matchingProducts = produitsMainDataBase.filter { product ->
+            // Check current bon vents
+            product.bonsVentDeCetteCota.any { bonVent ->
+                bonVent.clientInformations?.id == client.id
             }
         }
-        .groupBy(
-            keySelector = { it.first },
-            valueTransform = { it.second }
-        )
-        .toList()
-        .sortedBy { (client, _) ->
-            client.positionDonClientsList
-        }
-        .toList()
+
+        // Create a map entry using AbstractMap.SimpleEntry
+        java.util.AbstractMap.SimpleEntry(client, matchingProducts)
+    }.sortedBy { entry ->
+        entry.key.statueDeBase.positionDonClientsList
+    }

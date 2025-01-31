@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur
 
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -74,11 +75,8 @@ fun MainScreenFilterFAB_F3(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
-                    val clientDataBaseSnapList = viewModelInitApp._modelAppsFather
-                        .clientDataBaseSnapList
-
-                    clientDataBaseSnapList
-                        .forEachIndexed { index, client ->
+                    viewModelInitApp._modelAppsFather.groupedProductsParClients
+                        .forEachIndexed { index, (client, products) ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -132,7 +130,7 @@ fun MainScreenFilterFAB_F3(
                                     containerColor = color
                                 ) {
                                     Text(
-                                        client.produitsAcheterStatue.cetteCotaProduitsIds.size.toString(),
+                                        products.size.toString(),
                                         color = if (color.red * 0.299 + color.green * 0.587 +
                                             color.blue * 0.114 > 0.5f
                                         ) Color.Black else Color.White

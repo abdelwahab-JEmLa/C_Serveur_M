@@ -15,7 +15,6 @@ data class ClientsDataBase(
     var nom: String = "Non Defini",
     var statueDeBase: StatueDeBase = StatueDeBase(),
     var gpsLocation: GpsLocation = GpsLocation(),
-    var produitsAcheterStatue: ProduitsAcheterStatues = ProduitsAcheterStatues()
 ) {
     @IgnoreExtraProperties
     data class StatueDeBase(
@@ -25,18 +24,6 @@ data class ClientsDataBase(
         var cUnClientTemporaire: Boolean = true,
         var auFilterFAB: Boolean = false
     )
-
-    @IgnoreExtraProperties
-    data class ProduitsAcheterStatues(
-        var cetteCotaProduitsIds: List<Long> = emptyList(),
-        var historiqueProduitsIds: List<Historique> = emptyList()
-    ) {
-        @IgnoreExtraProperties
-        data class Historique(
-            var idDate: String = "2025-01-01",
-            var produits: List<Long> = emptyList()
-        )
-    }
 
     @IgnoreExtraProperties
     data class GpsLocation(

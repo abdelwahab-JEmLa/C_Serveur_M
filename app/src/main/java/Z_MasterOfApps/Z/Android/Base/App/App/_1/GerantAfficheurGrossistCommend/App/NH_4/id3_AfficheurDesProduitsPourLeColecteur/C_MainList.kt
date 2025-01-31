@@ -1,8 +1,8 @@
-package Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur
+package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur
 
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.MainItem_F3
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,22 +24,26 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainList_F3(
-    visibleProducts: List<_ModelAppsFather.ProduitModel>,
-    viewModelProduits: ViewModelInitApp,
+    viewModelInitApp: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+    val extensionvmapp1fragmentid3 = viewModelInitApp.extensionVMApp1FragmentId_3
+
+    val visibleProducts = viewModelInitApp._modelAppsFather
+        .groupedProductsParClients.find {
+            it.key.id == extensionvmapp1fragmentid3.clientIDAuFilter
+        }
+        ?.value.orEmpty()
+
     // Split products into regular and carton products
-    val (regularProducts, cartonProducts) = visibleProducts
+    val (etagersProduits, cartonsSectionProsduits) = visibleProducts
         .filter { product ->
-            product.bonCommendDeCetteCota
-                ?.mutableBasesStates
-                ?.cPositionCheyCeGrossit == true
+            product.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true
         }
         .partition { !it.statuesBase.seTrouveAuDernieDuCamionCarCCarton }
 
-    // Group regular products by grossist
-    val groupedRegularProducts = regularProducts
+    val groupedRegularProducts = etagersProduits
         .groupBy { product ->
             product.bonCommendDeCetteCota
                 ?.grossistInformations
@@ -48,7 +52,7 @@ fun MainList_F3(
         .toSortedMap(compareBy { it?.positionInGrossistsList })
 
     // Sort carton products by grossist position then product position
-    val sortedCartonProducts = cartonProducts
+    val sortedCartonProducts = cartonsSectionProsduits
         .sortedWith(
             compareBy<_ModelAppsFather.ProduitModel> {
                 it.bonCommendDeCetteCota?.grossistInformations?.positionInGrossistsList
@@ -101,7 +105,7 @@ fun MainList_F3(
             ) { product ->
                 MainItem_F3(
                     mainItem = product,
-                    viewModelProduits = viewModelProduits,
+                    viewModelProduits = viewModelInitApp,
                     onCLickOnMain = {
 
                     },
@@ -136,7 +140,7 @@ fun MainList_F3(
             ) { product ->
                 MainItem_F3(
                     mainItem = product,
-                    viewModelProduits = viewModelProduits,
+                    viewModelProduits = viewModelInitApp,
                     onCLickOnMain = {
 
                     },

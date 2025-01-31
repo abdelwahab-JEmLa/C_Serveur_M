@@ -1,6 +1,5 @@
 package Z_MasterOfApps.Kotlin.Model
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import androidx.lifecycle.viewModelScope
@@ -16,7 +15,7 @@ data class ClientsDataBase(
     var nom: String = "Non Defini",
     var statueDeBase: StatueDeBase = StatueDeBase(),
     var gpsLocation: GpsLocation = GpsLocation(),
-    var produitsAcheterDeIt: ProduitsAcheterDeIt = ProduitsAcheterDeIt()
+    var produitsAcheterStatue: ProduitsAcheterStatues = ProduitsAcheterStatues()
 ) {
     @IgnoreExtraProperties
     data class StatueDeBase(
@@ -28,14 +27,14 @@ data class ClientsDataBase(
     )
 
     @IgnoreExtraProperties
-    data class ProduitsAcheterDeIt(
-        var cetteCota: List<ProduitModel> = emptyList(),
-        var historique: List<Historique> = emptyList()
+    data class ProduitsAcheterStatues(
+        var cetteCotaProduitsIds: List<Long> = emptyList(),
+        var historiqueProduitsIds: List<Historique> = emptyList()
     ) {
         @IgnoreExtraProperties
         data class Historique(
             var idDate: String = "2025-01-01",
-            var produits: List<ProduitModel> = emptyList()
+            var produits: List<Long> = emptyList()
         )
     }
 

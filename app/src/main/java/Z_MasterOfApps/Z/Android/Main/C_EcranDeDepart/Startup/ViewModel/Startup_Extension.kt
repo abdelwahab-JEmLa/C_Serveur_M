@@ -32,13 +32,10 @@ class Startup_Extension(
             database.getReference("K_GroupeurBonCommendToSupplierRef").removeValue()
             database.getReference("O_SoldArticlesTabelle").removeValue()
             updateProduit(produit, viewModelInitApp)
-
         }
     }
 
-    // Startup_Extension.kt
     fun implimentClientsParProduits() {
-        clientDataBaseSnapList.clear()
         clientDataBaseSnapList.forEachIndexed { _, client ->
             val matchingProducts = produitsMainDataBase.filter { product ->
                 product.bonsVentDeCetteCota.any { bonVent ->
@@ -46,14 +43,16 @@ class Startup_Extension(
                 }
             }
 
-            // Fix: Update the ProduitsAcheterDeIt.cetteCota list
-            client.produitsAcheterDeIt = client.produitsAcheterDeIt.copy(
-                cetteCota = matchingProducts
+            // Fix: Map the matching products to their IDs
+            val matchingProductIds = matchingProducts.map { it.id }
+
+            // Update the ProduitsAcheterStatues.cetteCota list with product IDs
+            client.produitsAcheterStatue = client.produitsAcheterStatue.copy(
+                cetteCotaProduitsIds = matchingProductIds
             )
 
             // Update the client in the database
             client.updateClientsDataBase(viewModelInitApp)
         }
     }
-
 }

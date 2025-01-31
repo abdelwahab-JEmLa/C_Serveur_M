@@ -186,7 +186,6 @@ data object StartupIcon_Start : Screen(
 
 data object MainScreenDataObject_F1 : Screen(
     id =1,
-
     icon = Icons.Default.LocationOn, // Changed from Tab to LocationOn for location marking
     route = "fragment_main_screen_1",
     titleArab = "محدد اماكن المنتجات عند الجمال",
@@ -195,7 +194,6 @@ data object MainScreenDataObject_F1 : Screen(
 
 data object MainScreenDataObject_F2 : Screen(
     id =2,
-
     icon = Icons.Default.Visibility, // Changed from PhonelinkRing to Visibility for product viewing
     route = "main_screen_f2",
     titleArab = "مظهر اماكن المنتجات عند الجمال",
@@ -213,7 +211,6 @@ data object MainScreenDataObject_F3 : Screen(
 
 data object MainScreenDataObject_F4 : Screen(
     id =4,
-
     route = "main_screen_f4",
     icon = Icons.Default.LocalShipping, // Changed from Moving to LocalShipping for product distribution
     titleArab = "مقسم المنتجات الى الجمالين",
@@ -222,7 +219,6 @@ data object MainScreenDataObject_F4 : Screen(
 
 data object ID4Icon_Done : Screen(
     id =5,
-
     icon = Icons.AutoMirrored.Filled.FactCheck, // Changed from Done to FactCheck for invoice verification
     route = "A_ID5_VerificationProduitAcGrossist",
     titleArab = "التاكد من فواتير مع المنتجات عند الجمال",
@@ -231,7 +227,6 @@ data object ID4Icon_Done : Screen(
 
 data object ID1Icon_Person : Screen(
     id =6,
-
     icon = Icons.Default.PinDrop, // Changed from Person to PinDrop for GPS location
     route = "Id_App2Fragment1",
     titleArab = "محدد اماكن الزبائن GPS",

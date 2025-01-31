@@ -57,7 +57,6 @@ class ViewModelInitApp : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                extentionStartup.implimentClientsParProduits()
                 val nombre = 0
                 if (nombre == 0) {
                     LoadFromFirebaseProduits.loadFromFirebase(this@ViewModelInitApp)

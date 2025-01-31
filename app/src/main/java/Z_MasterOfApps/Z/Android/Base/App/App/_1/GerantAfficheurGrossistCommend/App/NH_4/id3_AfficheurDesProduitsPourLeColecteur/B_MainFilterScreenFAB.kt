@@ -132,7 +132,7 @@ fun MainScreenFilterFAB_F3(
                                     containerColor = color
                                 ) {
                                     Text(
-                                        client.produitsAcheterDeIt.cetteCota.size.toString(),
+                                        client.produitsAcheterStatue.cetteCotaProduitsIds.size.toString(),
                                         color = if (color.red * 0.299 + color.green * 0.587 +
                                             color.blue * 0.114 > 0.5f
                                         ) Color.Black else Color.White

@@ -2,13 +2,17 @@ package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.
 
 import Z_MasterOfApps.Kotlin.Model.ClientsDataBase.Companion.updateClientsDataBase
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 class ExtensionVMApp1FragmentId_3(
     val viewModelInitApp: ViewModelInitApp,
 ) {
     private val clientDataBaseSnapList = viewModelInitApp._modelAppsFather.clientDataBaseSnapList
-    val clientIDAuFilter =viewModelInitApp._paramatersAppsViewModelModel
-    .phoneClientSelectedAcheteur
+
+    var clientIDAuFilter by mutableStateOf<Long?>(0)
+
 
     fun upButton(index: Int) {
         // Ensure index is valid and there's a previous element

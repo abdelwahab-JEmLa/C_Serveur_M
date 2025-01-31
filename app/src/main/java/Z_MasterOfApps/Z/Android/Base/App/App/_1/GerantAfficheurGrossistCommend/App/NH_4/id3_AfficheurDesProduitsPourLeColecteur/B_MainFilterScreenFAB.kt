@@ -123,8 +123,7 @@ fun MainScreenFilterFAB_F3(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelInitApp._paramatersAppsViewModelModel
-                                            .phoneClientSelectedAcheteur = client.id
+                                        viewModelInitApp.extensionVMApp1FragmentId_3.clientIDAuFilter= client.id
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = color

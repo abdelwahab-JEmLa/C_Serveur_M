@@ -1,6 +1,5 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur
 
-import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -46,8 +45,6 @@ fun A_id3_AfficheurDesProduitsPourLeColecteur(
     }
 
     val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
-
-
 
     Scaffold(
         modifier = Modifier.fillMaxSize()

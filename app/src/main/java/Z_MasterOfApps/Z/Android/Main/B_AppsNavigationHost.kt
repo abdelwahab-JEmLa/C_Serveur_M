@@ -197,7 +197,7 @@ data object MainScreenDataObject_F2 : Screen(
     icon = Icons.Default.Visibility, // Changed from PhonelinkRing to Visibility for product viewing
     route = "main_screen_f2",
     titleArab = "مظهر اماكن المنتجات عند الجمال",
-    color = Color(0xFFFFEB3B)
+    color = Color(0xFFA48E39)
 )
 
 data object MainScreenDataObject_F3 : Screen(

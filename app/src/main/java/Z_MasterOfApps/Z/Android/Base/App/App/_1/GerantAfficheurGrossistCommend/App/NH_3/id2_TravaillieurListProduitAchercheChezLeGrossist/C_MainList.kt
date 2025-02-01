@@ -69,7 +69,8 @@ fun MainList_F2(
                     mainItem = product,
                     modifier = Modifier.fillMaxWidth(),
                     onCLickOnMain = {
-                        expandedItemId = if (expandedItemId == product.id) null else product.id
+                        expandedItemId = if (expandedItemId == product.id)
+                            null else product.id
                     }
                 )
 

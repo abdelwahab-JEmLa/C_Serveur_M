@@ -45,16 +45,10 @@ fun AppNavigationHost(
     modifier: Modifier,
 ) {
     val navController = rememberNavController()
-
-    // Get manager phone status
     val isManagerPhone = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant ?: false
-
-    // Get navigation items using the proper function
-    val items = remember(isManagerPhone) {
-        NavigationItems.getItems(isManagerPhone)
-    }
-
-    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val items = remember(isManagerPhone) { NavigationItems.getItems(isManagerPhone) }
+    val currentRoute = navController.currentBackStackEntryAsState()
+        .value?.destination?.route
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -139,15 +133,20 @@ object Screens {
 object NavigationItems {
     fun getItems(isManagerPhone: Boolean) = buildList {
         add(Screens.Startup_0)
+
+        //Manageur_Fragments
         if (isManagerPhone) { add(InfosDatas_FramgmentId4) }
         add(InfosDatas_FramgmentId1)
         add(InfosDatas_FramgmentId5)
+
+        //Clients_Fragments
         add(Screens.NavHost_3)
         add(Screens.NavHost_5)
+
+        //MapApp_Fragments
         if (isManagerPhone) { add(Screens.NavHostA2_1) }
     }
 }
-
 
 data object InfosDatas_FramgmentId1 : Screen(
     id =1,

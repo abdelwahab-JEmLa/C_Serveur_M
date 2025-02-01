@@ -73,34 +73,34 @@ fun AppNavigationHost(
                             startDestination = Screens.Startup_0.route,
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            composable(Screens.Startup_0.route) {
-                                A_StartupScreen(viewModelInitApp, { route ->
-                                        navController.navigate(route) {
-                                            popUpTo(navController.graph.startDestinationId) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
-                                            restoreState = true
-                                        }
-                                    })
-                            }
-                            composable(Screens.NavHost_1.route) {
+                            composable(InfosDatas_FramgmentId4.route) {
                                 A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
                             }
-                            composable(Screens.NavHost_2.route) {
+                            composable(InfosDatas_FramgmentId1.route) {
                                 A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
+                            }
+                            composable(InfosDatas_FramgmentId5.route) {
+                                A_ID5_VerificationProduitAcGrossist(viewModelInitApp)
                             }
                             composable(Screens.NavHost_3.route) {
                                 A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModelInitApp = viewModelInitApp)
-                            }
-                            composable(Screens.NavHost_4.route) {
-                                A_ID5_VerificationProduitAcGrossist(viewModelInitApp)
                             }
                             composable(Screens.NavHost_5.route) {
                                 A_id3_AfficheurDesProduitsPourLeColecteur(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHostA2_1.route) {
                                 A_id1_ClientsLocationGps(viewModel = viewModelInitApp)
+                            }
+                            composable(Screens.Startup_0.route) {
+                                A_StartupScreen(viewModelInitApp, { route ->
+                                    navController.navigate(route) {
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                })
                             }
                         }
                     }
@@ -132,33 +132,24 @@ fun AppNavigationHost(
 }
 object Screens {
     val Startup_0 = StartupIcon_Start
-    val NavHost_1 = MainScreenDataObject_F4
-    val NavHost_2 = MainScreenDataObject_F1
     val NavHost_3 = MainScreenDataObject_F2
-    val NavHost_4 = ID4Icon_Done
     val NavHost_5 = MainScreenDataObject_F3
     val NavHostA2_1 = ID1Icon_Person
 }
 object NavigationItems {
     fun getItems(isManagerPhone: Boolean) = buildList {
         add(Screens.Startup_0)
-        if (isManagerPhone) { add(Screens.NavHost_1) }
-        add(Screens.NavHost_2)
+        if (isManagerPhone) { add(InfosDatas_FramgmentId4) }
+        add(InfosDatas_FramgmentId1)
+        add(InfosDatas_FramgmentId5)
         add(Screens.NavHost_3)
         add(Screens.NavHost_5)
-        add(Screens.NavHost_4)
         if (isManagerPhone) { add(Screens.NavHostA2_1) }
     }
 }
-data object StartupIcon_Start : Screen(
-    id =7,
-    icon = Icons.Default.Home,
-    color = Color(0xFF3A3533),
-    route = "StartupIcon_Start",
-    titleArab = "المدخل الرئيسي"
-)
 
-data object MainScreenDataObject_F1 : Screen(
+
+data object InfosDatas_FramgmentId1 : Screen(
     id =1,
     icon = Icons.Default.LocationOn,
     route = "fragment_main_screen_1",
@@ -182,7 +173,7 @@ data object MainScreenDataObject_F3 : Screen(
     color = Color(0xFF9C27B0)
 )
 
-data object MainScreenDataObject_F4 : Screen(
+data object InfosDatas_FramgmentId4 : Screen(
     id =4,
     route = "main_screen_f4",
     icon = Icons.Default.LocalShipping, // Changed from Moving to LocalShipping for product distribution
@@ -190,7 +181,7 @@ data object MainScreenDataObject_F4 : Screen(
     color = Color(0xFF3F51B5)
 )
 
-data object ID4Icon_Done : Screen(
+data object InfosDatas_FramgmentId5 : Screen(
     id =5,
     icon = Icons.AutoMirrored.Filled.FactCheck, // Changed from Done to FactCheck for invoice verification
     route = "A_ID5_VerificationProduitAcGrossist",
@@ -206,6 +197,13 @@ data object ID1Icon_Person : Screen(
     color = Color(0xFFFF9800)
 
 )
+data object StartupIcon_Start : Screen(
+    id =7,
+    icon = Icons.Default.Home,
+    color = Color(0xFF3A3533),
+    route = "StartupIcon_Start",
+    titleArab = "المدخل الرئيسي"
+)
 
 abstract class Screen(
     val id: Long,
@@ -214,7 +212,6 @@ abstract class Screen(
     val titleArab: String,
     val color: Color
 )
-
 
 
 @Preview

@@ -40,7 +40,8 @@ internal fun A_StartupScreen(
     onNavigate: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val isManagerPhone = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant ?: false
+    val isManagerPhone = viewModelInitApp
+        ._paramatersAppsViewModelModel.cLeTelephoneDuGerant ?: false
     val items = remember(isManagerPhone) { NavigationItems.getItems(isManagerPhone) }
 
     LazyVerticalGrid(
@@ -49,7 +50,8 @@ internal fun A_StartupScreen(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier.fillMaxSize()
-    ) {
+    ) {//-->
+    //TODO(1): fait il ya un sticky header "manageur Fragment" entre 
         items(items) { screen ->
             val isManagerOnly = screen.route == "main_screen_f4" || screen.route == "Id_App2Fragment1"
             val isDisabled = isManagerOnly && !isManagerPhone

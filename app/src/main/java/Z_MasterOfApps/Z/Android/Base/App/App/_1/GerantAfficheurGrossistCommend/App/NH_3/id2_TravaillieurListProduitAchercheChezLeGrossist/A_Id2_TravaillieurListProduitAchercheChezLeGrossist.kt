@@ -1,7 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.MainList_F2
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +17,8 @@ private const val TAG = "A_id1_GerantDefinirePosition"
 
 @Composable
 internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
-    viewModelInitApp: ViewModelInitApp = viewModel(),
     modifier: Modifier = Modifier,
+    viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
     // Log state changes using LaunchedEffect
     LaunchedEffect(viewModelInitApp.isLoading, viewModelInitApp.loadingProgress) {

@@ -78,8 +78,8 @@ fun MainItem_F3(
             .filter {
                 it.clientInformations
                     ?.id == viewModelProduits
-                    ._paramatersAppsViewModelModel
-                    .phoneClientSelectedAcheteur
+                    .extensionVMApp1FragmentId_3
+                    .clientIDAuFilter
             }
             .flatMap { it.colours_Achete }
 

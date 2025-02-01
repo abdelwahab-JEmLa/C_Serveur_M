@@ -94,7 +94,7 @@ fun AppNavigationHost(
                                 A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHost_3.route) {
-                                A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModelInitApp)
+                                A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHost_4.route) {
                                 A_ID5_VerificationProduitAcGrossist(viewModelInitApp)

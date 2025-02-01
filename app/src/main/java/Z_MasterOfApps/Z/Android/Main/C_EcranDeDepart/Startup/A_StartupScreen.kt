@@ -6,6 +6,7 @@ import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.ViewModel.Startup_E
 import Z_MasterOfApps.Z.Android.Main.NavigationItems
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -30,13 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 internal fun A_StartupScreen(
-    modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val isManagerPhone = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant ?: false
     val items = remember(isManagerPhone) { NavigationItems.getItems(isManagerPhone) }
@@ -62,30 +64,44 @@ internal fun A_StartupScreen(
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    //-->
-                    //TODO(1): ajout au top start un floating text contien id 
-                    Icon(
-                        imageVector = screen.icon,
-                        contentDescription = screen.titleArab,
-                        modifier = Modifier.size(48.dp),
-                        tint = if (isDisabled) Color.DarkGray else Color.White
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
+                    // ID Text at top start
                     Text(
-                        text = screen.titleArab,
-                        style = MaterialTheme.typography.titleMedium,
+                        text = "ID: ${screen.id}",
+                        color = if (isDisabled) Color.DarkGray else Color.White,
+                        fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (isDisabled) Color.DarkGray else Color.White
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .align(Alignment.TopStart)
                     )
+
+                    // Main content in center
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = screen.icon,
+                            contentDescription = screen.titleArab,
+                            modifier = Modifier.size(48.dp),
+                            tint = if (isDisabled) Color.DarkGray else Color.White
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = screen.titleArab,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isDisabled) Color.DarkGray else Color.White
+                        )
+                    }
                 }
             }
         }

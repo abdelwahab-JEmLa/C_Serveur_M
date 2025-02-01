@@ -74,9 +74,7 @@ fun AppNavigationHost(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             composable(Screens.Startup_0.route) {
-                                A_StartupScreen(
-                                    viewModelInitApp = viewModelInitApp,
-                                    onNavigate = { route ->
+                                A_StartupScreen(viewModelInitApp, { route ->
                                         navController.navigate(route) {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 saveState = true
@@ -84,8 +82,7 @@ fun AppNavigationHost(
                                             launchSingleTop = true
                                             restoreState = true
                                         }
-                                    }
-                                )
+                                    })
                             }
                             composable(Screens.NavHost_1.route) {
                                 A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
@@ -99,7 +96,7 @@ fun AppNavigationHost(
                             composable(Screens.NavHost_4.route) {
                                 A_ID5_VerificationProduitAcGrossist(viewModelInitApp)
                             }
-                            composable("مظهر الاماكن لمقسم المنتجات على الزبائن") {
+                            composable(Screens.NavHost_5.route) {
                                 A_id3_AfficheurDesProduitsPourLeColecteur(viewModelInitApp = viewModelInitApp)
                             }
                             composable(Screens.NavHostA2_1.route) {
@@ -133,9 +130,16 @@ fun AppNavigationHost(
         }
     }
 }
-
+object Screens {
+    val Startup_0 = StartupIcon_Start
+    val NavHost_1 = MainScreenDataObject_F4
+    val NavHost_2 = MainScreenDataObject_F1
+    val NavHost_3 = MainScreenDataObject_F2
+    val NavHost_4 = ID4Icon_Done
+    val NavHost_5 = MainScreenDataObject_F3
+    val NavHostA2_1 = ID1Icon_Person
+}
 object NavigationItems {
-    // Remove @Composable annotation and make it a function that takes the required parameter
     fun getItems(isManagerPhone: Boolean) = buildList {
         add(Screens.Startup_0)
         if (isManagerPhone) { add(Screens.NavHost_1) }
@@ -146,39 +150,9 @@ object NavigationItems {
         if (isManagerPhone) { add(Screens.NavHostA2_1) }
     }
 }
-
-@Preview
-@Composable
-private fun Preview_Fragment() {
-    val viewModelInitApp: ViewModelInitApp = viewModel()
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (viewModelInitApp.isLoading) {
-            // Loading indicator centered in the box
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .size(48.dp)
-                    .align(Alignment.Center),
-                color = MaterialTheme.colorScheme.primary
-            )
-        } else {
-            A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
-        }
-    }
-}
-
-object Screens {
-    val Startup_0 = StartupIcon_Start
-    val NavHost_1 = MainScreenDataObject_F4
-    val NavHost_2 = MainScreenDataObject_F1
-    val NavHost_3 = MainScreenDataObject_F2
-    val NavHost_4 = ID4Icon_Done
-    val NavHost_5 = MainScreenDataObject_F3
-    val NavHostA2_1 = ID1Icon_Person
-}
-
 data object StartupIcon_Start : Screen(
     id =7,
-    icon = Icons.Default.Home, // Changed from Start to Home for main entry point
+    icon = Icons.Default.Home,
     color = Color(0xFF3A3533),
     route = "StartupIcon_Start",
     titleArab = "المدخل الرئيسي"
@@ -186,7 +160,7 @@ data object StartupIcon_Start : Screen(
 
 data object MainScreenDataObject_F1 : Screen(
     id =1,
-    icon = Icons.Default.LocationOn, // Changed from Tab to LocationOn for location marking
+    icon = Icons.Default.LocationOn,
     route = "fragment_main_screen_1",
     titleArab = "محدد اماكن المنتجات عند الجمال",
     color = Color(0xFFFF5722)
@@ -194,7 +168,7 @@ data object MainScreenDataObject_F1 : Screen(
 
 data object MainScreenDataObject_F2 : Screen(
     id =2,
-    icon = Icons.Default.Visibility, // Changed from PhonelinkRing to Visibility for product viewing
+    icon = Icons.Default.Visibility,
     route = "main_screen_f2",
     titleArab = "مظهر اماكن المنتجات عند الجمال",
     color = Color(0xFFA48E39)
@@ -202,9 +176,8 @@ data object MainScreenDataObject_F2 : Screen(
 
 data object MainScreenDataObject_F3 : Screen(
     id =3,
-
     route ="مظهر الاماكن لمقسم المنتجات على الزبائن",
-    icon = Icons.Default.Groups, // Changed from Person to Groups for customer distribution
+    icon = Icons.Default.Groups,
     titleArab = "مظهر الاماكن لمقسم المنتجات على الزبائن",
     color = Color(0xFF9C27B0)
 )
@@ -233,6 +206,7 @@ data object ID1Icon_Person : Screen(
     color = Color(0xFFFF9800)
 
 )
+
 abstract class Screen(
     val id: Long,
     val route: String,
@@ -243,3 +217,21 @@ abstract class Screen(
 
 
 
+@Preview
+@Composable
+private fun Preview_Fragment() {
+    val viewModelInitApp: ViewModelInitApp = viewModel()
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (viewModelInitApp.isLoading) {
+            // Loading indicator centered in the box
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(48.dp)
+                    .align(Alignment.Center),
+                color = MaterialTheme.colorScheme.primary
+            )
+        } else {
+            A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
+        }
+    }
+}

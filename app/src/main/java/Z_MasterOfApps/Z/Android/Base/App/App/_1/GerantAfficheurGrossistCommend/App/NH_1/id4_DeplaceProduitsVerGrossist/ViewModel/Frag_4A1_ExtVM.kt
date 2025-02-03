@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
 class Frag_4A1_ExtVM(
     val viewModel: ViewModelInitApp,
 ) {
-    var auFilter by mutableStateOf<Long?>(0)
+    var deplaceProduitsAuGrosssist by mutableStateOf<Long?>(0)
 
 }
 

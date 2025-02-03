@@ -30,15 +30,13 @@ internal fun A_id4_DeplaceProduitsVerGrossist(
         return
     }
 
-    val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
-
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
-            if (databaseSize > 0) {
+            if (viewModelInitApp._modelAppsFather.produitsMainDataBase.size > 0) {
                 MainList_F4(
-                    viewModelProduits = viewModelInitApp,
+                    viewModel = viewModelInitApp,
                     paddingValues = paddingValues
                 )
             }

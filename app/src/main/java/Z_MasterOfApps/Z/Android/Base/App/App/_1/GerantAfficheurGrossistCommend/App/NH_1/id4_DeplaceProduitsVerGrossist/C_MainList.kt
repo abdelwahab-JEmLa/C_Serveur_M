@@ -26,26 +26,22 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MainList_F4(
-    viewModelProduits: ViewModelInitApp,
+    viewModel: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
+    val frag4a1Extvm = viewModel.frag_4A1_ExtVM
+
     var selectedProducts by remember { mutableStateOf<List<_ModelAppsFather.ProduitModel>>(emptyList()) }
-    var currentGrossist by remember { mutableStateOf<Long?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
+    var deplaceProduitsAuGrosssist = frag4a1Extvm.deplaceProduitsAuGrosssist
 
-    // Filter products based on the current filter value
-    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsParGrossist
-        .filter { (grossist, _) ->
-            viewModelProduits.frag_4A1_ExtVM.auFilter?.let { filterId ->
-                grossist.id == filterId
-            } ?: true
-        }
+    val groupedProducts = viewModel._modelAppsFather.groupedProductsParGrossist
 
-    if (showMoveDialog && currentGrossist != null) {
+    if (showMoveDialog && deplaceProduitsAuGrosssist != null) {
         MoveProductsDialog(
             selectedProducts = selectedProducts,
-            viewModelProduits = viewModelProduits,
+            viewModelProduits = viewModel,
             onDismiss = { showMoveDialog = false },
             onProductsMoved = { selectedProducts = emptyList() }
         )
@@ -67,7 +63,7 @@ fun MainList_F4(
                     grossist = grossist,
                     selectedProductsCount = selectedProducts.size,
                     onMoveClick = {
-                        currentGrossist = grossist.id
+                        deplaceProduitsAuGrosssist = grossist.id
                         showMoveDialog = true
                     }
                 )

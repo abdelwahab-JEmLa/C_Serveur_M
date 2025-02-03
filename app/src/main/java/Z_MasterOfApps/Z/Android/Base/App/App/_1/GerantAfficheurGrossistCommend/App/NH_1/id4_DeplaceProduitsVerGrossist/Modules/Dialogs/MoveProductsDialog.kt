@@ -39,7 +39,7 @@ fun MoveProductsDialog(
                 )
 
                 viewModelProduits._modelAppsFather.grossistsDataBase
-                    .filter { it.id != viewModelProduits.frag_4A1_ExtVM.auFilter}
+                    .filter { it.id != viewModelProduits.frag_4A1_ExtVM.deplaceProduitsAuGrosssist}
                     .forEach { grossist ->
                         Button(
                             onClick = {

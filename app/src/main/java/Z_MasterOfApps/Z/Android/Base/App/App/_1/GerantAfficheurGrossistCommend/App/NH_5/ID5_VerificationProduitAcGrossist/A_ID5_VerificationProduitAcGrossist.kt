@@ -14,6 +14,7 @@ internal fun A_ID5_VerificationProduitAcGrossist(
     modifier: Modifier = Modifier,
     viewModel: ViewModelInitApp = viewModel(),
 ) {
+
     val extensionVM =
         ViewModelExtension_App1_F5(
                 viewModel,

@@ -71,7 +71,7 @@ internal fun A_id1_GerantDefinirePosition(
                     )
 
                     MainScreenFilterFAB(
-                        viewModelProduits = viewModelInitApp,
+                        viewModel = viewModelInitApp,
                     )
                 }
             }

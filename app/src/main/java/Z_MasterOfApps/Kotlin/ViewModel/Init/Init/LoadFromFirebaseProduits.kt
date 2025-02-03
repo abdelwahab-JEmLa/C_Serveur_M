@@ -1,6 +1,6 @@
 package Z_MasterOfApps.Kotlin.ViewModel.Init.Init
 
-import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
+import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
@@ -25,7 +25,7 @@ object LoadFromFirebaseProduits {
 
             val (prodSnapshot, clientSnapshot) = FirebaseOfflineHandler.loadData(
                 ref = _ModelAppsFather.produitsFireBaseRef,
-                refClientsDataBase = ClientsDataBase.refClientsDataBase,
+                refClientsDataBase = B_ClientsDataBase.refClientsDataBase,
                 viewModel = viewModel
             )
 
@@ -124,21 +124,21 @@ object LoadFromFirebaseProduits {
             null
         }
     }
-    fun parseClients(snapshot: DataSnapshot): List<ClientsDataBase> {
+    fun parseClients(snapshot: DataSnapshot): List<B_ClientsDataBase> {
         return snapshot.children.mapNotNull { parseClient(it) }.toMutableStateList()
     }
 
-    fun parseClient(snapshot: DataSnapshot): ClientsDataBase? {
+    fun parseClient(snapshot: DataSnapshot): B_ClientsDataBase? {
         return try {
             val clientMap = snapshot.value as? Map<*, *> ?: return null
-            ClientsDataBase(
+            B_ClientsDataBase(
                 id = snapshot.key?.toLongOrNull() ?: return null,
                 nom = clientMap["nom"] as? String ?: ""
             ).apply {
-                snapshot.child("statueDeBase").getValue(ClientsDataBase.StatueDeBase::class.java)?.let {
+                snapshot.child("statueDeBase").getValue(B_ClientsDataBase.StatueDeBase::class.java)?.let {
                     statueDeBase = it
                 }
-                snapshot.child("gpsLocation").getValue(ClientsDataBase.GpsLocation::class.java)?.let {
+                snapshot.child("gpsLocation").getValue(B_ClientsDataBase.GpsLocation::class.java)?.let {
                     gpsLocation = it
                 }
             }
@@ -178,13 +178,13 @@ object LoadFromFirebaseProduits {
         }
 
         _ModelAppsFather.produitsFireBaseRef.addValueEventListener(realtimeListener!!)
-        ClientsDataBase.refClientsDataBase.addValueEventListener(clientListener!!)
+        B_ClientsDataBase.refClientsDataBase.addValueEventListener(clientListener!!)
         Log.d(TAG, "🔔 Real-time listeners activated")
     }
 
     fun cleanup() {
         realtimeListener?.let { _ModelAppsFather.produitsFireBaseRef.removeEventListener(it) }
-        clientListener?.let { ClientsDataBase.refClientsDataBase.removeEventListener(it) }
+        clientListener?.let { B_ClientsDataBase.refClientsDataBase.removeEventListener(it) }
         Log.d(TAG, "🧹 Listeners cleaned up")
     }
 }

@@ -2,14 +2,14 @@ package Z_MasterOfApps.Z.Android.Packages._3.C_Serveur.App.Client_JetPack.Packag
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Z.Android.Base.App.App3_Client_JetPack.Models.ArticlesBasesStatsTable
-import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
+import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 
 fun deleteColore(
     viewModelInitApp: ViewModelInitApp,
     colorIndex: Int,
     article: ArticlesBasesStatsTable,
-    clientBuyerNow: ClientsDataBase
+    clientBuyerNow: B_ClientsDataBase
 ) {
     val colorId = when (colorIndex) {
         0 -> article.idcolor1

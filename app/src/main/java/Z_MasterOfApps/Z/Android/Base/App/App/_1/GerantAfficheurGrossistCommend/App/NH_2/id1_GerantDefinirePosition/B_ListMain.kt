@@ -92,7 +92,7 @@ fun B_ListMainFragment(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .clickable {
-                                    viewModel.extension_App1_F1.addToproduitsAChoisireLeurClient(
+                                    viewModel.frag1_A1_ExtVM.addToproduitsAChoisireLeurClient(
                                         positionedProductsSorted
                                             .last()
                                     )

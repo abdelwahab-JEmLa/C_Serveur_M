@@ -160,7 +160,7 @@ fun ExpandedMainItem_F2(
                                     IconButton(
                                         onClick = {
                                             viewModelInitApp
-                                                .extension_App1_F2.changeColours_AcheteQuantity_Achete(
+                                                .frag2_A1_ExtVM.changeColours_AcheteQuantity_Achete(
                                                     bonVent,
                                                     mainItem,
                                                     color,
@@ -209,7 +209,7 @@ fun ExpandedMainItem_F2(
         QuantitySelectionDialog(
             onQuantitySelected = { quantity ->
                 viewModelInitApp
-                    .extension_App1_F2.changeColours_AcheteQuantity_Achete(
+                    .frag2_A1_ExtVM.changeColours_AcheteQuantity_Achete(
                         selectedBonVent,
                         mainItem,
                         selectedColor!!,

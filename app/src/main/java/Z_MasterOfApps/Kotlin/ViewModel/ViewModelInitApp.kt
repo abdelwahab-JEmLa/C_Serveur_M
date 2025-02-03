@@ -1,12 +1,12 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
-import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
+import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.LoadFromFirebaseProduits
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.ViewModel.Extension.Frag2_A1_ExtVM
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.ViewModel.Extension.ExteVMFragmentId_2
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.ViewModel.ExtensionVMApp1FragmentId_3
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.ViewModel.Startup_Extension
-import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.ViewModel.Extension.ViewModelExtension_App1_F1
-import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.ViewModel.Extension.ViewModelExtension_App1_F2
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.CreeDepuitAncienDataBases
 import android.annotation.SuppressLint
@@ -40,16 +40,16 @@ class ViewModelInitApp : ViewModel() {
 
     val extentionStartup = Startup_Extension(this@ViewModelInitApp)
 
-    val extension_App1_F1 = ViewModelExtension_App1_F1(
+    val frag1_A1_ExtVM = Frag2_A1_ExtVM(
         viewModel = this@ViewModelInitApp,
+        produitsMainDataBase = produitsMainDataBase,
+    )
+    val frag2_A1_ExtVM = ExteVMFragmentId_2(
+        viewModelInitApp =  this@ViewModelInitApp,
         produitsMainDataBase = produitsMainDataBase,
         viewModelScope = this@ViewModelInitApp.viewModelScope,
     )
-    val extension_App1_F2 = ViewModelExtension_App1_F2(
-        viewModel = this@ViewModelInitApp,
-        produitsMainDataBase = produitsMainDataBase,
-        viewModelScope = this@ViewModelInitApp.viewModelScope,
-    )
+
     val extensionVMApp1FragmentId_3 = ExtensionVMApp1FragmentId_3(this@ViewModelInitApp)
 
 
@@ -101,7 +101,7 @@ class ViewModelInitApp : ViewModel() {
 
         // Clients listener
         // Modified Clients listener
-        ClientsDataBase.refClientsDataBase.addValueEventListener(object : ValueEventListener {
+        B_ClientsDataBase.refClientsDataBase.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 scope.launch {
                     try {

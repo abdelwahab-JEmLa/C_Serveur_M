@@ -1,6 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App3_Client_JetPack.Package_3
 
-import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
+import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.ClientBonVentModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.GrossistBonCommandes
@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter
 fun calQuantityButton(
     quantity: Int,
     currentSale: SoldArticlesTabelle?,
-    currentClient: ClientsDataBase?,
+    currentClient: B_ClientsDataBase?,
     colorDetails: ColorsArticlesTabelle,
     viewModelInitApp: ViewModelInitApp
 ) {

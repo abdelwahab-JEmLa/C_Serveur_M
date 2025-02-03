@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 @IgnoreExtraProperties
-data class ClientsDataBase(
+data class B_ClientsDataBase(
     var id: Long = 1,
     var nom: String = "Non Defini",
     var statueDeBase: StatueDeBase = StatueDeBase(),
@@ -44,13 +44,13 @@ data class ClientsDataBase(
         }
     }
 
-    // ClientsDataBase.kt - Updated companion object
+    // B_ClientsDataBase.kt - Updated companion object
     companion object {
         val refClientsDataBase = Firebase.database
             .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
-            .child("ClientsDataBase")
+            .child("B_ClientsDataBase")
 
-        fun ClientsDataBase.updateClientsDataBase(
+        fun B_ClientsDataBase.updateClientsDataBase(
             viewModel: ViewModelInitApp
         ) {
             viewModel.viewModelScope.launch {
@@ -85,7 +85,7 @@ data class ClientsDataBase(
                     }
 
                 } catch (e: Exception) {
-                    Log.e("ClientsDataBase", "Failed to update client", e)
+                    Log.e("B_ClientsDataBase", "Failed to update client", e)
 
                 }
             }
@@ -94,7 +94,7 @@ data class ClientsDataBase(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ClientsDataBase) return false
+        if (other !is B_ClientsDataBase) return false
 
         return id == other.id &&
                 nom == other.nom &&

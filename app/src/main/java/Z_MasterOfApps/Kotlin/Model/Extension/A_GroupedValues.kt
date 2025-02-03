@@ -1,6 +1,7 @@
 package Z_MasterOfApps.Kotlin.Model.Extension
 
-import Z_MasterOfApps.Kotlin.Model.ClientsDataBase
+import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
+import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 
 val _ModelAppsFather.clientsDisponible: List<_ModelAppsFather.ProduitModel.ClientBonVentModel.ClientInformations>
@@ -28,24 +29,22 @@ val _ModelAppsFather.grossistsDisponible: List<_ModelAppsFather.ProduitModel.Gro
         .distinctBy { it.id } // Remove duplicates based on grossist ID
         .sortedBy { it.positionInGrossistsList }
 
-val _ModelAppsFather.groupedProductsPatGrossist: List<Pair<_ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations, List<_ModelAppsFather.ProduitModel>>>
-    get() = produitsMainDataBase
-        .mapNotNull { product ->
-            product.bonCommendDeCetteCota?.grossistInformations?.let { grossistInfo ->
-                grossistInfo to product
-            }
-        }
-        .groupBy(
-            keySelector = { it.first },
-            valueTransform = { it.second }
-        )
-        .toList()
-        .sortedBy { (grossist, _) ->
-            grossist.positionInGrossistsList
-        }
 
 
-val _ModelAppsFather.groupedProductsParClients: List<Map.Entry<ClientsDataBase, List<_ModelAppsFather.ProduitModel>>>
+val _ModelAppsFather.groupedProductsParGrossist: List<Pair<C_GrossistsDataBase, List<_ModelAppsFather.ProduitModel>>>
+    get() = grossistsDataBase.map { grossist ->
+        // Find all products for this grossist
+        val matchingProducts = produitsMainDataBase.filter { product ->
+            product.bonCommendDeCetteCota?.grossistInformations?.id == grossist.id
+        }
+
+        // Create and return a proper pair
+        grossist to matchingProducts
+    }.sortedBy { (grossist, _) ->
+        grossist.statueDeBase.itPositionInList
+    }
+
+val _ModelAppsFather.groupedProductsParClients: List<Map.Entry<B_ClientsDataBase, List<_ModelAppsFather.ProduitModel>>>
     get() = clientDataBaseSnapList.map { client ->
         // Get all products where this client has associated bon vents
         val matchingProducts = produitsMainDataBase.filter { product ->

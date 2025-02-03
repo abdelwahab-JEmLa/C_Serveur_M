@@ -37,7 +37,7 @@ fun MainList_F2(
         viewModelInitApp._paramatersAppsViewModelModel.produitsAChoisireLeurClient
 
     val afficheProduitsPourRegleConflites =
-        viewModelInitApp.extension_App1_F2.afficheProduitsPourRegleConflites
+        viewModelInitApp.frag2_A1_ExtVM.afficheProduitsPourRegleConflites
 
     val visibleProducts = if (afficheProduitsPourRegleConflites)
         produitsAChoisireLeurClient else initVisibleProducts

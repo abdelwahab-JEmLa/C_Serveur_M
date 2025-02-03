@@ -1,7 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist
 
-import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsPatGrossist
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParGrossist
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -48,7 +47,7 @@ fun MainScreenFilterFAB_F2(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    val groupedProducts = viewModelInitApp._modelAppsFather.groupedProductsPatGrossist
+    val groupedProducts = viewModelInitApp._modelAppsFather.groupedProductsParGrossist
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -90,8 +89,8 @@ fun MainScreenFilterFAB_F2(
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            viewModelInitApp.extension_App1_F2.afficheProduitsPourRegleConflites =
-                                !viewModelInitApp.extension_App1_F2.afficheProduitsPourRegleConflites
+                            viewModelInitApp.frag2_A1_ExtVM.afficheProduitsPourRegleConflites =
+                                !viewModelInitApp.frag2_A1_ExtVM.afficheProduitsPourRegleConflites
                         },
                         modifier = Modifier.size(48.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -102,7 +101,6 @@ fun MainScreenFilterFAB_F2(
                         )
                     }
 
-                    // Rest of the code remains unchanged...
                     groupedProducts.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -112,31 +110,7 @@ fun MainScreenFilterFAB_F2(
                                 FloatingActionButton(
                                     onClick = {
                                         viewModelInitApp.viewModelScope.launch {
-                                            val previousGrossist = groupedProducts[index - 1].first
-
-                                            grossist.positionInGrossistsList--
-                                            previousGrossist.positionInGrossistsList++
-
-                                            val updatedProducts =
-                                                viewModelInitApp._modelAppsFather.produitsMainDataBase.map { product ->
-                                                    product.apply {
-                                                        bonCommendDeCetteCota?.grossistInformations?.let { currentGrossist ->
-                                                            when (currentGrossist.id) {
-                                                                grossist.id -> {
-                                                                    currentGrossist.positionInGrossistsList--
-                                                                }
-                                                                previousGrossist.id -> {
-                                                                    currentGrossist.positionInGrossistsList++
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                            update_AllProduits(
-                                                updatedProducts,
-                                                viewModelInitApp
-                                            )
+                                            viewModelInitApp.frag2_A1_ExtVM.upButton(index)
                                         }
                                     },
                                     modifier = Modifier.size(36.dp),

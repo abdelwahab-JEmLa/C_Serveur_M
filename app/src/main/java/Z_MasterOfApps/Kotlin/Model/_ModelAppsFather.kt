@@ -29,8 +29,11 @@ open class _ModelAppsFather(
         initial_Produits_Main_DataBase.toMutableStateList()
 
     @get:Exclude
-    var clientDataBaseSnapList: SnapshotStateList<ClientsDataBase> =
-        emptyList<ClientsDataBase>().toMutableStateList()
+    var clientDataBaseSnapList: SnapshotStateList<B_ClientsDataBase> =
+        emptyList<B_ClientsDataBase>().toMutableStateList()
+
+    @get:Exclude
+    var grossistsDataBase: SnapshotStateList<C_GrossistsDataBase> = emptyList<C_GrossistsDataBase>().toMutableStateList()
 
     @IgnoreExtraProperties
     class ProduitModel(

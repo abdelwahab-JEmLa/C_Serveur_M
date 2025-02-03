@@ -3,6 +3,7 @@ package Z_MasterOfApps.Kotlin.ViewModel
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.LoadFromFirebaseProduits
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.Extension.Frag_4A1_ExtVM
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.ViewModel.Extension.Frag2_A1_ExtVM
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.ViewModel.Extension.ExteVMFragmentId_2
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.ViewModel.ExtensionVMApp1FragmentId_3
@@ -51,6 +52,8 @@ class ViewModelInitApp : ViewModel() {
     )
 
     val extensionVMApp1FragmentId_3 = ExtensionVMApp1FragmentId_3(this@ViewModelInitApp)
+
+    val frag_4A1_ExtVM = Frag_4A1_ExtVM(this@ViewModelInitApp)
 
 
     init {

@@ -41,13 +41,13 @@ import kotlin.math.roundToInt
 @Composable
 fun MainScreenFilterFAB_F2(
     modifier: Modifier = Modifier,
-    viewModelInitApp: ViewModelInitApp,
+    viewModel: ViewModelInitApp,
 ) {
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    val groupedProducts = viewModelInitApp._modelAppsFather.groupedProductsParGrossist
+    val groupedProducts = viewModel._modelAppsFather.groupedProductsParGrossist
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -89,8 +89,8 @@ fun MainScreenFilterFAB_F2(
                 ) {
                     FloatingActionButton(
                         onClick = {
-                            viewModelInitApp.frag2_A1_ExtVM.afficheProduitsPourRegleConflites =
-                                !viewModelInitApp.frag2_A1_ExtVM.afficheProduitsPourRegleConflites
+                            viewModel.frag2_A1_ExtVM.afficheProduitsPourRegleConflites =
+                                !viewModel.frag2_A1_ExtVM.afficheProduitsPourRegleConflites
                         },
                         modifier = Modifier.size(48.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -109,8 +109,8 @@ fun MainScreenFilterFAB_F2(
                             if (index > 0) {
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelInitApp.viewModelScope.launch {
-                                            viewModelInitApp.frag2_A1_ExtVM.upButton(index)
+                                        viewModel.viewModelScope.launch {
+                                            viewModel.frag1_A1_ExtVM.upButton(index)
                                         }
                                     },
                                     modifier = Modifier.size(36.dp),
@@ -128,7 +128,7 @@ fun MainScreenFilterFAB_F2(
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        if (viewModelInitApp
+                                        if (viewModel
                                                 ._paramatersAppsViewModelModel
                                                 .telephoneClientParamaters
                                                 .selectedGrossistForClientF2 == grossist.id
@@ -140,7 +140,7 @@ fun MainScreenFilterFAB_F2(
 
                             FloatingActionButton(
                                 onClick = {
-                                    viewModelInitApp
+                                    viewModel
                                         ._paramatersAppsViewModelModel
                                         .telephoneClientParamaters
                                         .selectedGrossistForClientF2 = grossist.id

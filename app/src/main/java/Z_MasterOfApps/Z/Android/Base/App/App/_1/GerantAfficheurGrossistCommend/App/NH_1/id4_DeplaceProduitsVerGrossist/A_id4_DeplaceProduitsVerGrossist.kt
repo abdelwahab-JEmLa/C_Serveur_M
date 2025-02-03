@@ -21,7 +21,6 @@ internal fun A_id4_DeplaceProduitsVerGrossist(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
-    // Log state changes using LaunchedEffect
     LaunchedEffect(
         viewModelInitApp.isLoading,
         viewModelInitApp.loadingProgress
@@ -72,7 +71,7 @@ internal fun A_id4_DeplaceProduitsVerGrossist(
                 modifier = modifier,
             )
             MainScreenFilterFAB_F4(
-                viewModelInitApp = viewModelInitApp,
+                viewModel = viewModelInitApp,
             )
         }
     }

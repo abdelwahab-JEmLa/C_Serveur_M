@@ -122,7 +122,7 @@ open class _ModelAppsFather(
             )
             @IgnoreExtraProperties
             data class GrossistInformations(
-                val id: Long = 1,
+                var id: Long = 1,
                 val nom: String = "Non Defini",
                 val couleur: String = "#FFFFFF"
             ) {

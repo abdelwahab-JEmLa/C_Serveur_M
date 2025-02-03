@@ -71,7 +71,7 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
                 .fabsVisibility
         ) {
             MainScreenFilterFAB_F2(
-                viewModelInitApp = viewModelInitApp,
+                viewModel = viewModelInitApp,
             )
         }
     }

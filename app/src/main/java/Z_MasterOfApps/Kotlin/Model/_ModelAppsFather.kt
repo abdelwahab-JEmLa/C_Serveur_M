@@ -282,7 +282,7 @@ open class _ModelAppsFather(
             }
         }
 
-        suspend fun UpdateFireBase(updatedProducts: List<_ModelAppsFather.ProduitModel>) {
+        suspend fun UpdateFireBase(updatedProducts: List<ProduitModel>) {
             updatedProducts.chunked(5).forEach { chunk ->
                 chunk.forEach { product ->
                     try {

@@ -2,6 +2,7 @@ package Z_MasterOfApps.Kotlin.ViewModel.Init.Init
 
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.ref_HeadOfModels
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
@@ -24,6 +25,7 @@ object LoadFromFirebaseProduits {
             viewModel.loadingProgress = 0.1f
 
             val (prodSnapshot, clientSnapshot) = FirebaseOfflineHandler.loadData(
+                ref_HeadOfModels = ref_HeadOfModels,
                 ref = _ModelAppsFather.produitsFireBaseRef,
                 refClientsDataBase = B_ClientsDataBase.refClientsDataBase,
                 viewModel = viewModel

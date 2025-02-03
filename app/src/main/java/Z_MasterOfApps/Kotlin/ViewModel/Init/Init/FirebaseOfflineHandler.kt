@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Kotlin.ViewModel.Init.Init
 
+import Z_MasterOfApps.Kotlin.ViewModel.FirebaseListeners
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import com.google.firebase.FirebaseApp
@@ -32,16 +33,18 @@ object FirebaseOfflineHandler {
     }
 
     suspend fun loadData(
+        ref_HeadOfModels: DatabaseReference,
         ref: DatabaseReference,
         refClientsDataBase: DatabaseReference,
         viewModel: ViewModelInitApp? = null
-    ): Pair<DataSnapshot?, DataSnapshot?> {
+    ): Triple<DataSnapshot?,DataSnapshot?, DataSnapshot?>  {
         if (!isInitialized) {
             Log.e("Firebase", "Firebase not initialized")
-            return Pair(null, null)
+            return   Triple(null,null, null)
         }
 
         return try {
+            ref_HeadOfModels.keepSynced(true)
             ref.keepSynced(true)
             refClientsDataBase.keepSynced(true)
 
@@ -49,14 +52,14 @@ object FirebaseOfflineHandler {
 
             if (isOnline) {
                 Log.i("Firebase", "🟢 Online mode")
-                handleOnlineOperations(ref, refClientsDataBase, viewModel)
+                handleOnlineOperations(ref_HeadOfModels,ref, refClientsDataBase, viewModel)
             } else {
                 Log.w("Firebase", "🔴 Offline mode")
-                handleOfflineOperations(ref, refClientsDataBase)
+                handleOfflineOperations(ref_HeadOfModels,ref, refClientsDataBase)
             }
         } catch (e: Exception) {
             Log.e("Firebase", "Critical load error", e)
-            Pair(null, null)
+            Triple(null,null, null)
         }
     }
 
@@ -75,34 +78,38 @@ object FirebaseOfflineHandler {
     }
 
     private suspend fun handleOnlineOperations(
+        ref_HeadOfModels: DatabaseReference,
         ref: DatabaseReference,
         refClientsDataBase: DatabaseReference,
         viewModel: ViewModelInitApp?
-    ): Pair<DataSnapshot?, DataSnapshot?> {
+    ): Triple<DataSnapshot?,DataSnapshot?, DataSnapshot?> {
         return try {
+            val ref_HeadOfModels_data = ref_HeadOfModels.get().await()
             val data = ref.get().await()
             val data2 = refClientsDataBase.get().await()
-            viewModel?.let { viewModel.setupRealtimeListeners(it) }
-            Pair(data, data2)
+            viewModel?.let { FirebaseListeners.setupRealtimeListeners(it) }
+            Triple(ref_HeadOfModels_data,data, data2)
         } catch (e: Exception) {
             Log.e("Firebase", "Online operation failed", e)
-            Pair(null, null)
+            Triple(null,null, null)
         }
     }
 
     private suspend fun handleOfflineOperations(
+        ref_HeadOfModels:  DatabaseReference,
         ref: DatabaseReference,
         refClientsDataBase: DatabaseReference
-    ): Pair<DataSnapshot?, DataSnapshot?> {
+    ): Triple<DataSnapshot?,DataSnapshot?, DataSnapshot?> {
         return try {
             FirebaseDatabase.getInstance().goOffline()
             val data = withTimeoutOrNull(TIMEOUT_MS) { ref.get().await() }
             val data2 = withTimeoutOrNull(TIMEOUT_MS) { refClientsDataBase.get().await() }
+            val ref_HeadOfModels_data = withTimeoutOrNull(TIMEOUT_MS) { ref_HeadOfModels.get().await() }
             FirebaseDatabase.getInstance().goOnline()
-            Pair(data, data2)
+            Triple(ref_HeadOfModels_data,data, data2)
         } catch (e: Exception) {
             Log.e("Firebase", "Offline operation failed", e)
-            Pair(null, null)
+            Triple(null,null, null)
         }
     }
 

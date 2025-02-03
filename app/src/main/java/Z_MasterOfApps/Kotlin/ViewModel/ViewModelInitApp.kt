@@ -1,6 +1,5 @@
 package Z_MasterOfApps.Kotlin.ViewModel
 
-import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.LoadFromFirebaseProduits
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.ViewModel.Frag_4A1_ExtVM
@@ -18,11 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -78,58 +72,5 @@ class ViewModelInitApp : ViewModel() {
         }
     }
 
-    // In ViewModelInitApp.kt, modify setupRealtimeListeners
-    fun setupRealtimeListeners(viewModel: ViewModelInitApp) {
-        val scope = CoroutineScope(Dispatchers.IO)
 
-        // Products listener
-        _ModelAppsFather.produitsFireBaseRef.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                scope.launch {
-                    val products = snapshot.children.mapNotNull {
-                        LoadFromFirebaseProduits.parseProduct(it)
-                    }
-                    viewModel.modelAppsFather.produitsMainDataBase.apply {
-                        clear()
-                        addAll(products)
-                    }
-                    Log.d("Firebase", "Real-time products updated: ${products.size} items")
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Products listener cancelled: ${error.message}")
-            }
-        })
-
-        // Clients listener
-        // Modified Clients listener
-        B_ClientsDataBase.refClientsDataBase.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                scope.launch {
-                    try {
-                        val clients = snapshot.children.mapNotNull { childSnapshot ->
-                            // Add explicit key handling
-                            val client = LoadFromFirebaseProduits.parseClient(childSnapshot)
-                            client?.let {
-                                it.copy(id = childSnapshot.key?.toLongOrNull() ?: it.id)
-                            }
-                        }
-
-                        viewModel.modelAppsFather.clientDataBase.apply {
-                            clear()
-                            addAll(clients)
-                        }
-                        Log.d("Firebase", "Real-time clients updated: ${clients.size} items")
-                    } catch (e: Exception) {
-                        Log.e("Firebase", "Failed to parse clients", e)
-                    }
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Clients listener cancelled: ${error.message}")
-            }
-        })
-    }
 }

@@ -47,6 +47,8 @@ fun AppNavigationHost(
     val navController = rememberNavController()
     val isManagerPhone = viewModelInitApp._paramatersAppsViewModelModel.cLeTelephoneDuGerant ?: false
     val items = remember(isManagerPhone) { NavigationItems.getItems(isManagerPhone) }
+
+    val startDestination = InfosDatas_FramgmentId4.route
     val currentRoute = navController.currentBackStackEntryAsState()
         .value?.destination?.route
 
@@ -64,7 +66,7 @@ fun AppNavigationHost(
                     } else {
                         NavHost(
                             navController = navController,
-                            startDestination = Screens.Startup_0.route,
+                            startDestination = startDestination,
                             modifier = Modifier.fillMaxSize()
                         ) {
                             composable(InfosDatas_FramgmentId4.route) {

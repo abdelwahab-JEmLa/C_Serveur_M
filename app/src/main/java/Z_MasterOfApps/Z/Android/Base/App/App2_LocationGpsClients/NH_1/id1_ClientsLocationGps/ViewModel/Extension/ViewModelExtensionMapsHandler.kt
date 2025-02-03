@@ -42,7 +42,7 @@ class ViewModelExtension_App2_F1(
                 }
             }
 
-        viewModel._modelAppsFather.clientDataBaseSnapList.add(newClient)
+        viewModel._modelAppsFather.clientDataBase.add(newClient)
 
         B_ClientsDataBase.refClientsDataBase
             .child(newClient.id.toString())

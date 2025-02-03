@@ -4,7 +4,8 @@ import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.ExpandedMainItem_F2
-import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.MainItem_F2
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.ExpandedMainItem_F3
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.MainItem_F3
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
@@ -59,16 +60,28 @@ fun MainList_F3(
     val groupedRegularProducts = etagersProduits
         .groupBy { product ->
             product.bonCommendDeCetteCota
-                ?.grossistInformations
+                ?.IdGrossitChoisi
         }
         .filterKeys { it != null }
-        .toSortedMap(compareBy { it?.positionInGrossistsList })
+        .toSortedMap(compareBy { grossistId ->
+            // Find the grossist in the database and get its position
+            viewModelInitApp._modelAppsFather.grossistsDataBase
+                .find { it.id == grossistId }
+                ?.statueDeBase
+                ?.itPositionInParentList
+                ?: Int.MAX_VALUE
+        })
 
     // Sort carton products by grossist position then product position
     val sortedCartonProducts = cartonsSectionProsduits
         .sortedWith(
-            compareBy<_ModelAppsFather.ProduitModel> {
-                it.bonCommendDeCetteCota?.grossistInformations?.positionInGrossistsList
+            compareBy<_ModelAppsFather.ProduitModel> { product ->
+                product.bonCommendDeCetteCota?.IdGrossitChoisi?.let { grossistId ->
+                    viewModelInitApp._modelAppsFather.grossistsDataBase
+                        .find { it.id == grossistId }
+                        ?.statueDeBase
+                        ?.itPositionInParentList
+                } ?: Int.MAX_VALUE
             }.thenBy {
                 it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
             }
@@ -82,16 +95,21 @@ fun MainList_F3(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Regular products sections
-        groupedRegularProducts.forEach { (grossist, products) ->
+        groupedRegularProducts.forEach { (grossistId, products) ->
             stickyHeader {
-                val backgroundColor =
-                    Color(android.graphics.Color.parseColor(grossist?.couleur ?: "#FFFFFF"))
-                val textColor =
-                    if (grossist?.couleur?.equals("#FFFFFF", ignoreCase = true) == true) {
-                        Color.Black
-                    } else {
-                        Color.White
-                    }
+                val grossist = viewModelInitApp._modelAppsFather.grossistsDataBase
+                    .find { it.id == grossistId }
+
+                val backgroundColor = Color(
+                    android.graphics.Color.parseColor(
+                        grossist?.statueDeBase?.couleur ?: "#FFFFFF"
+                    )
+                )
+                val textColor = if (grossist?.statueDeBase?.couleur == "#FFFFFF") {
+                    Color.Black
+                } else {
+                    Color.White
+                }
 
                 Box(
                     modifier = Modifier
@@ -121,7 +139,8 @@ fun MainList_F3(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                 ) {
-                    MainItem_F2(
+                    MainItem_F3(
+                        viewModelProduits = viewModelInitApp,
                         mainItem = product,
                         modifier = Modifier.fillMaxWidth(),
                         onCLickOnMain = {
@@ -158,7 +177,6 @@ fun MainList_F3(
             }
         }
 
-        // Carton products section
         if (sortedCartonProducts.isNotEmpty()) {
             stickyHeader {
                 Box(
@@ -184,7 +202,8 @@ fun MainList_F3(
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
                 ) {
-                    MainItem_F2(
+                    MainItem_F3(
+                        viewModelProduits = viewModelInitApp,
                         mainItem = product,
                         modifier = Modifier.fillMaxWidth(),
                         onCLickOnMain = {
@@ -208,7 +227,7 @@ fun MainList_F3(
                             )
                         )
                     ) {
-                        ExpandedMainItem_F2(
+                        ExpandedMainItem_F3(
                             viewModelInitApp = viewModelInitApp,
                             mainItem = product,
                             modifier = Modifier

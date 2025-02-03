@@ -74,16 +74,16 @@ fun MainItem_F3(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+
         val colorAchatModelList = mainItem.bonsVentDeCetteCota
-            .filter {
-                it.clientInformations
-                    ?.id == viewModelProduits
+            .filter { bonVent ->
+                // Handle nullable Long comparison safely
+                bonVent.clientIdChoisi == viewModelProduits
                     .extensionVMApp1FragmentId_3
                     .clientIDAuFilter
             }
             .flatMap { it.colours_Achete }
 
-        // Calculate total quantity from all bon vents and their colors
         val totalQuantity = colorAchatModelList
 
             .sumOf { it.quantity_Achete }

@@ -71,7 +71,7 @@ fun AppNavigationHost(
                                 A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
                             }
                             composable(InfosDatas_FramgmentId1.route) {
-                                A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
+                                A_id1_GerantDefinirePosition(viewModel = viewModelInitApp)
                             }
                             composable(InfosDatas_FramgmentId5.route) {
                                 A_ID5_VerificationProduitAcGrossist(viewModelInitApp)
@@ -227,7 +227,7 @@ private fun Preview_Fragment() {
                 color = MaterialTheme.colorScheme.primary
             )
         } else {
-            A_id1_GerantDefinirePosition(viewModelInitApp = viewModelInitApp)
+            A_id1_GerantDefinirePosition(viewModel = viewModelInitApp)
         }
     }
 }

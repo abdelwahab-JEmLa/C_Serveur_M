@@ -29,12 +29,12 @@ class ExteVMFragmentId_2(
         val prev = grossistsDataBase[index - 1]
 
         // Swap their positions
-        val currentPosition = currentElement.statueDeBase.itPositionInList
-        val prevPosition = prev.statueDeBase.itPositionInList
+        val currentPosition = currentElement.statueDeBase.itPositionInParentList
+        val prevPosition = prev.statueDeBase.itPositionInParentList
 
         // Update positions
-        currentElement.statueDeBase.itPositionInList = prevPosition
-        prev.statueDeBase.itPositionInList = currentPosition
+        currentElement.statueDeBase.itPositionInParentList = prevPosition
+        prev.statueDeBase.itPositionInParentList = currentPosition
 
         // Update the list order
         grossistsDataBase[index] = prev

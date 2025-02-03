@@ -59,7 +59,7 @@ data class B_ClientsDataBase(
                     val currentState = this@updateClientsDataBase.copy()
 
                     // Update local state
-                    val clientsList = viewModel._modelAppsFather.clientDataBaseSnapList
+                    val clientsList = viewModel._modelAppsFather.clientDataBase
                     val index = clientsList.indexOfFirst { it.id == currentState.id }
 
                     if (index != -1) {

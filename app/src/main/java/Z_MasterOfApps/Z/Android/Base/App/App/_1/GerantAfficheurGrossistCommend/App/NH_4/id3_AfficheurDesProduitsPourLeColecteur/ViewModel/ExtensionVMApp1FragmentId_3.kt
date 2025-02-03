@@ -9,7 +9,7 @@ import androidx.compose.runtime.setValue
 class ExtensionVMApp1FragmentId_3(
     val viewModelInitApp: ViewModelInitApp,
 ) {
-    private val clientDataBaseSnapList = viewModelInitApp._modelAppsFather.clientDataBaseSnapList
+    private val clientDataBaseSnapList = viewModelInitApp._modelAppsFather.clientDataBase
     var clientIDAuFilter by mutableStateOf<Long?>(0)
 
     fun upButton(index: Int) {

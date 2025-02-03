@@ -43,11 +43,8 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
     val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
         .filter { product ->
             product.bonCommendDeCetteCota.let {
-                it?.grossistInformations?.id ==
-                        viewModelInitApp
-                            ._paramatersAppsViewModelModel
-                            .telephoneClientParamaters
-                            .selectedGrossistForClientF2
+                it?.IdGrossitChoisi ==
+                        viewModelInitApp.frag2_A1_ExtVM.auFilter
                         && it
                     ?.mutableBasesStates
                     ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0

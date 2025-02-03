@@ -106,12 +106,12 @@ fun MainScreenFilterFAB_F4(
                                         val nonDefiniProduct = viewModel.produitsMainDataBase
                                             .firstOrNull { product ->
                                                 product.bonCommendDeCetteCota
-                                                    ?.grossistInformations?.nom == "Non Defini"
+                                                    ?.IdGrossitChoisi== 1L
                                             }
 
                                         nonDefiniProduct?.let { product ->
                                             product.bonCommendDeCetteCota?.let { bonCommande ->
-                                                bonCommande.grossistInformations?.id = grossist.id
+                                                bonCommande.IdGrossitChoisi = grossist.id
                                                 updateProduit(
                                                     product = product,
                                                     viewModelProduits = viewModel
@@ -133,7 +133,7 @@ fun MainScreenFilterFAB_F4(
                             ) {
                                 val productCount = viewModel.produitsMainDataBase.count { product ->
                                     product.bonCommendDeCetteCota
-                                        ?.grossistInformations?.id == grossist.id
+                                        ?.IdGrossitChoisi == grossist.id
                                 }
                                 Text(productCount.toString())
                             }

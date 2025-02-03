@@ -37,7 +37,7 @@ object LoadFromFirebaseProduits {
                     clear()
                     addAll(products)
                 }
-                viewModel.modelAppsFather.clientDataBaseSnapList.apply {
+                viewModel.modelAppsFather.clientDataBase.apply {
                     clear()
                     addAll(clients)
                 }
@@ -81,8 +81,6 @@ object LoadFromFirebaseProduits {
                 snapshot.child("bonCommendDeCetteCota").let { bonCommendSnapshot ->
                     if (bonCommendSnapshot.exists()) {
                         bonCommendDeCetteCota = bonCommendSnapshot.getValue(ProduitModel.GrossistBonCommandes::class.java)?.apply {
-                            grossistInformations = bonCommendSnapshot.child("grossistInformations")
-                                .getValue(ProduitModel.GrossistBonCommandes.GrossistInformations::class.java)
 
                             bonCommendSnapshot.child("mutableBasesStates")
                                 .getValue(ProduitModel.GrossistBonCommandes.MutableBasesStates::class.java)?.let {
@@ -165,7 +163,7 @@ object LoadFromFirebaseProduits {
 
         clientListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                viewModel.modelAppsFather.clientDataBaseSnapList.apply {
+                viewModel.modelAppsFather.clientDataBase.apply {
                     clear()
                     addAll(parseClients(snapshot))
                     Log.d(TAG, "Real-time clients update: ${size} items")

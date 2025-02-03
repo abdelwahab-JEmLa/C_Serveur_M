@@ -44,18 +44,12 @@ internal fun A_id4_DeplaceProduitsVerGrossist(
 
     val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
 
-    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
-        .filter { product ->
-            product.bonCommendDeCetteCota != null
-        }
-
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             if (databaseSize > 0) {
                 MainList_F4(
-                    visibleProducts = visibleProducts,
                     viewModelProduits = viewModelInitApp,
                     paddingValues = paddingValues
                 )

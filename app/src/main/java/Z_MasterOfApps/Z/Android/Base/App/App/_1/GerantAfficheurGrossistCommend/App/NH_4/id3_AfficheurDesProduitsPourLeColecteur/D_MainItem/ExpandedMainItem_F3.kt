@@ -2,7 +2,6 @@ package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.
 
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.ViewModel.Extension.Z_OnClick.MainItem.Extend.changeColours_AcheteQuantity_Achete
 import Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.E.Dialogs.QuantitySelectionDialog
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageBykeyId
 import androidx.compose.foundation.background
@@ -126,7 +125,9 @@ fun ExpandedMainItem_F3(
                 ) {
                     // Buyer info
                     Text(
-                        text = bonVent.clientInformations?.nom ?: "Unknown Client",
+                        text = viewModelInitApp._modelAppsFather.clientDataBase.find {
+                            it.id==bonVent.clientIdChoisi
+                        }?.nom  ?: "Unknown Client",
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist
 
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParGrossist
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.Modules.Dialogs.MoveProductsDialog
@@ -25,24 +26,25 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MainList_F4(
-    visibleProducts: List<_ModelAppsFather.ProduitModel>,
     viewModelProduits: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     var selectedProducts by remember { mutableStateOf<List<_ModelAppsFather.ProduitModel>>(emptyList()) }
-    var currentGrossist by remember { mutableStateOf<_ModelAppsFather.ProduitModel.GrossistBonCommandes.GrossistInformations?>(null) }
+    var currentGrossist by remember { mutableStateOf<Long?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
 
-    val groupedProducts = visibleProducts
-        .groupBy { it.bonCommendDeCetteCota?.grossistInformations }
-        .filterKeys { it != null }
-        .toSortedMap(compareBy { it?.positionInGrossistsList })
+    // Filter products based on the current filter value
+    val groupedProducts = viewModelProduits._modelAppsFather.groupedProductsParGrossist
+        .filter { (grossist, _) ->
+            viewModelProduits.frag_4A1_ExtVM.auFilter?.let { filterId ->
+                grossist.id == filterId
+            } ?: true
+        }
 
     if (showMoveDialog && currentGrossist != null) {
         MoveProductsDialog(
             selectedProducts = selectedProducts,
-            currentGrossist = currentGrossist,
             viewModelProduits = viewModelProduits,
             onDismiss = { showMoveDialog = false },
             onProductsMoved = { selectedProducts = emptyList() }
@@ -65,7 +67,7 @@ fun MainList_F4(
                     grossist = grossist,
                     selectedProductsCount = selectedProducts.size,
                     onMoveClick = {
-                        currentGrossist = grossist
+                        currentGrossist = grossist.id
                         showMoveDialog = true
                     }
                 )
@@ -110,5 +112,3 @@ fun MainList_F4(
         }
     }
 }
-
-

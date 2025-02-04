@@ -33,8 +33,11 @@ fun MainList_F4(
     var deplaceProduitsAuGrosssist by remember { mutableStateOf<Long?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
 
-    // Group products by grossist
-    val groupedProductsParGrossist = remember(viewModel._modelAppsFather.produitsMainDataBase) {
+    // Modify the remember block to depend on updateTrigger
+    val groupedProductsParGrossist = remember(
+        viewModel._modelAppsFather.produitsMainDataBase,
+        viewModel.frag_4A1_ExtVM.updateTrigger // Add this dependency
+    ) {
         viewModel._modelAppsFather.grossistsDataBase.map { grossist ->
             val matchingProducts = viewModel._modelAppsFather.produitsMainDataBase.filter { product ->
                 product.bonCommendDeCetteCota?.idGrossistChoisi == grossist.id
@@ -111,9 +114,12 @@ fun MainList_F4(
     if (showMoveDialog && deplaceProduitsAuGrosssist != null) {
         MoveProductsDialog(
             selectedProducts = selectedProducts,
-            viewModelProduits = viewModel,
+            viewModel = viewModel,
             onDismiss = { showMoveDialog = false },
-            onProductsMoved = { selectedProducts = emptyList() }
+            onProductsMoved = {
+                selectedProducts = emptyList()
+                viewModel.frag_4A1_ExtVM.updateTriggerFun()
+            }
         )
     }
 }

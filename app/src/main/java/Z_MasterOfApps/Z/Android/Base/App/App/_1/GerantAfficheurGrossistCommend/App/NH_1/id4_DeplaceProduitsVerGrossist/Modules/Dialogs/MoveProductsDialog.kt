@@ -19,7 +19,7 @@ import androidx.compose.ui.window.Dialog
 @Composable
 fun MoveProductsDialog(
     selectedProducts: List<_ModelAppsFather.ProduitModel>,
-    viewModelProduits: ViewModelInitApp,
+    viewModel: ViewModelInitApp,
     onDismiss: () -> Unit,
     onProductsMoved: () -> Unit
 ) {
@@ -38,15 +38,15 @@ fun MoveProductsDialog(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                viewModelProduits._modelAppsFather.grossistsDataBase
-                    .filter { it.id != viewModelProduits.frag_4A1_ExtVM.deplaceProduitsAuGrosssist}
+                viewModel._modelAppsFather.grossistsDataBase
+                    .filter { it.id != viewModel.frag_4A1_ExtVM.deplaceProduitsAuGrosssist}
                     .forEach { grossist ->
                         Button(
                             onClick = {
                                 selectedProducts.forEach { product ->
                                     product.bonCommendDeCetteCota?.let { bonCommande ->
                                         bonCommande.idGrossistChoisi = grossist.id
-                                        updateProduit(product, viewModelProduits)
+                                        updateProduit(product, viewModel)
                                     }
                                 }
                                 onDismiss()

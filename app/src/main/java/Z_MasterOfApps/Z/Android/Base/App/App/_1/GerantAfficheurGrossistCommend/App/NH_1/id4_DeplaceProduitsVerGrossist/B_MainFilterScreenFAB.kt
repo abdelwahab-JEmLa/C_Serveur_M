@@ -41,9 +41,7 @@ import kotlin.math.roundToInt
 fun MainScreenFilterFAB_F4(
     modifier: Modifier = Modifier,
     viewModel: ViewModelInitApp,
-    onUpdateTrigger: () -> Unit
 ) {
-
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
@@ -79,7 +77,7 @@ fun MainScreenFilterFAB_F4(
             AnimatedVisibility(visible = showButtons) {
                 Column(horizontalAlignment = Alignment.End) {
                     viewModel._modelAppsFather.groupedProductsParGrossist.forEachIndexed { index, (grossist, products) ->
-                        key(grossist.id) {
+                        key(grossist.id ,viewModel.frag_4A1_ExtVM.updateTrigger) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -130,7 +128,7 @@ fun MainScreenFilterFAB_F4(
                                                         product = product,
                                                         viewModelProduits = viewModel
                                                     )
-                                                    onUpdateTrigger()
+                                                    viewModel.frag_4A1_ExtVM.updateTriggerFun()
                                                 }
                                             }
                                         }
@@ -145,7 +143,7 @@ fun MainScreenFilterFAB_F4(
                                             )
                                         )
                                     } catch (e: Exception) {
-                                        Color(0xFFFF0000) // Fallback color if parsing fails
+                                        Color(0xFFFF0000)
                                     }
                                 ) {
                                     Text(text = products.size.toString())

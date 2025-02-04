@@ -72,7 +72,7 @@ fun AppNavigationHost(
                             composable(InfosDatas_FramgmentId4.route) {
                                 A_id4_DeplaceProduitsVerGrossist(viewModelInitApp = viewModelInitApp)
                             }
-                            composable(InfosDatas_FramgmentId1.route) {
+                            composable(InfosDatas_FragmentId1.route) {
                                 A_id1_GerantDefinirePosition(viewModel = viewModelInitApp)
                             }
                             composable(InfosDatas_FramgmentId5.route) {
@@ -132,8 +132,10 @@ object NavigationItems {
         add(StartupIcon_Start)
 
         //Manageur_Fragments
-        if (isManagerPhone) { add(InfosDatas_FramgmentId4) }
-        add(InfosDatas_FramgmentId1)
+        if (isManagerPhone) {
+            add(InfosDatas_FramgmentId4)
+        }
+        add(InfosDatas_FragmentId1)
         add(InfosDatas_FramgmentId5)
 
         //Clients_Fragments
@@ -141,11 +143,13 @@ object NavigationItems {
         add(InfosDatas_FramgmentId3)
 
         //MapApp_Fragments
-        if (isManagerPhone) { add(InfosDatas_FramgmentId6) }
+        if (isManagerPhone) {
+            add(InfosDatas_FramgmentId6)
+        }
     }
 }
 
-data object InfosDatas_FramgmentId1 : Screen(1,"محدد اماكن المنتجات عند الجمال",Color(0xFFFF5722),Icons.Default.LocationOn, "fragment_main_screen_1",)
+data object InfosDatas_FragmentId1 : Screen(1,"محدد اماكن المنتجات عند الجمال",Color(0xFFFF5722),Icons.Default.LocationOn, "fragment_main_screen_1",)
 
 data object InfosDatas_FramgmentId2 : Screen(
     id =2,

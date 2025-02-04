@@ -60,7 +60,7 @@ fun MainList_F3(
     val groupedRegularProducts = etagersProduits
         .groupBy { product ->
             product.bonCommendDeCetteCota
-                ?.IdGrossitChoisi
+                ?.idGrossistChoisi
         }
         .filterKeys { it != null }
         .toSortedMap(compareBy { grossistId ->
@@ -76,7 +76,7 @@ fun MainList_F3(
     val sortedCartonProducts = cartonsSectionProsduits
         .sortedWith(
             compareBy<_ModelAppsFather.ProduitModel> { product ->
-                product.bonCommendDeCetteCota?.IdGrossitChoisi?.let { grossistId ->
+                product.bonCommendDeCetteCota?.idGrossistChoisi?.let { grossistId ->
                     viewModelInitApp._modelAppsFather.grossistsDataBase
                         .find { it.id == grossistId }
                         ?.statueDeBase

@@ -42,7 +42,7 @@ internal fun A_id1_GerantDefinirePosition(
 
     val visibleProducts = viewModel._modelAppsFather.produitsMainDataBase.filter { product ->
         product.bonCommendDeCetteCota
-            ?.IdGrossitChoisi == viewModel.frag1_A1_ExtVM.idAuFilter
+            ?.idGrossistChoisi == viewModel.frag1_A1_ExtVM.idAuFilter
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

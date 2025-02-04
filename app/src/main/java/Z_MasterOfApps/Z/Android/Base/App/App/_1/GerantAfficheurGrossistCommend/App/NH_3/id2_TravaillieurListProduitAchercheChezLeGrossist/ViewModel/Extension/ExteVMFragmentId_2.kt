@@ -1,7 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.ViewModel.Extension
 
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase.Companion.updateGrossistDataBase
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.runtime.getValue
@@ -44,23 +43,6 @@ class ExteVMFragmentId_2(
         currentElement.updateGrossistDataBase(viewModelInitApp)
         prev.updateGrossistDataBase(viewModelInitApp)
     }
-
-    fun changeColours_AcheteQuantity_Achete(
-        selectedBonVent: ProduitModel.ClientBonVentModel?,
-        produit: ProduitModel,
-        color: ProduitModel.ClientBonVentModel.ColorAchatModel,
-        newQuantity: Int
-    ) {
-        val updatedProduit = produit.apply {
-            bonsVentDeCetteCota.find { it==selectedBonVent }
-                ?.let { bonVent ->
-                    bonVent.colours_Achete.find { it == color }
-                        ?.quantity_Achete = newQuantity
-                }
-        }
-        updateProduit(updatedProduit,viewModelInitApp)
-    }
-
 }
 
 

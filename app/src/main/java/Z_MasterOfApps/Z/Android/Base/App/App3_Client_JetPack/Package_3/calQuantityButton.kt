@@ -78,7 +78,7 @@ fun calQuantityButton(
         // Format current date as yyyy-MM-dd
         val currentDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
         // Get grossist information with fallback to default
-        val lastIdGrossitChoisi = product.historiqueBonsCommend.lastOrNull()?.IdGrossitChoisi
+        val lastIdGrossitChoisi = product.historiqueBonsCommend.lastOrNull()?.idGrossistChoisi
             ?: 0
 
         val aggregatedColors = product.bonsVentDeCetteCota
@@ -101,7 +101,7 @@ fun calQuantityButton(
 
         val newBonCommande = GrossistBonCommandes(
             vid = System.currentTimeMillis(),
-            IdGrossitChoisi = lastIdGrossitChoisi,
+            idGrossistChoisi = lastIdGrossitChoisi,
             init_coloursEtGoutsCommendee = aggregatedColors
         ).apply {
             mutableBasesStates?.dateInString = currentDate

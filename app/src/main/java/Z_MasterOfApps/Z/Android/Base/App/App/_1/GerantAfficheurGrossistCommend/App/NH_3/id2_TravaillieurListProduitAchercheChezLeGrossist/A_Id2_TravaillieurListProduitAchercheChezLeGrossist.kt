@@ -34,7 +34,7 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
     val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
         .filter { product ->
             product.bonCommendDeCetteCota.let {
-                it?.IdGrossitChoisi ==
+                it?.idGrossistChoisi ==
                         viewModelInitApp.frag2_A1_ExtVM.auFilter
                         && it
                     ?.mutableBasesStates

@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Kotlin.Model
 
+import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase.StatueDeBase
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -102,7 +103,7 @@ open class _ModelAppsFather(
         @IgnoreExtraProperties
         class GrossistBonCommandes(
             var vid: Long = 0,
-            var IdGrossitChoisi: Long = 0,
+            var idGrossistChoisi: Long = 0,
             init_coloursEtGoutsCommendee: List<ColoursGoutsCommendee> = emptyList(),
         ) {
             var mutableBasesStates: MutableBasesStates? by mutableStateOf(MutableBasesStates())
@@ -131,65 +132,7 @@ open class _ModelAppsFather(
             ) {
                 var quantityAchete: Int by mutableIntStateOf(0)
             }
-
-            companion object {
-                fun calculeSelfGrossistBonCommandesExtension(product: _ModelAppsFather.ProduitModel, viewModelInitApp: ViewModelInitApp) {
-                    Log.d("CalculeSelf", "Starting calculeSelf for product ${product.id}")
-                    viewModelInitApp._modelAppsFather.produitsMainDataBase
-                        .filter { it.id == product.id }
-                        .forEach { produit ->
-                            try {
-
-                                val newBonCommande = GrossistBonCommandes(
-                                    IdGrossitChoisi = 1
-                                ).apply {
-
-                                    // Initialize empty list for Firebase
-                                    coloursEtGoutsCommendee.clear()
-
-                                    // Create a temporary list to hold the processed colors
-                                    val processedColors = mutableListOf<_ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee>()
-
-
-                                    produit.bonsVentDeCetteCota
-                                        .flatMap { it.colours_Achete }
-                                        .groupBy { it.couleurId }
-                                        .forEach { (couleurId, colorList) ->
-
-                                            colorList.firstOrNull()?.let { firstColor ->
-                                                val totalQuantity = colorList.sumOf { it.quantity_Achete }
-
-                                                val newCommendee = _ModelAppsFather.ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee(
-                                                    id = couleurId,
-                                                    nom = firstColor.nom,
-                                                    emogi = firstColor.imogi
-                                                ).apply {
-                                                    quantityAchete = totalQuantity
-                                                }
-
-                                                if (newCommendee.quantityAchete > 0) {
-                                                    processedColors.add(newCommendee)
-                                                }
-                                            }
-                                        }
-
-                                    coloursEtGoutsCommendee.addAll(processedColors)
-                                }
-
-                                produit.bonCommendDeCetteCota = newBonCommande
-
-
-                            } catch (e: Exception) {
-                                Log.e("CalculeSelf", "Calculation error for product ${produit.id}", e)
-                                Log.e("CalculeSelf", "Stack trace: ${e.stackTraceToString()}")
-                                e.printStackTrace()
-                            }
-                        }
-                }
-            }
         }
-
-
 
         @get:Exclude
         var bonsVentDeCetteCota: SnapshotStateList<ClientBonVentModel> =
@@ -217,10 +160,15 @@ open class _ModelAppsFather(
         class ClientBonVentModel(
             vid: Long = 0,
             var clientIdChoisi: Long = 0,
+            var produitStatueDeBaseDeChezCeClient: StatueDeBase = StatueDeBase(),
             init_colours_achete: List<ColorAchatModel> = emptyList(),
         ) {
             // Basic information
             var bonStatueDeBase by mutableStateOf(BonStatueDeBase())
+            @IgnoreExtraProperties
+            data class StatueDeBase(
+                var positionDonClientsList: Int = 0,
+            )
             // Status management
             @IgnoreExtraProperties
             class BonStatueDeBase {

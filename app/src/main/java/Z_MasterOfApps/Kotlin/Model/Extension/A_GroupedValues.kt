@@ -10,7 +10,7 @@ val _ModelAppsFather.groupedProductsParGrossist: List<Map.Entry<C_GrossistsDataB
         // Find all products for this grossist
         val matchingProducts = produitsMainDataBase.filter { product ->
             product.bonCommendDeCetteCota
-                ?.IdGrossitChoisi == grossist.id
+                ?.idGrossistChoisi == grossist.id
         }
 
         // Create and return a proper pair

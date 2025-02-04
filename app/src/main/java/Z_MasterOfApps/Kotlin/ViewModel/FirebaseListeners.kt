@@ -3,7 +3,6 @@ package Z_MasterOfApps.Kotlin.ViewModel
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.LoadFromFirebaseProduits
 import android.util.Log
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,7 +19,6 @@ object FirebaseListeners {
 
     fun setupRealtimeListeners(viewModel: ViewModelInitApp) {
         Log.d(TAG, "Setting up real-time listeners...")
-        
         setupProductsListener(viewModel)
         setupClientsListener(viewModel)
         setupGrossistsListener(viewModel)
@@ -28,15 +26,30 @@ object FirebaseListeners {
 
     private fun setupProductsListener(viewModel: ViewModelInitApp) {
         productsListener?.let { _ModelAppsFather.produitsFireBaseRef.removeEventListener(it) }
-        
+
         productsListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val products = snapshot.children.mapNotNull { 
-                            LoadFromFirebaseProduits.parseProduct(it)
+                        val products = mutableListOf<_ModelAppsFather.ProduitModel>()
+                        snapshot.children.forEach { snap ->
+                            val map = snap.value as? Map<*, *> ?: return@forEach
+                            val prod = _ModelAppsFather.ProduitModel(
+                                id = snap.key?.toLongOrNull() ?: return@forEach,
+                                itsTempProduit = map["itsTempProduit"] as? Boolean ?: false,
+                                init_nom = map["nom"] as? String ?: "",
+                                init_besoin_To_Be_Updated = map["besoin_To_Be_Updated"] as? Boolean ?: false,
+                                initialNon_Trouve = map["non_Trouve"] as? Boolean ?: false,
+                                init_visible = false
+                            ).apply {
+                                snap.child("statuesBase").getValue(_ModelAppsFather.ProduitModel.StatuesBase::class.java)?.let {
+                                    statuesBase = it
+                                    statuesBase.imageGlidReloadTigger = 0
+                                }
+                            }
+                            products.add(prod)
                         }
-                        
+
                         viewModel.modelAppsFather.produitsMainDataBase.apply {
                             clear()
                             addAll(products)
@@ -58,17 +71,28 @@ object FirebaseListeners {
 
     private fun setupClientsListener(viewModel: ViewModelInitApp) {
         clientsListener?.let { B_ClientsDataBase.refClientsDataBase.removeEventListener(it) }
-        
+
         clientsListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val clients = snapshot.children.mapNotNull { childSnapshot ->
-                            LoadFromFirebaseProduits.parseClient(childSnapshot)?.let {
-                                it.copy(id = childSnapshot.key?.toLongOrNull() ?: it.id)
+                        val clients = mutableListOf<B_ClientsDataBase>()
+                        snapshot.children.forEach { snap ->
+                            val map = snap.value as? Map<*, *> ?: return@forEach
+                            B_ClientsDataBase(
+                                id = snap.key?.toLongOrNull() ?: return@forEach,
+                                nom = map["nom"] as? String ?: ""
+                            ).apply {
+                                snap.child("statueDeBase").getValue(B_ClientsDataBase.StatueDeBase::class.java)?.let {
+                                    statueDeBase = it
+                                }
+                                snap.child("gpsLocation").getValue(B_ClientsDataBase.GpsLocation::class.java)?.let {
+                                    gpsLocation = it
+                                }
+                                clients.add(this)
                             }
                         }
-                        
+
                         viewModel.modelAppsFather.clientDataBase.apply {
                             clear()
                             addAll(clients)
@@ -90,29 +114,30 @@ object FirebaseListeners {
 
     private fun setupGrossistsListener(viewModel: ViewModelInitApp) {
         grossistsListener?.let { _ModelAppsFather.ref_HeadOfModels.removeEventListener(it) }
-        
+
         grossistsListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val grossists = snapshot.child("C_GrossistsDataBase").children.mapNotNull { grossistSnapshot ->
+                        val grossists = mutableListOf<C_GrossistsDataBase>()
+                        snapshot.child("C_GrossistsDataBase").children.forEach { grossistSnapshot ->
                             try {
-                                val grossistMap = grossistSnapshot.value as? Map<*, *> ?: return@mapNotNull null
+                                val grossistMap = grossistSnapshot.value as? Map<*, *> ?: return@forEach
                                 C_GrossistsDataBase(
-                                    id = grossistSnapshot.key?.toLongOrNull() ?: return@mapNotNull null,
+                                    id = grossistSnapshot.key?.toLongOrNull() ?: return@forEach,
                                     nom = grossistMap["nom"] as? String ?: "Non Defini"
                                 ).apply {
                                     grossistSnapshot.child("statueDeBase")
                                         .getValue(C_GrossistsDataBase.StatueDeBase::class.java)?.let {
                                             statueDeBase = it
                                         }
+                                    grossists.add(this)
                                 }
                             } catch (e: Exception) {
                                 Log.e(TAG, "Error parsing grossist ${grossistSnapshot.key}", e)
-                                null
                             }
                         }
-                        
+
                         viewModel.modelAppsFather.grossistsDataBase.apply {
                             clear()
                             addAll(grossists)
@@ -130,26 +155,5 @@ object FirebaseListeners {
         }
 
         _ModelAppsFather.ref_HeadOfModels.addValueEventListener(grossistsListener!!)
-    }
-
-    fun cleanup() {
-        Log.d(TAG, "Cleaning up listeners...")
-        
-        productsListener?.let { 
-            _ModelAppsFather.produitsFireBaseRef.removeEventListener(it)
-            productsListener = null
-        }
-        
-        clientsListener?.let {
-            B_ClientsDataBase.refClientsDataBase.removeEventListener(it)
-            clientsListener = null
-        }
-        
-        grossistsListener?.let {
-            _ModelAppsFather.ref_HeadOfModels.removeEventListener(it)
-            grossistsListener = null
-        }
-        
-        Log.d(TAG, "All listeners cleaned up")
     }
 }

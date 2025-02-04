@@ -1,6 +1,6 @@
+// MainActivity.kt
 package com.example.c_serveur
 
-import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.FirebaseOfflineHandler
 import Z_MasterOfApps.Z.Android.Main.MainScreen
 import Z_MasterOfApps.Z.Android.Main.Utils.PermissionHandler
 import android.app.Application
@@ -21,20 +21,17 @@ import com.google.firebase.FirebaseApp
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        FirebaseApp.initializeApp(this)?.let { app ->
-            FirebaseOfflineHandler.initializeFirebase(app)
-        }
+        FirebaseApp.initializeApp(this)
     }
 }
-class MainActivity : ComponentActivity() {
 
+class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val permissionsGranted = mutableStateOf(false)
         enableEdgeToEdge()
 
-        // Check permissions immediately
         PermissionHandler(this).checkAndRequestPermissions(object : PermissionHandler.PermissionCallback {
             override fun onPermissionsGranted() {
                 permissionsGranted.value = true
@@ -54,11 +51,10 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainScreen(
                         modifier = Modifier.padding(innerPadding),
-                        permissionsGranted = permissionsGranted.value ,
+                        permissionsGranted = permissionsGranted.value,
                     )
                 }
             }
         }
     }
 }
-

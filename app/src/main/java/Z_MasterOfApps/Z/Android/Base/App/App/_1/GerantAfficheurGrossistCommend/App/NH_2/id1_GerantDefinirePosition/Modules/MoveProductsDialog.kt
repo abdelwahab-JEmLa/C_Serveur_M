@@ -45,7 +45,7 @@ fun MoveProductsDialog(
                             onClick = {
                                 selectedProducts.forEach { product ->
                                     product.bonCommendDeCetteCota?.let { bonCommande ->
-                                        bonCommande.IdGrossitChoisi = grossist.id
+                                        bonCommande.idGrossistChoisi = grossist.id
                                         updateProduit(product, viewModelProduits)
                                     }
                                 }

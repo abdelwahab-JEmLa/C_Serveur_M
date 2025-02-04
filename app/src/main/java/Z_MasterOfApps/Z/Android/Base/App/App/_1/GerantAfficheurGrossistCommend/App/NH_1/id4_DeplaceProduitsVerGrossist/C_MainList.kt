@@ -28,7 +28,8 @@ import androidx.compose.ui.unit.dp
 fun MainList_F4(
     viewModel: ViewModelInitApp,
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    updateTrigger: Int
 ) {
     val frag4a1Extvm = viewModel.frag_4A1_ExtVM
 

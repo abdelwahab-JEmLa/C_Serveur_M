@@ -7,9 +7,9 @@ import android.util.Log
 
 private const val TAG = "ProductsDebug"
 
+// A_GroupedValues.kt stays the same
 val _ModelAppsFather.groupedProductsParGrossist: List<Map.Entry<C_GrossistsDataBase, List<_ModelAppsFather.ProduitModel>>>
     get() = grossistsDataBase.map { grossist ->
-        // Find all products for this grossist
         val matchingProducts = produitsMainDataBase.filter { product ->
             // Log only for products 23 and 64
             if (product.id == 23L || product.id == 64L) {

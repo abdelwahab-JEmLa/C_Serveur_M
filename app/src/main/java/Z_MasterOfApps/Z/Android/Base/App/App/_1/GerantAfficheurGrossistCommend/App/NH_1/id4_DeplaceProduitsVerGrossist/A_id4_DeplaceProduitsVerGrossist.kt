@@ -8,6 +8,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,6 +21,8 @@ internal fun A_id4_DeplaceProduitsVerGrossist(
     modifier: Modifier = Modifier,
     viewModelInitApp: ViewModelInitApp = viewModel(),
 ) {
+    var updateTrigger by remember { mutableStateOf(0) }
+
     if (viewModelInitApp.isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
@@ -36,6 +42,7 @@ internal fun A_id4_DeplaceProduitsVerGrossist(
         Box(modifier = Modifier.fillMaxSize()) {
             if (viewModelInitApp._modelAppsFather.produitsMainDataBase.size > 0) {
                 MainList_F4(
+                    updateTrigger=updateTrigger,
                     viewModel = viewModelInitApp,
                     paddingValues = paddingValues
                 )

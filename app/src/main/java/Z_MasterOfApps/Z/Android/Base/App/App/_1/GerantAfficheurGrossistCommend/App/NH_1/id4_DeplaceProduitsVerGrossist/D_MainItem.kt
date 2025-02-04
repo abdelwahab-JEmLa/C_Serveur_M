@@ -32,7 +32,8 @@ fun MainItem_F4(
             .height(80.dp)
             .background(
                 color = if (position != null)
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)                      else
+                    MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                else
                     MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(4.dp)
             )

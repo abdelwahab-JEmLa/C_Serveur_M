@@ -80,7 +80,7 @@ fun MainItem_F3(
                 // Handle nullable Long comparison safely
                 bonVent.clientIdChoisi == viewModelProduits
                     .frag_3A1_ExtVM
-                    .iDAuFilter
+                    .iDClientAuFilter
             }
             .flatMap { it.colours_Achete }
 

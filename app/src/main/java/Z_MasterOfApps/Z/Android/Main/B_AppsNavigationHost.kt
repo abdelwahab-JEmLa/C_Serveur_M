@@ -172,14 +172,14 @@ data object InfosDatas_FramgmentId3 : Screen(
 data object InfosDatas_FramgmentId4 : Screen(
     id =4,
     route = "main_screen_f4",
-    icon = Icons.Default.LocalShipping, // Changed from Moving to LocalShipping for product distribution
+    icon = Icons.Default.LocalShipping,
     titleArab = "مقسم المنتجات الى الجمالين",
     color = Color(0xFF3F51B5)
 )
 
 data object InfosDatas_FramgmentId5 : Screen(
     id =5,
-    icon = Icons.AutoMirrored.Filled.FactCheck, // Changed from Done to FactCheck for invoice verification
+    icon = Icons.AutoMirrored.Filled.FactCheck,
     route = "A_ID5_VerificationProduitAcGrossist",
     titleArab = "التاكد من فواتير مع المنتجات عند الجمال",
     color = Color(0xFFFF5892)
@@ -187,7 +187,7 @@ data object InfosDatas_FramgmentId5 : Screen(
 
 data object InfosDatas_FramgmentId6 : Screen(
     id =6,
-    icon = Icons.Default.PinDrop, // Changed from Person to PinDrop for GPS location
+    icon = Icons.Default.PinDrop,
     route = "Id_App2Fragment1",
     titleArab = "محدد اماكن الزبائن GPS",
     color = Color(0xFFFF9800)

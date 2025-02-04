@@ -46,7 +46,6 @@ fun MainScreenFilterFAB_F2(
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
 
-    val groupedProducts = viewModel._modelAppsFather.groupedProductsParGrossist
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -86,10 +85,14 @@ fun MainScreenFilterFAB_F2(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    val frag2A1Extvm = viewModel
+                        .frag2_A1_ExtVM
                     FloatingActionButton(
                         onClick = {
-                            viewModel.frag2_A1_ExtVM.afficheProduitsPourRegleConflites =
-                                !viewModel.frag2_A1_ExtVM.afficheProduitsPourRegleConflites
+                            frag2A1Extvm.auFilter=null
+
+                            frag2A1Extvm.afficheProduitsPourRegleConflites =
+                                !frag2A1Extvm.afficheProduitsPourRegleConflites
                         },
                         modifier = Modifier.size(48.dp),
                         containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -100,7 +103,8 @@ fun MainScreenFilterFAB_F2(
                         )
                     }
 
-                    groupedProducts.forEachIndexed { index, (grossist, produits) ->
+                    viewModel._modelAppsFather
+                        .groupedProductsParGrossist.forEachIndexed { index, (grossist, produits) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -127,10 +131,7 @@ fun MainScreenFilterFAB_F2(
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(
-                                        if (viewModel
-                                                ._paramatersAppsViewModelModel
-                                                .telephoneClientParamaters
-                                                .selectedGrossistForClientF2 == grossist.id
+                                        if (frag2A1Extvm.auFilter == grossist.id
                                         ) Color.Blue else Color.Transparent
                                     )
                                     .padding(4.dp),
@@ -139,10 +140,7 @@ fun MainScreenFilterFAB_F2(
 
                             FloatingActionButton(
                                 onClick = {
-                                    viewModel
-                                        ._paramatersAppsViewModelModel
-                                        .telephoneClientParamaters
-                                        .selectedGrossistForClientF2 = grossist.id
+                                    frag2A1Extvm.auFilter = grossist.id
                                 },
                                 modifier = Modifier.size(48.dp),
                                 containerColor = Color.Black

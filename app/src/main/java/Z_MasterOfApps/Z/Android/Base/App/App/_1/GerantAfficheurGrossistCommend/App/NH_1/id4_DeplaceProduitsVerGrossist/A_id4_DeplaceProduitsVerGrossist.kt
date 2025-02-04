@@ -42,7 +42,6 @@ internal fun A_id4_DeplaceProduitsVerGrossist(
         Box(modifier = Modifier.fillMaxSize()) {
             if (viewModelInitApp._modelAppsFather.produitsMainDataBase.size > 0) {
                 MainList_F4(
-                    updateTrigger=updateTrigger,
                     viewModel = viewModelInitApp,
                     paddingValues = paddingValues
                 )
@@ -59,6 +58,7 @@ internal fun A_id4_DeplaceProduitsVerGrossist(
             )
             MainScreenFilterFAB_F4(
                 viewModel = viewModelInitApp,
+                onUpdateTrigger = { updateTrigger++ }  // Increment trigger to force update
             )
         }
     }

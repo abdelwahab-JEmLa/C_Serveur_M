@@ -1,6 +1,5 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist
 
-import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParGrossist
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.Modules.Dialogs.MoveProductsDialog
@@ -29,15 +28,22 @@ fun MainList_F4(
     viewModel: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
-    updateTrigger: Int
 ) {
-    val frag4a1Extvm = viewModel.frag_4A1_ExtVM
-
     var selectedProducts by remember { mutableStateOf<List<_ModelAppsFather.ProduitModel>>(emptyList()) }
+    var deplaceProduitsAuGrosssist by remember { mutableStateOf<Long?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
-    var deplaceProduitsAuGrosssist = frag4a1Extvm.deplaceProduitsAuGrosssist
 
-    val groupedProducts = viewModel._modelAppsFather.groupedProductsParGrossist
+    // Group products by grossist
+    val groupedProductsParGrossist = remember(viewModel._modelAppsFather.produitsMainDataBase) {
+        viewModel._modelAppsFather.grossistsDataBase.map { grossist ->
+            val matchingProducts = viewModel._modelAppsFather.produitsMainDataBase.filter { product ->
+                product.bonCommendDeCetteCota?.idGrossistChoisi == grossist.id
+            }
+            grossist to matchingProducts
+        }.sortedBy { (grossist, _) ->
+            grossist.statueDeBase.itPositionInParentList
+        }
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -49,8 +55,10 @@ fun MainList_F4(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        groupedProducts.forEach { (grossist, products) ->
-            item(span = { GridItemSpan(3) }) {
+        groupedProductsParGrossist.forEach { (grossist, products) ->
+            item(
+                span = { GridItemSpan(3) }
+            ) {
                 GrossistHeader(
                     grossist = grossist,
                     selectedProductsCount = selectedProducts.size,
@@ -66,13 +74,21 @@ fun MainList_F4(
                     it.bonCommendDeCetteCota?.mutableBasesStates
                         ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                         ?: Int.MAX_VALUE
-                }
+                },
+                key = { it.id }
             ) { product ->
                 Box(
-                    modifier = Modifier
-                        .animateItem()
+                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                         .padding(4.dp)
                 ) {
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = if (selectedProducts.contains(product))
+                                Color.Yellow.copy(alpha = 0.3f)
+                            else Color.Transparent,
+                            shape = RoundedCornerShape(4.dp)
+                        )
                     MainItem_F4(
                         mainItem = product,
                         onCLickOnMain = {
@@ -85,20 +101,13 @@ fun MainList_F4(
                         position = selectedProducts.indexOf(product).let {
                             if (it >= 0) it + 1 else null
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = if (selectedProducts.contains(product))
-                                    Color.Yellow.copy(alpha = 0.3f)
-                                else Color.Transparent,
-                                shape = RoundedCornerShape(4.dp)
-                            )
-                            .animateItem(),
+                        modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
                     )
                 }
             }
         }
     }
+
     if (showMoveDialog && deplaceProduitsAuGrosssist != null) {
         MoveProductsDialog(
             selectedProducts = selectedProducts,

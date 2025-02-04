@@ -11,9 +11,23 @@ private const val TAG = "ProductsDebug"
 val _ModelAppsFather.groupedProductsParGrossist: List<Map.Entry<C_GrossistsDataBase, List<_ModelAppsFather.ProduitModel>>>
     get() = grossistsDataBase.map { grossist ->
         val matchingProducts = produitsMainDataBase.filter { product ->
-            // Log only for products 23 and 64
-            if (product.id == 23L || product.id == 64L) {
-                Log.d(TAG, """
+            logSpecitleProd(product, grossist)
+            product.bonCommendDeCetteCota?.idGrossistChoisi == grossist.id
+        }
+
+        java.util.AbstractMap.SimpleEntry(grossist, matchingProducts)
+    }.sortedBy { entry ->
+        entry.key.statueDeBase.itPositionInParentList
+    }
+
+private fun logSpecitleProd(
+    product: _ModelAppsFather.ProduitModel,
+    grossist: C_GrossistsDataBase
+) {
+    // Log only for products 23 and 64
+    if (product.id == 23L || product.id == 64L) {
+        Log.d(
+            TAG, """
                     Product Check:
                     ID: ${product.id}
                     Name: ${product.nom}
@@ -22,16 +36,10 @@ val _ModelAppsFather.groupedProductsParGrossist: List<Map.Entry<C_GrossistsDataB
                     BonCommend ID: ${product.bonCommendDeCetteCota?.idGrossistChoisi}
                     Match Result: ${product.bonCommendDeCetteCota?.idGrossistChoisi == grossist.id}
                     ------------------------
-                """.trimIndent())
-            }
-
-            product.bonCommendDeCetteCota?.idGrossistChoisi == grossist.id
-        }
-
-        java.util.AbstractMap.SimpleEntry(grossist, matchingProducts)
-    }.sortedBy { entry ->
-        entry.key.statueDeBase.itPositionInParentList
+                """.trimIndent()
+        )
     }
+}
 
 val _ModelAppsFather.groupedProductsParClients: List<Map.Entry<B_ClientsDataBase, List<_ModelAppsFather.ProduitModel>>>
     get() = clientDataBase.map { client ->

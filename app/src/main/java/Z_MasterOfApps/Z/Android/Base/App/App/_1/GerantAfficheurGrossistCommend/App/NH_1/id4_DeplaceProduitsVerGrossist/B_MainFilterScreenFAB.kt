@@ -37,19 +37,16 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-// B_MainFilterScreenFAB.kt
-
 @Composable
 fun MainScreenFilterFAB_F4(
     modifier: Modifier = Modifier,
     viewModel: ViewModelInitApp,
+    onUpdateTrigger: () -> Unit
 ) {
+
     var offsetX by remember { mutableFloatStateOf(0f) }
     var offsetY by remember { mutableFloatStateOf(0f) }
     var showButtons by remember { mutableStateOf(false) }
-
-    // Add a key to force recomposition when products are updated
-    var updateTrigger by remember { mutableStateOf(0) }
 
     Box(
         modifier = modifier.fillMaxSize(),
@@ -67,25 +64,27 @@ fun MainScreenFilterFAB_F4(
                 },
             horizontalAlignment = Alignment.End
         ) {
+            // Main FAB to show/hide buttons
             FloatingActionButton(
                 onClick = { showButtons = !showButtons },
                 modifier = Modifier.size(48.dp)
             ) {
                 Icon(
                     imageVector = if (showButtons) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = null
+                    contentDescription = if (showButtons) "Hide options" else "Show options"
                 )
             }
 
+            // Animated visibility for the grossist buttons
             AnimatedVisibility(visible = showButtons) {
                 Column(horizontalAlignment = Alignment.End) {
-                    // Use updateTrigger in the key to force recomposition
                     viewModel._modelAppsFather.groupedProductsParGrossist.forEachIndexed { index, (grossist, products) ->
-                        key(grossist.id, updateTrigger) {
+                        key(grossist.id) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
+                                // Up button for reordering (except for first item)
                                 if (index > 0) {
                                     FloatingActionButton(
                                         onClick = {
@@ -95,20 +94,26 @@ fun MainScreenFilterFAB_F4(
                                         },
                                         modifier = Modifier.size(36.dp)
                                     ) {
-                                        Icon(Icons.Default.ExpandLess, null)
+                                        Icon(
+                                            imageVector = Icons.Default.ExpandLess,
+                                            contentDescription = "Move up"
+                                        )
                                     }
                                 }
 
+                                // Grossist name with highlight if selected
                                 Text(
-                                    grossist.nom,
+                                    text = grossist.nom,
                                     modifier = Modifier
                                         .background(
-                                            if (viewModel.frag1_A1_ExtVM.idAuFilter == grossist.id
-                                            ) Color(0xFF2196F3) else Color.Transparent
+                                            if (viewModel.frag1_A1_ExtVM.idAuFilter == grossist.id)
+                                                Color(0xFF2196F3)
+                                            else Color.Transparent
                                         )
                                         .padding(4.dp)
                                 )
 
+                                // FAB for product count and actions
                                 FloatingActionButton(
                                     onClick = {
                                         viewModel.viewModelScope.launch {
@@ -120,37 +125,30 @@ fun MainScreenFilterFAB_F4(
 
                                             nonDefiniProduct?.let { product ->
                                                 product.bonCommendDeCetteCota?.let { bonCommande ->
-                                                    // Update the product
                                                     bonCommande.idGrossistChoisi = grossist.id
-
-                                                    // Update in Firebase and local state
                                                     updateProduit(
                                                         product = product,
                                                         viewModelProduits = viewModel
                                                     )
-
-                                                    // Force recomposition by incrementing the trigger
-                                                    updateTrigger++      //-->
-                                                    //TODO(1): pk le chnage size et  de stckers de grossist au main list   = frag4a1Extvm.deplaceProduitsAuGrosssist
-                                                    //
-                                                    //    val groupedProducts = viewModel._modelAppsFather.groupedProductsParGrossist
-                                                //    ne se fait pas que losque qui et revien
+                                                    onUpdateTrigger()
                                                 }
                                             }
                                         }
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = try {
-                                        Color(android.graphics.Color.parseColor(
-                                            if (grossist.statueDeBase.couleur.startsWith("#"))
-                                                grossist.statueDeBase.couleur
-                                            else "#${grossist.statueDeBase.couleur}"
-                                        ))
+                                        Color(
+                                            android.graphics.Color.parseColor(
+                                                if (grossist.statueDeBase.couleur.startsWith("#"))
+                                                    grossist.statueDeBase.couleur
+                                                else "#${grossist.statueDeBase.couleur}"
+                                            )
+                                        )
                                     } catch (e: Exception) {
-                                        Color(0xFFFF0000)
+                                        Color(0xFFFF0000) // Fallback color if parsing fails
                                     }
                                 ) {
-                                    Text(products.size.toString())
+                                    Text(text = products.size.toString())
                                 }
                             }
                         }

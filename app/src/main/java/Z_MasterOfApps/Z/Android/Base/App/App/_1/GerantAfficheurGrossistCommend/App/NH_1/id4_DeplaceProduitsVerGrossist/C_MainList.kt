@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -33,10 +32,9 @@ fun MainList_F4(
     var deplaceProduitsAuGrosssist by remember { mutableStateOf<Long?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
 
-    // Modify the remember block to depend on updateTrigger
     val groupedProductsParGrossist = remember(
         viewModel._modelAppsFather.produitsMainDataBase,
-        viewModel.frag_4A1_ExtVM.updateTrigger // Add this dependency
+        viewModel.frag_4A1_ExtVM.updateTrigger
     ) {
         viewModel._modelAppsFather.grossistsDataBase.map { grossist ->
             val matchingProducts = viewModel._modelAppsFather.produitsMainDataBase.filter { product ->
@@ -81,17 +79,16 @@ fun MainList_F4(
                 key = { it.id }
             ) { product ->
                 Box(
-                    modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null)
+                    modifier = Modifier
+                        .animateItem(fadeInSpec = null, fadeOutSpec = null)
                         .padding(4.dp)
-                ) {
-                    Modifier
-                        .fillMaxWidth()
                         .background(
                             color = if (selectedProducts.contains(product))
                                 Color.Yellow.copy(alpha = 0.3f)
                             else Color.Transparent,
                             shape = RoundedCornerShape(4.dp)
                         )
+                ) {
                     MainItem_F4(
                         mainItem = product,
                         onCLickOnMain = {

@@ -27,7 +27,7 @@ fun initializeFirebase(app: FirebaseApp) {
     }
 }
 
-suspend fun loadData( viewModel: ViewModelInitApp) {
+suspend fun loadData(viewModel: ViewModelInitApp) {
     try {
         viewModel.loadingProgress = 0.1f
 
@@ -68,13 +68,50 @@ suspend fun loadData( viewModel: ViewModelInitApp) {
                         init_nom = map["nom"] as? String ?: "",
                         init_besoin_To_Be_Updated = map["besoin_To_Be_Updated"] as? Boolean ?: false,
                         initialNon_Trouve = map["non_Trouve"] as? Boolean ?: false,
-                        init_visible = false
+                        init_visible = map["isVisible"] as? Boolean ?: false
                     ).apply {
-                        snap.child("statuesBase").getValue(ProduitModel.StatuesBase::class.java)
-                            ?.let {
-                                statuesBase = it
-                                statuesBase.imageGlidReloadTigger = 0
+                        // Load StatuesBase
+                        snap.child("statuesBase").getValue(ProduitModel.StatuesBase::class.java)?.let {
+                            statuesBase = it
+                            statuesBase.imageGlidReloadTigger = 0
+                        }
+
+                        // Load ColoursEtGouts
+                        val coloursEtGoutsList = mutableListOf<ProduitModel.ColourEtGout_Model>()
+                        snap.child("coloursEtGoutsList").children.forEach { colorSnap ->
+                            colorSnap.getValue(ProduitModel.ColourEtGout_Model::class.java)?.let {
+                                coloursEtGoutsList.add(it)
                             }
+                        }
+                        this.coloursEtGoutsList = coloursEtGoutsList
+
+                        // Load current BonCommend with MutableBasesStates
+                        snap.child("bonCommendDeCetteCota").getValue(ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommend ->
+                            // Load MutableBasesStates
+                            snap.child("bonCommendDeCetteCota/mutableBasesStates")
+                                .getValue(ProduitModel.GrossistBonCommandes.MutableBasesStates::class.java)?.let {
+                                    bonCommend.mutableBasesStates = it
+                                }
+                            bonCommendDeCetteCota = bonCommend
+                        }
+
+                        // Load BonsVentDeCetteCota with proper initialization
+                        val bonsVent = mutableListOf<ProduitModel.ClientBonVentModel>()
+                        snap.child("bonsVentDeCetteCotaList").children.forEach { bonVentSnap ->
+                            bonVentSnap.getValue(ProduitModel.ClientBonVentModel::class.java)?.let {
+                                bonsVent.add(it)
+                            }
+                        }
+                        bonsVentDeCetteCotaList = bonsVent
+
+                        // Load HistoriqueBonsVents
+                        val historique = mutableListOf<ProduitModel.ClientBonVentModel>()
+                        snap.child("historiqueBonsVentsList").children.forEach { historySnap ->
+                            historySnap.getValue(ProduitModel.ClientBonVentModel::class.java)?.let {
+                                historique.add(it)
+                            }
+                        }
+                        historiqueBonsVentsList = historique
                     }
                     produitsMainDataBase.add(prod)
                 }
@@ -102,13 +139,15 @@ suspend fun loadData( viewModel: ViewModelInitApp) {
                 if (headModels != null) {
                     val grossistsNode = headModels.child("C_GrossistsDataBase")
                     if (!grossistsNode.exists()) {
-                        grossistsDataBase.add(C_GrossistsDataBase(
+                        grossistsDataBase.add(
+                            C_GrossistsDataBase(
                             id = 1,
                             nom = "Default Grossist",
                             statueDeBase = C_GrossistsDataBase.StatueDeBase(
                                 cUnClientTemporaire = true
                             )
-                        ))
+                        )
+                        )
                     } else {
                         grossistsNode.children.forEach { snap ->
                             try {

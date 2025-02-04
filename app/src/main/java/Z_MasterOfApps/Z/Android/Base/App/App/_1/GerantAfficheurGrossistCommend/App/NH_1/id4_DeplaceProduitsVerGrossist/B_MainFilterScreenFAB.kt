@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist
 
+import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParGrossist
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.animation.AnimatedVisibility
@@ -72,7 +73,7 @@ fun MainScreenFilterFAB_F4(
 
             AnimatedVisibility(visible = showButtons) {
                 Column(horizontalAlignment = Alignment.End) {
-                    viewModel._modelAppsFather.grossistsDataBase.forEachIndexed { index, grossist ->
+                    viewModel._modelAppsFather.groupedProductsParGrossist.forEachIndexed { index, (grossist,products) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -131,11 +132,7 @@ fun MainScreenFilterFAB_F4(
                                     Color(0xFFFF0000)
                                 }
                             ) {
-                                val productCount = viewModel.produitsMainDataBase.count { product ->
-                                    product.bonCommendDeCetteCota
-                                        ?.idGrossistChoisi == grossist.id
-                                }
-                                Text(productCount.toString())
+                                Text(products.size.toString())
                             }
                         }
                     }

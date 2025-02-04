@@ -1,6 +1,6 @@
 package Z_MasterOfApps.Z.Android.Res
 
-import com.example.clientjetpack.R
+import com.example.c_serveur.R
 
 class XmlsFilesHandler {
     companion object {

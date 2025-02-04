@@ -40,11 +40,45 @@ object FirebaseListeners {
                                 init_nom = map["nom"] as? String ?: "",
                                 init_besoin_To_Be_Updated = map["besoin_To_Be_Updated"] as? Boolean ?: false,
                                 initialNon_Trouve = map["non_Trouve"] as? Boolean ?: false,
-                                init_visible = false
+                                init_visible = map["isVisible"] as? Boolean ?: false
                             ).apply {
+                                // Load StatuesBase
                                 snap.child("statuesBase").getValue(_ModelAppsFather.ProduitModel.StatuesBase::class.java)?.let {
                                     statuesBase = it
                                     statuesBase.imageGlidReloadTigger = 0
+                                }
+
+                                // Load ColoursEtGouts
+                                snap.child("coloursEtGoutsList").children.forEach { colorSnap ->
+                                    colorSnap.getValue(_ModelAppsFather.ProduitModel.ColourEtGout_Model::class.java)?.let {
+                                        coloursEtGouts.add(it)
+                                    }
+                                }
+
+                                // Load current BonCommend
+                                snap.child("bonCommendDeCetteCota").getValue(_ModelAppsFather.ProduitModel.GrossistBonCommandes::class.java)?.let {
+                                    bonCommendDeCetteCota = it
+                                }
+
+                                // Load BonsVentDeCetteCota
+                                snap.child("bonsVentDeCetteCotaList").children.forEach { bonVentSnap ->
+                                    bonVentSnap.getValue(_ModelAppsFather.ProduitModel.ClientBonVentModel::class.java)?.let {
+                                        bonsVentDeCetteCota.add(it)
+                                    }
+                                }
+
+                                // Load HistoriqueBonsVents
+                                snap.child("historiqueBonsVentsList").children.forEach { historySnap ->
+                                    historySnap.getValue(_ModelAppsFather.ProduitModel.ClientBonVentModel::class.java)?.let {
+                                        historiqueBonsVents.add(it)
+                                    }
+                                }
+
+                                // Load HistoriqueBonsCommend
+                                snap.child("historiqueBonsCommendList").children.forEach { historySnap ->
+                                    historySnap.getValue(_ModelAppsFather.ProduitModel.GrossistBonCommandes::class.java)?.let {
+                                        historiqueBonsCommend.add(it)
+                                    }
                                 }
                             }
                             products.add(prod)

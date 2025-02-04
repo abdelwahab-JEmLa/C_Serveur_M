@@ -38,15 +38,6 @@ fun MainList_F4(
 
     val groupedProducts = viewModel._modelAppsFather.groupedProductsParGrossist
 
-    if (showMoveDialog && deplaceProduitsAuGrosssist != null) {
-        MoveProductsDialog(
-            selectedProducts = selectedProducts,
-            viewModelProduits = viewModel,
-            onDismiss = { showMoveDialog = false },
-            onProductsMoved = { selectedProducts = emptyList() }
-        )
-    }
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         modifier = modifier.background(
@@ -106,5 +97,13 @@ fun MainList_F4(
                 }
             }
         }
+    }
+    if (showMoveDialog && deplaceProduitsAuGrosssist != null) {
+        MoveProductsDialog(
+            selectedProducts = selectedProducts,
+            viewModelProduits = viewModel,
+            onDismiss = { showMoveDialog = false },
+            onProductsMoved = { selectedProducts = emptyList() }
+        )
     }
 }

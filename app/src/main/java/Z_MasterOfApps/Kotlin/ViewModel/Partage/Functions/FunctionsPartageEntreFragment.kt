@@ -15,42 +15,69 @@ class FunctionsPartageEntreFragment(
         color: ProduitModel.ClientBonVentModel.ColorAchatModel,
         newQuantity: Int
     ) {
+        // Update the product first
         val updatedProduit = produit.apply {
-            bonsVentDeCetteCota.find { it==selectedBonVent }
+            bonsVentDeCetteCota.find { it == selectedBonVent }
                 ?.let { bonVent ->
                     bonVent.colours_Achete.find { it == color }
                         ?.quantity_Achete = newQuantity
                 }
         }
-        updateProduit(updatedProduit,viewModelInitApp)
-         Firebase.database.getReference("O_SoldArticlesTabelle") //-->
-             //TODO(1): fait que ici de trouve le produit avec id et id client ==produit.id et selectedBonVent
-               //a^re chercghe l id couleur si coresspond a   color1IdPicked  update  color1SoldQuantity
-             // color2IdPicked     >  color2SoldQuantity
-             //
-             // color3IdPicked  > ect.. a 4
+        updateProduit(updatedProduit, viewModelInitApp)
 
+        // Update SoldArticlesTabelle
+        selectedBonVent?.let { bonVent ->
+            val soldArticlesRef = Firebase.database.getReference("O_SoldArticlesTabelle")
 
-             // et update le si @Entity
-             //data class SoldArticlesTabelle(
-             //    @PrimaryKey(autoGenerate = true) val vid: Long = 0,
-             //    val idArticle: Long = 0,
-             //    val nameArticle: String = "",
-             //    val clientSoldToItId: Long = 0,
-             //    val date: String = "",
-             //    val color1IdPicked: Long = 0,
-             //    val color1SoldQuantity: Int = 0,
-             //    val color2IdPicked: Long = 0,
-             //    val color2SoldQuantity: Int = 0,
-             //    val color3IdPicked: Long = 0,
-             //    val color3SoldQuantity: Int = 0,
-             //    val color4IdPicked: Long = 0,
-             //    val color4SoldQuantity: Int = 0,
-             //    val confimed: Boolean = false,
-             //
-             //    ) {
-             //    constructor() : this(0)
-             //}
-             .child("")
+            // Create a query to find the existing record
+            soldArticlesRef.orderByChild("idArticle").equalTo(produit.id.toDouble())
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val existingRecord = snapshot.children.find {
+                        it.child("clientSoldToItId").getValue(Long::class.java) == bonVent.clientIdChoisi
+                    }
+
+                    val sortedColors = bonVent.colours_Achete
+                        .filter { it.quantity_Achete > 0 }
+                        .sortedBy { it.vidPosition }
+                        .take(4)  // Only take first 4 colors as per SoldArticlesTabelle structure
+
+                    val updates = mutableMapOf<String, Any>()
+
+                    // Build the record
+                    val record = mapOf(
+                        "idArticle" to produit.id,
+                        "nameArticle" to produit.nom,
+                        "clientSoldToItId" to bonVent.clientIdChoisi,
+                        "date" to java.time.LocalDate.now().toString(),
+                        "confimed" to false
+                    ) + sortedColors.withIndex().flatMap { (index, colorModel) ->
+                        listOf(
+                            "color${index + 1}IdPicked" to colorModel.couleurId,
+                            "color${index + 1}SoldQuantity" to colorModel.quantity_Achete
+                        )
+                    }.toMap()
+
+                    if (existingRecord != null) {
+                        // Update existing record
+                        updates["/${existingRecord.key}"] = record
+                    } else {
+                        // Create new record
+                        val newRecordRef = soldArticlesRef.push()
+                        updates["/${newRecordRef.key}"] = record
+                    }
+
+                    // Perform the update
+                    soldArticlesRef.updateChildren(updates)
+                        .addOnFailureListener { exception ->
+                            // Handle any errors
+                            android.util.Log.e("SoldArticles", "Error updating sold articles", exception)
+                        }
+                }
+                .addOnFailureListener { exception ->
+                    // Handle any errors
+                    android.util.Log.e("SoldArticles", "Error querying sold articles", exception)
+                }
+        }
     }
 }

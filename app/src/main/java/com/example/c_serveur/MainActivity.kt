@@ -1,6 +1,7 @@
 // MainActivity.kt
 package com.example.c_serveur
 
+import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.initializeFirebase
 import Z_MasterOfApps.Z.Android.Main.MainScreen
 import Z_MasterOfApps.Z.Android.Main.Utils.PermissionHandler
 import android.app.Application
@@ -21,7 +22,9 @@ import com.google.firebase.FirebaseApp
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        FirebaseApp.initializeApp(this)
+        FirebaseApp.initializeApp(this)?.let { firebaseApp ->
+            initializeFirebase(firebaseApp)
+        }
     }
 }
 

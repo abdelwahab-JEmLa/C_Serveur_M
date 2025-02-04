@@ -39,11 +39,11 @@ fun MainList_F3(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val extensionvmapp1fragmentid3 = viewModelInitApp.extensionVMApp1FragmentId_3
+    val frag_3A1_ExtVM = viewModelInitApp.frag_3A1_ExtVM
 
     val visibleProducts = viewModelInitApp._modelAppsFather
         .groupedProductsParClients.find {
-            it.key.id == extensionvmapp1fragmentid3.clientIDAuFilter
+            it.key.id == frag_3A1_ExtVM.iDAuFilter
         }
         ?.value.orEmpty()
 

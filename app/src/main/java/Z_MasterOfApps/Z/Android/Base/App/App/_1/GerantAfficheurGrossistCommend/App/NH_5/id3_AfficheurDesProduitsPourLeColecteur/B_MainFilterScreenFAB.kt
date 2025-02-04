@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
 @Composable
 fun MainScreenFilterFAB_F3(
     modifier: Modifier = Modifier,
-    viewModelInitApp: ViewModelInitApp,
+    viewModel: ViewModelInitApp,
 ) {
     var offset by remember { mutableStateOf(IntOffset(0, 0)) }
     var showButtons by remember { mutableStateOf(false) }
@@ -74,7 +74,7 @@ fun MainScreenFilterFAB_F3(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier.padding(top = 8.dp)
                 ) {
-                    viewModelInitApp._modelAppsFather.groupedProductsParClients
+                    viewModel._modelAppsFather.groupedProductsParClients
                         .forEachIndexed { index, (client, products) ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -82,11 +82,12 @@ fun MainScreenFilterFAB_F3(
                                 modifier = Modifier.padding(vertical = 4.dp)
                             ) {
                                 // Up button for reordering
+                                val frag3a1Extvm = viewModel.frag_3A1_ExtVM
                                 if (index > 0) {
                                     FloatingActionButton(
                                         onClick = {
-                                            viewModelInitApp.viewModelScope.launch {
-                                                viewModelInitApp.extensionVMApp1FragmentId_3.upButton(index)
+                                            viewModel.viewModelScope.launch {
+                                                frag3a1Extvm.upButton(index)
                                             }
                                         },
                                         modifier = Modifier.size(36.dp)
@@ -101,9 +102,8 @@ fun MainScreenFilterFAB_F3(
                                     modifier = Modifier
                                         .weight(1f)
                                         .background(
-                                            if (viewModelInitApp._paramatersAppsViewModelModel
-                                                    .phoneClientSelectedAcheteur == client.id
-                                            ) MaterialTheme.colorScheme.primaryContainer
+                                            if (frag3a1Extvm.iDAuFilter == client.id
+                                                ) MaterialTheme.colorScheme.primaryContainer
                                             else Color.Transparent
                                         )
                                         .padding(4.dp)
@@ -122,7 +122,7 @@ fun MainScreenFilterFAB_F3(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        viewModelInitApp.extensionVMApp1FragmentId_3.clientIDAuFilter= client.id
+                                        frag3a1Extvm.iDAuFilter= client.id
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = color

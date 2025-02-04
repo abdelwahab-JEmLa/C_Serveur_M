@@ -10,7 +10,7 @@ class ExtensionVMApp1FragmentId_3(
     val viewModelInitApp: ViewModelInitApp,
 ) {
     private val clientDataBaseSnapList = viewModelInitApp._modelAppsFather.clientDataBase
-    var clientIDAuFilter by mutableStateOf<Long?>(0)
+    var iDAuFilter by mutableStateOf<Long?>(0)
 
     fun upButton(index: Int) {
         // Ensure index is valid and there's a previous element

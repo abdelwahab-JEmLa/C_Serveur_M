@@ -45,7 +45,7 @@ class ViewModelInitApp : ViewModel() {
         viewModelScope = this@ViewModelInitApp.viewModelScope,
     )
 
-    val extensionVMApp1FragmentId_3 = ExtensionVMApp1FragmentId_3(this@ViewModelInitApp)
+    val frag_3A1_ExtVM = ExtensionVMApp1FragmentId_3(this@ViewModelInitApp)
 
     val frag_4A1_ExtVM = Frag_4A1_ExtVM(this@ViewModelInitApp)
 

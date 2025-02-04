@@ -79,8 +79,8 @@ fun MainItem_F3(
             .filter { bonVent ->
                 // Handle nullable Long comparison safely
                 bonVent.clientIdChoisi == viewModelProduits
-                    .extensionVMApp1FragmentId_3
-                    .clientIDAuFilter
+                    .frag_3A1_ExtVM
+                    .iDAuFilter
             }
             .flatMap { it.colours_Achete }
 

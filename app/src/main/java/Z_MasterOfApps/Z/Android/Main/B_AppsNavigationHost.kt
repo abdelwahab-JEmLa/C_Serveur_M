@@ -78,16 +78,16 @@ fun AppNavigationHost(
                             composable(InfosDatas_FramgmentId5.route) {
                                 A_ID5_VerificationProduitAcGrossist(viewModel = viewModelInitApp)
                             }
-                            composable(Screens.NavHost_3.route) {
+                            composable(InfosDatas_FramgmentId2.route) {
                                 A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModelInitApp = viewModelInitApp)
                             }
-                            composable(Screens.NavHost_5.route) {
+                            composable(InfosDatas_FramgmentId3.route) {
                                 A_id3_AfficheurDesProduitsPourLeColecteur(viewModelInitApp = viewModelInitApp)
                             }
-                            composable(Screens.NavHostA2_1.route) {
+                            composable(InfosDatas_FramgmentId6.route) {
                                 A_id1_ClientsLocationGps(viewModel = viewModelInitApp)
                             }
-                            composable(Screens.Startup_0.route) {
+                            composable(StartupIcon_Start.route) {
                                 A_StartupScreen(viewModelInitApp, { route ->
                                     navController.navigate(route) {
                                         popUpTo(navController.graph.startDestinationId) {
@@ -126,15 +126,10 @@ fun AppNavigationHost(
         }
     }
 }
-object Screens {
-    val Startup_0 = StartupIcon_Start
-    val NavHost_3 = MainScreenDataObject_F2
-    val NavHost_5 = MainScreenDataObject_F3
-    val NavHostA2_1 = ID1Icon_Person
-}
+
 object NavigationItems {
     fun getItems(isManagerPhone: Boolean) = buildList {
-        add(Screens.Startup_0)
+        add(StartupIcon_Start)
 
         //Manageur_Fragments
         if (isManagerPhone) { add(InfosDatas_FramgmentId4) }
@@ -142,11 +137,11 @@ object NavigationItems {
         add(InfosDatas_FramgmentId5)
 
         //Clients_Fragments
-        add(Screens.NavHost_3)
-        add(Screens.NavHost_5)
+        add(InfosDatas_FramgmentId2)
+        add(InfosDatas_FramgmentId3)
 
         //MapApp_Fragments
-        if (isManagerPhone) { add(Screens.NavHostA2_1) }
+        if (isManagerPhone) { add(InfosDatas_FramgmentId6) }
     }
 }
 
@@ -158,7 +153,7 @@ data object InfosDatas_FramgmentId1 : Screen(
     color = Color(0xFFFF5722)
 )
 
-data object MainScreenDataObject_F2 : Screen(
+data object InfosDatas_FramgmentId2 : Screen(
     id =2,
     icon = Icons.Default.Visibility,
     route = "main_screen_f2",
@@ -166,7 +161,7 @@ data object MainScreenDataObject_F2 : Screen(
     color = Color(0xFFA48E39)
 )
 
-data object MainScreenDataObject_F3 : Screen(
+data object InfosDatas_FramgmentId3 : Screen(
     id =3,
     route ="مظهر الاماكن لمقسم المنتجات على الزبائن",
     icon = Icons.Default.Groups,
@@ -190,7 +185,7 @@ data object InfosDatas_FramgmentId5 : Screen(
     color = Color(0xFFFF5892)
 )
 
-data object ID1Icon_Person : Screen(
+data object InfosDatas_FramgmentId6 : Screen(
     id =6,
     icon = Icons.Default.PinDrop, // Changed from Person to PinDrop for GPS location
     route = "Id_App2Fragment1",

@@ -32,20 +32,6 @@ fun MainList_F4(
     var deplaceProduitsAuGrosssist by remember { mutableStateOf<Long?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
 
-    val groupedProductsParGrossist = remember(
-        viewModel._modelAppsFather.produitsMainDataBase,
-        viewModel.frag_4A1_ExtVM.updateTrigger
-    ) {
-        viewModel._modelAppsFather.grossistsDataBase.map { grossist ->
-            val matchingProducts = viewModel._modelAppsFather.produitsMainDataBase.filter { product ->
-                product.bonCommendDeCetteCota?.idGrossistChoisi == grossist.id
-            }
-            grossist to matchingProducts
-        }.sortedBy { (grossist, _) ->
-            grossist.statueDeBase.itPositionInParentList
-        }
-    }
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         modifier = modifier.background(
@@ -56,7 +42,7 @@ fun MainList_F4(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        groupedProductsParGrossist.forEach { (grossist, products) ->
+        viewModel._modelAppsFather.groupedProductsParGrossist.forEach { (grossist, products) ->    //->
             item(
                 span = { GridItemSpan(3) }
             ) {
@@ -115,7 +101,6 @@ fun MainList_F4(
             onDismiss = { showMoveDialog = false },
             onProductsMoved = {
                 selectedProducts = emptyList()
-                viewModel.frag_4A1_ExtVM.updateTriggerFun()
             }
         )
     }

@@ -8,14 +8,7 @@ import androidx.compose.runtime.setValue
 class Frag_4A1_ExtVM(
     val headOfViewModel: ViewModelInitApp,
 ) {
-
     var deplaceProduitsAuGrosssist by mutableStateOf<Long?>(0)
-    var updateTrigger  by mutableStateOf<Int?>(0)
-
-    fun updateTriggerFun() {
-        updateTrigger = updateTrigger!! + 1
-    }
-
 }
 
 

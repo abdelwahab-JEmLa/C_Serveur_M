@@ -17,6 +17,7 @@ import com.google.firebase.database.database
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+private const val TAG = "ProductsDebug"
 
 open class _ModelAppsFather(
     initial_Produits_Main_DataBase: List<ProduitModel> = emptyList()
@@ -32,6 +33,32 @@ open class _ModelAppsFather(
     @get:Exclude
     var grossistsDataBase: SnapshotStateList<C_GrossistsDataBase> =
         emptyList<C_GrossistsDataBase>().toMutableStateList()
+
+
+    // A_GroupedValues.kt stays the same
+    val groupedProductsParGrossist: List<Map.Entry<C_GrossistsDataBase, List<ProduitModel>>>
+        get() = grossistsDataBase.map { grossist ->
+            val matchingProducts = produitsMainDataBase.filter { product ->
+                product.bonCommendDeCetteCota?.idGrossistChoisi == grossist.id
+            }
+
+            java.util.AbstractMap.SimpleEntry(grossist, matchingProducts)
+        }.sortedBy { entry ->
+            entry.key.statueDeBase.itPositionInParentList
+        }
+
+    val groupedProductsParClients: List<Map.Entry<B_ClientsDataBase, List<_ModelAppsFather.ProduitModel>>>
+        get() = clientDataBase.map { client ->
+            val matchingProducts = produitsMainDataBase.filter { product ->
+                product.bonsVentDeCetteCota.any { bonVent ->
+                    bonVent.clientIdChoisi == client.id
+                }
+            }
+
+            java.util.AbstractMap.SimpleEntry(client, matchingProducts)
+        }.sortedBy { entry ->
+            entry.key.statueDeBase.positionDonClientsList
+        }
 
     @IgnoreExtraProperties
     class ProduitModel(
@@ -247,22 +274,20 @@ open class _ModelAppsFather(
             }
         }
 
-        fun updateProduit(
-            product: ProduitModel,
-            viewModelProduits: ViewModelInitApp
-        ) {
+        fun updateProduit(product: ProduitModel, viewModelProduits: ViewModelInitApp) {
             viewModelProduits.viewModelScope.launch {
                 try {
-                    val index =
-                        viewModelProduits._modelAppsFather.produitsMainDataBase.indexOfFirst { it.id == product.id }
+                    // Créer une nouvelle liste temporaire
+                    val updatedList = viewModelProduits._modelAppsFather.produitsMainDataBase.toMutableList()
+                    val index = updatedList.indexOfFirst { it.id == product.id }
                     if (index != -1) {
-                        viewModelProduits._modelAppsFather.produitsMainDataBase[index] = product
+                        updatedList[index] = product
+                        // Remplacer toute la liste
+                        viewModelProduits._modelAppsFather.produitsMainDataBase.clear()
+                        viewModelProduits._modelAppsFather.produitsMainDataBase.addAll(updatedList)
                     }
 
-                    // Update Firebase
                     produitsFireBaseRef.child(product.id.toString()).setValue(product).await()
-
-                    Log.d("ViewModelInitApp", "Successfully updated product ${product.id}")
                 } catch (e: Exception) {
                     Log.e("ViewModelInitApp", "Failed to update product ${product.id}", e)
                 }

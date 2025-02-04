@@ -77,7 +77,8 @@ fun MainScreenFilterFAB_F4(
             AnimatedVisibility(visible = showButtons) {
                 Column(horizontalAlignment = Alignment.End) {
                     viewModel._modelAppsFather.groupedProductsParGrossist.forEachIndexed { index, (grossist, products) ->
-                        key(grossist.id ,viewModel.frag_4A1_ExtVM.updateTrigger) {
+                        key(grossist.id ,
+                        ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -128,7 +129,6 @@ fun MainScreenFilterFAB_F4(
                                                         product = product,
                                                         viewModelProduits = viewModel
                                                     )
-                                                    viewModel.frag_4A1_ExtVM.updateTriggerFun()
                                                 }
                                             }
                                         }

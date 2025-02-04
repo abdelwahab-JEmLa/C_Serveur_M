@@ -5,6 +5,7 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.ExpandedMainItem_F2
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_5.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.ExpandedMainItem_F3
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_5.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.MainItem_F3
+import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.LogUtils.logProductFilter
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.expandVertically
@@ -41,50 +42,59 @@ fun MainList_F3(
 ) {
     val frag_3A1_ExtVM = viewModelInitApp.frag_3A1_ExtVM
 
-    val visibleProducts = viewModelInitApp._modelAppsFather
+    // Get all products for this client, including both positioned and unpositioned ones
+    val allClientProducts = viewModelInitApp._modelAppsFather
         .groupedProductsParClients.find {
             it.key.id == frag_3A1_ExtVM.iDAuFilter
         }
         ?.value.orEmpty()
 
+    // Log all products for debugging
+    allClientProducts.forEach { product ->
+        frag_3A1_ExtVM.iDAuFilter?.let {
+            logProductFilter(
+                product = product,
+                clientId = it,
+                grossists = viewModelInitApp._modelAppsFather.grossistsDataBase
+            )
+        }
+    }
+
     var expandedItemId by remember { mutableStateOf<Long?>(null) }
 
     // Split products into regular and carton products
-    val (etagersProduits, cartonsSectionProsduits) = visibleProducts
-        .filter { product ->
-            product.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true
-        }
-        .partition { !it.statuesBase.seTrouveAuDernieDuCamionCarCCarton }
+    val (etagersProduits, cartonsSectionProsduits) = allClientProducts.partition {
+        !it.statuesBase.seTrouveAuDernieDuCamionCarCCarton
+    }
 
+    // Group regular products by grossist, including all products regardless of position
     val groupedRegularProducts = etagersProduits
         .groupBy { product ->
-            product.bonCommendDeCetteCota
-                ?.idGrossistChoisi
+            product.bonCommendDeCetteCota?.idGrossistChoisi
         }
         .filterKeys { it != null }
-        .toSortedMap(compareBy { grossistId ->
-            // Find the grossist in the database and get its position
-            viewModelInitApp._modelAppsFather.grossistsDataBase
-                .find { it.id == grossistId }
-                ?.statueDeBase
-                ?.itPositionInParentList
-                ?: Int.MAX_VALUE
+        .mapKeys { (grossistId, _) ->
+            viewModelInitApp._modelAppsFather.grossistsDataBase.find { it.id == grossistId }
+        }
+        .filterKeys { it != null }
+        .toSortedMap(compareBy { grossist ->
+            grossist?.statueDeBase?.itPositionInParentList ?: Int.MAX_VALUE
         })
 
-    // Sort carton products by grossist position then product position
-    val sortedCartonProducts = cartonsSectionProsduits
-        .sortedWith(
-            compareBy<A_ProduitModel> { product ->
-                product.bonCommendDeCetteCota?.idGrossistChoisi?.let { grossistId ->
-                    viewModelInitApp._modelAppsFather.grossistsDataBase
-                        .find { it.id == grossistId }
-                        ?.statueDeBase
-                        ?.itPositionInParentList
-                } ?: Int.MAX_VALUE
-            }.thenBy {
-                it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-            }
-        )
+    // Sort carton products
+    val sortedCartonProducts = cartonsSectionProsduits.sortedWith(
+        compareBy<A_ProduitModel> { product ->
+            val grossistPosition = product.bonCommendDeCetteCota?.idGrossistChoisi?.let { grossistId ->
+                viewModelInitApp._modelAppsFather.grossistsDataBase
+                    .find { it.id == grossistId }
+                    ?.statueDeBase
+                    ?.itPositionInParentList
+            } ?: Int.MAX_VALUE
+            grossistPosition
+        }.thenBy {
+            it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: Int.MAX_VALUE
+        }
+    )
 
     LazyColumn(
         modifier = modifier
@@ -94,88 +104,51 @@ fun MainList_F3(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         // Regular products sections
-        groupedRegularProducts.forEach { (grossistId, products) ->
-            stickyHeader {
-                val grossist = viewModelInitApp._modelAppsFather.grossistsDataBase
-                    .find { it.id == grossistId }
-
-                val backgroundColor = Color(
-                    android.graphics.Color.parseColor(
-                        grossist?.statueDeBase?.couleur ?: "#FFFFFF"
-                    )
-                )
-                val textColor = if (grossist?.statueDeBase?.couleur == "#FFFFFF") {
-                    Color.Black
-                } else {
-                    Color.White
-                }
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(backgroundColor)
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Text(
-                        text = grossist?.nom ?: "",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = textColor
-                    )
-                }
-            }
-
-            items(
-                items = products.sortedBy { product ->
-                    product.bonCommendDeCetteCota
-                        ?.mutableBasesStates
-                        ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
-                        ?: Int.MAX_VALUE
-                },
-            ) { product ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                ) {
-                    MainItem_F3(
-                        viewModelProduits = viewModelInitApp,
-                        mainItem = product,
-                        modifier = Modifier.fillMaxWidth(),
-                        onCLickOnMain = {
-                            expandedItemId = if (expandedItemId == product.id)
-                                null else product.id
-                        }
-                    )
-
-                    AnimatedVisibility(
-                        visible = expandedItemId == product.id,
-                        enter = expandVertically(
-                            animationSpec = spring(
-                                dampingRatio = 0.9f,
-                                stiffness = 300f
+        groupedRegularProducts.forEach { (grossist, products) ->
+            if (grossist != null) {
+                stickyHeader {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                Color(
+                                    android.graphics.Color.parseColor(
+                                        grossist.statueDeBase.couleur
+                                    )
+                                )
                             )
-                        ),
-                        exit = shrinkVertically(
-                            animationSpec = spring(
-                                dampingRatio = 0.9f,
-                                stiffness = 300f
-                            )
-                        )
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
                     ) {
-                        ExpandedMainItem_F2(
-                            viewModelInitApp = viewModelInitApp,
-                            mainItem = product,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
-                            onCLickOnMain = { expandedItemId = null }
+                        Text(
+                            text = grossist.nom,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (grossist.statueDeBase.couleur == "#FFFFFF") {
+                                Color.Black
+                            } else {
+                                Color.White
+                            }
                         )
                     }
+                }
+
+                items(
+                    items = products.sortedBy { product ->
+                        product.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                            ?: Int.MAX_VALUE
+                    },
+                ) { product ->
+                    ProductItem(
+                        viewModelInitApp = viewModelInitApp,
+                        product = product,
+                        expandedItemId = expandedItemId,
+                        onExpandedItemIdChange = { expandedItemId = it }
+                    )
                 }
             }
         }
 
+        // Carton products section
         if (sortedCartonProducts.isNotEmpty()) {
             stickyHeader {
                 Box(
@@ -193,49 +166,75 @@ fun MainList_F3(
                 }
             }
 
-            items(
-                items = sortedCartonProducts,
-            ) { product ->
-                Column(
+            items(items = sortedCartonProducts) { product ->
+                ProductItem(
+                    viewModelInitApp = viewModelInitApp,
+                    product = product,
+                    expandedItemId = expandedItemId,
+                    onExpandedItemIdChange = { expandedItemId = it }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProductItem(
+    viewModelInitApp: ViewModelInitApp,
+    product: A_ProduitModel,
+    expandedItemId: Long?,
+    onExpandedItemIdChange: (Long?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+    ) {
+        MainItem_F3(
+            viewModelProduits = viewModelInitApp,
+            mainItem = product,
+            modifier = Modifier.fillMaxWidth(),
+            onCLickOnMain = {
+                onExpandedItemIdChange(
+                    if (expandedItemId == product.id) null else product.id
+                )
+            }
+        )
+
+        AnimatedVisibility(
+            visible = expandedItemId == product.id,
+            enter = expandVertically(
+                animationSpec = spring(
+                    dampingRatio = 0.9f,
+                    stiffness = 300f
+                )
+            ),
+            exit = shrinkVertically(
+                animationSpec = spring(
+                    dampingRatio = 0.9f,
+                    stiffness = 300f
+                )
+            )
+        ) {
+            if (product.statuesBase.seTrouveAuDernieDuCamionCarCCarton) {
+                ExpandedMainItem_F3(
+                    viewModelInitApp = viewModelInitApp,
+                    mainItem = product,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp)
-                ) {
-                    MainItem_F3(
-                        viewModelProduits = viewModelInitApp,
-                        mainItem = product,
-                        modifier = Modifier.fillMaxWidth(),
-                        onCLickOnMain = {
-                            expandedItemId = if (expandedItemId == product.id)
-                                null else product.id
-                        }
-                    )
-
-                    AnimatedVisibility(
-                        visible = expandedItemId == product.id,
-                        enter = expandVertically(
-                            animationSpec = spring(
-                                dampingRatio = 0.9f,
-                                stiffness = 300f
-                            )
-                        ),
-                        exit = shrinkVertically(
-                            animationSpec = spring(
-                                dampingRatio = 0.9f,
-                                stiffness = 300f
-                            )
-                        )
-                    ) {
-                        ExpandedMainItem_F3(
-                            viewModelInitApp = viewModelInitApp,
-                            mainItem = product,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp),
-                            onCLickOnMain = { expandedItemId = null }
-                        )
-                    }
-                }
+                        .padding(top = 8.dp),
+                    onCLickOnMain = { onExpandedItemIdChange(null) }
+                )
+            } else {
+                ExpandedMainItem_F2(
+                    viewModelInitApp = viewModelInitApp,
+                    mainItem = product,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    onCLickOnMain = { onExpandedItemIdChange(null) }
+                )
             }
         }
     }

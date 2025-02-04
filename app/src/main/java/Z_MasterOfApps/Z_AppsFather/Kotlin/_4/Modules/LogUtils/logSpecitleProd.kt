@@ -1,27 +1,26 @@
 package Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.LogUtils
 
-import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
+import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import android.content.ContentValues.TAG
 import android.util.Log
 
-fun logSpecitleProd(
+fun logProductFilter(
     product: A_ProduitModel,
-    grossist: C_GrossistsDataBase
-    ) {
-        // Log only for products 23 and 64
-        if (product.id == 23L || product.id == 64L) {
-            Log.d(
-                TAG, """
-                    Product Check:
-                    ID: ${product.id}
-                    Name: ${product.nom}
-                    Current Grossist: ${grossist.nom} (ID: ${grossist.id})
-                    Has BonCommend: ${product.bonCommendDeCetteCota != null}
-                    BonCommend ID: ${product.bonCommendDeCetteCota?.idGrossistChoisi}
-                    Match Result: ${product.bonCommendDeCetteCota?.idGrossistChoisi == grossist.id}
-                    ------------------------
-                """.trimIndent()
-            )
-        }
-    }
+    clientId: Long,
+    grossists: List<C_GrossistsDataBase>
+) {
+    Log.d(TAG, """
+        Product Filter Analysis:
+        ID: ${product.id}
+        Name: ${product.nom}
+        Client ID Filter: $clientId
+        Has BonCommend: ${product.bonCommendDeCetteCota != null}
+        Position Check: ${product.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit}
+        Grossist ID: ${product.bonCommendDeCetteCota?.idGrossistChoisi}
+        Grossist Name: ${grossists.find { it.id == product.bonCommendDeCetteCota?.idGrossistChoisi }?.nom}
+        Client Orders: ${product.bonsVentDeCetteCota.map { it.clientIdChoisi }.joinToString()}
+        Is Carton: ${product.statuesBase.seTrouveAuDernieDuCamionCarCCarton}
+        ------------------------
+    """.trimIndent())
+}

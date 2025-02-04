@@ -1,7 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur
 
-import Z_MasterOfApps.Kotlin.Model.Extension.groupedProductsParClients
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.ExpandedMainItem_F2
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.ExpandedMainItem_F3
@@ -75,7 +74,7 @@ fun MainList_F3(
     // Sort carton products by grossist position then product position
     val sortedCartonProducts = cartonsSectionProsduits
         .sortedWith(
-            compareBy<_ModelAppsFather.ProduitModel> { product ->
+            compareBy<A_ProduitModel> { product ->
                 product.bonCommendDeCetteCota?.idGrossistChoisi?.let { grossistId ->
                     viewModelInitApp._modelAppsFather.grossistsDataBase
                         .find { it.id == grossistId }

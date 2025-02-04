@@ -1,6 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.ExpandedMainItem_F2
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.MainItem_F2
@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MainList_F2(
-    initVisibleProducts: List<_ModelAppsFather.ProduitModel>,
+    initVisibleProducts: List<A_ProduitModel>,
     viewModelInitApp: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier

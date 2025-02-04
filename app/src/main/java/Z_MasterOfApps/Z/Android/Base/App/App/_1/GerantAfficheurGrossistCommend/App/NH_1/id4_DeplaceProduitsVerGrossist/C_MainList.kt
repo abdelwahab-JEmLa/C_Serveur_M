@@ -1,6 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.Modules.Dialogs.MoveProductsDialog
 import androidx.compose.foundation.background
@@ -28,7 +28,7 @@ fun MainList_F4(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
-    var selectedProducts by remember { mutableStateOf<List<_ModelAppsFather.ProduitModel>>(emptyList()) }
+    var selectedProducts by remember { mutableStateOf<List<A_ProduitModel>>(emptyList()) }
     var deplaceProduitsAuGrosssist by remember { mutableStateOf<Long?>(null) }
     var showMoveDialog by remember { mutableStateOf(false) }
 

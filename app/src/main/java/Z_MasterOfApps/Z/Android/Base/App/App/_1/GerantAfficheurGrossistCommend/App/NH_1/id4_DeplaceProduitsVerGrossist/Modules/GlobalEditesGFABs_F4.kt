@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_1.id4_DeplaceProduitsVerGrossist.Modules
 
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
@@ -68,7 +69,7 @@ fun GlobalEditesGFABs_F4(
     var showOptions by remember { mutableStateOf(false) }
     var deviceMode by remember { mutableStateOf(ParamatersAppsModel.DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
-    var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
+    var pendingProduct by remember { mutableStateOf<A_ProduitModel?>(null) }
     var isProcessing by remember { mutableStateOf(false) }
 
     // États pour le déplacement par glisser-déposer

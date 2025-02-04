@@ -1,6 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.Modules.MoveProductsDialog
@@ -43,7 +43,7 @@ fun B_ListMainFragment(
     viewModel: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
-    visibleProducts: List<_ModelAppsFather.ProduitModel>
+    visibleProducts: List<A_ProduitModel>
 ) {
     var showMoveDialog by remember { mutableStateOf(false) }
     var showSearchDialog by remember { mutableStateOf(false) }

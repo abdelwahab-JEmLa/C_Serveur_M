@@ -2,7 +2,7 @@ package Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_Clien
 
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase.Companion.updateClientsDataBase
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +11,7 @@ import org.osmdroid.views.overlay.Marker
 
 class ViewModelExtension_App2_F1(
     val viewModelScope: CoroutineScope,
-    val produitsMainDataBase: MutableList<ProduitModel>,
+    val produitsMainDataBase: MutableList<A_ProduitModel>,
     private val clientDataBaseSnapList: SnapshotStateList<B_ClientsDataBase>,
     val viewModel: ViewModelInitApp,
 ) {

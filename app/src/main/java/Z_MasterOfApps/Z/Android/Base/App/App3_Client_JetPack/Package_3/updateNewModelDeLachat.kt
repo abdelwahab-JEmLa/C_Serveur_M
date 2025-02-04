@@ -1,9 +1,10 @@
 package Z_MasterOfApps.Z.Android.Base.App.App3_Client_JetPack.Package_3
 
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.ClientBonVentModel
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel.GrossistBonCommandes
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel.ClientBonVentModel
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel.GrossistBonCommandes
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App3_Client_JetPack.Models.ColorsArticlesTabelle
 import Z_MasterOfApps.Z.Android.Base.App.App3_Client_JetPack.Models.SoldArticlesTabelle
@@ -131,17 +132,17 @@ fun updateNewModelDeLachat(
 fun createNewProduct(
     viewModelInitApp: ViewModelInitApp,
     nameArticle: String? = null
-): _ModelAppsFather.ProduitModel {
+): A_ProduitModel {
     val maxId = viewModelInitApp._modelAppsFather.produitsMainDataBase
         .maxOfOrNull { it.id } ?: 0
 
-    return _ModelAppsFather.ProduitModel(
+    return A_ProduitModel(
         id = maxId + 1,
         itsTempProduit = true,
     ).apply {
         nom = nameArticle ?: "New Product ${maxId + 1}"
         coloursEtGouts.add(
-            _ModelAppsFather.ProduitModel.ColourEtGout_Model(
+            A_ProduitModel.ColourEtGout_Model(
                 sonImageNeExistPas = true
             )
         )

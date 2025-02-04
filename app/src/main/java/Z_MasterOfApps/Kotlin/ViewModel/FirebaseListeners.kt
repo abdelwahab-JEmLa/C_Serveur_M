@@ -2,6 +2,7 @@ package Z_MasterOfApps.Kotlin.ViewModel
 
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import android.util.Log
 import com.google.firebase.database.DataSnapshot
@@ -31,10 +32,10 @@ object FirebaseListeners {
             override fun onDataChange(snapshot: DataSnapshot) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val products = mutableListOf<_ModelAppsFather.ProduitModel>()
+                        val products = mutableListOf<A_ProduitModel>()
                         snapshot.children.forEach { snap ->
                             val map = snap.value as? Map<*, *> ?: return@forEach
-                            val prod = _ModelAppsFather.ProduitModel(
+                            val prod = A_ProduitModel(
                                 id = snap.key?.toLongOrNull() ?: return@forEach,
                                 itsTempProduit = map["itsTempProduit"] as? Boolean ?: false,
                                 init_nom = map["nom"] as? String ?: "",
@@ -43,40 +44,40 @@ object FirebaseListeners {
                                 init_visible = map["isVisible"] as? Boolean ?: false
                             ).apply {
                                 // Load StatuesBase
-                                snap.child("statuesBase").getValue(_ModelAppsFather.ProduitModel.StatuesBase::class.java)?.let {
+                                snap.child("statuesBase").getValue(A_ProduitModel.StatuesBase::class.java)?.let {
                                     statuesBase = it
                                     statuesBase.imageGlidReloadTigger = 0
                                 }
 
                                 // Load ColoursEtGouts
                                 snap.child("coloursEtGoutsList").children.forEach { colorSnap ->
-                                    colorSnap.getValue(_ModelAppsFather.ProduitModel.ColourEtGout_Model::class.java)?.let {
+                                    colorSnap.getValue(A_ProduitModel.ColourEtGout_Model::class.java)?.let {
                                         coloursEtGouts.add(it)
                                     }
                                 }
 
                                 // Load current BonCommend
-                                snap.child("bonCommendDeCetteCota").getValue(_ModelAppsFather.ProduitModel.GrossistBonCommandes::class.java)?.let {
+                                snap.child("bonCommendDeCetteCota").getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let {
                                     bonCommendDeCetteCota = it
                                 }
 
                                 // Load BonsVentDeCetteCota
                                 snap.child("bonsVentDeCetteCotaList").children.forEach { bonVentSnap ->
-                                    bonVentSnap.getValue(_ModelAppsFather.ProduitModel.ClientBonVentModel::class.java)?.let {
+                                    bonVentSnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
                                         bonsVentDeCetteCota.add(it)
                                     }
                                 }
 
                                 // Load HistoriqueBonsVents
                                 snap.child("historiqueBonsVentsList").children.forEach { historySnap ->
-                                    historySnap.getValue(_ModelAppsFather.ProduitModel.ClientBonVentModel::class.java)?.let {
+                                    historySnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
                                         historiqueBonsVents.add(it)
                                     }
                                 }
 
                                 // Load HistoriqueBonsCommend
                                 snap.child("historiqueBonsCommendList").children.forEach { historySnap ->
-                                    historySnap.getValue(_ModelAppsFather.ProduitModel.GrossistBonCommandes::class.java)?.let {
+                                    historySnap.getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let {
                                         historiqueBonsCommend.add(it)
                                     }
                                 }

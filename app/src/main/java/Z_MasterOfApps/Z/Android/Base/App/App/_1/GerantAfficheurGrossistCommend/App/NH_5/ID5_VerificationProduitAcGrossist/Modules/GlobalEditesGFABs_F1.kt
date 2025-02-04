@@ -1,10 +1,10 @@
 package Z.WorkingOn._2NavHost.Fragment_2InNavHost_Id1.Modules
 
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
-import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import android.Manifest
 import android.content.pm.PackageManager
@@ -66,7 +66,7 @@ fun GlobalEditesGFABs_F1(
     var showOptions by remember { mutableStateOf(false) }
     var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
     var tempImageUri by remember { mutableStateOf<Uri?>(null) }
-    var pendingProduct by remember { mutableStateOf<_ModelAppsFather.ProduitModel?>(null) }
+    var pendingProduct by remember { mutableStateOf<A_ProduitModel?>(null) }
 
     // États pour le déplacement par glisser-déposer
     var offsetX by remember { mutableFloatStateOf(0f) }

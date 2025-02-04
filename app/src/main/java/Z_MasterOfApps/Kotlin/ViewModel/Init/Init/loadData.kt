@@ -3,7 +3,7 @@ package Z_MasterOfApps.Kotlin.ViewModel.Init.Init
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.FirebaseListeners
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.google.firebase.FirebaseApp
@@ -62,7 +62,7 @@ suspend fun loadData(viewModel: ViewModelInitApp) {
                 produitsMainDataBase.clear()
                 products?.children?.forEach { snap ->
                     val map = snap.value as? Map<*, *> ?: return@forEach
-                    val prod = ProduitModel(
+                    val prod = A_ProduitModel(
                         id = snap.key?.toLongOrNull() ?: return@forEach,
                         itsTempProduit = map["itsTempProduit"] as? Boolean ?: false,
                         init_nom = map["nom"] as? String ?: "",
@@ -71,43 +71,43 @@ suspend fun loadData(viewModel: ViewModelInitApp) {
                         init_visible = map["isVisible"] as? Boolean ?: false
                     ).apply {
                         // Load StatuesBase
-                        snap.child("statuesBase").getValue(ProduitModel.StatuesBase::class.java)?.let {
+                        snap.child("statuesBase").getValue(A_ProduitModel.StatuesBase::class.java)?.let {
                             statuesBase = it
                             statuesBase.imageGlidReloadTigger = 0
                         }
 
                         // Load ColoursEtGouts
-                        val coloursEtGoutsList = mutableListOf<ProduitModel.ColourEtGout_Model>()
+                        val coloursEtGoutsList = mutableListOf<A_ProduitModel.ColourEtGout_Model>()
                         snap.child("coloursEtGoutsList").children.forEach { colorSnap ->
-                            colorSnap.getValue(ProduitModel.ColourEtGout_Model::class.java)?.let {
+                            colorSnap.getValue(A_ProduitModel.ColourEtGout_Model::class.java)?.let {
                                 coloursEtGoutsList.add(it)
                             }
                         }
                         this.coloursEtGoutsList = coloursEtGoutsList
 
                         // Load current BonCommend with MutableBasesStates
-                        snap.child("bonCommendDeCetteCota").getValue(ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommend ->
+                        snap.child("bonCommendDeCetteCota").getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommend ->
                             // Load MutableBasesStates
                             snap.child("bonCommendDeCetteCota/mutableBasesStates")
-                                .getValue(ProduitModel.GrossistBonCommandes.MutableBasesStates::class.java)?.let {
+                                .getValue(A_ProduitModel.GrossistBonCommandes.MutableBasesStates::class.java)?.let {
                                     bonCommend.mutableBasesStates = it
                                 }
                             bonCommendDeCetteCota = bonCommend
                         }
 
                         // Load BonsVentDeCetteCota with proper initialization
-                        val bonsVent = mutableListOf<ProduitModel.ClientBonVentModel>()
+                        val bonsVent = mutableListOf<A_ProduitModel.ClientBonVentModel>()
                         snap.child("bonsVentDeCetteCotaList").children.forEach { bonVentSnap ->
-                            bonVentSnap.getValue(ProduitModel.ClientBonVentModel::class.java)?.let {
+                            bonVentSnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
                                 bonsVent.add(it)
                             }
                         }
                         bonsVentDeCetteCotaList = bonsVent
 
                         // Load HistoriqueBonsVents
-                        val historique = mutableListOf<ProduitModel.ClientBonVentModel>()
+                        val historique = mutableListOf<A_ProduitModel.ClientBonVentModel>()
                         snap.child("historiqueBonsVentsList").children.forEach { historySnap ->
-                            historySnap.getValue(ProduitModel.ClientBonVentModel::class.java)?.let {
+                            historySnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
                                 historique.add(it)
                             }
                         }

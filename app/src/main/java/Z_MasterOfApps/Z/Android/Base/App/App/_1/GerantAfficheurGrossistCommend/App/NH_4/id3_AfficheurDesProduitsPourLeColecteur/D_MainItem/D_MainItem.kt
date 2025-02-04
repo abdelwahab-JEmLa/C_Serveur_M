@@ -1,6 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.GlideDisplayImageBykeyId
 import androidx.compose.foundation.background
@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun MainItem_F3(
-    mainItem: _ModelAppsFather.ProduitModel,
+    mainItem: A_ProduitModel,
     viewModelProduits: ViewModelInitApp,
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},

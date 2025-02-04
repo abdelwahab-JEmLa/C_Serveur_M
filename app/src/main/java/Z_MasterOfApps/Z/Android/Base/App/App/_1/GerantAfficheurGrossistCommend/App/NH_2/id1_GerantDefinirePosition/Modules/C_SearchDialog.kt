@@ -1,7 +1,7 @@
 // SearchDialog.kt
 package Z_MasterOfApps.Z.Android.Packages._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.Modules
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +36,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SearchDialog_F1(
-    unpositionedItems: List<_ModelAppsFather.ProduitModel>,
+    unpositionedItems: List<A_ProduitModel>,
     viewModelProduits: ViewModelInitApp,
     showDialog: Boolean,
     onDismiss: () -> Unit

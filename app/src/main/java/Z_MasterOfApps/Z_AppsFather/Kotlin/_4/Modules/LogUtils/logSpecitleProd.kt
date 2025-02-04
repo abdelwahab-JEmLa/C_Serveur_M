@@ -1,12 +1,12 @@
 package Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.LogUtils
 
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import android.content.ContentValues.TAG
 import android.util.Log
 
 fun logSpecitleProd(
-    product: _ModelAppsFather.ProduitModel,
+    product: A_ProduitModel,
     grossist: C_GrossistsDataBase
     ) {
         // Log only for products 23 and 64

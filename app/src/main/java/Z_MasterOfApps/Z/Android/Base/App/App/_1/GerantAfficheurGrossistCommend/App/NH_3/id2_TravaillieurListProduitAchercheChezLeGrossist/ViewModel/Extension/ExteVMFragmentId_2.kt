@@ -1,7 +1,7 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_3.id2_TravaillieurListProduitAchercheChezLeGrossist.ViewModel.Extension
 
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase.Companion.updateGrossistDataBase
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.ProduitModel
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 
 class ExteVMFragmentId_2(
     val viewModelInitApp: ViewModelInitApp,
-    val produitsMainDataBase: MutableList<ProduitModel>,
+    val produitsMainDataBase: MutableList<A_ProduitModel>,
     val viewModelScope: CoroutineScope,
 ) {
     private val grossistsDataBase = viewModelInitApp._modelAppsFather.grossistsDataBase

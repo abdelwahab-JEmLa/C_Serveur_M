@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.UpdateFireBase
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
         ancienData.produitsDatabase.forEach { ancien ->
             // Skip products with ID > 2000
             if (ancien.idArticle <= 2000) {
-                val depuitAncienDataBase = _ModelAppsFather.ProduitModel(
+                val depuitAncienDataBase = A_ProduitModel(
                     id = ancien.idArticle,
                     init_nom = ancien.nomArticleFinale,
                     init_visible = false,
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
                 ).forEach { (colorId, position) ->
                     ancienData.couleurs_List.find { it.idColore == colorId }?.let { couleur ->
                         depuitAncienDataBase.coloursEtGouts.add(
-                            _ModelAppsFather.ProduitModel.ColourEtGout_Model(
+                            A_ProduitModel.ColourEtGout_Model(
                                 position_Du_Couleur_Au_Produit = position,
                                 nom = couleur.nameColore,
                                 imogi = couleur.iconColore,

@@ -145,13 +145,7 @@ object NavigationItems {
     }
 }
 
-data object InfosDatas_FramgmentId1 : Screen(
-    id =1,
-    icon = Icons.Default.LocationOn,
-    route = "fragment_main_screen_1",
-    titleArab = "محدد اماكن المنتجات عند الجمال",
-    color = Color(0xFFFF5722)
-)
+data object InfosDatas_FramgmentId1 : Screen(1,"محدد اماكن المنتجات عند الجمال",Color(0xFFFF5722),Icons.Default.LocationOn, "fragment_main_screen_1",)
 
 data object InfosDatas_FramgmentId2 : Screen(
     id =2,
@@ -203,10 +197,10 @@ data object StartupIcon_Start : Screen(
 
 abstract class Screen(
     val id: Long,
-    val route: String,
-    val icon: ImageVector,
     val titleArab: String,
-    val color: Color
+    val color: Color,
+    val icon: ImageVector,
+    val route: String
 )
 
 

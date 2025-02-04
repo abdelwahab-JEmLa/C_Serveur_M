@@ -17,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.FirebaseApp
 import kotlinx.coroutines.launch
 
 @SuppressLint("SuspiciousIndentation")
@@ -55,7 +54,7 @@ class ViewModelInitApp : ViewModel() {
         viewModelScope.launch {
             try {
                 isLoading = true
-                loadData(FirebaseApp.getInstance(), this@ViewModelInitApp)
+                loadData( this@ViewModelInitApp)
                 isLoading = false
             } catch (e: Exception) {
                 Log.e("ViewModelInitApp", "Init failed", e)

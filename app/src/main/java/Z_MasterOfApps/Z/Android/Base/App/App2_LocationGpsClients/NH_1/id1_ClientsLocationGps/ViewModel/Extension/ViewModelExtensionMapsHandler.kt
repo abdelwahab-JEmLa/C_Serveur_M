@@ -12,7 +12,7 @@ import org.osmdroid.views.overlay.Marker
 class ViewModelExtension_App2_F1(
     val viewModelScope: CoroutineScope,
     val produitsMainDataBase: MutableList<ProduitModel>,
-    val clientDataBaseSnapList: SnapshotStateList<B_ClientsDataBase>,
+    private val clientDataBaseSnapList: SnapshotStateList<B_ClientsDataBase>,
     val viewModel: ViewModelInitApp,
 ) {
     fun onClickAddMarkerButton(

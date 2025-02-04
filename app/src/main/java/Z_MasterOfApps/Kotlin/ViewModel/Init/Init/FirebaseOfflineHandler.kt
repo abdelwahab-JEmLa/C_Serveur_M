@@ -23,13 +23,11 @@ fun initializeFirebase(app: FirebaseApp) {
                 setPersistenceCacheSizeBytes(100L * 1024L * 1024L)
             }
             isInitialized = true
-        } catch (e: Exception) {
-            // Continue without persistence rather than crashing
-        }
+        } catch (_: Exception) {}
     }
 }
 
-suspend fun loadData(app: FirebaseApp, viewModel: ViewModelInitApp) {
+suspend fun loadData( viewModel: ViewModelInitApp) {
     try {
         viewModel.loadingProgress = 0.1f
 

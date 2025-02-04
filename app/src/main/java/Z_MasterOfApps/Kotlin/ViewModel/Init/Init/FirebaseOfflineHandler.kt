@@ -17,54 +17,78 @@ import kotlinx.coroutines.withTimeoutOrNull
 private const val TAG = "Firebase"
 private var isInitialized = false
 
+// Initialize Firebase persistence at app startup
+fun initializeFirebase(app: FirebaseApp) {
+    if (!isInitialized) {
+        try {
+            FirebaseDatabase.getInstance(app).apply {
+                setPersistenceEnabled(true)
+                setPersistenceCacheSizeBytes(100L * 1024L * 1024L)
+            }
+            isInitialized = true
+            Log.i(TAG, "Firebase persistence enabled successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to enable persistence", e)
+            // Continue without persistence rather than crashing
+        }
+    }
+}
+
 suspend fun loadData(app: FirebaseApp, viewModel: ViewModelInitApp) {
     try {
-        // 1. Initialize Firebase
-        if (!isInitialized) {
-            try {
-                FirebaseDatabase.getInstance(app).apply {
-                    setPersistenceEnabled(true)
-                    setPersistenceCacheSizeBytes(100L * 1024L * 1024L)
-                }
-                isInitialized = true
-                Log.i(TAG, "Firebase persistence enabled")
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to enable persistence", e)
-            }
-        }
-
         viewModel.loadingProgress = 0.1f
 
-        // 2. Enable offline persistence for references
+        // 1. Enable offline persistence for references
         val refs = listOf(
             _ModelAppsFather.ref_HeadOfModels,
             _ModelAppsFather.produitsFireBaseRef,
             B_ClientsDataBase.refClientsDataBase
         ).onEach { it.keepSynced(true) }
 
-        // 3. Check connection and get data
+        // 2. Check connection and get data
         val isOnline = withTimeoutOrNull(3000L) {
             refs[1].child("test").setValue(true).await()
             refs[1].child("test").removeValue().await()
             true
         } ?: false
 
-        // 4. Load data based on connection status
+        // 3. Load data based on connection status
+        Log.d(TAG, "Starting data load - Online mode: $isOnline")
         val snapshots = if (isOnline) {
             Log.i(TAG, "🟢 Online mode")
             FirebaseListeners.setupRealtimeListeners(viewModel)
-            refs.map { it.get().await() }
+            refs.map {
+                Log.d(TAG, "Fetching data from reference: ${it.key}")
+                it.get().await().also { snapshot ->
+                    Log.d(TAG, "Received snapshot for ${it.key}: exists=${snapshot.exists()}, childrenCount=${snapshot.childrenCount}")
+                }
+            }
         } else {
             Log.w(TAG, "🔴 Offline mode")
             FirebaseDatabase.getInstance().goOffline()
-            refs.map { withTimeoutOrNull(5000L) { it.get().await() } }
-                .also { FirebaseDatabase.getInstance().goOnline() }
+            refs.map { ref ->
+                Log.d(TAG, "Attempting offline fetch from reference: ${ref.key}")
+                withTimeoutOrNull(5000L) {
+                    ref.get().await().also { snapshot ->
+                        Log.d(TAG, "Received offline snapshot for ${ref.key}: exists=${snapshot.exists()}, childrenCount=${snapshot.childrenCount}")
+                    }
+                }
+            }.also { FirebaseDatabase.getInstance().goOnline() }
         }
 
-        // 5. Parse data
+        // 4. Parse data
         val (headModels, products, clients) = snapshots
 
-        // 6. Update ViewModel
+        // Log detailed information about headModels
+        Log.d(TAG, "HeadModels snapshot details:" +
+                "\n - Is null: ${headModels == null}" +
+                "\n - Exists: ${headModels?.exists()}" +
+                "\n - Has children: ${headModels?.hasChildren()}" +
+                "\n - Children count: ${headModels?.childrenCount}" +
+                "\n - Key: ${headModels?.key}" +
+                "\n - Reference: ${headModels?.ref?.key}")
+
+        // 5. Update ViewModel
         withContext(Dispatchers.Main) {
             viewModel.modelAppsFather.apply {
                 // Update products
@@ -75,8 +99,7 @@ suspend fun loadData(app: FirebaseApp, viewModel: ViewModelInitApp) {
                         id = snap.key?.toLongOrNull() ?: return@forEach,
                         itsTempProduit = map["itsTempProduit"] as? Boolean ?: false,
                         init_nom = map["nom"] as? String ?: "",
-                        init_besoin_To_Be_Updated = map["besoin_To_Be_Updated"] as? Boolean
-                            ?: false,
+                        init_besoin_To_Be_Updated = map["besoin_To_Be_Updated"] as? Boolean ?: false,
                         initialNon_Trouve = map["non_Trouve"] as? Boolean ?: false,
                         init_visible = false
                     ).apply {
@@ -99,29 +122,61 @@ suspend fun loadData(app: FirebaseApp, viewModel: ViewModelInitApp) {
                     ).apply {
                         snap.child("statueDeBase")
                             .getValue(B_ClientsDataBase.StatueDeBase::class.java)?.let {
-                            statueDeBase = it
-                        }
+                                statueDeBase = it
+                            }
                         snap.child("gpsLocation")
                             .getValue(B_ClientsDataBase.GpsLocation::class.java)?.let {
-                            gpsLocation = it
-                        }
+                                gpsLocation = it
+                            }
                         clientDataBase.add(this)
                     }
                 }
 
-                // Update grossists
+                // Update grossists with better error handling
                 grossistsDataBase.clear()
-                headModels?.child("C_GrossistsDataBase")?.children?.forEach { snap ->
-                    val map = snap.value as? Map<*, *> ?: return@forEach
-                    C_GrossistsDataBase(
-                        id = snap.key?.toLongOrNull() ?: return@forEach,
-                        nom = map["nom"] as? String ?: ""
-                    ).apply {
-                        snap.child("statueDeBase")
-                            .getValue(C_GrossistsDataBase.StatueDeBase::class.java)?.let {
-                            statueDeBase = it
+                if (headModels == null) {
+                    Log.e(TAG, "headModels is null - unable to update grossists")
+                } else {
+                    val grossistsNode = headModels.child("C_GrossistsDataBase")
+                    Log.d(TAG, "Grossists node details:" +
+                            "\n - Exists: ${grossistsNode.exists()}" +
+                            "\n - Children count: ${grossistsNode.childrenCount}" +
+                            "\n - Path: ${grossistsNode.ref.path}")
+
+                    if (!grossistsNode.exists()) {
+                        // Create default grossist if none exist
+                        Log.w(TAG, "No grossists found - creating default entry")
+                        grossistsDataBase.add(C_GrossistsDataBase(
+                            id = 1,
+                            nom = "Default Grossist",
+                            statueDeBase = C_GrossistsDataBase.StatueDeBase(
+                                cUnClientTemporaire = true
+                            )
+                        ))
+                    } else {
+                        grossistsNode.children.forEach { snap ->
+                            try {
+                                val map = snap.value as? Map<*, *> ?: run {
+                                    Log.e(TAG, "Failed to cast grossist value to Map for key: ${snap.key}")
+                                    return@forEach
+                                }
+                                C_GrossistsDataBase(
+                                    id = snap.key?.toLongOrNull() ?: run {
+                                        Log.e(TAG, "Invalid grossist ID format: ${snap.key}")
+                                        return@forEach
+                                    },
+                                    nom = map["nom"] as? String ?: "Non Defini"
+                                ).apply {
+                                    snap.child("statueDeBase")
+                                        .getValue(C_GrossistsDataBase.StatueDeBase::class.java)?.let {
+                                            statueDeBase = it
+                                        }
+                                    grossistsDataBase.add(this)
+                                }
+                            } catch (e: Exception) {
+                                Log.e(TAG, "Error parsing grossist ${snap.key}", e)
+                            }
                         }
-                        grossistsDataBase.add(this)
                     }
                 }
             }

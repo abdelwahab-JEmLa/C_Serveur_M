@@ -2,7 +2,7 @@ package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.UpdateFireBase
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.Z.GetAncienDataBasesMain.GetAncienDataBasesMain
 import android.util.Log
@@ -11,13 +11,18 @@ import kotlinx.coroutines.launch
 
 fun creeDepuitAncienDataBases(
     viewModelInitApp: ViewModelInitApp,
-    ) {
+) {
     viewModelInitApp.viewModelScope.launch {
         try {
             val ancienData = GetAncienDataBasesMain()
 
             // Process products and filter out IDs above 2000
             ancienData.produitsDatabase.forEach { ancien ->
+                // Log details for product with ID 83
+                if (ancien.idArticle == 83L) {
+                    Log.d("creeDepuitAncienDataBases", "Processing product with ID 83: cartonState = ${ancien.cartonState}")
+                }
+
                 // Skip products with ID > 2000
                 if (ancien.idArticle <= 2000) {
                     val depuitAncienDataBase = A_ProduitModel(
@@ -26,8 +31,12 @@ fun creeDepuitAncienDataBases(
                         init_visible = false,
                         init_besoin_To_Be_Updated = true
                     ).apply {
-                        statuesBase.characterProduit.emballageCartone=
-                            ancien.cartonState.contains("rton")
+                        statuesBase.characterProduit.emballageCartone = ancien.cartonState == "itsCarton"
+                    }
+
+                    // Log the emballageCartone value for product with ID 83
+                    if (ancien.idArticle == 83L) {
+                        Log.d("creeDepuitAncienDataBases", "Product ID 83 - emballageCartone = ${depuitAncienDataBase.statuesBase.characterProduit.emballageCartone}")
                     }
 
                     var colorsAdded = 0
@@ -63,7 +72,7 @@ fun creeDepuitAncienDataBases(
                 }
             }
 
-            update_AllProduits(viewModelInitApp._modelAppsFather.produitsMainDataBase,viewModelInitApp)
+            UpdateFireBase(viewModelInitApp._modelAppsFather.produitsMainDataBase)
 
         } catch (e: Exception) {
             Log.e("creeDepuitAncienDataBases", "Error in creeDepuitAncienDataBases", e)

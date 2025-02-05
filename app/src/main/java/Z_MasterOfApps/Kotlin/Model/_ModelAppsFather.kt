@@ -89,16 +89,14 @@ open class _ModelAppsFather(
             }
         }
 
-        private suspend fun UpdateFireBase(updatedProducts: List<A_ProduitModel>) {
-            updatedProducts.chunked(5).forEach { chunk ->
-                chunk.forEach { product ->
-                    try {
-                        produitsFireBaseRef.child(product.id.toString()).setValue(product)
-                            .await()
-                        Log.d("Firebase", "Successfully updated product ${product.id}")
-                    } catch (e: Exception) {
-                        Log.e("Firebase", "Failed to update product ${product.id}", e)
-                    }
+        suspend fun UpdateFireBase(updatedProducts: List<A_ProduitModel>) {
+            updatedProducts.forEach { product ->
+                try {
+                    produitsFireBaseRef.child(product.id.toString()).setValue(product)
+                        .await()
+                    Log.d("Firebase", "Successfully updated product ${product.id}")
+                } catch (e: Exception) {
+                    Log.e("Firebase", "Failed to update product ${product.id}", e)
                 }
             }
         }

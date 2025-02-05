@@ -33,6 +33,6 @@ fun B_4_creeDepuitAncienDataBases(
         contentDescription = "creeDepuitAncienDataBases",
         showLabels = showLabels,
         labelText = if (clearDataClickCount == 0) "creeDepuitAncienDataBases ??" else "Click again to confirm",
-        containerColor = if (clearDataClickCount == 0) Color(0xFFFFEB3B) else Color(0xFFE51A0B)
+        containerColor = if (clearDataClickCount == 0) Color(0xFFF44336) else Color(0xFF7D7426)
     )
 }

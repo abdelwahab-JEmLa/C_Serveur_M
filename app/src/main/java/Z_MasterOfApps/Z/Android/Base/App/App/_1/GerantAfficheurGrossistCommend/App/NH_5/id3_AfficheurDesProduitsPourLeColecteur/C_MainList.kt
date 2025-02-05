@@ -36,11 +36,11 @@ fun MainList_F3(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val frag3a1Extvm = viewModel.frag_3A1_ExtVM
-    val visibleProducts = frag3a1Extvm.clientFocused?.second
+    val frag_3A1_ExtVM = viewModel.frag_3A1_ExtVM
+    val visibleProducts = frag_3A1_ExtVM.clientFocused?.second
 
     visibleProducts?.forEach { product ->
-        frag3a1Extvm.iDClientAuFilter?.let { clientId ->
+        frag_3A1_ExtVM.iDClientAuFilter?.let { clientId ->
             logProductFilter(
                 product,
                 clientId,
@@ -57,63 +57,161 @@ fun MainList_F3(
         contentPadding = paddingValues,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Group products by grossist using the existing groupedProductsParGrossist property
         visibleProducts?.let { products ->
-            val groupedProducts = viewModel._modelAppsFather.groupedProductsParGrossist
-                .filter { (_, groupProducts) ->
-                    groupProducts.any { product ->
-                        products.contains(product)
-                    }
-                }
+            // Group products by carton packaging and grossist
+            val etagerProducts = products.filter {
+                !it.statuesBase.characterProduit.emballageCartone
+            }
+            val cartonsProducts = products.filter {
+                it.statuesBase.characterProduit.emballageCartone
+            }
 
-            groupedProducts.forEach { (grossist, grossistProducts) ->
-                val filteredProducts = grossistProducts.filter {
-                    products.contains(it)
-                }
-
-                if (filteredProducts.isNotEmpty()) {
-                    stickyHeader {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(Color(android.graphics.Color.parseColor(grossist.statueDeBase.couleur)))
-                                .padding(16.dp)
-                        ) {
-                            Text(
-                                text = grossist.nom,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = if (grossist.statueDeBase.couleur == "#FFFFFF")
-                                    Color.Black else Color.White
-                            )
+            // Etager Section
+            if (etagerProducts.isNotEmpty()) {
+                val groupedEtagerProducts = viewModel._modelAppsFather.groupedProductsParGrossist
+                    .filter { (_, groupProducts) ->
+                        groupProducts.any { product ->
+                            etagerProducts.contains(product)
                         }
                     }
 
-                    items(filteredProducts) { product ->
-                        Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-                            MainItem_F3(
-                                viewModelProduits = viewModel,
-                                mainItem = product,
-                                modifier = Modifier.fillMaxWidth(),
-                                onCLickOnMain = {
-                                    expandedItemId = if (expandedItemId == product.id) null
-                                    else product.id
-                                }
-                            )
+                item {
+                    Text(
+                        text = "Etager Section",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.LightGray)
+                            .padding(8.dp),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                            AnimatedVisibility(
-                                visible = expandedItemId == product.id,
-                                enter = expandVertically(),
-                                exit = shrinkVertically()
+                groupedEtagerProducts.forEach { (grossist, grossistProducts) ->
+                    val filteredProducts = grossistProducts.filter {
+                        etagerProducts.contains(it)
+                    }
+
+                    if (filteredProducts.isNotEmpty()) {
+                        stickyHeader {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color(android.graphics.Color.parseColor(grossist.statueDeBase.couleur)))
+                                    .padding(16.dp)
                             ) {
-                                ExpandedMainItem_F2(
-                                    viewModelInitApp = viewModel,
-                                    mainItem = product,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 8.dp),
-                                    onCLickOnMain = { expandedItemId = null }
+                                Text(
+                                    text = grossist.nom,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (grossist.statueDeBase.couleur == "#FFFFFF")
+                                        Color.Black else Color.White
                                 )
+                            }
+                        }
+
+                        items(filteredProducts) { product ->
+                            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                                MainItem_F3(
+                                    viewModelProduits = viewModel,
+                                    mainItem = product,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onCLickOnMain = {
+                                        expandedItemId = if (expandedItemId == product.id) null
+                                        else product.id
+                                    }
+                                )
+
+                                AnimatedVisibility(
+                                    visible = expandedItemId == product.id,
+                                    enter = expandVertically(),
+                                    exit = shrinkVertically()
+                                ) {
+                                    ExpandedMainItem_F2(
+                                        viewModelInitApp = viewModel,
+                                        mainItem = product,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 8.dp),
+                                        onCLickOnMain = { expandedItemId = null }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Cartons Section
+            if (cartonsProducts.isNotEmpty()) {
+                val groupedCartonsProducts = viewModel._modelAppsFather.groupedProductsParGrossist
+                    .filter { (_, groupProducts) ->
+                        groupProducts.any { product ->
+                            cartonsProducts.contains(product)
+                        }
+                    }
+
+                item {
+                    Text(
+                        text = "Cartons Section",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.LightGray)
+                            .padding(8.dp),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                groupedCartonsProducts.forEach { (grossist, grossistProducts) ->
+                    val filteredProducts = grossistProducts.filter {
+                        cartonsProducts.contains(it)
+                    }
+
+                    if (filteredProducts.isNotEmpty()) {
+                        stickyHeader {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(Color(android.graphics.Color.parseColor(grossist.statueDeBase.couleur)))
+                                    .padding(16.dp)
+                            ) {
+                                Text(
+                                    text = grossist.nom,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (grossist.statueDeBase.couleur == "#FFFFFF")
+                                        Color.Black else Color.White
+                                )
+                            }
+                        }
+
+                        items(filteredProducts) { product ->
+                            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
+                                MainItem_F3(
+                                    viewModelProduits = viewModel,
+                                    mainItem = product,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    onCLickOnMain = {
+                                        expandedItemId = if (expandedItemId == product.id) null
+                                        else product.id
+                                    }
+                                )
+
+                                AnimatedVisibility(
+                                    visible = expandedItemId == product.id,
+                                    enter = expandVertically(),
+                                    exit = shrinkVertically()
+                                ) {
+                                    ExpandedMainItem_F2(
+                                        viewModelInitApp = viewModel,
+                                        mainItem = product,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 8.dp),
+                                        onCLickOnMain = { expandedItemId = null }
+                                    )
+                                }
                             }
                         }
                     }

@@ -39,7 +39,7 @@ fun A_OptionsControlsButtons(
     paddingValues: PaddingValues,
     extensionVM: Startup_Extension,
 ) {
-    var showMenu by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(true) }
     var showLabels by remember { mutableStateOf(true) }
 
     var offsetX by remember { mutableFloatStateOf(0f) }
@@ -78,7 +78,10 @@ fun A_OptionsControlsButtons(
                         showLabels = showLabels,
                         viewModelInitApp = viewModelInitApp
                     )
-
+                    B_4_creeDepuitAncienDataBases(
+                        showLabels = showLabels,
+                        viewModel = viewModelInitApp
+                    )
                 }
 
                 LabelsButton(

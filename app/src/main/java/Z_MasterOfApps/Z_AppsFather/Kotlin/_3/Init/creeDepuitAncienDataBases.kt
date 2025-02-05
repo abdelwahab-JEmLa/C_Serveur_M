@@ -2,17 +2,15 @@ package Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init
 
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.UpdateFireBase
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.update_AllProduits
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin._3.Init.Z.GetAncienDataBasesMain.GetAncienDataBasesMain
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
-fun CreeDepuitAncienDataBases(
-    _appsHeadModel: _ModelAppsFather,
+fun creeDepuitAncienDataBases(
     viewModelInitApp: ViewModelInitApp,
-
     ) {
     viewModelInitApp.viewModelScope.launch {
         try {
@@ -27,7 +25,10 @@ fun CreeDepuitAncienDataBases(
                         init_nom = ancien.nomArticleFinale,
                         init_visible = false,
                         init_besoin_To_Be_Updated = true
-                    )
+                    ).apply {
+                        statuesBase.characterProduit.emballageCartone=
+                            ancien.cartonState.contains("rton")
+                    }
 
                     var colorsAdded = 0
                     listOf(
@@ -50,22 +51,22 @@ fun CreeDepuitAncienDataBases(
                     }
 
                     // Add product to main database
-                    _appsHeadModel.produitsMainDataBase.add(depuitAncienDataBase)
+                    viewModelInitApp._modelAppsFather.produitsMainDataBase.add(depuitAncienDataBase)
                 }
             }
 
             _ModelAppsFather.produitsFireBaseRef.removeValue().addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d("CreeDepuitAncienDataBases", "Successfully cleared Firebase database")
+                    Log.d("creeDepuitAncienDataBases", "Successfully cleared Firebase database")
                 } else {
-                    Log.e("CreeDepuitAncienDataBases", "Failed to clear Firebase database", task.exception)
+                    Log.e("creeDepuitAncienDataBases", "Failed to clear Firebase database", task.exception)
                 }
             }
 
-            UpdateFireBase(_appsHeadModel.produitsMainDataBase)
+            update_AllProduits(viewModelInitApp._modelAppsFather.produitsMainDataBase,viewModelInitApp)
 
         } catch (e: Exception) {
-            Log.e("CreeDepuitAncienDataBases", "Error in CreeDepuitAncienDataBases", e)
+            Log.e("creeDepuitAncienDataBases", "Error in creeDepuitAncienDataBases", e)
             throw e
         }
     }

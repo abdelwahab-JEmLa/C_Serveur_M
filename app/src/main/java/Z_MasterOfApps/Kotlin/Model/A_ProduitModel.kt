@@ -33,13 +33,19 @@ class A_ProduitModel(
     @IgnoreExtraProperties
     class StatuesBase(
         var ilAUneCouleurAvecImage: Boolean = false,
-    ) {
+        var characterProduit: CharacterProduit = CharacterProduit(),
+        ) {
         var naAucunImage: Boolean by mutableStateOf(false)
         var sonImageBesoinActualisation: Boolean by mutableStateOf(false)
         var imageGlidReloadTigger: Int by mutableStateOf(0)
 
         var prePourCameraCapture: Boolean by mutableStateOf(false)
         var seTrouveAuDernieDuCamionCarCCarton: Boolean by mutableStateOf(false)
+
+        @IgnoreExtraProperties
+        data class CharacterProduit(
+         var emballageCartone: Boolean = false,
+        )
     }
 
 
@@ -63,7 +69,6 @@ class A_ProduitModel(
     )
 
 
-    // Nouvelle implémentation avec derived state pour bonCommendDeCetteCota
     var bonCommendDeCetteCota by mutableStateOf<GrossistBonCommandes?>(
         init_bonCommendDeCetteCota
     )

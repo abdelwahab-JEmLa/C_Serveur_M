@@ -2,7 +2,6 @@ package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.ExpandedMainItem_F2
-import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_5.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.ExpandedMainItem_F3
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_5.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.MainItem_F3
 import Z_MasterOfApps.Z_AppsFather.Kotlin._4.Modules.LogUtils.logProductFilter
 import androidx.compose.animation.AnimatedVisibility
@@ -33,26 +32,23 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainList_F3(
-    viewModelInitApp: ViewModelInitApp,
+    viewModel: ViewModelInitApp,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    var expandedItemId by remember { mutableStateOf<Long?>(null) }
+    val frag3a1Extvm = viewModel.frag_3A1_ExtVM
+    val visibleProducts = frag3a1Extvm.clientFocused?.second
 
-    // Get products for current client
-    val products = viewModelInitApp._modelAppsFather.groupedProductsParClients
-        .find { it.key.id == viewModelInitApp.frag_3A1_ExtVM.iDClientAuFilter }
-        ?.value
-        .orEmpty()
-        .filter { it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true }
-
-    // Log for debugging
-    products.forEach {
-        viewModelInitApp.frag_3A1_ExtVM.iDClientAuFilter?.let { it1 ->
-            logProductFilter(it, it1,
-            viewModelInitApp._modelAppsFather.grossistsDataBase)
+    visibleProducts?.forEach { product ->
+        frag3a1Extvm.iDClientAuFilter?.let { clientId ->
+            logProductFilter(
+                product,
+                clientId,
+                viewModel._modelAppsFather.grossistsDataBase
+            )
         }
     }
+    var expandedItemId by remember { mutableStateOf<Long?>(null) }
 
     LazyColumn(
         modifier = modifier
@@ -61,23 +57,21 @@ fun MainList_F3(
         contentPadding = paddingValues,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Group and sort products by grossist
-        val groupedProducts = products
-            .groupBy {
-                viewModelInitApp._modelAppsFather.grossistsDataBase
-                    .find { grossist -> grossist.id == it.bonCommendDeCetteCota?.idGrossistChoisi }
-            }
-            .filterKeys { it != null }
-            .toSortedMap(compareBy { it?.statueDeBase?.itPositionInParentList })
-
-        // Display regular products
-        groupedProducts.forEach { (grossist, grossistProducts) ->
-            if (grossist != null) {
-                val regularProducts = grossistProducts.filter {
-                    !it.statuesBase.seTrouveAuDernieDuCamionCarCCarton
+        // Group products by grossist using the existing groupedProductsParGrossist property
+        visibleProducts?.let { products ->
+            val groupedProducts = viewModel._modelAppsFather.groupedProductsParGrossist
+                .filter { (_, groupProducts) ->
+                    groupProducts.any { product ->
+                        products.contains(product)
+                    }
                 }
 
-                if (regularProducts.isNotEmpty()) {
+            groupedProducts.forEach { (grossist, grossistProducts) ->
+                val filteredProducts = grossistProducts.filter {
+                    products.contains(it)
+                }
+
+                if (filteredProducts.isNotEmpty()) {
                     stickyHeader {
                         Box(
                             modifier = Modifier
@@ -95,10 +89,10 @@ fun MainList_F3(
                         }
                     }
 
-                    items(regularProducts) { product ->
+                    items(filteredProducts) { product ->
                         Column(modifier = Modifier.padding(horizontal = 8.dp)) {
                             MainItem_F3(
-                                viewModelProduits = viewModelInitApp,
+                                viewModelProduits = viewModel,
                                 mainItem = product,
                                 modifier = Modifier.fillMaxWidth(),
                                 onCLickOnMain = {
@@ -113,60 +107,15 @@ fun MainList_F3(
                                 exit = shrinkVertically()
                             ) {
                                 ExpandedMainItem_F2(
-                                    viewModelInitApp = viewModelInitApp,
+                                    viewModelInitApp = viewModel,
                                     mainItem = product,
-                                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp),
                                     onCLickOnMain = { expandedItemId = null }
                                 )
                             }
                         }
-                    }
-                }
-            }
-        }
-
-        // Display carton products
-        val cartonProducts = products.filter { it.statuesBase.seTrouveAuDernieDuCamionCarCCarton }
-        if (cartonProducts.isNotEmpty()) {
-            stickyHeader {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Gray)
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "Produits Type: Carton",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            }
-
-            items(cartonProducts) { product ->
-                Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-                    MainItem_F3(
-                        viewModelProduits = viewModelInitApp,
-                        mainItem = product,
-                        modifier = Modifier.fillMaxWidth(),
-                        onCLickOnMain = {
-                            expandedItemId = if (expandedItemId == product.id) null
-                            else product.id
-                        }
-                    )
-
-                    AnimatedVisibility(
-                        visible = expandedItemId == product.id,
-                        enter = expandVertically(),
-                        exit = shrinkVertically()
-                    ) {
-                        ExpandedMainItem_F3(
-                            viewModelInitApp = viewModelInitApp,
-                            mainItem = product,
-                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                            onCLickOnMain = { expandedItemId = null }
-                        )
                     }
                 }
             }

@@ -102,7 +102,7 @@ fun MainScreenFilterFAB_F3(
                                     modifier = Modifier
                                         .weight(1f)
                                         .background(
-                                            if (frag3a1Extvm.iDClientAuFilter == client.id
+                                            if (frag3a1Extvm.clientFocused?.first?.id == client.id
                                                 ) MaterialTheme.colorScheme.primaryContainer
                                             else Color.Transparent
                                         )
@@ -122,7 +122,7 @@ fun MainScreenFilterFAB_F3(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        frag3a1Extvm.iDClientAuFilter= client.id
+                                        frag3a1Extvm.clientFocused= client to products
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = color

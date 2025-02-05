@@ -21,7 +21,7 @@ fun A_id3_AfficheurDesProduitsPourLeColecteur(
         Box(modifier = Modifier.fillMaxSize()) {
             if (viewModelInitApp._modelAppsFather.produitsMainDataBase.size > 0) {
                 MainList_F3(
-                    viewModelInitApp = viewModelInitApp,
+                    viewModel = viewModelInitApp,
                     paddingValues = paddingValues
                 )
             }

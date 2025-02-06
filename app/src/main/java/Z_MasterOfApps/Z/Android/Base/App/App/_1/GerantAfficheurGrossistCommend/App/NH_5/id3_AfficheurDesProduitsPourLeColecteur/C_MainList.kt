@@ -80,7 +80,7 @@ fun MainList_F3(
                     viewModel = viewModel,
                     expandedItemId = expandedItemId,
                     onExpandedItemIdChange = { expandedItemId = it },
-                    groupByGrossist = true // Group Unite products by grossist
+                    groupByGrossist = true
                 )
             }
 

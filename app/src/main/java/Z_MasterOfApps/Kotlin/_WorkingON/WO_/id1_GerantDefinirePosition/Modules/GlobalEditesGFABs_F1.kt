@@ -273,9 +273,7 @@ fun GlobalEditesGFABs_F1(
                 ) {
                     // FAB Suppression
                     FloatingActionButton(
-                        onClick = {
-                             //TODO
-                        },
+                        onClick = {},
                         modifier = Modifier.size(48.dp),
                         containerColor = Color(0xFF4CAF50)
                     ) {
@@ -286,7 +284,8 @@ fun GlobalEditesGFABs_F1(
                     }
 
                     // FAB Caméra
-                    FloatingActionButton(
+                    FloatingActionButton(   //-->
+                    //TODO(1): exrtcat le et cescomposont dons une fun separe
                         onClick = { checkAndRequestPermissions() },
                         modifier = Modifier.size(48.dp),
                         containerColor = Color(0xFF4CAF50)

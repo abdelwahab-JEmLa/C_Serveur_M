@@ -2,7 +2,6 @@ package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.B_1_CameraFAB
-import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -19,8 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
-import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -44,7 +41,6 @@ fun A_OptionsControlsButtons_F2(
 ) {
     // State management
     var showOptions by remember { mutableStateOf(true) }
-    var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
     var offsetX by remember { mutableFloatStateOf(-25f) }
     var offsetY by remember { mutableFloatStateOf(25f) }
 
@@ -107,39 +103,6 @@ fun A_OptionsControlsButtons_F2(
                         containerColor = fabColors.secondary
                     )
 
-                    // Position Edit FAB
-                    FloatingActionButton(
-                        onClick = {
-                            viewModel
-                                ._paramatersAppsViewModelModel
-                                .visibilityClientEditePositionDialog = true
-                        },
-                        modifier = Modifier.size(48.dp),
-                        containerColor = fabColors.accent
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardDoubleArrowUp,
-                            contentDescription = "Éditer la position"
-                        )
-                    }
-
-                    // Mode Toggle FAB
-                    FloatingActionButton(
-                        onClick = {
-                            deviceMode = when (deviceMode) {
-                                DeviceMode.SERVER -> DeviceMode.DISPLAY
-                                DeviceMode.DISPLAY -> DeviceMode.SERVER
-                            }
-                        },
-                        modifier = Modifier.size(48.dp),
-                        containerColor = fabColors.accent
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Upload,
-                            contentDescription = if (deviceMode == DeviceMode.SERVER)
-                                "Passer en mode Affichage" else "Passer en mode Serveur"
-                        )
-                    }
                 }
             }
         }

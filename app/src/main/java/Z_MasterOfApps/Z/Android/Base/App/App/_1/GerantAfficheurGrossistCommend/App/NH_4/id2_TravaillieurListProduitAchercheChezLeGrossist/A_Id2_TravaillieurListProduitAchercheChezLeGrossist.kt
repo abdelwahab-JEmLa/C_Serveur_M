@@ -65,7 +65,6 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
             MainScreenFilterFAB_F2(
                 viewModel = viewModel,
             )
-
         }
     }
 }

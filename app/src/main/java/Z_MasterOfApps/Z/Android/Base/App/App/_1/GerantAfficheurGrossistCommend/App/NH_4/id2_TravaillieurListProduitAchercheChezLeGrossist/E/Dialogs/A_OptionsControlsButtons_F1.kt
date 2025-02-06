@@ -1,7 +1,7 @@
-package Z_MasterOfApps.Kotlin._WorkingON.WO_.id1_GerantDefinirePosition.Modules.Options.Dialog
+package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id2_TravaillieurListProduitAchercheChezLeGrossist.E.Dialogs
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.B_1_CameraFAB
 import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.ParamatersAppsModel.DeviceMode
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowUp
@@ -39,16 +38,15 @@ import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
 
 @Composable
-fun A_OptionsControlsButtons_F1(
-    appsHeadModel: _ModelAppsFather,
+fun A_OptionsControlsButtons_F2(
     modifier: Modifier = Modifier,
-    viewModelInitApp: ViewModelInitApp,
+    viewModel: ViewModelInitApp,
 ) {
     // State management
     var showOptions by remember { mutableStateOf(false) }
     var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
-    var offsetX by remember { mutableFloatStateOf(0f) }
-    var offsetY by remember { mutableFloatStateOf(0f) }
+    var offsetX by remember { mutableFloatStateOf(-25f) }
+    var offsetY by remember { mutableFloatStateOf(25f) }
 
     // Constants for colors
     val fabColors = object {
@@ -101,21 +99,10 @@ fun A_OptionsControlsButtons_F1(
                     horizontalAlignment = Alignment.End,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    // Delete FAB
-                    FloatingActionButton(
-                        onClick = { /* Delete functionality */ },
-                        modifier = Modifier.size(48.dp),
-                        containerColor = fabColors.secondary
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = "Supprimer"
-                        )
-                    }
 
                     // Camera FAB
                     B_1_CameraFAB(
-                        appsHeadModel = appsHeadModel,
+                        viewModel = viewModel,
                         size = 48.dp,
                         containerColor = fabColors.secondary
                     )
@@ -123,7 +110,7 @@ fun A_OptionsControlsButtons_F1(
                     // Position Edit FAB
                     FloatingActionButton(
                         onClick = {
-                            viewModelInitApp
+                            viewModel
                                 ._paramatersAppsViewModelModel
                                 .visibilityClientEditePositionDialog = true
                         },

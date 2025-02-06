@@ -1,8 +1,10 @@
-package Z_MasterOfApps.Kotlin._WorkingON.WO_.id1_GerantDefinirePosition.Modules.Options.Dialog
+package Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views
+
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsFireBaseStorageRef
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.imagesProduitsLocalExternalStorageBasePath
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -38,7 +40,7 @@ import java.io.IOException
 
 @Composable
 fun B_1_CameraFAB(
-    appsHeadModel: _ModelAppsFather,
+    viewModel: ViewModelInitApp,
     size: Dp = 48.dp,
     containerColor: Color = Color(0xFF4CAF50)
 ) {
@@ -194,7 +196,7 @@ fun B_1_CameraFAB(
         if (!hasPermissions) {
             permissionLauncher.launch(permissions)
         } else {
-            val productForCapture = appsHeadModel.produitsMainDataBase
+            val productForCapture = viewModel._modelAppsFather.produitsMainDataBase
                 .firstOrNull { it.statuesBase.prePourCameraCapture }
 
             if (productForCapture != null) {

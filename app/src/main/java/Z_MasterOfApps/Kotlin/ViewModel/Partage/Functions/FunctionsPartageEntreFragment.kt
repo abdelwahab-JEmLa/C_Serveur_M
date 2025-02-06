@@ -8,7 +8,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.database.database
 
 class FunctionsPartageEntreFragment(
-    val viewModel: ViewModelInitApp,
+    val viewModelInitApp: ViewModelInitApp,
 ) {
     private val grossistsDataBase = viewModel._modelAppsFather.grossistsDataBase
 
@@ -44,7 +44,7 @@ class FunctionsPartageEntreFragment(
                         ?.quantity_Achete = newQuantity
                 }
         }
-        updateProduit(updatedProduit, viewModel)
+        updateProduit(updatedProduit, viewModelInitApp)
 
         // Update SoldArticlesTabelle
         selectedBonVent?.let { bonVent ->

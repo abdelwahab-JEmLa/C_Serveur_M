@@ -1,7 +1,6 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_5.id3_AfficheurDesProduitsPourLeColecteur
 
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
-import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.ExpandedMainItem_F2
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_5.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.MainItem_F3
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 @Composable
 fun MainList_F3(
     viewModel: ViewModelInitApp,
@@ -40,13 +40,11 @@ fun MainList_F3(
     val frag_3A1_ExtVM = viewModel.frag_3A1_ExtVM
     val visibleProducts = frag_3A1_ExtVM.clientFocused?.second?.sortedWith(
         compareBy<A_ProduitModel> { product ->
-            // First sort by grossist position
             product.bonCommendDeCetteCota?.let { bon ->
                 viewModel._modelAppsFather.grossistsDataBase.find { it.id == bon.idGrossistChoisi }
                     ?.statueDeBase?.itPositionInParentList
             } ?: Int.MAX_VALUE
         }.thenBy { product ->
-            // Then sort by product position within grossist
             product.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: Int.MAX_VALUE
         }
     )
@@ -61,7 +59,6 @@ fun MainList_F3(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         visibleProducts?.let { products ->
-            // Separate products by packaging type
             val etagerProducts = products.filter { !it.statuesBase.characterProduit.emballageCartone }
             val cartonsProducts = products.filter { it.statuesBase.characterProduit.emballageCartone }
 
@@ -81,7 +78,8 @@ fun MainList_F3(
                     products = etagerProducts,
                     viewModel = viewModel,
                     expandedItemId = expandedItemId,
-                    onExpandedItemIdChange = { expandedItemId = it }
+                    onExpandedItemIdChange = { expandedItemId = it },
+                    groupByGrossist = true // Group Unite products by grossist
                 )
             }
 
@@ -101,42 +99,79 @@ fun MainList_F3(
                     products = cartonsProducts,
                     viewModel = viewModel,
                     expandedItemId = expandedItemId,
-                    onExpandedItemIdChange = { expandedItemId = it }
+                    onExpandedItemIdChange = { expandedItemId = it },
+                    groupByGrossist = false // Don't group Cartons products by grossist
                 )
             }
         }
     }
 }
-
 @OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.ProductsList(
     products: List<A_ProduitModel>,
     viewModel: ViewModelInitApp,
     expandedItemId: Long?,
-    onExpandedItemIdChange: (Long?) -> Unit
+    onExpandedItemIdChange: (Long?) -> Unit,
+    groupByGrossist: Boolean = true
 ) {
-    // Group products by grossist
-    val groupedProducts = products.groupBy { product ->
-        viewModel._modelAppsFather.grossistsDataBase.find {
-            it.id == product.bonCommendDeCetteCota?.idGrossistChoisi
-        }
-    }
-
-    // Sort grossists by their position
-    val sortedGrossists = groupedProducts.keys.filterNotNull().sortedBy {
-        it.statueDeBase.itPositionInParentList
-    }
-
-    sortedGrossists.forEach { grossist ->
-        stickyHeader {
-            GrossistHeader(grossist)
+    if (groupByGrossist) {
+        // Existing grouping logic for non-carton products
+        val groupedProducts = products.groupBy { product ->
+            viewModel._modelAppsFather.grossistsDataBase.find {
+                it.id == product.bonCommendDeCetteCota?.idGrossistChoisi
+            }
         }
 
-        val grossistProducts = groupedProducts[grossist].orEmpty().sortedBy {
-            it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+        val sortedGrossists = groupedProducts.keys.filterNotNull().sortedBy {
+            it.statueDeBase.itPositionInParentList
         }
 
-        items(grossistProducts) { product ->
+        sortedGrossists.forEach { grossist ->
+            stickyHeader {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(android.graphics.Color.parseColor(grossist.statueDeBase.couleur)))
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = grossist.nom,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (grossist.statueDeBase.couleur == "#FFFFFF") Color.Black else Color.White
+                    )
+                }
+            }
+
+            val grossistProducts = groupedProducts[grossist].orEmpty().sortedBy {
+                it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+            }
+
+            items(grossistProducts) { product ->
+                ProductItem(
+                    product = product,
+                    viewModel = viewModel,
+                    expandedItemId = expandedItemId,
+                    onExpandedItemIdChange = onExpandedItemIdChange
+                )
+            }
+        }
+    } else {
+        // Non-grouped logic for carton products with updated sorting
+        val sortedProducts = products.sortedWith(
+            compareBy<A_ProduitModel> { product ->
+                // First sort by grossist position
+                product.bonCommendDeCetteCota?.let { bon ->
+                    viewModel._modelAppsFather.grossistsDataBase.find { it.id == bon.idGrossistChoisi }
+                        ?.statueDeBase?.itPositionInParentList
+                } ?: Int.MAX_VALUE
+            }.thenBy { product ->
+                // Then sort by product position within grossist
+                product.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: Int.MAX_VALUE
+            }
+        )
+
+        items(sortedProducts) { product ->
             ProductItem(
                 product = product,
                 viewModel = viewModel,
@@ -147,22 +182,7 @@ private fun LazyListScope.ProductsList(
     }
 }
 
-@Composable
-private fun GrossistHeader(grossist: C_GrossistsDataBase) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(android.graphics.Color.parseColor(grossist.statueDeBase.couleur)))
-            .padding(16.dp)
-    ) {
-        Text(
-            text = grossist.nom,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            color = if (grossist.statueDeBase.couleur == "#FFFFFF") Color.Black else Color.White
-        )
-    }
-}
+
 
 @Composable
 private fun ProductItem(

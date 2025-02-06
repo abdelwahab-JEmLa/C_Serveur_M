@@ -38,7 +38,7 @@ open class _ModelAppsFather(
 
             java.util.AbstractMap.SimpleEntry(grossist, matchingProducts)
         }.sortedBy { entry ->
-            entry.key.statueDeBase.itPositionInParentList
+            entry.key.statueDeBase.itIndexInParentList
         }
 
     val groupedProductsParClients: List<Map.Entry<B_ClientsDataBase, List<A_ProduitModel>>>

@@ -18,7 +18,7 @@ data class C_GrossistsDataBase(
     @IgnoreExtraProperties
     data class StatueDeBase(
         var couleur: String = "#FFFFFF",
-        var itPositionInParentList: Int = 0,
+        var itIndexInParentList: Int = 0,
         var caRefDonAncienDataBase: String = "",
         var cUnClientTemporaire: Boolean = true,
         var auFilterFAB: Boolean = false,

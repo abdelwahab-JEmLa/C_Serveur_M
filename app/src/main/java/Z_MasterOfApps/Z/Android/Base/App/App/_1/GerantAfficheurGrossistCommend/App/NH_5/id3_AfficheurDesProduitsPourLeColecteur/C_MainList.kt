@@ -43,7 +43,7 @@ fun MainList_F3(
         compareBy<A_ProduitModel> { product ->
             product.bonCommendDeCetteCota?.let { bon ->
                 viewModel._modelAppsFather.grossistsDataBase.find { it.id == bon.idGrossistChoisi }
-                    ?.statueDeBase?.itPositionInParentList
+                    ?.statueDeBase?.itIndexInParentList
             } ?: Int.MAX_VALUE
         }.thenBy { product ->
             product.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit ?: Int.MAX_VALUE
@@ -125,7 +125,7 @@ private fun LazyListScope.ProductsList(
         }
 
         val sortedGrossists = groupedProducts.keys.filterNotNull().sortedBy {
-            it.statueDeBase.itPositionInParentList
+            it.statueDeBase.itIndexInParentList
         }
 
         sortedGrossists.forEach { grossist ->
@@ -165,7 +165,7 @@ private fun LazyListScope.ProductsList(
                 // First sort by grossist position
                 product.bonCommendDeCetteCota?.let {
                     product.ExtraiGrossistInfos(viewModel)
-                        ?.statueDeBase?.itPositionInParentList
+                        ?.statueDeBase?.itIndexInParentList
                 } ?: Int.MAX_VALUE
             }.thenBy { product ->
                 // Then sort by product position within grossist

@@ -1,6 +1,7 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_5.id3_AfficheurDesProduitsPourLeColecteur
 
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel.Companion.ExtraiGrossistInfos
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id2_TravaillieurListProduitAchercheChezLeGrossist.D_MainItem.ExpandedMainItem_F2
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_5.id3_AfficheurDesProduitsPourLeColecteur.D_MainItem.MainItem_F3
@@ -106,6 +107,7 @@ fun MainList_F3(
         }
     }
 }
+
 @OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.ProductsList(
     products: List<A_ProduitModel>,
@@ -161,8 +163,8 @@ private fun LazyListScope.ProductsList(
         val sortedProducts = products.sortedWith(
             compareBy<A_ProduitModel> { product ->
                 // First sort by grossist position
-                product.bonCommendDeCetteCota?.let { bon ->
-                    viewModel._modelAppsFather.grossistsDataBase.find { it.id == bon.idGrossistChoisi }
+                product.bonCommendDeCetteCota?.let {
+                    product.ExtraiGrossistInfos(viewModel)
                         ?.statueDeBase?.itPositionInParentList
                 } ?: Int.MAX_VALUE
             }.thenBy { product ->
@@ -181,7 +183,6 @@ private fun LazyListScope.ProductsList(
         }
     }
 }
-
 
 
 @Composable

@@ -1,5 +1,6 @@
 package Z_MasterOfApps.Kotlin.Model
 
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -174,6 +175,12 @@ class A_ProduitModel(
             var quantity_Achete: Int = 0,
             var imogi: String = ""
         )
+    }
+    companion object{
+        fun A_ProduitModel.ExtraiGrossistInfos(
+            viewModel: ViewModelInitApp
+        ) = viewModel._modelAppsFather.grossistsDataBase.find { it.id == this.bonCommendDeCetteCota?.idGrossistChoisi }
+
     }
 
     constructor() : this(0)

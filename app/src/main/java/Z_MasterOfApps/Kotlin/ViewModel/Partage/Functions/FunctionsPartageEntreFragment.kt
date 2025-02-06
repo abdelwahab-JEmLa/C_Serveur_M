@@ -1,7 +1,7 @@
 package Z_MasterOfApps.Kotlin.ViewModel.Partage.Functions
 
-import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
+import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.google.firebase.Firebase
 import com.google.firebase.database.database
@@ -81,3 +81,4 @@ class FunctionsPartageEntreFragment(
         }
     }
 }
+

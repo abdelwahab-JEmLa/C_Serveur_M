@@ -79,7 +79,7 @@ fun AppNavigationHost(
                                 A_ID5_VerificationProduitAcGrossist(viewModel = viewModelInitApp)
                             }
                             composable(InfosDatas_FramgmentId2.route) {
-                                A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModelInitApp = viewModelInitApp)
+                                A_Id2_TravaillieurListProduitAchercheChezLeGrossist(viewModel = viewModelInitApp)
                             }
                             composable(InfosDatas_FramgmentId3.route) {
                                 A_id3_AfficheurDesProduitsPourLeColecteur(viewModelInitApp = viewModelInitApp)

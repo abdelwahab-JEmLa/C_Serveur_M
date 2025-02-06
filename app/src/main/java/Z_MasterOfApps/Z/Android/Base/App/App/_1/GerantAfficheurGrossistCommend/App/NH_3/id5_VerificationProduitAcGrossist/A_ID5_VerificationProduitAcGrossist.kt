@@ -41,9 +41,7 @@ internal fun A_ID5_VerificationProduitAcGrossist(
                         extensionVM = extensionVM,
                         viewModelProduits = viewModel,
                     )
-                    A_OptionsControlsButtons_F2(
-                        viewModel = viewModel,
-                    )
+
                 }
             }
         }

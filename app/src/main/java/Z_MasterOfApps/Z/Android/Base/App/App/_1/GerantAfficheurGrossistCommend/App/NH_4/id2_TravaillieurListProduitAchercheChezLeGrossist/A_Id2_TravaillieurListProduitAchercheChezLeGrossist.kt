@@ -1,6 +1,7 @@
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id2_TravaillieurListProduitAchercheChezLeGrossist
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_4.id2_TravaillieurListProduitAchercheChezLeGrossist.E.Dialogs.A_OptionsControlsButtons_F2
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -14,13 +15,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
     modifier: Modifier = Modifier,
-    viewModelInitApp: ViewModelInitApp = viewModel(),
+    viewModel: ViewModelInitApp = viewModel(),
 ) {
-    if (viewModelInitApp.isLoading) {
+    if (viewModel.isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(
                 progress = {
-                    viewModelInitApp.loadingProgress
+                    viewModel.loadingProgress
                 },
                 modifier = Modifier.align(Alignment.Center),
                 trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
@@ -29,13 +30,13 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
         return
     }
 
-    val databaseSize = viewModelInitApp._modelAppsFather.produitsMainDataBase.size
+    val databaseSize = viewModel._modelAppsFather.produitsMainDataBase.size
 
-    val visibleProducts = viewModelInitApp._modelAppsFather.produitsMainDataBase
+    val visibleProducts = viewModel._modelAppsFather.produitsMainDataBase
         .filter { product ->
             product.bonCommendDeCetteCota.let {
                 it?.idGrossistChoisi ==
-                        viewModelInitApp.frag2_A1_ExtVM.auFilter
+                        viewModel.frag2_A1_ExtVM.auFilter
                         && it
                     ?.mutableBasesStates
                     ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0
@@ -49,18 +50,22 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
             if (databaseSize > 0) {
                 MainList_F2(
                     initVisibleProducts = visibleProducts,
-                    viewModelInitApp = viewModelInitApp,
+                    viewModelInitApp = viewModel,
                     paddingValues = paddingValues
                 )
             }
         }
-        if (viewModelInitApp
+        if (viewModel
                 ._paramatersAppsViewModelModel
                 .fabsVisibility
         ) {
-            MainScreenFilterFAB_F2(
-                viewModel = viewModelInitApp,
+            A_OptionsControlsButtons_F2(
+                viewModel = viewModel,
             )
+            MainScreenFilterFAB_F2(
+                viewModel = viewModel,
+            )
+
         }
     }
 }

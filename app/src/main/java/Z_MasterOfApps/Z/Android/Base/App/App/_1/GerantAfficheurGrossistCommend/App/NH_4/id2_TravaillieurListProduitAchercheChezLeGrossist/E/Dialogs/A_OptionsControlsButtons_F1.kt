@@ -43,7 +43,7 @@ fun A_OptionsControlsButtons_F2(
     viewModel: ViewModelInitApp,
 ) {
     // State management
-    var showOptions by remember { mutableStateOf(false) }
+    var showOptions by remember { mutableStateOf(true) }
     var deviceMode by remember { mutableStateOf(DeviceMode.SERVER) }
     var offsetX by remember { mutableFloatStateOf(-25f) }
     var offsetY by remember { mutableFloatStateOf(25f) }

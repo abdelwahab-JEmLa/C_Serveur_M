@@ -81,7 +81,7 @@ fun MainScreenFilterFAB(
                                     FloatingActionButton(
                                         onClick = {
                                             viewModel.viewModelScope.launch {
-                                                viewModel.frag1_A1_ExtVM.upButton(index)
+                                                viewModel.functionsPartageEntreFragment.upButton(index)
                                             }
                                         },
                                         modifier = Modifier.size(36.dp)

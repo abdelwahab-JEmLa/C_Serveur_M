@@ -46,7 +46,12 @@ object CurrentModels {
                     try {
                         val products = mutableListOf<A_ProduitModel>()
 
-                        snapshot.children.forEach { snap ->
+                        snapshot.children.forEach { snap ->       //-->
+                        //TODO(1): pk meme si   D  Connectivity check complete - Online: true
+                            //17:29:01.249              D  Performing new connectivity check
+                            //17:29:01.499              D  Connectivity check complete - Online: true 
+                            
+                            //ca ne s active pas on change dons fireBase poduit 
                             val map = snap.value as? Map<*, *> ?: return@forEach
                             val prod = A_ProduitModel(
                                 id = snap.key?.toLongOrNull() ?: return@forEach,

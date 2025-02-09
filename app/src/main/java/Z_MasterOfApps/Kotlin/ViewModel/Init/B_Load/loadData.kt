@@ -5,7 +5,6 @@ import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import Z_MasterOfApps.Kotlin.Model.D_CouleursEtGoutesProduitsInfos
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.ViewModel.Init.A_FirebaseListeners.FromAncienDataBase
 import Z_MasterOfApps.Kotlin.ViewModel.Init.C_Compare.CompareUpdate
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import android.util.Log
@@ -27,8 +26,8 @@ import kotlinx.coroutines.withTimeoutOrNull
 private var isInitialized = false
 private const val TAG = "ConnectivityMonitor"
 private const val CHECK_INTERVAL = 3000L
-private const val CHECK_TIMEOUT = 3000L
-private const val CACHE_SIZE_BYTES = 100L * 1024L * 1024L // 100MB
+private const val CHECK_TIMEOUT = 10000L // Increase to 10 seconds
+ private const val CACHE_SIZE_BYTES = 100L * 1024L * 1024L // 100MB
 private const val OFFLINE_TIMEOUT = 5000L
 
 class ConnectivityMonitor(private val scope: CoroutineScope) {
@@ -45,7 +44,6 @@ class ConnectivityMonitor(private val scope: CoroutineScope) {
     suspend fun checkConnectivity(): Boolean {
         val currentTime = System.currentTimeMillis()
 
-        // Éviter les vérifications trop fréquentes
         if (currentTime - lastCheckTime < CHECK_INTERVAL && lastNotifiedState != null) {
             Log.d(TAG, "Using cached connectivity state: $isOnline")
             return isOnline
@@ -53,15 +51,25 @@ class ConnectivityMonitor(private val scope: CoroutineScope) {
 
         return try {
             Log.d(TAG, "Performing new connectivity check")
-            val testRef = FirebaseDatabase.getInstance().reference.child("connectivity_test")
 
             val result = withTimeoutOrNull(CHECK_TIMEOUT) {
                 try {
-                    testRef.setValue(System.currentTimeMillis()).await()
-                    testRef.removeValue().await()
-                    true
+                    // Using Google's DNS server to check connectivity
+                    withContext(Dispatchers.IO) {
+                        val socket = java.net.Socket()
+                        val socketAddress = java.net.InetSocketAddress("8.8.8.8", 53)
+
+                        try {
+                            socket.connect(socketAddress, 3000) // 3 seconds timeout
+                            socket.close()
+                            true
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Socket connection failed", e)
+                            false
+                        }
+                    }
                 } catch (e: Exception) {
-                    Log.e(TAG, "Firebase test failed", e)
+                    Log.e(TAG, "Google connectivity check failed", e)
                     false
                 }
             } ?: false
@@ -84,24 +92,19 @@ class ConnectivityMonitor(private val scope: CoroutineScope) {
         }
     }
 
+    // Rest of the class remains unchanged
     fun startMonitoring(onChange: (Boolean) -> Unit) {
         Log.d(TAG, "Starting connectivity monitoring")
 
-        // Sauvegarde du callback
         onConnectivityChanged = onChange
-
-        // Annulation du job précédent si existant
         connectivityCheckJob?.cancel()
 
-        // Démarrage du nouveau monitoring
         connectivityCheckJob = scope.launch {
             try {
-                // Vérification initiale immédiate
                 val initialState = checkConnectivity()
                 Log.d(TAG, "Initial connectivity state: $initialState")
                 onChange(initialState)
 
-                // Boucle de surveillance
                 while (isActive) {
                     delay(CHECK_INTERVAL)
                     checkConnectivity()
@@ -128,7 +131,6 @@ class ConnectivityMonitor(private val scope: CoroutineScope) {
         lastNotifiedState = null
     }
 }
-
 fun initializeFirebase(app: FirebaseApp) {
     if (!isInitialized) {
         try {
@@ -158,7 +160,7 @@ suspend fun loadData(viewModel: ViewModelInitApp) {
         setupConnectivityMonitoring(connectivityMonitor, refs, viewModel)
 
         if (isOnline) {
-            setupListeners(viewModel)
+            CompareUpdate.setupeCompareUpdateAncienModels()
         }
 
         loadDataFromRefs(refs, isOnline, viewModel)
@@ -203,16 +205,7 @@ private fun setupConnectivityMonitoring(
     }
 }
 
-private suspend fun setupListeners(viewModel: ViewModelInitApp) {
-    try {
-        FromAncienDataBase.setupRealtimeListeners(viewModel)
-        CompareUpdate.setupeCompareUpdateAncienModels()
-        Log.d(TAG, "Real-time listeners setup completed")
-    } catch (e: Exception) {
-        Log.e(TAG, "Failed to setup real-time listeners", e)
-        throw e
-    }
-}
+
 
 private suspend fun loadDataFromRefs(
     refs: List<DatabaseReference>,

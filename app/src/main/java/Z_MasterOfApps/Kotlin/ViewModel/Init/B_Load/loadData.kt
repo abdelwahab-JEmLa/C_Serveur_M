@@ -5,17 +5,68 @@ import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import Z_MasterOfApps.Kotlin.Model.D_CouleursEtGoutesProduitsInfos
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.ViewModel.Init.A_FirebaseListeners.AncienDataBase
+import Z_MasterOfApps.Kotlin.ViewModel.Init.A_FirebaseListeners.FromAncienDataBase
 import Z_MasterOfApps.Kotlin.ViewModel.Init.C_Compare.CompareUpdate
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.FirebaseApp
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 private var isInitialized = false
+private var connectivityCheckJob: Job? = null
+
+class ConnectivityMonitor(private val scope: CoroutineScope) {
+    private var isOnline = false
+    private var lastCheckTime = 0L
+
+    suspend fun checkConnectivity(): Boolean {
+        if (System.currentTimeMillis() - lastCheckTime < 3000) {
+            return isOnline
+        }
+
+        return try {
+            val testRef = _ModelAppsFather.produitsFireBaseRef.child("connectivity_test")
+            withTimeoutOrNull(3000L) {
+                testRef.setValue(true).await()
+                testRef.removeValue().await()
+                true
+            }?.also {
+                isOnline = it
+                lastCheckTime = System.currentTimeMillis()
+            } ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun startMonitoring(onConnectivityChanged: (Boolean) -> Unit) {
+        connectivityCheckJob?.cancel()
+        connectivityCheckJob = scope.launch {
+            while (isActive) {
+                val newState = checkConnectivity()
+                if (newState != isOnline) {
+                    onConnectivityChanged(newState)
+                }
+                delay(3000) // Check every 3 seconds
+            }
+        }
+    }
+
+    fun stopMonitoring() {
+        connectivityCheckJob?.cancel()
+        connectivityCheckJob = null
+    }
+}
 
 fun initializeFirebase(app: FirebaseApp) {
     if (!isInitialized) {
@@ -33,29 +84,61 @@ suspend fun loadData(viewModel: ViewModelInitApp) {
     try {
         viewModel.loadingProgress = 0.1f
 
+        val connectivityMonitor = ConnectivityMonitor(viewModel.viewModelScope)
+
         val refs = listOf(
             _ModelAppsFather.ref_HeadOfModels,
             _ModelAppsFather.produitsFireBaseRef,
             B_ClientsDataBase.refClientsDataBase
         ).onEach { it.keepSynced(true) }
 
-        val isOnline = withTimeoutOrNull(3000L) {
-            refs[1].child("test").setValue(true).await()
-            refs[1].child("test").removeValue().await()
-            true
-        } ?: false
+        val isOnline = connectivityMonitor.checkConnectivity()
 
+        connectivityMonitor.startMonitoring { newState ->
+            viewModel.viewModelScope.launch {
+                if (newState) {
+                    FirebaseDatabase.getInstance().goOnline()
+                    loadDataFromRefs(
+                        refs = refs,
+                        isOnline = true,
+                        viewModel = viewModel
+                    )
+                } else {
+                    FirebaseDatabase.getInstance().goOffline()
+                }
+            }
+        }
+
+        loadDataFromRefs(
+            refs = refs,
+            isOnline = isOnline,
+            viewModel = viewModel
+        )
+
+        viewModel.loadingProgress = 1.0f
+
+    } catch (e: Exception) {
+        viewModel.loadingProgress = -1f
+        throw e
+    }
+}
+
+private suspend fun loadDataFromRefs(
+    refs: List<DatabaseReference>,
+    isOnline: Boolean,
+    viewModel: ViewModelInitApp  // Added explicit viewModel parameter
+) {
+    try {
         val snapshots = if (isOnline) {
-            AncienDataBase.setupRealtimeListeners(viewModel)
+            FromAncienDataBase.setupRealtimeListeners(viewModel)
             CompareUpdate.setupeCompareUpdateAncienModels()
             refs.map { it.get().await() }
         } else {
-            FirebaseDatabase.getInstance().goOffline()
             refs.map { ref ->
                 withTimeoutOrNull(5000L) {
                     ref.get().await()
                 }
-            }.also { FirebaseDatabase.getInstance().goOnline() }
+            }
         }
 
         val (headModels, products, clients) = snapshots
@@ -205,7 +288,9 @@ suspend fun loadData(viewModel: ViewModelInitApp) {
             }
             viewModel.loadingProgress = 1.0f
         }
-    } catch (e: Exception) {
+    } catch (e: Exception) {         //->
+    //TODO(FIXME):Fix erreur unction declaration must have a name
+    //Unresolved reference: viewModel
         viewModel.loadingProgress = -1f
         throw e
     }

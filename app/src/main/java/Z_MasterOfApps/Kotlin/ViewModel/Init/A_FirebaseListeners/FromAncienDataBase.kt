@@ -1,10 +1,13 @@
 package Z_MasterOfApps.Kotlin.ViewModel.Init.A_FirebaseListeners
 
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
+import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
 import Z_MasterOfApps.Kotlin.Model.D_CouleursEtGoutesProduitsInfos
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
 import Z_MasterOfApps.Kotlin.ViewModel.Init.A_FirebaseListeners.CurrentModels.setupCurrentModels
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import Z_MasterOfApps.Z_AppsFather.Kotlin._1.Model.TabelleSuppliersSA
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-object AncienDataBase {
+object FromAncienDataBase {
     private val firebaseDatabase = Firebase.database
     private val refDBJetPackExport = firebaseDatabase.getReference("e_DBJetPackExport")
     private var jetPackExportListener: ValueEventListener? = null
@@ -27,6 +30,7 @@ object AncienDataBase {
         setupJetPackExportListener()
         setupColorsArticlesListener(viewModel)
         setupCurrentModels(viewModel)
+        syncOldSuppliers(viewModel)
     }
 
     data class ProductState(
@@ -226,6 +230,53 @@ object AncienDataBase {
 
         return product
     }
+    private fun syncOldSuppliers(viewModel: ViewModelInitApp) {
+        val newRef = firebaseDatabase.getReference("0_UiState_3_Host_Package_3_Prototype11Dec/C_GrossistsDataBase")
+        val oldRef = Firebase.database.getReference("F_Suppliers")
 
+        oldRef.addValueEventListener(object : ValueEventListener {
+            private var lastKnownIds = mutableSetOf<Long>()
 
+            override fun onDataChange(snapshot: DataSnapshot) {
+                // Get current supplier IDs
+                val currentIds = snapshot.children
+                    .mapNotNull { it.getValue(TabelleSuppliersSA::class.java)?.idSupplierSu }
+                    .toSet()
+
+                // Handle deletions
+                lastKnownIds.filter { it !in currentIds }.forEach { deletedId ->
+                    newRef.child(deletedId.toString()).removeValue()
+                    viewModel._modelAppsFather.grossistsDataBase.removeAll { it.id == deletedId }
+                }
+
+                // Update or add suppliers
+                snapshot.children.forEach { snap ->
+                    val supplier = snap.getValue(TabelleSuppliersSA::class.java) ?: return@forEach
+                    val grossist = C_GrossistsDataBase(
+                        id = supplier.idSupplierSu,
+                        nom = supplier.nomSupplierSu.ifBlank { supplier.nameInFrenche.ifBlank { "Non Defini" } },
+                        statueDeBase = C_GrossistsDataBase.StatueDeBase(couleur = supplier.couleurSu)
+                    )
+
+                    // Update local list
+                    val index = viewModel._modelAppsFather.grossistsDataBase.indexOfFirst { it.id == grossist.id }
+                    if (index != -1) {
+                        viewModel._modelAppsFather.grossistsDataBase[index] = grossist
+                    } else {
+                        viewModel._modelAppsFather.grossistsDataBase.add(grossist)
+                    }
+
+                    // Update Firebase
+                    newRef.child(supplier.idSupplierSu.toString()).setValue(grossist)
+                }
+
+                // Update last known IDs
+                lastKnownIds = currentIds.toMutableSet()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Sync", error.message)
+            }
+        })
+    }
 }

@@ -34,13 +34,12 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
 
     val visibleProducts = viewModel._modelAppsFather.produitsMainDataBase
         .filter { product ->
-            product.bonCommendDeCetteCota.let {
-                it?.idGrossistChoisi ==
-                        viewModel.frag2_A1_ExtVM.auFilter
-                        && it
-                    ?.mutableBasesStates
-                    ?.positionProduitDonGrossistChoisiPourAcheterCeProduit!! > 0
-            }
+            product.bonCommendDeCetteCota?.let { bonCommend ->
+                bonCommend.idGrossistChoisi == viewModel.frag2_A1_ExtVM.auFilter &&
+                        bonCommend.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.let { position ->
+                            position > 0
+                        } ?: false
+            } ?: false
         }
 
     Scaffold(
@@ -68,4 +67,3 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
         }
     }
 }
-

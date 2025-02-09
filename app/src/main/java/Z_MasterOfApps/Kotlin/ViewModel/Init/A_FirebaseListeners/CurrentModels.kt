@@ -11,27 +11,41 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object CurrentModels {
-    private var productsListener: ValueEventListener? = null
-    private var clientsListener: ValueEventListener? = null
-    private var grossistsListener: ValueEventListener? = null
+    private val listeners = mutableListOf<ListenerInfo>()
+
+    private data class ListenerInfo(
+        val listener: ValueEventListener,
+        val path: String
+    )
 
     fun setupCurrentModels(viewModel: ViewModelInitApp) {
+        cleanup() // Clean up existing listeners before setting up new ones
         setupProductsListener(viewModel)
         setupClientsListener(viewModel)
         setupGrossistsListener(viewModel)
     }
 
+    fun cleanup() {
+        listeners.forEach { info ->
+            when (info.path) {
+                "products" -> _ModelAppsFather.produitsFireBaseRef.removeEventListener(info.listener)
+                "clients" -> B_ClientsDataBase.refClientsDataBase.removeEventListener(info.listener)
+                "grossists" -> _ModelAppsFather.ref_HeadOfModels.removeEventListener(info.listener)
+            }
+        }
+        listeners.clear()
+    }
+
     private fun setupProductsListener(viewModel: ViewModelInitApp) {
-
-        productsListener?.let { _ModelAppsFather.produitsFireBaseRef.removeEventListener(it) }
-
-        productsListener = object : ValueEventListener {
+        val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         val products = mutableListOf<A_ProduitModel>()
+
                         snapshot.children.forEach { snap ->
                             val map = snap.value as? Map<*, *> ?: return@forEach
                             val prod = A_ProduitModel(
@@ -42,140 +56,173 @@ object CurrentModels {
                                 initialNon_Trouve = map["non_Trouve"] as? Boolean ?: false,
                                 init_visible = map["isVisible"] as? Boolean ?: false
                             ).apply {
+                                // Load StatuesBase
                                 snap.child("statuesBase").getValue(A_ProduitModel.StatuesBase::class.java)?.let {
                                     statuesBase = it
                                     statuesBase.imageGlidReloadTigger = 0
                                 }
 
+                                // Load ColoursEtGouts
+                                val coloursEtGoutsList = mutableListOf<A_ProduitModel.ColourEtGout_Model>()
                                 snap.child("coloursEtGoutsList").children.forEach { colorSnap ->
                                     colorSnap.getValue(A_ProduitModel.ColourEtGout_Model::class.java)?.let {
-                                        coloursEtGouts.add(it)
+                                        coloursEtGoutsList.add(it)
                                     }
                                 }
+                                this.coloursEtGoutsList = coloursEtGoutsList
 
-                                snap.child("bonCommendDeCetteCota").getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let {
-                                    bonCommendDeCetteCota = it
+                                // Load BonCommend with proper states
+                                snap.child("bonCommendDeCetteCota").getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommend ->
+                                    snap.child("bonCommendDeCetteCota/mutableBasesStates")
+                                        .getValue(A_ProduitModel.GrossistBonCommandes.MutableBasesStates::class.java)?.let {
+                                            bonCommend.mutableBasesStates = it
+                                        }
+                                    bonCommendDeCetteCota = bonCommend
                                 }
 
+                                // Load BonsVent
+                                val bonsVent = mutableListOf<A_ProduitModel.ClientBonVentModel>()
                                 snap.child("bonsVentDeCetteCotaList").children.forEach { bonVentSnap ->
                                     bonVentSnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
-                                        bonsVentDeCetteCota.add(it)
+                                        bonsVent.add(it)
                                     }
                                 }
+                                bonsVentDeCetteCotaList = bonsVent
 
+                                // Load Historique
+                                val historique = mutableListOf<A_ProduitModel.ClientBonVentModel>()
                                 snap.child("historiqueBonsVentsList").children.forEach { historySnap ->
                                     historySnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
-                                        historiqueBonsVents.add(it)
+                                        historique.add(it)
                                     }
                                 }
-
-                                snap.child("historiqueBonsCommendList").children.forEach { historySnap ->
-                                    historySnap.getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let {
-                                        historiqueBonsCommend.add(it)
-                                    }
-                                }
+                                historiqueBonsVentsList = historique
                             }
                             products.add(prod)
                         }
 
-                        viewModel.modelAppsFather.produitsMainDataBase.apply {
-                            clear()
-                            addAll(products)
+                        withContext(Dispatchers.Main) {
+                            viewModel.modelAppsFather.produitsMainDataBase.apply {
+                                clear()
+                                addAll(products)
+                            }
                         }
                     } catch (e: Exception) {
-                        // Handle error if needed
+                        // Log error but don't crash
+                        e.printStackTrace()
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error if needed
+                error.toException().printStackTrace()
             }
         }
 
-        _ModelAppsFather.produitsFireBaseRef.addValueEventListener(productsListener!!)
+        listeners.add(ListenerInfo(listener, "products"))
+        _ModelAppsFather.produitsFireBaseRef.addValueEventListener(listener)
     }
 
     private fun setupClientsListener(viewModel: ViewModelInitApp) {
-        clientsListener?.let { B_ClientsDataBase.refClientsDataBase.removeEventListener(it) }
-
-        clientsListener = object : ValueEventListener {
+        val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         val clients = mutableListOf<B_ClientsDataBase>()
+
                         snapshot.children.forEach { snap ->
                             val map = snap.value as? Map<*, *> ?: return@forEach
                             B_ClientsDataBase(
                                 id = snap.key?.toLongOrNull() ?: return@forEach,
                                 nom = map["nom"] as? String ?: ""
                             ).apply {
-                                snap.child("statueDeBase").getValue(B_ClientsDataBase.StatueDeBase::class.java)?.let {
-                                    statueDeBase = it
-                                }
-                                snap.child("gpsLocation").getValue(B_ClientsDataBase.GpsLocation::class.java)?.let {
-                                    gpsLocation = it
-                                }
+                                snap.child("statueDeBase")
+                                    .getValue(B_ClientsDataBase.StatueDeBase::class.java)?.let {
+                                        statueDeBase = it
+                                    }
+                                snap.child("gpsLocation")
+                                    .getValue(B_ClientsDataBase.GpsLocation::class.java)?.let {
+                                        gpsLocation = it
+                                    }
                                 clients.add(this)
                             }
                         }
 
-                        viewModel.modelAppsFather.clientDataBase.apply {
-                            clear()
-                            addAll(clients)
+                        withContext(Dispatchers.Main) {
+                            viewModel.modelAppsFather.clientDataBase.apply {
+                                clear()
+                                addAll(clients)
+                            }
                         }
                     } catch (e: Exception) {
-                        // Handle error if needed
+                        e.printStackTrace()
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error if needed
+                error.toException().printStackTrace()
             }
         }
 
-        B_ClientsDataBase.refClientsDataBase.addValueEventListener(clientsListener!!)
+        listeners.add(ListenerInfo(listener, "clients"))
+        B_ClientsDataBase.refClientsDataBase.addValueEventListener(listener)
     }
 
     private fun setupGrossistsListener(viewModel: ViewModelInitApp) {
-        grossistsListener?.let { _ModelAppsFather.ref_HeadOfModels.removeEventListener(it) }
-
-        grossistsListener = object : ValueEventListener {
+        val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         val grossists = mutableListOf<C_GrossistsDataBase>()
-                        snapshot.child("C_GrossistsDataBase").children.forEach { grossistSnapshot ->
-                            try {
-                                val grossistMap = grossistSnapshot.value as? Map<*, *> ?: return@forEach
-                                C_GrossistsDataBase(
-                                    id = grossistSnapshot.key?.toLongOrNull() ?: return@forEach,
-                                    nom = grossistMap["nom"] as? String ?: "Non Defini"
-                                ).apply {
-                                    grossistSnapshot.child("statueDeBase")
-                                        .getValue(C_GrossistsDataBase.StatueDeBase::class.java)?.let {
-                                            statueDeBase = it
-                                        }
-                                    grossists.add(this)
+
+                        val grossistsNode = snapshot.child("C_GrossistsDataBase")
+                        if (!grossistsNode.exists()) {
+                            grossists.add(C_GrossistsDataBase(
+                                id = 1,
+                                nom = "Default Grossist",
+                                statueDeBase = C_GrossistsDataBase.StatueDeBase(
+                                    cUnClientTemporaire = true
+                                )
+                            ))
+                        } else {
+                            grossistsNode.children.forEach { grossistSnapshot ->
+                                try {
+                                    val grossistMap = grossistSnapshot.value as? Map<*, *> ?: return@forEach
+                                    C_GrossistsDataBase(
+                                        id = grossistSnapshot.key?.toLongOrNull() ?: return@forEach,
+                                        nom = grossistMap["nom"] as? String ?: "Non Defini"
+                                    ).apply {
+                                        grossistSnapshot.child("statueDeBase")
+                                            .getValue(C_GrossistsDataBase.StatueDeBase::class.java)?.let {
+                                                statueDeBase = it
+                                            }
+                                        grossists.add(this)
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
                                 }
-                            } catch (e: Exception) {
                             }
                         }
 
-                        viewModel.modelAppsFather.grossistsDataBase.apply {
-                            clear()
-                            addAll(grossists)
+                        withContext(Dispatchers.Main) {
+                            viewModel.modelAppsFather.grossistsDataBase.apply {
+                                clear()
+                                addAll(grossists)
+                            }
                         }
                     } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
+                error.toException().printStackTrace()
             }
         }
 
-        _ModelAppsFather.ref_HeadOfModels.addValueEventListener(grossistsListener!!)
+        listeners.add(ListenerInfo(listener, "grossists"))
+        _ModelAppsFather.ref_HeadOfModels.addValueEventListener(listener)
     }
 }

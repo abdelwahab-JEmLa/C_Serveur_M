@@ -23,11 +23,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 private var isInitialized = false
-private var connectivityCheckJob: Job? = null
 
 class ConnectivityMonitor(private val scope: CoroutineScope) {
     private var isOnline = false
     private var lastCheckTime = 0L
+    private var connectivityCheckJob: Job? = null
 
     suspend fun checkConnectivity(): Boolean {
         if (System.currentTimeMillis() - lastCheckTime < 3000) {
@@ -57,7 +57,7 @@ class ConnectivityMonitor(private val scope: CoroutineScope) {
                 if (newState != isOnline) {
                     onConnectivityChanged(newState)
                 }
-                delay(3000) // Check every 3 seconds
+                delay(3000)
             }
         }
     }
@@ -126,11 +126,12 @@ suspend fun loadData(viewModel: ViewModelInitApp) {
 private suspend fun loadDataFromRefs(
     refs: List<DatabaseReference>,
     isOnline: Boolean,
-    viewModel: ViewModelInitApp  // Added explicit viewModel parameter
+    viewModel: ViewModelInitApp
 ) {
     try {
         val snapshots = if (isOnline) {
-            FromAncienDataBase.setupRealtimeListeners(viewModel)
+            FromAncienDataBase.setupRealtimeListeners(viewModel)    //-->
+            //TODO(1): cree moi logs pour touve pr ca ne s active pas 
             CompareUpdate.setupeCompareUpdateAncienModels()
             refs.map { it.get().await() }
         } else {
@@ -145,6 +146,7 @@ private suspend fun loadDataFromRefs(
 
         withContext(Dispatchers.Main) {
             viewModel.modelAppsFather.apply {
+                // Load Products
                 produitsMainDataBase.clear()
                 products?.children?.forEach { snap ->
                     val map = snap.value as? Map<*, *> ?: return@forEach
@@ -156,13 +158,11 @@ private suspend fun loadDataFromRefs(
                         initialNon_Trouve = map["non_Trouve"] as? Boolean ?: false,
                         init_visible = map["isVisible"] as? Boolean ?: false
                     ).apply {
-                        // Load StatuesBase
                         snap.child("statuesBase").getValue(A_ProduitModel.StatuesBase::class.java)?.let {
                             statuesBase = it
                             statuesBase.imageGlidReloadTigger = 0
                         }
 
-                        // Load ColoursEtGouts
                         val coloursEtGoutsList = mutableListOf<A_ProduitModel.ColourEtGout_Model>()
                         snap.child("coloursEtGoutsList").children.forEach { colorSnap ->
                             colorSnap.getValue(A_ProduitModel.ColourEtGout_Model::class.java)?.let {
@@ -171,9 +171,7 @@ private suspend fun loadDataFromRefs(
                         }
                         this.coloursEtGoutsList = coloursEtGoutsList
 
-                        // Load current BonCommend with MutableBasesStates
                         snap.child("bonCommendDeCetteCota").getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let { bonCommend ->
-                            // Load MutableBasesStates
                             snap.child("bonCommendDeCetteCota/mutableBasesStates")
                                 .getValue(A_ProduitModel.GrossistBonCommandes.MutableBasesStates::class.java)?.let {
                                     bonCommend.mutableBasesStates = it
@@ -181,7 +179,6 @@ private suspend fun loadDataFromRefs(
                             bonCommendDeCetteCota = bonCommend
                         }
 
-                        // Load BonsVentDeCetteCota with proper initialization
                         val bonsVent = mutableListOf<A_ProduitModel.ClientBonVentModel>()
                         snap.child("bonsVentDeCetteCotaList").children.forEach { bonVentSnap ->
                             bonVentSnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
@@ -190,7 +187,6 @@ private suspend fun loadDataFromRefs(
                         }
                         bonsVentDeCetteCotaList = bonsVent
 
-                        // Load HistoriqueBonsVents
                         val historique = mutableListOf<A_ProduitModel.ClientBonVentModel>()
                         snap.child("historiqueBonsVentsList").children.forEach { historySnap ->
                             historySnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
@@ -202,6 +198,7 @@ private suspend fun loadDataFromRefs(
                     produitsMainDataBase.add(prod)
                 }
 
+                // Load Clients
                 clientDataBase.clear()
                 clients?.children?.forEach { snap ->
                     val map = snap.value as? Map<*, *> ?: return@forEach
@@ -221,18 +218,19 @@ private suspend fun loadDataFromRefs(
                     }
                 }
 
+                // Load Grossists
                 grossistsDataBase.clear()
                 if (headModels != null) {
                     val grossistsNode = headModels.child("C_GrossistsDataBase")
                     if (!grossistsNode.exists()) {
                         grossistsDataBase.add(
                             C_GrossistsDataBase(
-                            id = 1,
-                            nom = "Default Grossist",
-                            statueDeBase = C_GrossistsDataBase.StatueDeBase(
-                                cUnClientTemporaire = true
+                                id = 1,
+                                nom = "Default Grossist",
+                                statueDeBase = C_GrossistsDataBase.StatueDeBase(
+                                    cUnClientTemporaire = true
+                                )
                             )
-                        )
                         )
                     } else {
                         grossistsNode.children.forEach { snap ->
@@ -248,13 +246,12 @@ private suspend fun loadDataFromRefs(
                                         }
                                     grossistsDataBase.add(this)
                                 }
-                            } catch (e: Exception) {
-                                // Silent catch to skip invalid entries
-                            }
+                            } catch (_: Exception) {}
                         }
                     }
                 }
-                
+
+                // Load Couleurs
                 couleursProduitsInfos.clear()
                 if (headModels != null) {
                     val node = headModels.child("D_CouleursEtGoutesProduitsInfos")
@@ -280,18 +277,16 @@ private suspend fun loadDataFromRefs(
                                         }
                                     couleursProduitsInfos.add(this)
                                 }
-                            } catch (_: Exception){
-                            }
+                            } catch (_: Exception) {}
                         }
                     }
                 }
             }
-            viewModel.loadingProgress = 1.0f
         }
-    } catch (e: Exception) {         //->
-    //TODO(FIXME):Fix erreur unction declaration must have a name
-    //Unresolved reference: viewModel
-        viewModel.loadingProgress = -1f
+    } catch (e: Exception) {
+        withContext(Dispatchers.Main) {
+            viewModel.loadingProgress = -1f
+        }
         throw e
     }
 }

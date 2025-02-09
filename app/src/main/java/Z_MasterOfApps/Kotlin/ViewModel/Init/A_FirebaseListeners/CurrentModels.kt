@@ -1,10 +1,10 @@
-package Z_MasterOfApps.Kotlin.ViewModel
+package Z_MasterOfApps.Kotlin.ViewModel.Init.A_FirebaseListeners
 
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
-import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import android.util.Log
+import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -12,20 +12,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-object FirebaseListeners {
-    private const val TAG = "FirebaseListeners"
+object CurrentModels {
     private var productsListener: ValueEventListener? = null
     private var clientsListener: ValueEventListener? = null
     private var grossistsListener: ValueEventListener? = null
 
-    fun setupRealtimeListeners(viewModel: ViewModelInitApp) {
-        Log.d(TAG, "Setting up real-time listeners...")
+    fun setupCurrentModels(viewModel: ViewModelInitApp) {
         setupProductsListener(viewModel)
         setupClientsListener(viewModel)
         setupGrossistsListener(viewModel)
     }
 
     private fun setupProductsListener(viewModel: ViewModelInitApp) {
+
         productsListener?.let { _ModelAppsFather.produitsFireBaseRef.removeEventListener(it) }
 
         productsListener = object : ValueEventListener {
@@ -43,39 +42,33 @@ object FirebaseListeners {
                                 initialNon_Trouve = map["non_Trouve"] as? Boolean ?: false,
                                 init_visible = map["isVisible"] as? Boolean ?: false
                             ).apply {
-                                // Load StatuesBase
                                 snap.child("statuesBase").getValue(A_ProduitModel.StatuesBase::class.java)?.let {
                                     statuesBase = it
                                     statuesBase.imageGlidReloadTigger = 0
                                 }
 
-                                // Load ColoursEtGouts
                                 snap.child("coloursEtGoutsList").children.forEach { colorSnap ->
                                     colorSnap.getValue(A_ProduitModel.ColourEtGout_Model::class.java)?.let {
                                         coloursEtGouts.add(it)
                                     }
                                 }
 
-                                // Load current BonCommend
                                 snap.child("bonCommendDeCetteCota").getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let {
                                     bonCommendDeCetteCota = it
                                 }
 
-                                // Load BonsVentDeCetteCota
                                 snap.child("bonsVentDeCetteCotaList").children.forEach { bonVentSnap ->
                                     bonVentSnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
                                         bonsVentDeCetteCota.add(it)
                                     }
                                 }
 
-                                // Load HistoriqueBonsVents
                                 snap.child("historiqueBonsVentsList").children.forEach { historySnap ->
                                     historySnap.getValue(A_ProduitModel.ClientBonVentModel::class.java)?.let {
                                         historiqueBonsVents.add(it)
                                     }
                                 }
 
-                                // Load HistoriqueBonsCommend
                                 snap.child("historiqueBonsCommendList").children.forEach { historySnap ->
                                     historySnap.getValue(A_ProduitModel.GrossistBonCommandes::class.java)?.let {
                                         historiqueBonsCommend.add(it)
@@ -89,15 +82,14 @@ object FirebaseListeners {
                             clear()
                             addAll(products)
                         }
-                        Log.d(TAG, "Products updated: ${products.size} items")
                     } catch (e: Exception) {
-                        Log.e(TAG, "Error updating products", e)
+                        // Handle error if needed
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Products listener cancelled: ${error.message}")
+                // Handle error if needed
             }
         }
 
@@ -132,15 +124,14 @@ object FirebaseListeners {
                             clear()
                             addAll(clients)
                         }
-                        Log.d(TAG, "Clients updated: ${clients.size} items")
                     } catch (e: Exception) {
-                        Log.e(TAG, "Error updating clients", e)
+                        // Handle error if needed
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Clients listener cancelled: ${error.message}")
+                // Handle error if needed
             }
         }
 
@@ -169,7 +160,6 @@ object FirebaseListeners {
                                     grossists.add(this)
                                 }
                             } catch (e: Exception) {
-                                Log.e(TAG, "Error parsing grossist ${grossistSnapshot.key}", e)
                             }
                         }
 
@@ -177,15 +167,12 @@ object FirebaseListeners {
                             clear()
                             addAll(grossists)
                         }
-                        Log.d(TAG, "Grossists updated: ${grossists.size} items")
                     } catch (e: Exception) {
-                        Log.e(TAG, "Error updating grossists", e)
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Grossists listener cancelled: ${error.message}")
             }
         }
 

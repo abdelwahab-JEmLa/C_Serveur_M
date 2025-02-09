@@ -1,10 +1,12 @@
-package Z_MasterOfApps.Kotlin.ViewModel.Init.Init
+package Z_MasterOfApps.Kotlin.ViewModel.Init.B_Load
 
+import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
 import Z_MasterOfApps.Kotlin.Model.B_ClientsDataBase
 import Z_MasterOfApps.Kotlin.Model.C_GrossistsDataBase
+import Z_MasterOfApps.Kotlin.Model.D_CouleursEtGoutesProduitsInfos
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather
-import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
-import Z_MasterOfApps.Kotlin.ViewModel.FirebaseListeners
+import Z_MasterOfApps.Kotlin.ViewModel.Init.A_FirebaseListeners.AncienDataBase
+import Z_MasterOfApps.Kotlin.ViewModel.Init.C_Compare.CompareUpdate
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import com.google.firebase.FirebaseApp
 import com.google.firebase.database.FirebaseDatabase
@@ -44,7 +46,8 @@ suspend fun loadData(viewModel: ViewModelInitApp) {
         } ?: false
 
         val snapshots = if (isOnline) {
-            FirebaseListeners.setupRealtimeListeners(viewModel)
+            AncienDataBase.setupRealtimeListeners(viewModel)
+            CompareUpdate.setupeCompareUpdateAncienModels()
             refs.map { it.get().await() }
         } else {
             FirebaseDatabase.getInstance().goOffline()
@@ -164,6 +167,37 @@ suspend fun loadData(viewModel: ViewModelInitApp) {
                                 }
                             } catch (e: Exception) {
                                 // Silent catch to skip invalid entries
+                            }
+                        }
+                    }
+                }
+                
+                couleursProduitsInfos.clear()
+                if (headModels != null) {
+                    val node = headModels.child("D_CouleursEtGoutesProduitsInfos")
+                    if (!node.exists()) {
+                        couleursProduitsInfos.add(
+                            D_CouleursEtGoutesProduitsInfos(
+                                id = 1,
+                            )
+                        )
+                    } else {
+                        node.children.forEach { snap ->
+                            try {
+                                D_CouleursEtGoutesProduitsInfos(
+                                    id = snap.key?.toLongOrNull() ?: return@forEach,
+                                ).apply {
+                                    snap.child("infosDeBase")
+                                        .getValue(D_CouleursEtGoutesProduitsInfos.InfosDeBase::class.java)?.let { infosDeBase ->
+                                            this.infosDeBase = infosDeBase
+                                        }
+                                    snap.child("statuesMutable")
+                                        .getValue(D_CouleursEtGoutesProduitsInfos.StatuesMutable::class.java)?.let { statuesMutable ->
+                                            this.statuesMutable = statuesMutable
+                                        }
+                                    couleursProduitsInfos.add(this)
+                                }
+                            } catch (_: Exception){
                             }
                         }
                     }

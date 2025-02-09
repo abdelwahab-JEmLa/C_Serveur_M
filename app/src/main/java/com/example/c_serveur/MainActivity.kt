@@ -1,7 +1,7 @@
 // MainActivity.kt
 package com.example.c_serveur
 
-import Z_MasterOfApps.Kotlin.ViewModel.Init.Init.initializeFirebase
+import Z_MasterOfApps.Kotlin.ViewModel.Init.B_Load.initializeFirebase
 import Z_MasterOfApps.Z.Android.Main.MainScreen
 import Z_MasterOfApps.Z.Android.Main.Utils.PermissionHandler
 import android.app.Application

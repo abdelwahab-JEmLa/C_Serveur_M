@@ -24,9 +24,8 @@ open class _ModelAppsFather(
     var clientDataBase: SnapshotStateList<B_ClientsDataBase> =
         emptyList<B_ClientsDataBase>().toMutableStateList()
 
-    @get:Exclude
-    var grossistsDataBase: SnapshotStateList<C_GrossistsDataBase> =
-        emptyList<C_GrossistsDataBase>().toMutableStateList()
+    @get:Exclude var grossistsDataBase: SnapshotStateList<C_GrossistsDataBase> = emptyList<C_GrossistsDataBase>().toMutableStateList()
+    @get:Exclude var couleursProduitsInfos: SnapshotStateList<D_CouleursEtGoutesProduitsInfos> = emptyList<D_CouleursEtGoutesProduitsInfos>().toMutableStateList()
 
 
     // A_GroupedValues.kt stays the same
@@ -55,10 +54,12 @@ open class _ModelAppsFather(
         }
 
     companion object {
-        val ref_HeadOfModels = Firebase.database
+         val firebaseDatabase = Firebase.database
+
+        val ref_HeadOfModels = firebaseDatabase
             .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
 
-        val produitsFireBaseRef = Firebase.database
+        val produitsFireBaseRef = firebaseDatabase
             .getReference("0_UiState_3_Host_Package_3_Prototype11Dec")
             .child("produits")
         val imagesProduitsFireBaseStorageRef = Firebase.storage.reference

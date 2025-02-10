@@ -52,8 +52,9 @@ fun MainItem_F2(
             mainItem = mainItem,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp),
-            size = 100.dp
+                .height(170.dp),
+            size = 170.dp ,
+            qualityImage = 50
         )
 
         // Product ID

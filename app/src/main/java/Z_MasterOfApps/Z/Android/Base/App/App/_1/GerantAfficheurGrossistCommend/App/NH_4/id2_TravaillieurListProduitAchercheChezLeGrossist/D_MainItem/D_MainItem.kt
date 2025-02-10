@@ -37,7 +37,7 @@ fun MainItem_F2(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(80.dp)
+            .height(170.dp)
             .background(
                 color = if (position != null)
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
@@ -54,7 +54,7 @@ fun MainItem_F2(
                 .fillMaxWidth()
                 .height(170.dp),
             size = 170.dp ,
-            qualityImage = 50
+            qualityImage = 70
         )
 
         // Product ID

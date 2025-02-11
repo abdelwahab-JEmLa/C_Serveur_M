@@ -2,7 +2,6 @@ package Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_Clien
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.AddMarkerButton
-import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.AlimentclientDataBaseSnapList
 import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.ClearHistoryButton
 import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.LabelsButton
 import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.LocationTrackingButton
@@ -71,18 +70,9 @@ fun MapControls(
         ) {
             Column(
                 modifier = Modifier.align(Alignment.BottomStart),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 if (showMenu) {
-                    AlimentclientDataBaseSnapList(
-                        showLabels = showLabels,
-                        viewModelInitApp = viewModelInitApp
-                    )
-                    ClearHistoryButton(
-                        viewModelInitApp = viewModelInitApp,
-                        showLabels = showLabels,
-                        onClear,
-                    )
 
                     AddMarkerButton(
                         extensionVM = extensionVM,
@@ -96,7 +86,14 @@ fun MapControls(
                         proximiteMeter = proximiteMeter ,
                         xmlResources=xmlResources
                     )
+
+                    ClearHistoryButton(
+                        viewModelInitApp = viewModelInitApp,
+                        showLabels = showLabels,
+                        onClear,
+                    )
                 }
+
 
                 LabelsButton(
                     showLabels = showLabels,
@@ -125,11 +122,11 @@ fun ControlButton(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         FloatingActionButton(
             onClick = onClick,
-            modifier = modifier.size(40.dp),
+            modifier = modifier.size(30.dp),
             containerColor = containerColor
         ) {
             Icon(icon, contentDescription)

@@ -39,7 +39,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
-
+             //
 @Composable
 fun A_id1_ClientsLocationGps(
     modifier: Modifier = Modifier,
@@ -186,7 +186,13 @@ fun A_id1_ClientsLocationGps(
                 viewModel = viewModel,
                 selectedMarker = selectedMarker,
                 onDismiss = { showMarkerDialog = false },
-                onUpdateLongAppSetting = onUpdateLongAppSetting
+                onUpdateLongAppSetting = onUpdateLongAppSetting,
+                onRemoveMark = { marker ->
+                    marker?.let {
+                        mapView.overlays.remove(it)
+                        mapView.invalidate()
+                    }
+                }
             )
         }
     }

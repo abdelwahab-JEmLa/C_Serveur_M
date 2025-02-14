@@ -1,3 +1,4 @@
+// B_ListMain.kt
 package Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition
 
 import Z_MasterOfApps.Kotlin.Model.A_ProduitModel
@@ -7,6 +8,7 @@ import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.A
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.Modules.SearchDialog_F1
 import Z_MasterOfApps.Z.Android.Main.Utils.LottieJsonGetterR_Raw_Icons
 import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.AnimatedIconLottieJsonFile
+import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.DialogInfosProduit
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 
 @Composable
 fun B_ListMainFragment(
@@ -47,6 +50,8 @@ fun B_ListMainFragment(
 ) {
     var showMoveDialog by remember { mutableStateOf(false) }
     var showSearchDialog by remember { mutableStateOf(false) }
+    var showProductInfoDialog by remember { mutableStateOf(false) }
+    var selectedProduct by remember { mutableStateOf<A_ProduitModel?>(null) }
 
     val (positionedProducts, unpositionedProducts) = visibleProducts.partition {
         it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true
@@ -54,7 +59,6 @@ fun B_ListMainFragment(
 
     val produitsAChoisireLeurClient = viewModel
         ._paramatersAppsViewModelModel.produitsAChoisireLeurClient
-
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
@@ -65,11 +69,11 @@ fun B_ListMainFragment(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        // Header for positioned products
         if (positionedProducts.isNotEmpty()) {
             val positionedProductsSorted = positionedProducts.sortedBy {
                 it.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
             }
+
             item(span = { GridItemSpan(5) }) {
                 Row(
                     modifier = Modifier.padding(8.dp),
@@ -91,14 +95,6 @@ fun B_ListMainFragment(
                             }
                         }
                     )
-                    AnimatedIconLottieJsonFile(
-                        LottieJsonGetterR_Raw_Icons.afficheFenetre,
-                        onClick = {
-                                  //-->
-                                  //TODO(1): fait que au click ca affiche
-                        }
-                    )
-
 
                     Box {
                         Icon(
@@ -112,16 +108,24 @@ fun B_ListMainFragment(
                                 .padding(8.dp)
                                 .clickable {
                                     viewModel.frag1_A1_ExtVM.addToproduitsAChoisireLeurClient(
-                                        positionedProductsSorted
-                                            .last()
+                                        positionedProductsSorted.last()
                                     )
                                 },
                             style = MaterialTheme.typography.titleMedium
                         )
                     }
+
+                    AnimatedIconLottieJsonFile(
+                        LottieJsonGetterR_Raw_Icons.afficheFenetre,
+                        onClick = {
+                            selectedProduct = positionedProductsSorted.lastOrNull()
+                            if (selectedProduct != null) {
+                                showProductInfoDialog = true
+                            }
+                        }
+                    )
                 }
             }
-
 
             items(
                 items = positionedProductsSorted,
@@ -137,7 +141,6 @@ fun B_ListMainFragment(
             }
         }
 
-        // Header for unpositioned products
         if (unpositionedProducts.isNotEmpty()) {
             item(span = { GridItemSpan(5) }) {
                 Row(
@@ -152,7 +155,6 @@ fun B_ListMainFragment(
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                    // Update the search icon button onClick:
                     IconButton(onClick = { showSearchDialog = true }) {
                         Icon(
                             Icons.Default.Search,
@@ -173,7 +175,6 @@ fun B_ListMainFragment(
                         val position = product.bonCommendDeCetteCota?.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit
                         if (position == null || position == 0) null else position
                     },
-                    // Ensuite trier par nom
                     { it.nom.lowercase() }
                 )),
             ) { product ->
@@ -208,10 +209,22 @@ fun B_ListMainFragment(
         )
     }
 
-    SearchDialog_F1(
-        unpositionedItems =unpositionedProducts,
-        viewModelProduits = viewModel,
-        showDialog = showSearchDialog,
-        onDismiss = { showSearchDialog = false }
-    )
+    if (showSearchDialog) {
+        SearchDialog_F1(
+            unpositionedItems = unpositionedProducts,
+            viewModelProduits = viewModel,
+            showDialog = showSearchDialog,
+            onDismiss = { showSearchDialog = false }
+        )
+    }
+
+    if (showProductInfoDialog && selectedProduct != null) {
+        Dialog(onDismissRequest = { showProductInfoDialog = false }) {
+            DialogInfosProduit(
+                viewModelInitApp = viewModel,
+                mainItem = selectedProduct!!,
+                onCLickOnMain = { showProductInfoDialog = false }
+            )
+        }
+    }
 }

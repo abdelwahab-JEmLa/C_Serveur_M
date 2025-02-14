@@ -8,7 +8,7 @@ import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_Client
 import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.DEFAULT_LONGITUDE
 import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.B.Dialogs.Utils.getCurrentLocation
 import Z_MasterOfApps.Z.Android.Base.App.App2_LocationGpsClients.NH_1.id1_ClientsLocationGps.ViewModel.Extension.ViewModelExtension_App2_F1
-import Z_MasterOfApps.Z.Android.Res.XmlsFilesHandler.Companion.xmlResources
+import Z_MasterOfApps.Z.Android.Main.Utils.XmlsFilesHandler.Companion.xmlResources
 import android.content.Context
 import android.widget.LinearLayout
 import androidx.compose.foundation.background
@@ -39,7 +39,8 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow
-             //
+
+//
 @Composable
 fun A_id1_ClientsLocationGps(
     modifier: Modifier = Modifier,

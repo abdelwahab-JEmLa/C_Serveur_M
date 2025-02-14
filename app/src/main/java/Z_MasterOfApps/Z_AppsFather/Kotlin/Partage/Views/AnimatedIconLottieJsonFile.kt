@@ -1,6 +1,6 @@
 package Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views
 
-import Z_MasterOfApps.Z.Android.Res.RessourceXml
+import Z_MasterOfApps.Z.Android.Main.Utils.LottieJsonGetterR_Raw_Icons
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
@@ -24,7 +24,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 
 @Composable
 fun AnimatedIconLottieJsonFile(
-    ressourceXml: RessourceXml = RessourceXml.statsLottieJson,
+    ressourceXml: LottieJsonGetterR_Raw_Icons ,
     onClick: () -> Unit
 ) {
     val isPlaying by remember { mutableStateOf(true) }

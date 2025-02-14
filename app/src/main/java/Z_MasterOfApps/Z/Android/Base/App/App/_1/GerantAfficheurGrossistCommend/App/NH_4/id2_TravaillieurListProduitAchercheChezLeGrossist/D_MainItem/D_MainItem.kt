@@ -57,9 +57,11 @@ fun MainItem_F2(
             size = 140.dp,
             qualityImage = 80
         )
-
+         val position =mainItem.bonCommendDeCetteCota
+             ?.mutableBasesStates
+             ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
         Text(
-            text = "ID: ${mainItem.id}",
+            text = "$position>ID: ${mainItem.id}",
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(4.dp)

@@ -129,7 +129,7 @@ fun MainScreenFilterFAB_F2(
                             }
 
                             Text(
-                                text = "${grossist.nom} (${produits.size})",
+                                "${grossist.nom} (${grossist.id})",
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .background(

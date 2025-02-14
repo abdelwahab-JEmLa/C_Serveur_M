@@ -94,7 +94,7 @@ fun MainScreenFilterFAB(
                                 }
 
                                 Text(
-                                    "${grossist.nom} (${produits.size})",
+                                    "${grossist.nom} (${grossist.id})",
                                     modifier = Modifier
                                         .background(
                                             if (viewModel.frag1_A1_ExtVM.idAuFilter ==

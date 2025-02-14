@@ -51,10 +51,13 @@ fun MainItem_F4(
                 .height(100.dp),
             size = 100.dp
         )
+        val positionCC =mainItem.bonCommendDeCetteCota
+            ?.mutableBasesStates
+            ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
 
         // Product ID
         Text(
-            text = "ID: ${mainItem.id}",
+            text = "$positionCC>ID: ${mainItem.id}",
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(4.dp)
@@ -70,7 +73,7 @@ fun MainItem_F4(
         )
 
         Text(
-            text = mainItem.nom,
+            text = "mainItem.nom",
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(4.dp)

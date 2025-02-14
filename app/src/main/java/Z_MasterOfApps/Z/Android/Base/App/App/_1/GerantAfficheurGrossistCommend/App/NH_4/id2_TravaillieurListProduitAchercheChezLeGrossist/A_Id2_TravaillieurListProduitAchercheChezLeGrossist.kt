@@ -36,9 +36,7 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
         .filter { product ->
             product.bonCommendDeCetteCota?.let { bonCommend ->
                 bonCommend.idGrossistChoisi == viewModel.frag2_A1_ExtVM.auFilter &&
-                        bonCommend.mutableBasesStates?.positionProduitDonGrossistChoisiPourAcheterCeProduit?.let { position ->
-                            position > 0
-                        } ?: false
+                        bonCommend.mutableBasesStates?.cPositionCheyCeGrossit == true
             } ?: false
         }
         .sortedBy { product ->

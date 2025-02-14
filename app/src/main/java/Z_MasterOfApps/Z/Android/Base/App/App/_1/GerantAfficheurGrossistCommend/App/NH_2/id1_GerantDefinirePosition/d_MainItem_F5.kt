@@ -21,13 +21,13 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun C_ItemMainFragment(
-    mainItem: A_ProduitModel,  // Moved to be first optional parameter
+    mainItem: A_ProduitModel,
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
     position: Int? = null,
 ) {
     Box(
-        modifier = modifier  // Using the passed modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(80.dp)
             .background(
@@ -51,10 +51,13 @@ fun C_ItemMainFragment(
                 .height(100.dp),
             size = 100.dp
         )
+        val positionCC =mainItem.bonCommendDeCetteCota
+            ?.mutableBasesStates
+            ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
 
         // Product ID
         Text(
-            text = "ID: ${mainItem.id}",
+            text = "$positionCC>ID: ${mainItem.id}",
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(4.dp)

@@ -5,7 +5,8 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.Modules.MoveProductsDialog
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.Modules.SearchDialog_F1
-import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.AnimatedIcon
+import Z_MasterOfApps.Z.Android.Res.RessourceXml
+import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.AnimatedIconLottieJsonFile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -81,8 +82,8 @@ fun B_ListMainFragment(
                         style = MaterialTheme.typography.titleMedium
                     )
 
-                    AnimatedIcon(
-                        nameResource = "reacticonanimatedjsonurl",
+                    AnimatedIconLottieJsonFile(
+                        RessourceXml.statsLottieJson,
                         onClick = {
                             positionedProductsSorted.forEach { product ->
                                 product.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit = false

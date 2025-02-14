@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -28,7 +27,7 @@ fun AnimatedIcon(
     onClick: () -> Unit
 ) {
     // Always playing state
-    var isPlaying by remember { mutableStateOf(true) }
+    val isPlaying by remember { mutableStateOf(true) }
 
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(fixXmlResources(nameResource))

@@ -14,7 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
-import com.example.clientjetpack.MainActivity
+import com.example.c_serveur.MainActivity
 
 class PermissionHandler(private val activity: MainActivity) {
     companion object {

@@ -21,7 +21,6 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 
-
 @Composable
 fun AnimatedIconLottieJsonFile(
     ressourceXml: LottieJsonGetterR_Raw_Icons,

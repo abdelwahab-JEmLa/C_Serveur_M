@@ -5,7 +5,7 @@ import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.Modules.MoveProductsDialog
 import Z_MasterOfApps.Z.Android.Base.App.App._1.GerantAfficheurGrossistCommend.App.NH_2.id1_GerantDefinirePosition.Modules.SearchDialog_F1
-import Z_MasterOfApps.Z.Android.Res.RessourceXml
+import Z_MasterOfApps.Z.Android.Main.Utils.LottieJsonGetterR_Raw_Icons
 import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.AnimatedIconLottieJsonFile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -83,7 +83,7 @@ fun B_ListMainFragment(
                     )
 
                     AnimatedIconLottieJsonFile(
-                        RessourceXml.statsLottieJson,
+                        LottieJsonGetterR_Raw_Icons.reacticonanimatedjsonurl,
                         onClick = {
                             positionedProductsSorted.forEach { product ->
                                 product.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit = false
@@ -91,6 +91,14 @@ fun B_ListMainFragment(
                             }
                         }
                     )
+                    AnimatedIconLottieJsonFile(
+                        LottieJsonGetterR_Raw_Icons.afficheFenetre,
+                        onClick = {
+                                  //-->
+                                  //TODO(1): fait que au click ca affiche
+                        }
+                    )
+
 
                     Box {
                         Icon(

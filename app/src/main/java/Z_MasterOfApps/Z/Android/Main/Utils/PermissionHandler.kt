@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import com.example.c_serveur.MainActivity
+import com.example.c_serveur.R
 
 class PermissionHandler(private val activity: MainActivity) {
     companion object {
@@ -121,3 +122,27 @@ class PermissionHandler(private val activity: MainActivity) {
         }
     }
 }
+enum class LottieJsonGetterR_Raw_Icons(val resourceId: Int) {
+    reacticonanimatedjsonurl(R.raw.reacticonanimatedjsonurl),
+    afficheFenetre(R.raw.stats_lottie_json)
+}
+
+class XmlsFilesHandler {
+
+    companion object {
+        val xmlResources = listOf(
+            Pair("marker_info_window", R.layout.marker_info_window),
+            Pair("info_window_container", R.id.info_window_container),
+            Pair("location_arrow", R.drawable.location_arrow),
+            Pair("reacticonanimatedjsonurl", R.raw.reacticonanimatedjsonurl)
+        )
+
+        fun fixXmlResources(name: String): Int {
+            return xmlResources.find { it.first == name }?.second
+                ?: throw IllegalStateException("Resource '$name' not found")  // Better error message
+        }
+    }
+}
+
+
+

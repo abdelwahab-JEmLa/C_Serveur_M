@@ -24,7 +24,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 
 @Composable
 fun AnimatedIconLottieJsonFile(
-    ressourceXml: LottieJsonGetterR_Raw_Icons ,
+    ressourceXml: LottieJsonGetterR_Raw_Icons,
     onClick: () -> Unit
 ) {
     val isPlaying by remember { mutableStateOf(true) }

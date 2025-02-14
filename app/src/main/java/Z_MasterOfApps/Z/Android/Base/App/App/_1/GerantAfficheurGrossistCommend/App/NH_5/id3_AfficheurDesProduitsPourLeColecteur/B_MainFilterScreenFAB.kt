@@ -123,7 +123,9 @@ fun MainScreenFilterFAB_F3(
 
                                 FloatingActionButton(
                                     onClick = {
-                                        frag3a1Extvm.clientFocused= client to products
+                                        frag3a1Extvm.clientFocused= client to products.filter {
+                                            it.bonCommendDeCetteCota?.mutableBasesStates?.cPositionCheyCeGrossit == true
+                                        }
                                     },
                                     modifier = Modifier.size(48.dp),
                                     containerColor = color

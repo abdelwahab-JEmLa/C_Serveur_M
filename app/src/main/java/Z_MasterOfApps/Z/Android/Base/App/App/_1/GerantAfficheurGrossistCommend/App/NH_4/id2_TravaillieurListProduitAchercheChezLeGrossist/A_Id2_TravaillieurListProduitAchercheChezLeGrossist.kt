@@ -41,6 +41,12 @@ internal fun A_Id2_TravaillieurListProduitAchercheChezLeGrossist(
                         } ?: false
             } ?: false
         }
+        .sortedBy { product ->
+            product.bonCommendDeCetteCota
+                ?.mutableBasesStates
+                ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                ?: Int.MAX_VALUE
+        }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()

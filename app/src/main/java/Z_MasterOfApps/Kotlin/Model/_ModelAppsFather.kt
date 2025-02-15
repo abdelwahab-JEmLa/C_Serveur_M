@@ -11,7 +11,6 @@ import com.google.firebase.database.database
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-private const val TAG = "ProductsDebug"
 
 open class _ModelAppsFather(
     initial_Produits_Main_DataBase: List<A_ProduitModel> = emptyList()
@@ -26,7 +25,6 @@ open class _ModelAppsFather(
 
     @get:Exclude var grossistsDataBase: SnapshotStateList<C_GrossistsDataBase> = emptyList<C_GrossistsDataBase>().toMutableStateList()
     @get:Exclude var couleursProduitsInfos: SnapshotStateList<D_CouleursEtGoutesProduitsInfos> = emptyList<D_CouleursEtGoutesProduitsInfos>().toMutableStateList()
-
 
     // A_GroupedValues.kt stays the same
     val groupedProductsParGrossist: List<Map.Entry<C_GrossistsDataBase, List<A_ProduitModel>>>

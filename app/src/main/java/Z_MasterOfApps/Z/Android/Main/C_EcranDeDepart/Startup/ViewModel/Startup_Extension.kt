@@ -161,4 +161,32 @@ class Startup_Extension(
             })
         }
     }
+
+    fun suppBonCommendSiNaPasDeBonVent() {
+        viewModelInitApp.viewModelScope.launch {
+            try {
+                // Create a snapshot of products to avoid concurrent modification
+                val productsToCheck = viewModelInitApp._modelAppsFather.produitsMainDataBase.toList()
+
+                // Process each product
+                productsToCheck.forEach { produit ->
+                    // Check if product has an order but no sales
+                    if (produit.bonCommendDeCetteCota != null && produit.bonsVentDeCetteCota.isEmpty()) {
+                        // Move the order to history before removing it
+                        produit.historiqueBonsCommend.add(produit.bonCommendDeCetteCota!!)
+
+                        // Remove the order
+                        produit.bonCommendDeCetteCota = null
+
+                        // Update the product in Firebase
+                        updateProduit(produit, viewModelInitApp)
+                    }
+                }
+            } catch (e: Exception) {
+                // Log any errors that occur during the process
+                println("Error in suppBonCommendSiNaPasDeBonVent: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+    }
 }

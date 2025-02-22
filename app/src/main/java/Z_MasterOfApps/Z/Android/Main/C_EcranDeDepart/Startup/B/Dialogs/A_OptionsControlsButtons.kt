@@ -82,6 +82,10 @@ fun A_OptionsControlsButtons(
                         showLabels = showLabels,
                         viewModel = viewModelInitApp
                     )
+                    B_5(
+                        showLabels = showLabels,
+                        viewModel = viewModelInitApp
+                    )
                 }
 
                 LabelsButton(

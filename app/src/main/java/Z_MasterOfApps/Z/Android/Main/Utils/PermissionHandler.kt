@@ -17,6 +17,13 @@ import androidx.core.content.ContextCompat
 import com.example.c_serveur.MainActivity
 import com.example.c_serveur.R
 
+/*
+
+import com.example.clientjetpack.MainActivity
+import com.example.clientjetpack.R
+
+ */
+
 class PermissionHandler(private val activity: MainActivity) {
     companion object {
         private const val PREFS_NAME = "PermissionPrefs"

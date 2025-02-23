@@ -4,6 +4,9 @@ import Z_MasterOfApps.Kotlin.Model.E_AppsOptionsStates
 import Z_MasterOfApps.Kotlin.Model.E_AppsOptionsStates.ApplicationEstInstalleDonTelephone.Companion.metricsWidthPixels
 import Z_MasterOfApps.Kotlin.Model._ModelAppsFather.Companion.updateProduit
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
@@ -21,6 +24,10 @@ class Startup_Extension(
         viewModelInitApp._modelAppsFather.applicationEstInstalleDonTelephone
     private val firebaseDatabase = FirebaseDatabase.getInstance()
     private val refDBJetPackExport = firebaseDatabase.getReference("e_DBJetPackExport")
+
+    var dialogeOptions by mutableStateOf(false)
+
+
     init {
         val manufacturer = android.os.Build.MANUFACTURER
         val model = android.os.Build.MODEL
@@ -238,5 +245,29 @@ class Startup_Extension(
                 e.printStackTrace()
             }
         }
+    }
+
+    fun addPrototype(newPrototype: E_AppsOptionsStates.F_PrototypseDeProgramationInfos) {
+        // Add to local state first
+        viewModelInitApp._modelAppsFather.f_PrototypseDeProgramationInfos.add(newPrototype)
+
+        // Then update Firebase
+        E_AppsOptionsStates.F_PrototypseDeProgramationInfos.caReference
+            .child(newPrototype.vid.toString())
+            .setValue(newPrototype)
+    }
+
+    fun updatePrototype(prototype: E_AppsOptionsStates.F_PrototypseDeProgramationInfos) {
+        // Update local state first
+        val index = viewModelInitApp._modelAppsFather.f_PrototypseDeProgramationInfos
+            .indexOfFirst { it.vid == prototype.vid }
+        if (index != -1) {
+            viewModelInitApp._modelAppsFather.f_PrototypseDeProgramationInfos[index] = prototype
+        }
+
+        // Then update Firebase
+        E_AppsOptionsStates.F_PrototypseDeProgramationInfos.caReference
+            .child(prototype.vid.toString())
+            .setValue(prototype)
     }
 }

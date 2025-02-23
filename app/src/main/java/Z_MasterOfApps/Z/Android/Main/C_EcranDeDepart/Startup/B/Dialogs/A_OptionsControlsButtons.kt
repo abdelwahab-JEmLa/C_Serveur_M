@@ -4,6 +4,8 @@ import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.B.Dialogs.Utils.LabelsButton
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.B.Dialogs.Utils.MenuButton
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.ViewModel.Startup_Extension
+import Z_MasterOfApps.Z.Android.Main.Utils.LottieJsonGetterR_Raw_Icons
+import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.AnimatedIconLottieJsonFile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -86,6 +88,11 @@ fun A_OptionsControlsButtons(
                         showLabels = showLabels,
                         viewModel = viewModelInitApp
                     )
+
+                    B_6(
+                        showLabels = showLabels,
+                        viewModel = viewModelInitApp
+                    )
                 }
 
                 LabelsButton(
@@ -103,10 +110,12 @@ fun A_OptionsControlsButtons(
     }
 }
 
+// A_OptionsControlsButtons.kt
+
 @Composable
 fun ControlButton(
     onClick: () -> Unit,
-    icon: ImageVector,
+    icon: Any, // Changed from ImageVector to Any to support both ImageVector and AnimatedIcon
     contentDescription: String,
     showLabels: Boolean,
     labelText: String,
@@ -122,7 +131,11 @@ fun ControlButton(
             modifier = modifier.size(40.dp),
             containerColor = containerColor
         ) {
-            Icon(icon, contentDescription)
+            when (icon) {
+                is ImageVector -> Icon(icon, contentDescription)
+                is LottieJsonGetterR_Raw_Icons -> AnimatedIconLottieJsonFile(icon)
+                else -> throw IllegalArgumentException("Unsupported icon type")
+            }
         }
         if (showLabels) {
             Text(
@@ -134,4 +147,23 @@ fun ControlButton(
             )
         }
     }
+}
+
+// B_6.kt
+@Composable
+fun B_6(
+    viewModel: ViewModelInitApp,
+    showLabels: Boolean
+) {
+    ControlButton(
+        onClick = {
+            viewModel
+                .extentionStartup.dialogeOptions=true
+        },
+        icon = LottieJsonGetterR_Raw_Icons.reacticonanimatedjsonurl,
+        contentDescription = "DialogeOptions",
+        showLabels = showLabels,
+        labelText = "DialogeOptions",
+        containerColor = Color(0xFF2196F3)
+    )
 }

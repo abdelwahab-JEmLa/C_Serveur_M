@@ -17,6 +17,7 @@ open class _ModelAppsFather(
 ) {
 
     @get:Exclude var applicationEstInstalleDonTelephone: SnapshotStateList<E_AppsOptionsStates.ApplicationEstInstalleDonTelephone> = emptyList<E_AppsOptionsStates.ApplicationEstInstalleDonTelephone>().toMutableStateList()
+    @get:Exclude var f_PrototypseDeProgramationInfos: SnapshotStateList<E_AppsOptionsStates.F_PrototypseDeProgramationInfos> = emptyList<E_AppsOptionsStates.F_PrototypseDeProgramationInfos>().toMutableStateList()
 
     @get:Exclude
     var produitsMainDataBase: SnapshotStateList<A_ProduitModel> =

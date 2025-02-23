@@ -141,7 +141,8 @@ fun MainItem_F2(
                     }
                 }
 
-                Box(
+                Box(   //-->
+                //TODO(1): fait ici que si une des couleur nom contain "Coul" de que ce 
                     modifier = Modifier
                         .width(200.dp)
                         .padding(7.dp)

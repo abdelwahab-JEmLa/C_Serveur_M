@@ -2,6 +2,7 @@ package Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup
 
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.B.Dialogs.A_OptionsControlsButtons
+import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.B.Dialogs.A_OptionsDialog.A_OptionsDialog
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.ViewModel.Startup_Extension
 import Z_MasterOfApps.Z.Android.Main.NavigationItems
 import Z_MasterOfApps.Z.Android.Main.Screen
@@ -128,5 +129,10 @@ internal fun A_StartupScreen(
                 paddingValues = PaddingValues()
             )
         }
+
+        A_OptionsDialog(
+            viewModelInitApp = viewModelInitApp,
+            onDismiss = { viewModelInitApp.extentionStartup.dialogeOptions = false }
+        )
     }
 }

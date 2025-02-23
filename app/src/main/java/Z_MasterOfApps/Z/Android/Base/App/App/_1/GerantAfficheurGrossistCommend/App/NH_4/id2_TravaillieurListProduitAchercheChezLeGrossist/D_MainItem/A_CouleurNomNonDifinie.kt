@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MainItem_F2(
+fun A_CouleurNomNonDefinie(
     mainItem: A_ProduitModel,
     modifier: Modifier = Modifier,
     onCLickOnMain: () -> Unit = {},
@@ -48,18 +48,77 @@ fun MainItem_F2(
             .clickable { onCLickOnMain() },
         contentAlignment = Alignment.Center
     ) {
-        GlideDisplayImageBykeyId(
+        val colorAchatModelList = mainItem.bonCommendDeCetteCota
+            ?.coloursEtGoutsCommendee
+            ?.toList() ?: emptyList()
+
+        val totalQuantity = colorAchatModelList
+            .sumOf { it.quantityAchete }
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(height),
-            imageGlidReloadTigger = 0,
-            mainItem = mainItem,
-            size = 140.dp,
-            qualityImage = 80
-        )
-         val position =mainItem.bonCommendDeCetteCota
-             ?.mutableBasesStates
-             ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+                .fillMaxSize()  // Changed from width(200.dp) to fillMaxSize()
+                .padding(7.dp)
+        ) {
+            val colorItems = colorAchatModelList
+                .filter { it.quantityAchete > 0 }
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(0.dp),
+                verticalArrangement = Arrangement.spacedBy(0.dp)
+            ) {
+                items(colorItems) { colorFlavor ->
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        val colorIndex = (colorFlavor.id.toInt() - 1)
+
+                        if (colorIndex >= 0 && colorIndex < mainItem.statuesBase.coloursEtGoutsIds.size && !mainItem.statuesBase.naAucunImage) {
+                            GlideDisplayImageBykeyId(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(40.dp),
+                                imageGlidReloadTigger = mainItem.statuesBase.imageGlidReloadTigger,
+                                mainItem = mainItem,
+                                size = 40.dp,
+                                qualityImage = 80,
+                                colorIndex = colorIndex
+                            )
+                        } else {
+                            // Fallback to text display if no image
+                            val displayText = when {
+                                colorFlavor.emogi.isNotEmpty() -> colorFlavor.emogi
+                                else -> colorFlavor.nom.take(2)
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Text(
+                                    text = "$displayText>",
+                                    fontSize = 24.sp,
+                                    color = Color.Black
+                                )
+                                Text(
+                                    text = "(${colorFlavor.quantityAchete})",
+                                    fontSize = 24.sp,
+                                    color = Color.Black,
+                                    modifier = Modifier
+                                        .background(
+                                            color = Color.White.copy(alpha = 0.8f),
+                                            shape = RoundedCornerShape(4.dp)
+                                        )
+                                        .padding(horizontal = 4.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        val position = mainItem.bonCommendDeCetteCota
+            ?.mutableBasesStates
+            ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
         Text(
             text = "$position>ID: ${mainItem.id}",
             modifier = Modifier
@@ -75,13 +134,6 @@ fun MainItem_F2(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
-
-        val colorAchatModelList = mainItem.bonCommendDeCetteCota
-            ?.coloursEtGoutsCommendee
-            ?.toList() ?: emptyList()
-
-        val totalQuantity = colorAchatModelList
-            .sumOf { it.quantityAchete }
 
         Row(
             modifier = Modifier
@@ -138,53 +190,6 @@ fun MainItem_F2(
                             ),
                             color = Color.Black
                         )
-                    }
-                }
-
-                Box(   //-->
-                //TODO(1): fait ici que si une des couleur nom contain "Coul" de que ce 
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(7.dp)
-                ) {
-                    val colorItems = colorAchatModelList
-                        .filter { it.quantityAchete > 0 }
-
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.spacedBy(0.dp),
-                        verticalArrangement = Arrangement.spacedBy(0.dp)
-                    ) {
-                        items(colorItems) { colorFlavor ->
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                val displayText = when {
-                                    colorFlavor.emogi.isNotEmpty() -> colorFlavor.emogi
-                                    else -> colorFlavor.nom.take(2)
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
-                                ) {
-                                    Text(
-                                        text = "$displayText>",
-                                        fontSize = 24.sp,
-                                        color = Color.Black
-                                    )
-                                    Text(
-                                        text = "(${colorFlavor.quantityAchete})",
-                                        fontSize = 24.sp,
-                                        color = Color.Black,
-                                        modifier = Modifier
-                                            .background(
-                                                color = Color.White.copy(alpha = 0.8f),
-                                                shape = RoundedCornerShape(4.dp)
-                                            )
-                                            .padding(horizontal = 4.dp)
-                                    )
-                                }
-                            }
-                        }
                     }
                 }
             }

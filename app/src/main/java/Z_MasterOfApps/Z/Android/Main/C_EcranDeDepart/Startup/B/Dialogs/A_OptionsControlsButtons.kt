@@ -1,11 +1,14 @@
 package Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.B.Dialogs
 
+// A_OptionsControlsButtons.kt
+
 import Z_MasterOfApps.Kotlin.ViewModel.ViewModelInitApp
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.B.Dialogs.Utils.LabelsButton
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.B.Dialogs.Utils.MenuButton
 import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.ViewModel.Startup_Extension
 import Z_MasterOfApps.Z.Android.Main.Utils.LottieJsonGetterR_Raw_Icons
 import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.AnimatedIconLottieJsonFile
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -36,6 +39,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
+
+const val TAG = "ControlButton"
 
 @Composable
 fun A_OptionsControlsButtons(
@@ -112,12 +117,6 @@ fun A_OptionsControlsButtons(
     }
 }
 
-// A_OptionsControlsButtons.kt
-
-import android.util.Log
-
-const val TAG = "ControlButton"
-
 @Composable
 fun ControlButton(
     onClick: () -> Unit,
@@ -128,7 +127,6 @@ fun ControlButton(
     containerColor: Color,
     modifier: Modifier = Modifier
 ) {
-    // Log the initial call
     Log.d(TAG, "ControlButton called with icon type: ${icon.javaClass.simpleName}")
 
     Row(
@@ -168,10 +166,8 @@ fun ControlButton(
                     contentAlignment = Alignment.Center
                 ) {
                     AnimatedIconLottieJsonFile(
-                        icon = icon,
-                        modifier = Modifier.fillMaxSize()      //->
-                        //TODO(FIXME):Fix erreur annot find a parameter with this name: modifier
-                        //No value passed for parameter 'ressourceXml'
+                        ressourceXml = icon,
+                        onClick = onClick
                     )
                 }
             }

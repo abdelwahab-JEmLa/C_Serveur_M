@@ -162,6 +162,18 @@ class Startup_Extension(
         }
     }
 
+    /**
+     * Checks all products and removes bonCommendDeCetteCota if:
+     * - The product has no bonsVentDeCetteCota entries, or
+     * - Any bonVent has a null coloursAcheteList
+     * Updates Firebase after removing the orders.
+     */
+    /**
+     * Checks all products and removes bonCommendDeCetteCota and bonsVentDeCetteCota if:
+     * - The product has no bonsVentDeCetteCota entries, or
+     * - Any bonVent has empty coloursAcheteList or all quantities are 0
+     * Special logging is implemented for product ID 3739
+     */
     fun suppBonCommendSiNaPasDeBonVent() {
         viewModelInitApp.viewModelScope.launch {
             try {
@@ -170,13 +182,51 @@ class Startup_Extension(
 
                 // Process each product
                 productsToCheck.forEach { produit ->
-                    // Check if product has an order but no sales
-                    if (produit.bonCommendDeCetteCota != null && produit.bonsVentDeCetteCota.isEmpty()) {
+                    // Special logging for product ID 3739
+                    if (produit.id == 3739L) {
+                        println("Analyzing product 3739:")
+                        produit.bonsVentDeCetteCota.forEach { bonVent ->
+                            println("- BonVent colors count: ${bonVent.coloursAcheteList.size}")
+                            println("- Colors with quantities:")
+                            bonVent.coloursAcheteList.forEach { color ->
+                                println("  * ${color.nom}: ${color.quantity_Achete}")
+                            }
+                        }
+                    }
+
+                    // Check if product has an order and either:
+                    // - Has no sales entries (empty bonsVentDeCetteCota)
+                    // - Has any bonVent with null coloursAcheteList
+                    if (produit.bonCommendDeCetteCota != null &&
+                        (produit.bonsVentDeCetteCota.isEmpty() ||
+                                produit.bonsVentDeCetteCota.any { bonVent ->
+                                    bonVent.coloursAcheteList.isEmpty() ||
+                                            bonVent.coloursAcheteList.all { it.quantity_Achete == 0 }
+                                })) {
+
+                        // Log if this is product 3739
+                        if (produit.id == 3739L) {
+                            println("Product 3739 is being cleared because:")
+                            if (produit.bonsVentDeCetteCota.isEmpty()) {
+                                println("- No sales entries found")
+                            } else {
+                                println("- Found sales entries with no quantities:")
+                                produit.bonsVentDeCetteCota.forEach { bonVent ->
+                                    if (bonVent.coloursAcheteList.isEmpty()) {
+                                        println("  * Empty colors list")
+                                    } else if (bonVent.coloursAcheteList.all { it.quantity_Achete == 0 }) {
+                                        println("  * All quantities are 0")
+                                    }
+                                }
+                            }
+                        }
+
                         // Move the order to history before removing it
                         produit.historiqueBonsCommend.add(produit.bonCommendDeCetteCota!!)
 
-                        // Remove the order
+                        // Remove the order and clear sales
                         produit.bonCommendDeCetteCota = null
+                        produit.bonsVentDeCetteCota.clear()
 
                         // Update the product in Firebase
                         updateProduit(produit, viewModelInitApp)

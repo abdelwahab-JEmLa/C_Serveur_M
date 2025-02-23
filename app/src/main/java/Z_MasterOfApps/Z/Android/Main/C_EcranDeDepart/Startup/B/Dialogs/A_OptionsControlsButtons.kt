@@ -7,6 +7,7 @@ import Z_MasterOfApps.Z.Android.Main.C_EcranDeDepart.Startup.ViewModel.Startup_E
 import Z_MasterOfApps.Z.Android.Main.Utils.LottieJsonGetterR_Raw_Icons
 import Z_MasterOfApps.Z_AppsFather.Kotlin.Partage.Views.AnimatedIconLottieJsonFile
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -91,7 +93,7 @@ fun A_OptionsControlsButtons(
 
                     B_6(
                         showLabels = showLabels,
-                        viewModel = viewModelInitApp
+                        viewModel = viewModelInitApp ,
                     )
                 }
 
@@ -112,31 +114,73 @@ fun A_OptionsControlsButtons(
 
 // A_OptionsControlsButtons.kt
 
+import android.util.Log
+
+const val TAG = "ControlButton"
+
 @Composable
 fun ControlButton(
     onClick: () -> Unit,
-    icon: Any, // Changed from ImageVector to Any to support both ImageVector and AnimatedIcon
+    icon: Any,
     contentDescription: String,
     showLabels: Boolean,
     labelText: String,
     containerColor: Color,
     modifier: Modifier = Modifier
 ) {
+    // Log the initial call
+    Log.d(TAG, "ControlButton called with icon type: ${icon.javaClass.simpleName}")
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        FloatingActionButton(
-            onClick = onClick,
-            modifier = modifier.size(40.dp),
-            containerColor = containerColor
-        ) {
-            when (icon) {
-                is ImageVector -> Icon(icon, contentDescription)
-                is LottieJsonGetterR_Raw_Icons -> AnimatedIconLottieJsonFile(icon)
-                else -> throw IllegalArgumentException("Unsupported icon type")
+        when (icon) {
+            is ImageVector -> {
+                Log.d(TAG, "Rendering ImageVector icon")
+                FloatingActionButton(
+                    onClick = {
+                        Log.d(TAG, "ImageVector FAB clicked")
+                        onClick()
+                    },
+                    modifier = modifier.size(40.dp),
+                    containerColor = containerColor
+                ) {
+                    Icon(icon, contentDescription)
+                }
+            }
+            is LottieJsonGetterR_Raw_Icons -> {
+                Log.d(TAG, "Rendering LottieJsonGetterR_Raw_Icons")
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clickable {
+                            Log.d(TAG, "LottieJson Box clicked")
+                            onClick()
+                        }
+                        .background(
+                            color = containerColor,
+                            shape = CircleShape
+                        )
+                        .also {
+                            Log.d(TAG, "Box modifiers applied successfully")
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    AnimatedIconLottieJsonFile(
+                        icon = icon,
+                        modifier = Modifier.fillMaxSize()      //->
+                        //TODO(FIXME):Fix erreur annot find a parameter with this name: modifier
+                        //No value passed for parameter 'ressourceXml'
+                    )
+                }
+            }
+            else -> {
+                Log.e(TAG, "Unsupported icon type: ${icon.javaClass.simpleName}")
+                throw IllegalArgumentException("Unsupported icon type")
             }
         }
+
         if (showLabels) {
             Text(
                 labelText,
@@ -149,21 +193,3 @@ fun ControlButton(
     }
 }
 
-// B_6.kt
-@Composable
-fun B_6(
-    viewModel: ViewModelInitApp,
-    showLabels: Boolean
-) {
-    ControlButton(
-        onClick = {
-            viewModel
-                .extentionStartup.dialogeOptions=true
-        },
-        icon = LottieJsonGetterR_Raw_Icons.reacticonanimatedjsonurl,
-        contentDescription = "DialogeOptions",
-        showLabels = showLabels,
-        labelText = "DialogeOptions",
-        containerColor = Color(0xFF2196F3)
-    )
-}

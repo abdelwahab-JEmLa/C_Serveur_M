@@ -270,4 +270,7 @@ class Startup_Extension(
             .child(prototype.vid.toString())
             .setValue(prototype)
     }
+    fun activedialogeOptions () {
+        dialogeOptions = true
+    }
 }

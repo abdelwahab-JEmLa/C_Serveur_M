@@ -38,7 +38,7 @@ import java.time.format.DateTimeFormatter
 @Composable
  fun A_OptionsDialog(
     viewModelInitApp: ViewModelInitApp,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     var showAddPrototypeDialog by remember { mutableStateOf(false) }
     var selectedPrototype by remember {

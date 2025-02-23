@@ -186,22 +186,22 @@ private fun AddPrototypeDialog(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("العنوان") },
+                    label = { Text("titre Changements") },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = prototype == null
                 )
                 OutlinedTextField(
                     value = productId,
                     onValueChange = { productId = it },
-                    label = { Text("معرف المنتج") },
+                    label = { Text("idPremierProduitOuCesChangementEstAplique") },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = prototype == null
                 )
                 OutlinedTextField(
                     value = comment,
                     onValueChange = { comment = it },
-                    label = { Text("التعليق") },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Text("comment") },
+                modifier = Modifier.fillMaxWidth()
                 )
 
                 if (prototype != null && prototype.commentairesDesChangements.isNotEmpty()) {

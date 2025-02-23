@@ -19,6 +19,8 @@ class E_AppsOptionsStates {
 
         companion object {
             val metricsWidthPixels = Resources.getSystem().displayMetrics.widthPixels
+            val caReference = E_AppsOptionsStates.caReference
+                .child("ApplicationEstInstalleDonTelephone")
         }
     }
 

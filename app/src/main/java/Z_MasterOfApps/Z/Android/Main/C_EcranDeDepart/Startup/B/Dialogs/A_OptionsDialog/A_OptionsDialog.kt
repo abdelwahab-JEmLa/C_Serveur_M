@@ -36,7 +36,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
- fun A_OptionsDialog(
+fun A_OptionsDialog(
     viewModelInitApp: ViewModelInitApp,
     onDismiss: () -> Unit,
 ) {
@@ -201,7 +201,7 @@ private fun AddPrototypeDialog(
                     value = comment,
                     onValueChange = { comment = it },
                     label = { Text("comment") },
-                modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 if (prototype != null && prototype.commentairesDesChangements.isNotEmpty()) {

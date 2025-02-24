@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -54,71 +55,59 @@ fun A_CouleurNomNonDefinie(
 
         val totalQuantity = colorAchatModelList
             .sumOf { it.quantityAchete }
+
         Box(
             modifier = Modifier
-                .fillMaxSize()  // Changed from width(200.dp) to fillMaxSize()
+                .fillMaxSize()
                 .padding(7.dp)
         ) {
             val colorItems = colorAchatModelList
                 .filter { it.quantityAchete > 0 }
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(0.dp),
-                verticalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
-                items(colorItems) { colorFlavor ->
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        val colorIndex = (colorFlavor.id.toInt() - 1)
-
-                        if (colorIndex >= 0 && colorIndex < mainItem.statuesBase.coloursEtGoutsIds.size && !mainItem.statuesBase.naAucunImage) {
-                            GlideDisplayImageBykeyId(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(40.dp),
-                                imageGlidReloadTigger = mainItem.statuesBase.imageGlidReloadTigger,
+            // Determine layout based on item count
+            when (colorItems.size) {
+                1 -> {
+                    // Single item takes full width
+                    colorItems.firstOrNull()?.let { colorFlavor ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(120.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            ColorItemContent(
+                                colorFlavor = colorFlavor,
                                 mainItem = mainItem,
-                                size = 40.dp,
-                                qualityImage = 80,
-                                colorIndex = colorIndex
+                                modifier = Modifier.fillMaxWidth(0.8f)
                             )
-                        } else {
-                            // Fallback to text display if no image
-                            val displayText = when {
-                                colorFlavor.emogi.isNotEmpty() -> colorFlavor.emogi
-                                else -> colorFlavor.nom.take(2)
-                            }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(2.dp)
-                            ) {
-                                Text(
-                                    text = "$displayText>",
-                                    fontSize = 24.sp,
-                                    color = Color.Black
-                                )
-                                Text(
-                                    text = "(${colorFlavor.quantityAchete})",
-                                    fontSize = 24.sp,
-                                    color = Color.Black,
-                                    modifier = Modifier
-                                        .background(
-                                            color = Color.White.copy(alpha = 0.8f),
-                                            shape = RoundedCornerShape(4.dp)
-                                        )
-                                        .padding(horizontal = 4.dp)
-                                )
-                            }
+                        }
+                    }
+                }
+                else -> {
+                    // Multiple items use grid
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        items(colorItems) { colorFlavor ->
+                            ColorItemContent(
+                                colorFlavor = colorFlavor,
+                                mainItem = mainItem,
+                                modifier = Modifier.fillMaxWidth(0.9f)
+                            )
                         }
                     }
                 }
             }
         }
 
+        // Rest of the UI remains unchanged
         val position = mainItem.bonCommendDeCetteCota
             ?.mutableBasesStates
             ?.positionProduitDonGrossistChoisiPourAcheterCeProduit
+
         Text(
             text = "$position>ID: ${mainItem.id}",
             modifier = Modifier
@@ -136,8 +125,7 @@ fun A_CouleurNomNonDefinie(
         )
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier
@@ -214,6 +202,75 @@ fun A_CouleurNomNonDefinie(
                     overflow = TextOverflow.Ellipsis
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun ColorItemContent(
+    colorFlavor: A_ProduitModel.GrossistBonCommandes.ColoursGoutsCommendee,
+    mainItem: A_ProduitModel,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Quantity chip floating above
+            Box(
+                modifier = Modifier
+                    .offset(y = (-8).dp)
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                    .padding(horizontal = 8.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = colorFlavor.quantityAchete.toString(),
+                    fontSize = 18.sp,
+                    color = Color.Black,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                )
+            }
+
+            // Image or fallback
+            val colorIndex = (colorFlavor.id.toInt() - 1)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                if (colorIndex >= 0 &&
+                    colorIndex < mainItem.statuesBase.coloursEtGoutsIds.size &&
+                    !mainItem.statuesBase.naAucunImage
+                ) {
+                    GlideDisplayImageBykeyId(
+                        modifier = Modifier.fillMaxSize(),
+                        imageGlidReloadTigger = mainItem.statuesBase.imageGlidReloadTigger,
+                        mainItem = mainItem,
+                        size = 60.dp,
+                        qualityImage = 80,
+                        colorIndex = colorIndex
+                    )
+                }
+            }
+
+            // Name/emoji below
+            Text(
+                text = when {
+                    colorFlavor.emogi.isNotEmpty() -> colorFlavor.emogi
+                    else -> colorFlavor.nom.take(2)
+                },
+                fontSize = 16.sp,
+                color = Color.Black,
+                modifier = Modifier.padding(top = 4.dp)
+            )
         }
     }
 }

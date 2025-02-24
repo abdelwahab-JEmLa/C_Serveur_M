@@ -68,13 +68,11 @@ fun MainList_F2(
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp)
             ) {
-                // Check if any color name contains "Couleur"
-                val hasColorWithCouleur = product.coloursEtGouts
-                    .any { it.nom.contains("Couleur", ignoreCase = true) }
+                // Check if any color has an ID less than or equal to 5
+                val hasColorWithMinus5 = product.statuesBase.coloursEtGoutsIds
+                    .any { it <= 4L }
 
-
-                // Conditionally render appropriate item component
-                if (hasColorWithCouleur) {
+                if (hasColorWithMinus5) {
                     A_CouleurNomNonDefinie(
                         mainItem = product,
                         modifier = Modifier.fillMaxWidth(),

@@ -89,9 +89,7 @@ class A_ProduitModel(
         var imogi: String = "🎨",
         var sonImageNeExistPas: Boolean = false,
         var position_Du_Couleur_Au_Produit: Long = 0,
-    )  {
-
-    }
+    )
 
 
     var bonCommendDeCetteCota by mutableStateOf<GrossistBonCommandes?>(

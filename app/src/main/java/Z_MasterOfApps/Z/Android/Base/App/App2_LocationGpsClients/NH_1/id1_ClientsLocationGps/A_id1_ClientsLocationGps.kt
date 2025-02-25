@@ -89,7 +89,6 @@ fun A_id1_ClientsLocationGps(
         }
     }
 
-    // Initial map configuration
     DisposableEffect(context) {
         Configuration.getInstance()
             .load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
@@ -211,6 +210,12 @@ fun A_id1_ClientsLocationGps(
                 selectedMarker = selectedMarker,
                 onDismiss = { showMarkerDialog = false },
                 onUpdateLongAppSetting = onUpdateLongAppSetting,
+                onClickToEditeMarquerPosition = {
+                                    //-->
+                                    //TODO(1): fait que au click de cache le marker click est affiche Affichetext "EditeMarquerMode" 2 floating buttons
+                                    //ok et anule au click au ok change le marquer du client click au position lat et lon
+                                    //au centre de la map maintentnr
+                },
                 onRemoveMark = { marker ->
                     marker?.let {
                         mapView.overlays.remove(it)

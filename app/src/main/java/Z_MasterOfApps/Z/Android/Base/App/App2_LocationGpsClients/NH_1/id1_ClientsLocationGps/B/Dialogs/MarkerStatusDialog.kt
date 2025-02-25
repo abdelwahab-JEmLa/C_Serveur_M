@@ -55,6 +55,7 @@ fun MarkerStatusDialog(
     selectedMarker: Marker?,
     onDismiss: () -> Unit,
     onUpdateLongAppSetting: () -> Unit = {},
+    onClickToEditeMarquerPosition: (Long) -> Unit,
     onRemoveMark: (Marker?) -> Unit
 ) {
     val context = LocalContext.current
@@ -102,12 +103,14 @@ fun MarkerStatusDialog(
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
-                    }
+                    }   //-->
+                    //TODO(1): ajoute un buton de gps qui au click lence onClickToEditeMarquerPosition qui passe l id de client et dissmisse
                     Row {
                         Icon(
                             imageVector = Icons.Default.Edit,
                             contentDescription = "Edit client"
                         )
+
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Delete client",
